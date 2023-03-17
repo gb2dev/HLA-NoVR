@@ -1,3 +1,11 @@
+if changelevel_ev ~= nil then
+    StopListeningToGameEvent(changelevel_ev)
+end
+
+changelevel_ev = ListenToGameEvent('change_level_activated', function(info)
+    SendToConsole("r_drawvgui 0")
+end, nil)
+
 if pickup_ev ~= nil then
     StopListeningToGameEvent(pickup_ev)
 end
@@ -13,9 +21,30 @@ Convars:RegisterCommand("useextra", function()
     if not player:IsUsePressed() then
         DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
         DoEntFire("!picker", "FireUser4", "", 0, nil, nil)
+
+        if GetMapName() == "a2_hideout" then
+            local startVector = player:EyePosition()
+            local traceTable =
+            {
+                startpos = startVector;
+                endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(100, 0, 0));
+                ignore = player;
+                mask =  33636363
+            }
+        
+            TraceLine(traceTable)
+        
+            if traceTable.hit 
+            then
+                local ent = Entities:FindByClassnameNearest("func_physical_button", traceTable.pos, 10)
+                if ent then
+                    ent:FireOutput("OnIn", nil, nil, nil, 0)
+                    StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
+                end
+            end
+        end
     end
 end, "", 0)
-
 
 if player_spawn_ev ~= nil then
     StopListeningToGameEvent(player_spawn_ev)
@@ -28,7 +57,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
 
     if GetMapName() == "startup" then
         SendToConsole("sv_cheats 1")
-        SendToConsole("hidehud 4")
+        SendToConsole("hidehud 64")
         SendToConsole("mouse_disableinput 1")
         SendToConsole("bind MOUSE1 +use")
         SpawnEntityFromTableSynchronous("player_speedmod", nil)
@@ -40,17 +69,34 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("bind space jumpfixed")
         SendToConsole("bind e \"+use;useextra\"")
         SendToConsole("bind v noclip")
+        SendToConsole("bind ctrl +crouch")
+        SendToConsole("cl_forwardspeed 60;cl_backspeed 60;cl_sidespeed 60")
+        SendToConsole("alias -crouch \"-duck;cl_forwardspeed 60;cl_backspeed 60;cl_sidespeed 60\"")
+        SendToConsole("alias +crouch \"+duck;cl_forwardspeed 80;cl_backspeed 80;cl_sidespeed 80\"")
+        SendToConsole("hl2_sprintspeed 160")
+        SendToConsole("hl2_normspeed 160")
         SendToConsole("hidehud 96")
-        SendToConsole("give weapon_frag")
-        SendToConsole("fov_desired 90")
         SendToConsole("r_drawviewmodel 0")
+        SendToConsole("fov_desired 80")
+        SendToConsole("viewmodel_fov 80")
+        SendToConsole("sv_infinite_aux_power 1")
         SendToConsole("cc_spectator_only 1")
         SendToConsole("sv_gameinstructor_disable 1")
+        SendToConsole("hud_draw_fixed_reticle 0")
+        SendToConsole("r_drawvgui 1")
+
+        ent = Entities:FindByClassname(nil, "item_healthcharger_reservoir")
+        while ent do
+            SpawnEntityFromTableSynchronous("func_healthcharger", {["targetname"]="healthcharger_" .. ent:entindex()})
+            DoEntFireByInstanceHandle(ent, "SetParent", "healthcharger_" .. ent:entindex(), 0, nil, nil)
+            ent = Entities:FindByClassname(ent, "item_healthcharger_reservoir")
+        end
 
         if GetMapName() == "a1_intro_world" then
             SpawnEntityFromTableSynchronous("player_speedmod", nil)
             SendToConsole("ent_fire player_speedmod ModifySpeed 0")
             SendToConsole("mouse_disableinput 1")
+            SendToConsole("give weapon_bugbait")
             ent = Entities:FindByName(nil, "relay_teleported_to_refuge")
             ent:RedirectOutput("OnTrigger", "MoveFreely", ent)
 
@@ -76,6 +122,8 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             ent = Entities:FindByName(nil, "979_518_button_pusher_prop")
             ent:RedirectOutput("OnUser4", "OpenCombineElevator", ent)
         elseif GetMapName() == "a1_intro_world_2" then
+            SendToConsole("give weapon_bugbait")
+
             ent = Entities:FindByName(nil, "hint_crouch_trigger")
             ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
             
@@ -105,8 +153,8 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             ent = Entities:FindByName(nil, "relay_weapon_pistol_fakefire")
             ent:RedirectOutput("OnTrigger", "RedirectPistol", ent)
         else
-            SendToConsole("hidehud 0")
-            SendToConsole("impulse 101")
+            SendToConsole("hidehud 64")
+            SendToConsole("give weapon_pistol")
             SendToConsole("r_drawviewmodel 1")
 
             if GetMapName() == "a2_quarantine_entrance" then
@@ -115,6 +163,10 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                 EntFireByHandle(nil, ent, "skin", "4")
                 EntFireByHandle(nil, ent, "color", "135 173 159")
                 EntFireByHandle(nil, ent, "setmass", "30")
+            end
+
+            if GetMapName() == "a2_pistol" then
+                SendToConsole("ent_fire *_rebar enablepickup")
             end
         end
     end
@@ -212,10 +264,7 @@ end
 
 function EquipPistol(a, b)
     SendToConsole("ent_fire_output weapon_equip_listener oneventfired")
-    SendToConsole("hidehud 0")
-    SendToConsole("impulse 101")
+    SendToConsole("hidehud 64")
     SendToConsole("r_drawviewmodel 1")
-
-    ent = Entities:FindByName(nil, "pistol_clip_1")
-    EntFireByHandle(nil, ent, "AddOutput", "OnUser4>" .. ent:GetName()  .. ">kill>>0>1")
+    SendToConsole("ent_fire item_hlvr_weapon_energygun kill")
 end
