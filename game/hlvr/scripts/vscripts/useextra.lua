@@ -9,6 +9,11 @@ if class == "item_hlvr_weapon_shotgun" then
     thisEntity:Kill()
 end
 
+if name == "12712_shotgun_wheel" then
+    SendToConsole("ent_fire !picker setcompletionvalue 10")
+    return
+end
+
 if name == "bell" then
     DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "chain_pull", 0, nil, nil)
     DoEntFireByInstanceHandle(thisEntity, "SetPlaybackRate", "8", 0, nil, nil)
