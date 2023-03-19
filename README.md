@@ -19,7 +19,7 @@ Shift: Sprint
 
 E: Interact/Pick Up Object
 
-F6: Quick Save
+F5: Quick Save
 
 F9: Quick Load
 
