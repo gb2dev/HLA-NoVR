@@ -60,8 +60,13 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("hidehud 64")
         SendToConsole("mouse_disableinput 1")
         SendToConsole("bind MOUSE1 +use")
-        SpawnEntityFromTableSynchronous("player_speedmod", nil)
-        SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+        ent = Entities:FindByClassname(ent, "player_speedmod")
+        if not ent then
+            SpawnEntityFromTableSynchronous("player_speedmod", nil)
+            SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+        else
+            GoToMainMenu()
+        end
         ent = Entities:FindByName(nil, "startup_relay")
         ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
     else
@@ -70,6 +75,9 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("bind e \"+use;useextra\"")
         SendToConsole("bind v noclip")
         SendToConsole("bind ctrl +crouch")
+        SendToConsole("bind F6 \"save quick\"")
+        SendToConsole("bind F9 \"load quick\"")
+        SendToConsole("bind M \"map startup\"")
         SendToConsole("cl_forwardspeed 60;cl_backspeed 60;cl_sidespeed 60")
         SendToConsole("alias -crouch \"-duck;cl_forwardspeed 60;cl_backspeed 60;cl_sidespeed 60\"")
         SendToConsole("alias +crouch \"+duck;cl_forwardspeed 80;cl_backspeed 80;cl_sidespeed 80\"")
@@ -93,9 +101,14 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         end
 
         if GetMapName() == "a1_intro_world" then
-            SpawnEntityFromTableSynchronous("player_speedmod", nil)
-            SendToConsole("ent_fire player_speedmod ModifySpeed 0")
-            SendToConsole("mouse_disableinput 1")
+            ent = Entities:FindByClassname(ent, "player_speedmod")
+            if not ent then
+                SpawnEntityFromTableSynchronous("player_speedmod", nil)
+                SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+                SendToConsole("mouse_disableinput 1")
+            else
+                SendToConsole("mouse_disableinput 0")
+            end
             SendToConsole("give weapon_bugbait")
             ent = Entities:FindByName(nil, "relay_teleported_to_refuge")
             ent:RedirectOutput("OnTrigger", "MoveFreely", ent)
