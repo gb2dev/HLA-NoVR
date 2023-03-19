@@ -24,3 +24,5 @@ F6: Quick Save
 F9: Quick Load
 
 M: Main Menu
+
+P: Pause
