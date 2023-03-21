@@ -1,3 +1,26 @@
+if entity_killed_ev ~= nil then
+    StopListeningToGameEvent(entity_killed_ev)
+end
+
+entity_killed_ev = ListenToGameEvent('entity_killed', function(info)
+    local player = Entities:GetLocalPlayer()
+    player:SetThink(function()
+        function GibBecomeRagdoll(classname)
+            ent = Entities:FindByClassname(nil, classname)
+            while ent do
+                if vlua.find(ent:GetModelName(), "models/creatures/headcrab_classic/headcrab_classic_gib") then
+                    DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 0.01, nil, nil)
+                end
+                ent = Entities:FindByClassname(ent, classname)
+            end
+        end
+
+        GibBecomeRagdoll("prop_physics")
+        GibBecomeRagdoll("prop_ragdoll")
+        return nil
+    end, "", 0)
+end, nil)
+
 if changelevel_ev ~= nil then
     StopListeningToGameEvent(changelevel_ev)
 end
@@ -21,6 +44,11 @@ Convars:RegisterCommand("useextra", function()
     if not player:IsUsePressed() then
         DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
         DoEntFire("!picker", "FireUser4", "", 0, nil, nil)
+
+        if GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(347,-242,-63), 20), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 347 -297 2")
+        end
 
         if GetMapName() == "a2_hideout" then
             local startVector = player:EyePosition()
@@ -78,6 +106,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("bind F5 \"save quick\"")
         SendToConsole("bind F9 \"load quick\"")
         SendToConsole("bind M \"map startup\"")
+        SendToConsole("bind MOUSE2 \"\"")
         SendToConsole("cl_forwardspeed 60;cl_backspeed 60;cl_sidespeed 60")
         SendToConsole("alias -crouch \"-duck;cl_forwardspeed 60;cl_backspeed 60;cl_sidespeed 60\"")
         SendToConsole("alias +crouch \"+duck;cl_forwardspeed 80;cl_backspeed 80;cl_sidespeed 80\"")
@@ -92,6 +121,22 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("sv_gameinstructor_disable 1")
         SendToConsole("hud_draw_fixed_reticle 0")
         SendToConsole("r_drawvgui 1")
+        SendToConsole("ent_fire *_locker_door_* DisablePickup")
+        SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
+        SendToConsole("ent_fire electrical_panel_*_door DisablePickup")
+        SendToConsole("ent_remove player_flashlight")
+        SendToConsole("hl_headcrab_deliberate_miss_chance 0")
+        SendToConsole("headcrab_powered_ragdoll 0")
+
+        ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
+        while ent do
+            if ent:GetMoveParent() then
+                DoEntFireByInstanceHandle(ent, "EnablePickup", "", 0, nil, nil)
+            else
+                DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
+            end
+            ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_tank")
+        end
 
         ent = Entities:FindByClassname(nil, "item_healthcharger_reservoir")
         while ent do
@@ -180,6 +225,21 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
 
             if GetMapName() == "a2_pistol" then
                 SendToConsole("ent_fire *_rebar enablepickup")
+            end
+
+            if GetMapName() == "a2_headcrabs_tunnel" then
+                ent = Entities:GetLocalPlayer()
+                if ent:Attribute_GetIntValue("has_flashlight", 0) == 1 then
+                    SendToConsole("bind F inv_flashlight")
+                end
+            else
+                SendToConsole("bind F inv_flashlight")
+                SendToConsole("give weapon_shotgun")
+
+                if GetMapName() == "a2_train_yard" then
+                    ent = Entities:FindByName(nil, "5325_3947_combine_console")
+                    ent:RedirectOutput("OnTankAdded", "RedirectTankAdded", ent)
+                end
             end
         end
     end
@@ -280,4 +340,8 @@ function EquipPistol(a, b)
     SendToConsole("hidehud 64")
     SendToConsole("r_drawviewmodel 1")
     SendToConsole("ent_fire item_hlvr_weapon_energygun kill")
+end
+
+function RedirectTankAdded(a, b)
+    SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
 end

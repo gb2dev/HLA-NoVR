@@ -19,6 +19,8 @@ Shift: Sprint
 
 E: Interact/Pick Up Object
 
+F: Flashlight (if you have it)
+
 F5: Quick Save
 
 F9: Quick Load
