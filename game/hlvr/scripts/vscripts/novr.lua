@@ -85,7 +85,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
 
     if GetMapName() == "startup" then
         SendToConsole("sv_cheats 1")
-        SendToConsole("hidehud 64")
+        SendToConsole("hidehud 4")
         SendToConsole("mouse_disableinput 1")
         SendToConsole("bind MOUSE1 +use")
         ent = Entities:FindByClassname(ent, "player_speedmod")
@@ -112,7 +112,6 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("alias +crouch \"+duck;cl_forwardspeed 80;cl_backspeed 80;cl_sidespeed 80\"")
         SendToConsole("hl2_sprintspeed 160")
         SendToConsole("hl2_normspeed 160")
-        SendToConsole("hidehud 96")
         SendToConsole("r_drawviewmodel 0")
         SendToConsole("fov_desired 80")
         SendToConsole("viewmodel_fov 80")
@@ -128,16 +127,6 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("hl_headcrab_deliberate_miss_chance 0")
         SendToConsole("headcrab_powered_ragdoll 0")
 
-        ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
-        while ent do
-            if ent:GetMoveParent() then
-                DoEntFireByInstanceHandle(ent, "EnablePickup", "", 0, nil, nil)
-            else
-                DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
-            end
-            ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_tank")
-        end
-
         ent = Entities:FindByClassname(nil, "item_healthcharger_reservoir")
         while ent do
             SpawnEntityFromTableSynchronous("func_healthcharger", {["targetname"]="healthcharger_" .. ent:entindex()})
@@ -151,10 +140,12 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                 SpawnEntityFromTableSynchronous("player_speedmod", nil)
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 SendToConsole("mouse_disableinput 1")
+                SendToConsole("give weapon_bugbait")
+                SendToConsole("hidehud 4")
             else
-                SendToConsole("mouse_disableinput 0")
+                MoveFreely()
             end
-            SendToConsole("give weapon_bugbait")
+
             ent = Entities:FindByName(nil, "relay_teleported_to_refuge")
             ent:RedirectOutput("OnTrigger", "MoveFreely", ent)
 
@@ -181,6 +172,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             ent:RedirectOutput("OnUser4", "OpenCombineElevator", ent)
         elseif GetMapName() == "a1_intro_world_2" then
             SendToConsole("give weapon_bugbait")
+            SendToConsole("hidehud 96")
 
             ent = Entities:FindByName(nil, "hint_crouch_trigger")
             ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
@@ -221,13 +213,9 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                 EntFireByHandle(nil, ent, "skin", "4")
                 EntFireByHandle(nil, ent, "color", "135 173 159")
                 EntFireByHandle(nil, ent, "setmass", "30")
-            end
-
-            if GetMapName() == "a2_pistol" then
-                SendToConsole("ent_fire *_rebar enablepickup")
-            end
-
-            if GetMapName() == "a2_headcrabs_tunnel" then
+            elseif GetMapName() == "a2_pistol" then
+                SendToConsole("ent_fire *_rebar EnablePickup")
+            elseif GetMapName() == "a2_headcrabs_tunnel" then
                 ent = Entities:GetLocalPlayer()
                 if ent:Attribute_GetIntValue("has_flashlight", 0) == 1 then
                     SendToConsole("bind F inv_flashlight")
@@ -235,11 +223,6 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             else
                 SendToConsole("bind F inv_flashlight")
                 SendToConsole("give weapon_shotgun")
-
-                if GetMapName() == "a2_train_yard" then
-                    ent = Entities:FindByName(nil, "5325_3947_combine_console")
-                    ent:RedirectOutput("OnTankAdded", "RedirectTankAdded", ent)
-                end
             end
         end
     end
@@ -255,6 +238,7 @@ end
 function MoveFreely(a, b)
     SendToConsole("mouse_disableinput 0")
     SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+    SendToConsole("hidehud 96")
 end
 
 function AcceptEliCall(a, b)
@@ -340,8 +324,4 @@ function EquipPistol(a, b)
     SendToConsole("hidehud 64")
     SendToConsole("r_drawviewmodel 1")
     SendToConsole("ent_fire item_hlvr_weapon_energygun kill")
-end
-
-function RedirectTankAdded(a, b)
-    SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
 end

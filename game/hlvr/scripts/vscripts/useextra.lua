@@ -37,6 +37,14 @@ end
 
 if class == "item_combine_tank_locker" then
     DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "combine_locker_standing", 0, nil, nil)
+
+    ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
+    while ent do
+        if ent:GetMoveParent() then
+            DoEntFireByInstanceHandle(ent, "EnablePickup", "", 0, nil, nil)
+        end
+        ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_tank")
+    end
 end
 
 if class == "item_hlvr_weapon_shotgun" then
@@ -146,10 +154,6 @@ if class == "item_healthcharger_reservoir" then
 end
 
 if map == "a2_train_yard" then
-    if class == "baseanimating" then
-        SendToConsole("ent_fire_output 5325_3947_console_hacking_plug OnHackSuccess")
-    end
-    
     if class == "item_hlvr_combine_console_rack" then
         local ent = Entities:FindByName(nil, "5325_3947_combine_console")
         DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
@@ -189,10 +193,12 @@ if map == "a2_quarantine_entrance" then
     if name == "27788_combine_locker" then
         SendToConsole("ent_fire_output 27788_locker_hack_plug OnHackSuccess")
     end
-    
-    if class == "baseanimating" then
-        SendToConsole("ent_fire_output 17670_console_hacking_plug OnHackSuccess")
-    end
+end
+
+if class == "baseanimating" and vlua.find(name, "Console") then
+    SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
+    SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
+    DoEntFireByInstanceHandle(thisEntity, "AddOutput", "OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1", 0, nil, nil)
 end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
