@@ -53,6 +53,11 @@ if class == "item_hlvr_weapon_shotgun" then
     thisEntity:Kill()
 end
 
+if class == "item_hlvr_weapon_rapidfire" then
+    SendToConsole("give weapon_smg1")
+    thisEntity:Kill()
+end
+
 if class == "prop_dynamic" and thisEntity:GetModelName() == "models/props/alyx_hideout/button_plate.vmdl" then
     SendToConsole("ent_fire 2_8127_elev_button_test_floor_" .. player:Attribute_GetIntValue("next_elevator_floor", 2) .. " Trigger")
 
@@ -89,12 +94,77 @@ if name == "2_7288_combine_locker" then
     SendToConsole("ent_fire_output 2_7288_locker_hack_plug OnHackSuccess")
 end
 
+if name == "2_8792_combine_locker" then
+    SendToConsole("ent_fire_output 2_8792_locker_hack_plug OnHackSuccess")
+end
+
+if name == "417_591_combine_locker" then
+    SendToConsole("ent_fire_output 417_591_locker_hack_plug OnHackSuccess")
+end
+
+if name == "2_4255_combine_locker" then
+    SendToConsole("ent_fire_output 2_4255_locker_hack_plug OnHackSuccess")
+end
+
+if name == "351_2845_combine_locker" then
+    SendToConsole("ent_fire_output 351_2845_locker_hack_plug OnHackSuccess")
+end
+
+if name == "2_11759_combine_locker" then
+    SendToConsole("ent_fire_output 2_11759_locker_hack_plug OnHackSuccess")
+end
+
+if name == "2_5877_combine_locker" then
+    SendToConsole("ent_fire_output 2_5877_locker_hack_plug OnHackSuccess")
+end
+
+if name == "2_6661_combine_locker" then
+    SendToConsole("ent_fire_output 2_6661_locker_hack_plug OnHackSuccess")
+end
+
+if name == "879_combine_locker" then
+    SendToConsole("ent_fire_output 879_locker_hack_plug OnHackSuccess")
+end
+
+
 if name == "2_8127_elev_button_floor_1_call" then
     SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
 end
 
+if name == "2_203_elev_button_floor_1" then
+    SendToConsole("ent_fire_output 2_203_elev_button_floor_1_handpose onhandposed")
+end
+
+if name == "2_203_inside_elevator_button" then
+    SendToConsole("ent_fire_output 2_203_elev_door_is_open onfalse")
+end
+
+if name == "inside_elevator_button" then
+    SendToConsole("ent_fire_output elev_start_move ontrigger")
+end
+
 if name == "5325_4205_5030_door_hack_prop" then
     SendToConsole("ent_fire_output 5325_4205_5030_door_hack_plug OnHackSuccess")
+end
+
+if name == "2_5425_door_hack_prop" then
+    SendToConsole("ent_fire_output 2_5425_door_hack_plug OnHackSuccess")
+end
+
+if name == "2041_door_hack_prop" then
+    SendToConsole("ent_fire_output 2041_door_hack_plug OnHackSuccess")
+end
+
+if name == "console_opener_prop_handle_interact" then
+    SendToConsole("ent_fire_output console_opener_logic_isselected_1 ontrue")
+    SendToConsole("ent_fire_output console_opener_logic_isselected_2 ontrue")
+    SendToConsole("ent_fire_output console_opener_logic_isselected_3 ontrue")
+    SendToConsole("ent_fire_output console_opener_logic_isselected_4 ontrue")
+    SendToConsole("ent_fire_output console_opener_logic_isselected_5 ontrue")
+end
+
+if name == "@pod_shell" then
+    SendToConsole("ent_fire @pod_shell enablereturntocompletion")
 end
 
 if name == "ChoreoPhysProxy" then
@@ -153,6 +223,10 @@ if class == "item_healthcharger_reservoir" then
     StartSoundEventFromPosition("HealthStation.Start", player:EyePosition())
 end
 
+if name == "room1_lights_circuitbreaker_switch" then
+    SendToConsole("ent_fire_output controlroom_circuitbreaker_relay ontrigger")
+end
+
 if map == "a2_train_yard" then
     if class == "item_hlvr_combine_console_rack" then
         local ent = Entities:FindByName(nil, "5325_3947_combine_console")
@@ -195,6 +269,18 @@ if map == "a2_quarantine_entrance" then
     end
 end
 
+if map == "a3_hotel_lobby_basement" then
+    if name == "power_stake_1_start" then
+        SendToConsole("ent_fire_output power_logic_enable_lights ontrigger")
+        SendToConsole("ent_fire_output path_2_panel onpoweron")
+        SendToConsole("ent_fire_output power_logic_enable_lift ontrigger")
+    end
+
+    if name == "elev_button_floor_1" then
+        SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
+    end
+end
+
 if class == "baseanimating" and vlua.find(name, "Console") then
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
     SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
@@ -218,6 +304,11 @@ elseif class == "item_hlvr_clip_energygun" then
     end
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
     thisEntity:Kill()
+elseif class == "item_hlvr_clip_energygun_multiple" then
+    FireGameEvent("item_pickup", item_pickup_params)
+    SendToConsole("hlvr_addresources 40 0 0 0")
+    StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    thisEntity:Kill()
 elseif class == "item_hlvr_clip_shotgun_multiple" then
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 0 0 4 0")
@@ -226,6 +317,11 @@ elseif class == "item_hlvr_clip_shotgun_multiple" then
 elseif class == "item_hlvr_clip_shotgun_single" then
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 0 0 1 0")
+    StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    thisEntity:Kill()
+elseif class == "item_hlvr_clip_rapidfire" then
+    FireGameEvent("item_pickup", item_pickup_params)
+    SendToConsole("hlvr_addresources 0 30 0 0")
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
     thisEntity:Kill()
 elseif class == "item_hlvr_grenade_frag" then
