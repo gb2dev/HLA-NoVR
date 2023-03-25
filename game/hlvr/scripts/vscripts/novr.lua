@@ -113,8 +113,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("hl2_sprintspeed 160")
         SendToConsole("hl2_normspeed 160")
         SendToConsole("r_drawviewmodel 0")
-        SendToConsole("fov_desired 80")
-        SendToConsole("viewmodel_fov 80")
+        SendToConsole("fov_desired 90")
         SendToConsole("sv_infinite_aux_power 1")
         SendToConsole("cc_spectator_only 1")
         SendToConsole("sv_gameinstructor_disable 1")
@@ -220,7 +219,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                 if ent:Attribute_GetIntValue("has_flashlight", 0) == 1 then
                     SendToConsole("bind F inv_flashlight")
                 end
-            else
+            elseif GetMapName() ~= "a2_hideout" then
                 SendToConsole("bind F inv_flashlight")
                 SendToConsole("give weapon_shotgun")
             end
