@@ -126,6 +126,18 @@ if name == "879_combine_locker" then
     SendToConsole("ent_fire_output 879_locker_hack_plug OnHackSuccess")
 end
 
+if name == "1517_1920_combine_locker" then
+    SendToConsole("ent_fire_output 1517_1920_locker_hack_plug OnHackSuccess")
+end
+
+if name == "254_2183_1620_combine_locker" then
+    SendToConsole("ent_fire_output 254_2183_1620_locker_hack_plug OnHackSuccess")
+end
+
+if name == "254_16189_combine_locker" then
+    SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnHackSuccess")
+end
+
 
 if name == "2_8127_elev_button_floor_1_call" then
     SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
