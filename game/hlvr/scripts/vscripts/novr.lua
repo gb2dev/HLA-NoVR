@@ -1,3 +1,20 @@
+if player_hurt_ev ~= nil then
+    StopListeningToGameEvent(player_hurt_ev)
+end
+
+player_hurt_ev = ListenToGameEvent('player_hurt', function(info)
+    -- Hack to stop pausing the game on death
+    if info.health == 0 then
+        SendToConsole("reload")
+        SendToConsole("r_drawvgui 0")
+    end
+
+    -- Kill on fall damage
+    if GetPhysVelocity(Entities:GetLocalPlayer()).z < -450 then
+        SendToConsole("ent_fire !player SetHealth 0")
+    end
+end, nil)
+
 if entity_killed_ev ~= nil then
     StopListeningToGameEvent(entity_killed_ev)
 end
@@ -44,6 +61,21 @@ Convars:RegisterCommand("useextra", function()
     if not player:IsUsePressed() then
         DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
         DoEntFire("!picker", "FireUser4", "", 0, nil, nil)
+
+        if GetMapName() == "a3_hotel_interior_rooftop" then
+            if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact 2339 -1839 560")
+            elseif vlua.find(Entities:FindAllInSphere(Vector(2345, -1834, 758), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact 2345 -1834 840")
+            end
+        end
+
+        if GetMapName() == "a3_hotel_lobby_basement" and vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 20), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 975 -1507 280")
+        end
 
         if GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(347,-242,-63), 20), player) then
             SendToConsole("fadein 0.2")
@@ -121,10 +153,13 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("r_drawvgui 1")
         SendToConsole("ent_fire *_locker_door_* DisablePickup")
         SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
-        SendToConsole("ent_fire electrical_panel_*_door DisablePickup")
+        SendToConsole("ent_fire electrical_panel_*_door* DisablePickup")
         SendToConsole("ent_remove player_flashlight")
         SendToConsole("hl_headcrab_deliberate_miss_chance 0")
         SendToConsole("headcrab_powered_ragdoll 0")
+        SendToConsole("combine_grenade_timer 4")
+        SendToConsole("sk_max_grenade 1")
+        SendToConsole("sv_gravity 500")
 
         ent = Entities:FindByClassname(nil, "item_healthcharger_reservoir")
         while ent do
@@ -222,6 +257,20 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             elseif GetMapName() ~= "a2_hideout" then
                 SendToConsole("bind F inv_flashlight")
                 SendToConsole("give weapon_shotgun")
+
+                if GetMapName() == "a3_hotel_interior_rooftop" then
+                    SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
+                elseif GetMapName() == "a3_hotel_street" then
+                    SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
+                    ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(775, 1677, 248), 10)
+                    if ent then
+                        ent:Kill()
+                    end
+                    ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(1440, 1306, 331), 10)
+                    if ent then
+                        ent:Kill()
+                    end
+                end
             end
         end
     end

@@ -3,7 +3,7 @@ local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
 local player = Entities:GetLocalPlayer()
 
-if (class == "item_health_station_charger" or class == "prop_animinteractable" or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if name ~= "@pod_shell" and (class == "item_health_station_charger" or class == "prop_animinteractable" or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     thisEntity:Attribute_SetIntValue("used", 1)
 
     if class == "item_health_station_charger" or class == "item_hlvr_combine_console_rack" then
@@ -28,7 +28,7 @@ if vlua.find(name, "_locker_door_") then
 elseif vlua.find(name, "_hazmat_crate_lid") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-5000,0))
 elseif vlua.find(name, "electrical_panel_") and vlua.find(name, "_door") then
-    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-500))
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
 end
 
 if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") then
@@ -66,6 +66,15 @@ if class == "prop_dynamic" and thisEntity:GetModelName() == "models/props/alyx_h
     else
         player:Attribute_SetIntValue("next_elevator_floor", 2)
     end
+end
+
+if map == "a3_hotel_interior_rooftop" and name == "window_sliding1" then
+    SendToConsole("fadein 0.2")
+    SendToConsole("setpos_exact 788 -1420 576")
+    SendToConsole("-use")
+    thisEntity:SetThink(function()
+        SendToConsole("+use")
+    end, "", 0)
 end
 
 if name == "2860_window_sliding1" then
@@ -126,6 +135,9 @@ if name == "879_combine_locker" then
     SendToConsole("ent_fire_output 879_locker_hack_plug OnHackSuccess")
 end
 
+if name == "1962_combine_locker" then
+    SendToConsole("ent_fire_output 1962_locker_hack_plug OnHackSuccess")
+end
 
 if name == "2_8127_elev_button_floor_1_call" then
     SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
@@ -137,10 +149,19 @@ end
 
 if name == "2_203_inside_elevator_button" then
     SendToConsole("ent_fire_output 2_203_elev_door_is_open onfalse")
+    SendToConsole("+use")
+    thisEntity:SetThink(function()
+        SendToConsole("-use")
+    end, "", 0)
 end
 
 if name == "inside_elevator_button" then
-    SendToConsole("ent_fire_output elev_start_move ontrigger")
+    SendToConsole("ent_fire elev_button_elevator unlock")
+    SendToConsole("ent_fire_output elev_button_elevator_handpose onhandposed")
+    SendToConsole("+use")
+    thisEntity:SetThink(function()
+        SendToConsole("-use")
+    end, "", 0)
 end
 
 if name == "5325_4205_5030_door_hack_prop" then
@@ -164,7 +185,7 @@ if name == "console_opener_prop_handle_interact" then
 end
 
 if name == "@pod_shell" then
-    SendToConsole("ent_fire @pod_shell enablereturntocompletion")
+    SendToConsole("ent_fire @pod_shell unlock")
 end
 
 if name == "ChoreoPhysProxy" then
@@ -287,6 +308,10 @@ if class == "baseanimating" and vlua.find(name, "Console") then
     DoEntFireByInstanceHandle(thisEntity, "AddOutput", "OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1", 0, nil, nil)
 end
 
+if class == "item_hlvr_grenade_xen" then
+    DoEntFireByInstanceHandle(thisEntity, "ArmGrenade", "", 0, nil, nil)
+end
+
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
 
 if class == "item_hlvr_crafting_currency_small" then
@@ -325,10 +350,12 @@ elseif class == "item_hlvr_clip_rapidfire" then
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
     thisEntity:Kill()
 elseif class == "item_hlvr_grenade_frag" then
-    FireGameEvent("item_pickup", item_pickup_params)
-    StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-    SendToConsole("give weapon_frag")
-    thisEntity:Kill()
+    if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
+        FireGameEvent("item_pickup", item_pickup_params)
+        StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+        SendToConsole("give weapon_frag")
+        thisEntity:Kill()
+    end
 elseif class == "item_healthvial" then
     if player:GetHealth() < player:GetMaxHealth() then
         player:SetHealth(min(player:GetHealth() + 10, player:GetMaxHealth()))
