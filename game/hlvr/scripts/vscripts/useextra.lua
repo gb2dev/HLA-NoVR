@@ -392,7 +392,7 @@ elseif class == "item_hlvr_clip_rapidfire" then
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
     thisEntity:Kill()
 elseif class == "item_hlvr_grenade_frag" then
-    if not Entities:FindByClassname(nil, "weapon_frag") and thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
+    if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
         SendToConsole("give weapon_frag")
