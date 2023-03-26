@@ -219,6 +219,10 @@ if name == "4910_135_interactive_wheel" then
     return
 end
 
+if name == "270_trip_mine_item_1" then
+    SendToConsole("ent_fire 270_trip_mine_item_1 deactivatemine")
+end
+
 if class == "prop_hlvr_crafting_station_console" then
     SendToConsole("ent_fire prop_hlvr_crafting_station OpenStation")
 end
