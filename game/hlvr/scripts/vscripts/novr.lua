@@ -103,6 +103,28 @@ Convars:RegisterCommand("useextra", function()
                 end
             end
         end
+
+        if GetMapName() == "a3_c17_processing_plant" then
+            if vlua.find(Entities:FindAllInSphere(Vector(-240,-2875,392), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact -241 -2823 410")
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(414,-2459,328), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact 365 -2465 410")
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-1392,-2471,115), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact -1415 -2485 410")
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-1420,-2482,472), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact -1392 -2471 53")
+            end
+        end
     end
 end, "", 0)
 

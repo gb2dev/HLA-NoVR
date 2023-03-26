@@ -135,6 +135,18 @@ if name == "879_combine_locker" then
     SendToConsole("ent_fire_output 879_locker_hack_plug OnHackSuccess")
 end
 
+if name == "1517_1920_combine_locker" then
+    SendToConsole("ent_fire_output 1517_1920_locker_hack_plug OnHackSuccess")
+end
+
+if name == "254_2183_1620_combine_locker" then
+    SendToConsole("ent_fire_output 254_2183_1620_locker_hack_plug OnHackSuccess")
+end
+
+if name == "254_16189_combine_locker" then
+    SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnHackSuccess")
+end
+
 if name == "1962_combine_locker" then
     SendToConsole("ent_fire_output 1962_locker_hack_plug OnHackSuccess")
 end
@@ -228,6 +240,10 @@ if name == "4910_135_interactive_wheel" then
     return
 end
 
+if name == "270_trip_mine_item_1" then
+    SendToConsole("ent_fire 270_trip_mine_item_1 deactivatemine")
+end
+
 if class == "prop_hlvr_crafting_station_console" then
     SendToConsole("ent_fire prop_hlvr_crafting_station OpenStation")
 end
@@ -300,6 +316,32 @@ if map == "a3_hotel_lobby_basement" then
     if name == "elev_button_floor_1" then
         SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
     end
+end
+
+if name == "lift_button_box" then
+    if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
+        SendToConsole("ent_fire_output lift_button_down onin")
+        thisEntity:Attribute_SetIntValue("used", 0)
+    else
+        SendToConsole("ent_fire_output lift_button_up onin")
+        thisEntity:Attribute_SetIntValue("used", 1)
+    end
+end
+
+if name == "1517_3301_lift_prop_animated" then
+    SendToConsole("ent_fire_output lift_button_down onin")
+end
+
+if name == "shack_path_6_port_1" then
+    SendToConsole("ent_fire_output pallet_panel_power_on ontrigger")
+end
+
+if name == "pallet_lever_vertical" then
+    SendToConsole("ent_fire_output pallet_logic_phys_raise ontrigger")
+end
+
+if name == "pallet_lever" then
+    SendToConsole("ent_fire_output pallet_logic_extend ontrigger")
 end
 
 if class == "baseanimating" and vlua.find(name, "Console") then
