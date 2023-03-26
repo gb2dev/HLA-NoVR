@@ -297,6 +297,32 @@ if map == "a3_hotel_lobby_basement" then
     end
 end
 
+if name == "lift_button_box" then
+    if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
+        SendToConsole("ent_fire_output lift_button_down onin")
+        thisEntity:Attribute_SetIntValue("used", 0)
+    else
+        SendToConsole("ent_fire_output lift_button_up onin")
+        thisEntity:Attribute_SetIntValue("used", 1)
+    end
+end
+
+if name == "1517_3301_lift_prop_animated" then
+    SendToConsole("ent_fire_output lift_button_down onin")
+end
+
+if name == "shack_path_6_port_1" then
+    SendToConsole("ent_fire_output pallet_panel_power_on ontrigger")
+end
+
+if name == "pallet_lever_vertical" then
+    SendToConsole("ent_fire_output pallet_logic_phys_raise ontrigger")
+end
+
+if name == "pallet_lever" then
+    SendToConsole("ent_fire_output pallet_logic_extend ontrigger")
+end
+
 if class == "baseanimating" and vlua.find(name, "Console") then
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
     SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
