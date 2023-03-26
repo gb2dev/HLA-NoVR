@@ -105,6 +105,11 @@ Convars:RegisterCommand("useextra", function()
         end
 
         if GetMapName() == "a3_c17_processing_plant" then
+            if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact -26 -2215 870")
+            end
+
             if vlua.find(Entities:FindAllInSphere(Vector(-240,-2875,392), 20), player) then
                 SendToConsole("fadein 0.2")
                 SendToConsole("setpos_exact -241 -2823 410")
@@ -289,6 +294,20 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                         ent:Kill()
                     end
                     ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(1440, 1306, 331), 10)
+                    if ent then
+                        ent:Kill()
+                    end
+                elseif GetMapName() == "a3_c17_processing_plant" then
+                    SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
+                    ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-896, -3768, 348), 10)
+                    if ent then
+                        ent:Kill()
+                    end
+                    ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1165, -3770, 158), 10)
+                    if ent then
+                        ent:Kill()
+                    end
+                    ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1105, -4058, 163), 10)
                     if ent then
                         ent:Kill()
                     end
