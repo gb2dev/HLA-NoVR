@@ -145,6 +145,7 @@ end
 
 if name == "254_16189_combine_locker" then
     SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnHackSuccess")
+    SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnPuzzleSuccess")
 end
 
 if name == "1962_combine_locker" then

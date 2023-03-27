@@ -185,7 +185,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("hl_headcrab_deliberate_miss_chance 0")
         SendToConsole("headcrab_powered_ragdoll 0")
         SendToConsole("combine_grenade_timer 4")
-        SendToConsole("sk_max_grenade 1")
+        SendToConsole("sk_max_grenade 9999")
         SendToConsole("sv_gravity 500")
 
         ent = Entities:FindByClassname(nil, "item_healthcharger_reservoir")
@@ -286,7 +286,10 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                 SendToConsole("give weapon_shotgun")
 
                 if GetMapName() == "a3_hotel_interior_rooftop" then
-                    SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
+                    ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
+                    if not ent then
+                        SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
+                    end
                 elseif GetMapName() == "a3_hotel_street" then
                     SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
                     ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(775, 1677, 248), 10)
