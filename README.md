@@ -9,6 +9,8 @@ Simply add ``-novr -vsync`` to the launch options on Steam and start the game.
 ### Keyboard and Mouse
 Left Click: Select in Main Menu/Throw Held Object/Primary Attack
 
+Middle Click: Zoom
+
 W, A, S, D: Move
 
 Space: Jump
@@ -20,6 +22,8 @@ Shift: Sprint
 E: Interact/Pick Up Object
 
 F: Flashlight (if you have it)
+
+H: Cover your mouth
 
 F5: Quick Save
 
