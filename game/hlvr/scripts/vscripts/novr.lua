@@ -187,9 +187,9 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("combine_grenade_timer 4")
         SendToConsole("sk_max_grenade 9999")
         SendToConsole("sv_gravity 500")
-	SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth\"")
-	SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth\"")
-	SendToConsole("bind h +covermouth")
+        SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth\"")
+        SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth\"")
+        SendToConsole("bind h +covermouth")
 
         ent = Entities:FindByClassname(nil, "item_healthcharger_reservoir")
         while ent do
