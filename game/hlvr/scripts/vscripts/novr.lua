@@ -187,9 +187,17 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("combine_grenade_timer 4")
         SendToConsole("sk_max_grenade 9999")
         SendToConsole("sv_gravity 500")
-        SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth\"")
-        SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth\"")
+        SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand disable\"")
+        SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand enable\"")
         SendToConsole("bind h +covermouth")
+
+        -- Hand for covering mouth animation
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        local viewmodel_pos = viewmodel:GetAbsOrigin()
+        local viewmodel_ang = viewmodel:GetAngles()
+        ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x - 4 .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z - 4, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
+        DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
+        DoEntFire("lefthand", "disable", "", 0, nil, nil)
 
         ent = Entities:FindByClassname(nil, "item_healthcharger_reservoir")
         while ent do
