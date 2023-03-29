@@ -348,7 +348,7 @@ end
 if class == "baseanimating" and vlua.find(name, "Console") then
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
     SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
-    DoEntFireByInstanceHandle(thisEntity, "AddOutput", "OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1", 0, nil, nil)
+    SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
 end
 
 if class == "item_hlvr_grenade_xen" then
