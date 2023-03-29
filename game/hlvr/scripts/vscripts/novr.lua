@@ -46,16 +46,6 @@ changelevel_ev = ListenToGameEvent('change_level_activated', function(info)
     SendToConsole("r_drawvgui 0")
 end, nil)
 
-if pickup_ev ~= nil then
-    StopListeningToGameEvent(pickup_ev)
-end
-
-pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
-    local ent = EntIndexToHScript(info.entindex)
-    ent:Attribute_SetIntValue("picked_up", 1)
-    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
-end, nil)
-
 Convars:RegisterCommand("useextra", function()
     local player = Entities:GetLocalPlayer()
     if not player:IsUsePressed() then
@@ -181,6 +171,13 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("ent_fire *_locker_door_* DisablePickup")
         SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
         SendToConsole("ent_fire electrical_panel_*_door* DisablePickup")
+        SendToConsole("ent_fire item_hlvr_crafting_currency_small DisablePickup")
+        SendToConsole("ent_fire item_hlvr_clip_energygun DisablePickup")
+        SendToConsole("ent_fire item_hlvr_clip_energygun_multiple DisablePickup")
+        SendToConsole("ent_fire item_hlvr_clip_shotgun_multiple DisablePickup")
+        SendToConsole("ent_fire item_hlvr_clip_shotgun_single DisablePickup")
+        SendToConsole("ent_fire item_hlvr_clip_rapidfire DisablePickup")
+        SendToConsole("ent_fire item_hlvr_grenade_frag DisablePickup")
         SendToConsole("ent_remove player_flashlight")
         SendToConsole("hl_headcrab_deliberate_miss_chance 0")
         SendToConsole("headcrab_powered_ragdoll 0")
