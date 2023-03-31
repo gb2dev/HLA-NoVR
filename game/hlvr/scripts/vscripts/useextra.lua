@@ -3,7 +3,11 @@ local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
 local player = Entities:GetLocalPlayer()
 
-if name ~= "@pod_shell" and (class == "item_health_station_charger" or class == "prop_animinteractable" or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if name ~= "@pod_shell" and name ~= "589_panel_switch" and (class == "item_health_station_charger" or class == "prop_animinteractable" or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    if name == "plug_console_starter_lever" then
+        thisEntity:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0)
+    end
+    
     thisEntity:Attribute_SetIntValue("used", 1)
 
     if class == "item_health_station_charger" or class == "item_hlvr_combine_console_rack" then
@@ -21,6 +25,24 @@ if name ~= "@pod_shell" and (class == "item_health_station_charger" or class == 
             return 0
         end
     end, "AnimateCompletionValue", 0)
+elseif name == "589_panel_switch" then
+    thisEntity:Attribute_SetIntValue("used", 1)
+
+    if class == "item_health_station_charger" or class == "item_hlvr_combine_console_rack" then
+        DoEntFireByInstanceHandle(thisEntity, "EnableOnlyRunForward", "", 0, nil, nil)
+    end
+
+    local count = 0
+    thisEntity:SetThink(function()
+        DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. 1 - count, 0, nil, nil)
+        count = count + 0.01
+        if count >= 1 then
+            thisEntity:FireOutput("OnCompletionA_Backward", nil, nil, nil, 0)
+            return nil
+        else
+            return 0
+        end
+    end, "AnimateCompletionValue", 0)
 end
 
 if vlua.find(name, "_locker_door_") then
@@ -33,6 +55,31 @@ end
 
 if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") then
     DoEntFireByInstanceHandle(thisEntity, "Close", "", 0, nil, nil)
+end
+
+if name == "1489_4074_port_demux" then
+    SendToConsole("ent_fire_output 1489_4074_path_demux_3_0 onpoweron")
+    SendToConsole("ent_fire_output 1489_4074_path_demux_3_3 onpoweron")
+    SendToConsole("ent_fire_output 1489_4074_path_demux_3_6 onpoweron")
+end
+
+if name == "bridge_crank" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    SendToConsole("ent_fire driven_bridge SetAnimation combine_barrel_arm_bridge_anim")
+    SendToConsole("ent_fire drawbridge_brush Enable")
+    StartSoundEventFromPosition("CombineVortPod.Lower", thisEntity:GetOrigin())
+end
+
+if name == "3_8223_prop_button" then
+    SendToConsole("ent_fire_output 3_8223_handpose_combine_switchbox_button_press OnHandPosed")
+end
+
+if name == "3_8223_mesh_combine_switch_box" then
+    SendToConsole("ent_fire_output 3_8223_switch_box_hack_plug OnHackSuccess")
+
+end
+
+if name == "589_test_outlet" then
+    SendToConsole("ent_fire 589_vertical_door Open")
 end
 
 if class == "item_combine_tank_locker" then
@@ -67,6 +114,7 @@ if class == "prop_dynamic" and thisEntity:GetModelName() == "models/props/alyx_h
         player:Attribute_SetIntValue("next_elevator_floor", 2)
     end
 end
+
 
 if map == "a3_hotel_interior_rooftop" and name == "window_sliding1" then
     SendToConsole("fadein 0.2")
@@ -358,6 +406,11 @@ end
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
 
 if class == "item_hlvr_crafting_currency_small" then
+    if name == "currency_booby_trap" then
+        thisEntity:FireOutput("OnPlayerPickup", nil, nil, nil, 0)
+        --SendToConsole("ent_fire_output currency_booby_trap OnPlayerPickup")
+    end
+
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 0 0 0 1")
     StartSoundEventFromPosition("Inventory.BackpackGrabItemResin", player:EyePosition())

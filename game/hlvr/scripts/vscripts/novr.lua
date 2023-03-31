@@ -62,6 +62,19 @@ Convars:RegisterCommand("useextra", function()
         DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
         DoEntFire("!picker", "FireUser4", "", 0, nil, nil)
 
+        if GetMapName() == "a4_c17_tanker_yard" then
+            if vlua.find(Entities:FindAllInSphere(Vector(6980, 2591, 13), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos 6965 2600 261")
+            elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos 6118 3903 686")
+            elseif vlua.find(Entities:FindAllInSphere(Vector(5434, 5755, 273), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos 5450, 5714, 403")
+            end
+        end
+
         if GetMapName() == "a3_hotel_interior_rooftop" then
             if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 20), player) then
                 SendToConsole("fadein 0.2")
@@ -325,6 +338,17 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                     if ent then
                         ent:Kill()
                     end
+                elseif GetMapName() == "a4_c17_zoo" then
+                    ent = Entities:FindByName(nil, "relay_power_receive")
+                    ent:RedirectOutput("OnTrigger", "MakeLeverUsable", ent)
+
+                    ent = Entities:FindByName(nil, "hint_crouch_delay")
+                    ent:RedirectOutput("OnTrigger", "CrouchThroughZooHole", ent)
+
+                    SendToConsole("ent_fire port_health_trap Disable")
+                    SendToConsole("ent_fire health_trap_locked_door Unlock")
+                    SendToConsole("ent_fire 589_toner_port_5 Disable")
+                    SendToConsole("@prop_phys_portaloo_door DisablePickup")
                 end
             end
         end
@@ -427,4 +451,14 @@ function EquipPistol(a, b)
     SendToConsole("hidehud 64")
     SendToConsole("r_drawviewmodel 1")
     SendToConsole("ent_fire item_hlvr_weapon_energygun kill")
+end
+
+function MakeLeverUsable(a, b)
+    ent = Entities:FindByName(nil, "door_reset")
+    ent:Attribute_SetIntValue("used", 0)
+end
+
+function CrouchThroughZooHole(a, b)
+    SendToConsole("fadein 0.2")
+    SendToConsole("setpos 5393 -1960 -125")
 end
