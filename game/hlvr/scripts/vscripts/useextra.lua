@@ -3,7 +3,7 @@ local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
 local player = Entities:GetLocalPlayer()
 
-if name ~= "@pod_shell" and name ~= "589_panel_switch" and (class == "item_health_station_charger" or class == "prop_animinteractable" or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or class == "prop_animinteractable" or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if name == "plug_console_starter_lever" then
         thisEntity:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0)
     end
@@ -382,6 +382,43 @@ if map == "a3_hotel_lobby_basement" then
 
     if name == "elev_button_floor_1" then
         SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
+    end
+end
+
+if GetMapName() == "a3_distillery" then
+    if name == "intro_rollup_door" then
+        SendToConsole("ent_fire_output intro_rollup_door oncompletiona_forward")
+        SendToConsole("ent_fire door_xen_crust break")
+        SendToConsole("ent_fire relay_door_xen_crust_c trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_d trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_e trigger")
+    end
+
+    if name == "5628_2901_barricade_door" or name == "5628_2901_barricade_door_hook" then
+        SendToConsole("ent_fire 5628_2901_barricade_door_hook setcompletionvalue 0")
+        SendToConsole("ent_fire 5628_2901_barricade_door setcompletionvalue 0")
+    end
+
+    if name == "barricade_door" then
+        SendToConsole("ent_fire barricade_door setreturntocompletionamount 1")
+    end
+
+    if name == "barricade_door_hook" then
+        SendToConsole("ent_fire_output barricade_door_hook oncompletiona_forward")
+    end
+
+    if name == "tc_door_control" then
+        SendToConsole("ent_fire tc_door_control setcompletionvalue 0")
+        SendToConsole("ent_fire relay_close_compactor_doors trigger")
+    end
+
+    if name == "11478_6233_tutorial_wheel" then
+        SendToConsole("ent_fire 11478_6233_verticaldoor_wheel_tutorial open")
+    end
+
+    if name == "verticaldoor_wheel" then
+        SendToConsole("ent_fire @verticaldoor setspeed 10")
+        SendToConsole("ent_fire @verticaldoor open")
     end
 end
 
