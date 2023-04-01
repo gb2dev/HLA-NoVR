@@ -442,6 +442,22 @@ if GetMapName() == "a3_distillery" then
     if name == "freezer_port_b_2" then
         SendToConsole("ent_fire_output freezer_toner_path_8 onpoweron")
     end
+
+    if name == "plug_console_starter_lever" then
+        SendToConsole("ent_fire_output plug_console_starter_lever oncompletionb_forward")
+    end
+
+    if name == "11578_2420_181_antlion_plug_crank_a" then
+        SendToConsole("ent_fire_output 11578_2420_181_antlion_plug_crank_a oncompletionc_forward")
+    end
+
+    if name == "11578_2420_183_antlion_plug_crank_a" then
+        SendToConsole("ent_fire_output 11578_2420_183_antlion_plug_crank_a oncompletionc_forward")
+    end
+
+    if name == "antlion_plug_crank_c" then
+        SendToConsole("ent_fire_output antlion_plug_crank_c oncompletionc_forward")
+    end
 end
 
 if name == "lift_button_box" then
