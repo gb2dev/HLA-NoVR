@@ -439,6 +439,7 @@ function ToggleCarDoor(a, b)
 end
 
 function ClimbBalconyLadder(a, b)
+    ClimbLadderSound()
     SendToConsole("fadein 0.2")
     SendToConsole("setpos_exact -1296 576 80")
 end
