@@ -420,6 +420,28 @@ if GetMapName() == "a3_distillery" then
         SendToConsole("ent_fire @verticaldoor setspeed 10")
         SendToConsole("ent_fire @verticaldoor open")
     end
+
+    if name == "11479_2385_button_pusher_prop" then
+        SendToConsole("ent_fire_output 11479_2385_button_center_pusher onin")
+    end
+
+    if name == "11479_2386_button_pusher_prop" then
+        SendToConsole("ent_fire debug_relay_elevator_ride trigger")
+    end
+
+    if name == "freezer_toner_outlet_1" then
+        SendToConsole("ent_fire_output freezer_toner_path_3 onpoweron")
+        SendToConsole("ent_fire_output freezer_toner_path_6 onpoweron")
+        SendToConsole("ent_fire relay_debug_freezer_breakout trigger")
+    end
+
+    if name == "freezer_toner_outlet_2" then
+        SendToConsole("ent_fire_output freezer_toner_path_7 onpoweron")
+    end
+
+    if name == "freezer_port_b_2" then
+        SendToConsole("ent_fire_output freezer_toner_path_8 onpoweron")
+    end
 end
 
 if name == "lift_button_box" then
