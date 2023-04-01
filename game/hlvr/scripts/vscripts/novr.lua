@@ -58,6 +58,7 @@ end, nil)
 
 Convars:RegisterCommand("useextra", function()
     local player = Entities:GetLocalPlayer()
+
     if not player:IsUsePressed() then
         DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
         DoEntFire("!picker", "FireUser4", "", 0, nil, nil)
@@ -222,18 +223,8 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("combine_grenade_timer 4")
         SendToConsole("sk_max_grenade 9999")
         SendToConsole("sv_gravity 500")
-        SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand disable\"")
-        SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand enable\"")
-        SendToConsole("bind h +covermouth")
-
-        -- Hand for covering mouth animation
-        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-        local viewmodel_pos = viewmodel:GetAbsOrigin()
-        local viewmodel_ang = viewmodel:GetAngles()
-        ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x - 4 .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z - 4, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
-        DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
-        DoEntFire("lefthand", "disable", "", 0, nil, nil)
-
+        SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand disable;viewmodel_offset_y 0\"")
+        SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand enable;viewmodel_offset_y -20\"")
 
         if GetMapName() == "a1_intro_world" then
             if not loading_save_file then
@@ -349,21 +340,36 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                         ent:Kill()
                     end
                 elseif GetMapName() == "a3_distillery" then
-                    SendToConsole("ent_fire @barnacle_battery kill")
-                    SendToConsole("ent_create item_hlvr_prop_battery { origin \"959 1970 427\" }")
-                    SendToConsole("ent_fire @crank_battery kill")
-                    SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
-                elseif GetMapName() == "a4_c17_zoo" then
-                    ent = Entities:FindByName(nil, "relay_power_receive")
-                    ent:RedirectOutput("OnTrigger", "MakeLeverUsable", ent)
+                    SendToConsole("bind h +covermouth")
 
-                    ent = Entities:FindByName(nil, "hint_crouch_delay")
-                    ent:RedirectOutput("OnTrigger", "CrouchThroughZooHole", ent)
+                    if not loading_save_file then
+                        ent = Entities:FindByName(nil, "11578_2547_relay_koolaid_setup")
+                        ent:RedirectOutput("OnTrigger", "FixJeffBatteryPuzzle", ent)
 
-                    SendToConsole("ent_fire port_health_trap Disable")
-                    SendToConsole("ent_fire health_trap_locked_door Unlock")
-                    SendToConsole("ent_fire 589_toner_port_5 Disable")
-                    SendToConsole("@prop_phys_portaloo_door DisablePickup")
+                        -- Hand for covering mouth animation
+                        SendToConsole("bind h +covermouth")
+                        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                        local viewmodel_pos = viewmodel:GetAbsOrigin()
+                        local viewmodel_ang = viewmodel:GetAngles()
+                        ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x - 24 .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z - 4, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
+                        DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
+                        DoEntFire("lefthand", "disable", "", 0, nil, nil)
+                    end
+                else
+                    SendToConsole("bind h \"\"")
+
+                    if GetMapName() == "a4_c17_zoo" then
+                        ent = Entities:FindByName(nil, "relay_power_receive")
+                        ent:RedirectOutput("OnTrigger", "MakeLeverUsable", ent)
+
+                        ent = Entities:FindByName(nil, "hint_crouch_delay")
+                        ent:RedirectOutput("OnTrigger", "CrouchThroughZooHole", ent)
+
+                        SendToConsole("ent_fire port_health_trap Disable")
+                        SendToConsole("ent_fire health_trap_locked_door Unlock")
+                        SendToConsole("ent_fire 589_toner_port_5 Disable")
+                        SendToConsole("@prop_phys_portaloo_door DisablePickup")
+                    end
                 end
             end
         end
@@ -438,12 +444,14 @@ function ClimbBalconyLadder(a, b)
 end
 
 function ClimbCellarLadder(a, b)
+    ClimbLadderSound()
     SendToConsole("ent_fire cellar_ladder setcompletionvalue 1")
     SendToConsole("fadein 0.2")
     SendToConsole("setpos_exact 1004 1775 546")
 end
 
 function ClimbLarryLadder(a, b)
+    ClimbLadderSound()
     SendToConsole("ent_fire larry_ladder setcompletionvalue 1")
     SendToConsole("fadein 0.2")
     SendToConsole("ent_fire relay_debug_intro_trench trigger")
@@ -488,4 +496,23 @@ end
 function CrouchThroughZooHole(a, b)
     SendToConsole("fadein 0.2")
     SendToConsole("setpos 5393 -1960 -125")
+end
+
+function ClimbLadderSound()
+    local sounds = 0
+    local player = Entities:GetLocalPlayer()
+    player:SetThink(function()
+        if sounds < 3 then
+            SendToConsole("snd_sos_start_soundevent Step_Player.Ladder_Single")
+            sounds = sounds + 1
+            return 0.15
+        end
+    end, "LadderSound", 0)
+end
+
+function FixJeffBatteryPuzzle()
+    SendToConsole("ent_fire @barnacle_battery kill")
+    SendToConsole("ent_create item_hlvr_prop_battery { origin \"959 1970 427\" }")
+    SendToConsole("ent_fire @crank_battery kill")
+    SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
 end

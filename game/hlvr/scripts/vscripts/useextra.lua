@@ -3,7 +3,7 @@ local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
 local player = Entities:GetLocalPlayer()
 
-if name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or class == "prop_animinteractable" or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if name == "plug_console_starter_lever" then
         thisEntity:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0)
     end
@@ -17,15 +17,23 @@ if name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_cont
     local count = 0
     thisEntity:SetThink(function()
         DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
-        count = count + 0.01
+        
+        if map == "a3_distillery" and name == "verticaldoor_wheel" then
+            count = count + 0.001
+        else
+            count = count + 0.01
+        end
         if count >= 1 then
             thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
+            if name == "barricade_door_hook" then
+                SendToConsole("ent_fire barricade_door setreturntocompletionstyle 0")
+            end
             return nil
         else
             return 0
         end
     end, "AnimateCompletionValue", 0)
-elseif name == "589_panel_switch" then
+elseif name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" then
     thisEntity:Attribute_SetIntValue("used", 1)
 
     local count = 0
@@ -386,6 +394,10 @@ if map == "a3_hotel_lobby_basement" then
 end
 
 if GetMapName() == "a3_distillery" then
+    if name == "11578_2635_380_button_center" then
+        SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher onin")
+    end
+
     if name == "intro_rollup_door" then
         SendToConsole("ent_fire_output intro_rollup_door oncompletiona_forward")
         SendToConsole("ent_fire door_xen_crust break")
@@ -394,17 +406,8 @@ if GetMapName() == "a3_distillery" then
         SendToConsole("ent_fire relay_door_xen_crust_e trigger")
     end
 
-    if name == "5628_2901_barricade_door" or name == "5628_2901_barricade_door_hook" then
-        SendToConsole("ent_fire 5628_2901_barricade_door_hook setcompletionvalue 0")
-        SendToConsole("ent_fire 5628_2901_barricade_door setcompletionvalue 0")
-    end
-
     if name == "barricade_door" then
         SendToConsole("ent_fire barricade_door setreturntocompletionamount 1")
-    end
-
-    if name == "barricade_door_hook" then
-        SendToConsole("ent_fire_output barricade_door_hook oncompletiona_forward")
     end
 
     if name == "tc_door_control" then
@@ -426,12 +429,13 @@ if GetMapName() == "a3_distillery" then
     end
 
     if name == "11479_2386_button_pusher_prop" then
-        SendToConsole("ent_fire debug_relay_elevator_ride trigger")
+        SendToConsole("ent_fire_output 11479_2386_button_center_pusher onin")
     end
 
     if name == "freezer_toner_outlet_1" then
         SendToConsole("ent_fire_output freezer_toner_path_3 onpoweron")
         SendToConsole("ent_fire_output freezer_toner_path_6 onpoweron")
+        SendToConsole("ent_remove debug_teleport_player_freezer_door")
         SendToConsole("ent_fire relay_debug_freezer_breakout trigger")
     end
 
