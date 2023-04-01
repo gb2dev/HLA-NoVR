@@ -153,16 +153,20 @@ end
 player_spawn_ev = ListenToGameEvent('player_activate', function(info)
 	if not IsServer() then return end
 
-    local ent
+    local loading_save_file = false
+    local ent = Entities:FindByClassname(ent, "player_speedmod")
+    if ent then
+        loading_save_file = true
+    else
+        SpawnEntityFromTableSynchronous("player_speedmod", nil)
+    end
 
     if GetMapName() == "startup" then
         SendToConsole("sv_cheats 1")
         SendToConsole("hidehud 4")
         SendToConsole("mouse_disableinput 1")
         SendToConsole("bind MOUSE1 +use")
-        ent = Entities:FindByClassname(ent, "player_speedmod")
-        if not ent then
-            SpawnEntityFromTableSynchronous("player_speedmod", nil)
+        if not loading_save_file then
             SendToConsole("ent_fire player_speedmod ModifySpeed 0")
         else
             GoToMainMenu()
@@ -212,17 +216,9 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
         DoEntFire("lefthand", "disable", "", 0, nil, nil)
 
-        ent = Entities:FindByClassname(nil, "item_healthcharger_reservoir")
-        while ent do
-            SpawnEntityFromTableSynchronous("func_healthcharger", {["targetname"]="healthcharger_" .. ent:entindex()})
-            DoEntFireByInstanceHandle(ent, "SetParent", "healthcharger_" .. ent:entindex(), 0, nil, nil)
-            ent = Entities:FindByClassname(ent, "item_healthcharger_reservoir")
-        end
 
         if GetMapName() == "a1_intro_world" then
-            ent = Entities:FindByClassname(ent, "player_speedmod")
-            if not ent then
-                SpawnEntityFromTableSynchronous("player_speedmod", nil)
+            if not loading_save_file then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 SendToConsole("mouse_disableinput 1")
                 SendToConsole("give weapon_bugbait")

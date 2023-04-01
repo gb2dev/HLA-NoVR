@@ -28,10 +28,6 @@ if name ~= "@pod_shell" and name ~= "589_panel_switch" and (class == "item_healt
 elseif name == "589_panel_switch" then
     thisEntity:Attribute_SetIntValue("used", 1)
 
-    if class == "item_health_station_charger" or class == "item_hlvr_combine_console_rack" then
-        DoEntFireByInstanceHandle(thisEntity, "EnableOnlyRunForward", "", 0, nil, nil)
-    end
-
     local count = 0
     thisEntity:SetThink(function()
         DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. 1 - count, 0, nil, nil)
@@ -305,8 +301,30 @@ if class == "item_hlvr_combine_console_tank" then
     end
 end
 
-if class == "item_healthcharger_reservoir" then
-    StartSoundEventFromPosition("HealthStation.Start", player:EyePosition())
+if thisEntity:GetModelName() == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
+    if tostring(thisEntity:GetMaterialGroupMask()) == "5" then
+        if player:GetHealth() == player:GetMaxHealth() then
+            StartSoundEvent("HealthStation.Deny", player)
+        else
+            StartSoundEvent("HealthStation.Start", player)
+            SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+            thisEntity:SetThink(function()
+                StartSoundEvent("HealthStation.Loop", player)
+            end, "Loop", .7)
+            thisEntity:SetThink(function()
+                if player:GetHealth() < player:GetMaxHealth() then
+                    player:SetHealth(player:GetHealth() + 1)
+                    return 0.1
+                else
+                    StopSoundEvent("HealthStation.Loop", player)
+                    StartSoundEvent("HealthStation.Complete", player)
+                    thisEntity:StopThink("Loop")
+                    SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+                end
+                
+            end, "Heal", 0)
+        end
+    end
 end
 
 if name == "room1_lights_circuitbreaker_switch" then
@@ -408,7 +426,6 @@ local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["it
 if class == "item_hlvr_crafting_currency_small" then
     if name == "currency_booby_trap" then
         thisEntity:FireOutput("OnPlayerPickup", nil, nil, nil, 0)
-        --SendToConsole("ent_fire_output currency_booby_trap OnPlayerPickup")
     end
 
     FireGameEvent("item_pickup", item_pickup_params)
