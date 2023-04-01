@@ -348,6 +348,11 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                     if ent then
                         ent:Kill()
                     end
+                elseif GetMapName() == "a3_distillery" then
+                    SendToConsole("ent_fire @barnacle_battery kill")
+                    SendToConsole("ent_create item_hlvr_prop_battery { origin \"959 1970 427\" }")
+                    SendToConsole("ent_fire @crank_battery kill")
+                    SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
                 elseif GetMapName() == "a4_c17_zoo" then
                     ent = Entities:FindByName(nil, "relay_power_receive")
                     ent:RedirectOutput("OnTrigger", "MakeLeverUsable", ent)
