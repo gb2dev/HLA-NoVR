@@ -293,11 +293,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             SendToConsole("r_drawviewmodel 1")
 
             if GetMapName() == "a2_quarantine_entrance" then
-                SendToConsole("ent_fire puzzle_crate kill")
-                ent = SpawnEntityFromTableSynchronous("prop_physics", {["collisiongroupoverride"]=0, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2080 2775 247"})
-                EntFireByHandle(nil, ent, "skin", "4")
-                EntFireByHandle(nil, ent, "color", "135 173 159")
-                EntFireByHandle(nil, ent, "setmass", "30")
+                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
             elseif GetMapName() == "a2_pistol" then
                 SendToConsole("ent_fire *_rebar EnablePickup")
             elseif GetMapName() == "a2_headcrabs_tunnel" then
