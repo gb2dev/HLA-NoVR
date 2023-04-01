@@ -86,6 +86,11 @@ if name == "589_test_outlet" then
     SendToConsole("ent_fire 589_vertical_door Open")
 end
 
+if name == "589_panel_switch" then
+    SendToConsole("ent_fire 589_6941_cfence_relay_disable trigger")
+    SendToConsole("ent_fire 589_brush_combine_fence_01 toggle")
+end
+
 if class == "item_combine_tank_locker" then
     DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "combine_locker_standing", 0, nil, nil)
 
