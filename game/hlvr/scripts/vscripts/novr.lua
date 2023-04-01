@@ -143,6 +143,24 @@ Convars:RegisterCommand("useextra", function()
                 SendToConsole("setpos_exact -1392 -2471 53")
             end
         end
+
+        if GetMapName() == "a3_distillery" then
+            if vlua.find(Entities:FindAllInSphere(Vector(20,-518,211), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact 20 -471 452")
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(515,1595,578), 20), player) then
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact 577 1597 668")
+            end
+
+            ent = Entities:FindByName(nil, "cellar_ladder")
+            ent:RedirectOutput("OnUser4", "ClimbCellarLadder", ent)
+
+            ent = Entities:FindByName(nil, "larry_ladder")
+            ent:RedirectOutput("OnUser4", "ClimbLarryLadder", ent)
+        end
     end
 end, "", 0)
 
@@ -412,6 +430,18 @@ end
 function ClimbBalconyLadder(a, b)
     SendToConsole("fadein 0.2")
     SendToConsole("setpos_exact -1296 576 80")
+end
+
+function ClimbCellarLadder(a, b)
+    SendToConsole("ent_fire cellar_ladder setcompletionvalue 1")
+    SendToConsole("fadein 0.2")
+    SendToConsole("setpos_exact 1004 1775 546")
+end
+
+function ClimbLarryLadder(a, b)
+    SendToConsole("ent_fire larry_ladder setcompletionvalue 1")
+    SendToConsole("fadein 0.2")
+    SendToConsole("ent_fire relay_debug_intro_trench trigger")
 end
 
 function OpenRussellWindow(a, b)
