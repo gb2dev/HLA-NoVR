@@ -369,6 +369,8 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                         SendToConsole("ent_fire health_trap_locked_door Unlock")
                         SendToConsole("ent_fire 589_toner_port_5 Disable")
                         SendToConsole("@prop_phys_portaloo_door DisablePickup")
+                    elseif GetMapName() == "a4_c17_tanker_yard" then
+                        SendToConsole("ent_fire elev_hurt_player_* kill")
                     end
                 end
             end

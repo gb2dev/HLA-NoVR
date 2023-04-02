@@ -67,7 +67,7 @@ if name == "1489_4074_port_demux" then
     SendToConsole("ent_fire_output 1489_4074_path_demux_3_6 onpoweron")
 end
 
-if name == "bridge_crank" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if name == "bridge_crank" then
     SendToConsole("ent_fire driven_bridge SetAnimation combine_barrel_arm_bridge_anim")
     SendToConsole("ent_fire drawbridge_brush Enable")
     StartSoundEventFromPosition("CombineVortPod.Lower", thisEntity:GetOrigin())
