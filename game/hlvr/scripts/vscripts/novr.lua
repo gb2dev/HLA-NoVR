@@ -362,8 +362,8 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                         ent = Entities:FindByName(nil, "relay_power_receive")
                         ent:RedirectOutput("OnTrigger", "MakeLeverUsable", ent)
 
-                        ent = Entities:FindByName(nil, "hint_crouch_delay")
-                        ent:RedirectOutput("OnTrigger", "CrouchThroughZooHole", ent)
+                        ent = Entities:FindByClassnameNearest("trigger_multiple", Vector(5380, -1848, -117), 10)
+                        ent:RedirectOutput("OnStartTouch", "CrouchThroughZooHole", ent)
 
                         SendToConsole("ent_fire port_health_trap Disable")
                         SendToConsole("ent_fire health_trap_locked_door Unlock")
