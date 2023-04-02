@@ -84,6 +84,7 @@ end
 
 if name == "589_test_outlet" then
     SendToConsole("ent_fire 589_vertical_door Open")
+    SendToConsole("ent_fire_output 589_path_11 OnPowerOn")
 end
 
 if class == "item_combine_tank_locker" then
