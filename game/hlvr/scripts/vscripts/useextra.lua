@@ -3,7 +3,7 @@ local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
 local player = Entities:GetLocalPlayer()
 
-if name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if name == "plug_console_starter_lever" then
         thisEntity:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0)
     end
@@ -310,7 +310,7 @@ if class == "item_hlvr_combine_console_tank" then
     end
 end
 
-if thisEntity:GetModelName() == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
+if class == "prop_dynamic" and thisEntity:GetModelName() == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
     if tostring(thisEntity:GetMaterialGroupMask()) == "5" then
         if player:GetHealth() == player:GetMaxHealth() then
             StartSoundEvent("HealthStation.Deny", player)
