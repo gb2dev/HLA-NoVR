@@ -56,6 +56,24 @@ pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
 end, nil)
 
+Convars:RegisterCommand("fixedcrouchdown", function()
+    SendToConsole("hl2_normspeed 130")
+    SendToConsole("+duck")
+    SendToConsole("+iv_sprint")
+    Entities:GetLocalPlayer():SetThink(function()
+        SendToConsole("-iv_sprint")
+    end, "", 0.02)
+end, "", 0)
+
+Convars:RegisterCommand("fixedstandup", function()
+    SendToConsole("hl2_normspeed 80")
+    SendToConsole("-duck")
+    SendToConsole("+walk")
+    Entities:GetLocalPlayer():SetThink(function()
+        SendToConsole("-walk")
+    end, "StandUp", 0.1)
+end, "", 0)
+
 Convars:RegisterCommand("useextra", function()
     local player = Entities:GetLocalPlayer()
 
@@ -198,15 +216,15 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("bind e \"+use;useextra\"")
         SendToConsole("bind v noclip")
         SendToConsole("bind ctrl +crouch")
-        SendToConsole("bind F5 \"save quick\"")
+        SendToConsole("alias -crouch fixedstandup")
+        SendToConsole("alias +crouch fixedcrouchdown")
+        SendToConsole("bind F5 \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
         SendToConsole("bind F9 \"load quick\"")
         SendToConsole("bind M \"map startup\"")
         SendToConsole("bind MOUSE2 \"\"")
-        SendToConsole("cl_forwardspeed 60;cl_backspeed 60;cl_sidespeed 60")
-        SendToConsole("alias -crouch \"-duck;cl_forwardspeed 60;cl_backspeed 60;cl_sidespeed 60\"")
-        SendToConsole("alias +crouch \"+duck;cl_forwardspeed 80;cl_backspeed 80;cl_sidespeed 80\"")
-        SendToConsole("hl2_sprintspeed 160")
-        SendToConsole("hl2_normspeed 160")
+        SendToConsole("hl2_sprintspeed 130")
+        SendToConsole("hl2_walkspeed 80")
+        SendToConsole("hl2_normspeed 80")
         SendToConsole("r_drawviewmodel 0")
         SendToConsole("fov_desired 90")
         SendToConsole("sv_infinite_aux_power 1")
@@ -225,6 +243,11 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("sv_gravity 500")
         SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand disable;viewmodel_offset_y 0\"")
         SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand enable;viewmodel_offset_y -20\"")
+        SendToConsole("mouse_disableinput 0")
+        ent = Entities:FindByName(nil, "text_quicksave")
+        if not ent then
+            SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
+        end
 
         if GetMapName() == "a1_intro_world" then
             if not loading_save_file then
@@ -261,8 +284,24 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             ent = Entities:FindByName(nil, "979_518_button_pusher_prop")
             ent:RedirectOutput("OnUser4", "OpenCombineElevator", ent)
         elseif GetMapName() == "a1_intro_world_2" then
+            if not loading_save_file then
+                ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER1_TITLE"})
+                DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil )
+                SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
+                SendToConsole("ent_create env_message { targetname text_sprint message SPRINT }")
+            end
+
             SendToConsole("give weapon_bugbait")
             SendToConsole("hidehud 96")
+            SendToConsole("combine_grenade_timer 7")
+
+            if not loading_save_file then
+                ent = Entities:FindByName(nil, "trigger_post_gate")
+                ent:RedirectOutput("OnTrigger", "ShowSprintTutorial", ent)
+            end
+
+            ent = Entities:FindByName(nil, "scavenge_trigger")
+            ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
 
             ent = Entities:FindByName(nil, "hint_crouch_trigger")
             ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
@@ -298,7 +337,12 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             SendToConsole("r_drawviewmodel 1")
 
             if GetMapName() == "a2_quarantine_entrance" then
-                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
+                if not loading_save_file then
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["alpha"]=0, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
+
+                    ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
+                    DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil )
+                end
             elseif GetMapName() == "a2_pistol" then
                 SendToConsole("ent_fire *_rebar EnablePickup")
             elseif GetMapName() == "a2_headcrabs_tunnel" then
@@ -518,4 +562,14 @@ function FixJeffBatteryPuzzle()
     SendToConsole("ent_create item_hlvr_prop_battery { origin \"959 1970 427\" }")
     SendToConsole("ent_fire @crank_battery kill")
     SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
+end
+
+function ShowSprintTutorial()
+    SendToConsole("ent_fire text_sprint ShowMessage")
+    SendToConsole("play play sounds/ui/beepclear.vsnd")
+end
+
+function ShowCrouchJumpTutorial()
+    SendToConsole("ent_fire text_crouchjump ShowMessage")
+    SendToConsole("play play sounds/ui/beepclear.vsnd")
 end

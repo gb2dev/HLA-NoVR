@@ -205,10 +205,6 @@ if name == "1962_combine_locker" then
     SendToConsole("ent_fire_output 1962_locker_hack_plug OnHackSuccess")
 end
 
-if name == "3_8731_888_combine_locker" then
-    SendToConsole("ent_fire_output 3_8731_888_locker_hack_plug OnHackSuccess")
-end
-
 if name == "2_8127_elev_button_floor_1_call" then
     SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
 end
