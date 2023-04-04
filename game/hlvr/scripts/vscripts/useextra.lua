@@ -7,8 +7,12 @@ if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel
     if name == "plug_console_starter_lever" then
         thisEntity:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0)
     end
-    
-    thisEntity:Attribute_SetIntValue("used", 1)
+
+    if class == "prop_animinteractable" and thisEntity:GetModelName() == "models/props_subway/scenes/desk_lever.vmdl" then
+        thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
+    else
+        thisEntity:Attribute_SetIntValue("used", 1)
+    end
 
     if class == "item_health_station_charger" or class == "item_hlvr_combine_console_rack" then
         DoEntFireByInstanceHandle(thisEntity, "EnableOnlyRunForward", "", 0, nil, nil)
@@ -49,6 +53,10 @@ elseif name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" the
     end, "AnimateCompletionValue", 0)
 end
 
+if name == "falling_cabinet_door" then
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1000,0))
+end
+
 if vlua.find(name, "_locker_door_") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
 elseif vlua.find(name, "_hazmat_crate_lid") then
@@ -57,8 +65,44 @@ elseif vlua.find(name, "electrical_panel_") and vlua.find(name, "_door") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
 end
 
+if vlua.find(name, "_wooden_board") then
+    DoEntFireByInstanceHandle(thisEntity, "Break", "", 0, nil, nil)
+end
+
 if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") then
     DoEntFireByInstanceHandle(thisEntity, "Close", "", 0, nil, nil)
+end
+
+if name == "prop_crowbar" then
+    thisEntity:Kill()
+end
+
+if name == "l_candler" or name == "r_candler" then
+    SendToConsole("ent_fire innervault_energize_event_relay Kill")
+    SendToConsole("ent_fire_output g_release_hand1 OnHandPosed")
+    SendToConsole("ent_fire_output g_release_hand2 OnHandPosed")
+    SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+    SendToConsole("hidehud 4")
+end
+
+if name == "combine_gun_mechanical" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+    local angles = thisEntity:GetAngles()
+    SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical")
+    SendToConsole("ent_fire combine_gun_interact Alpha 0")
+    SendToConsole("ent_fire combine_gun_mechanical SetParent !player")
+    thisEntity:SetAngles(angles.x - 15, angles.y, angles.z)
+    SendToConsole("bind MOUSE1 \"ent_fire relay_shoot_gun trigger\"")
+    SendToConsole("r_drawviewmodel 0")
+    thisEntity:Attribute_SetIntValue("used", 1)
+end
+
+if name == "18918_5316_button_pusher_prop" then
+    SendToConsole("ent_fire_output 18918_5316_button_center_pusher OnIn")
+end
+
+if name == "18918_5275_button_pusher_prop" then
+    SendToConsole("ent_fire_output 18918_5275_button_center_pusher OnIn")
 end
 
 if name == "1489_4074_port_demux" then
@@ -146,6 +190,14 @@ end
 
 if name == "2_11128_cshield_station_1" then
     SendToConsole("ent_fire_output 2_11128_cshield_station_hack_plug OnHackSuccess")
+end
+
+if name == "18915_1985_combine_locker" then
+    SendToConsole("ent_fire_output 18915_1985_locker_hack_plug OnHackSuccess")
+end
+
+if name == "2679_3633_combine_locker" then
+    SendToConsole("ent_fire_output 2679_3633_locker_hack_plug OnHackSuccess")
 end
 
 if name == "2_7371_combine_locker" then
@@ -338,6 +390,13 @@ end
 
 if name == "room1_lights_circuitbreaker_switch" then
     SendToConsole("ent_fire_output controlroom_circuitbreaker_relay ontrigger")
+end
+
+if map == "a4_c17_parking_garage" then
+    if name == "toner_port" then
+        SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
+        SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
+    end
 end
 
 if map == "a2_train_yard" then
