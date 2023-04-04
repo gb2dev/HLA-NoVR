@@ -192,6 +192,10 @@ if name == "2_11128_cshield_station_1" then
     SendToConsole("ent_fire_output 2_11128_cshield_station_hack_plug OnHackSuccess")
 end
 
+if name == "2_8797_combine_locker" then
+    SendToConsole("ent_fire_output 2_8797_locker_hack_plug OnHackSuccess")
+end
+
 if name == "18915_1985_combine_locker" then
     SendToConsole("ent_fire_output 18915_1985_locker_hack_plug OnHackSuccess")
 end
@@ -255,6 +259,10 @@ end
 
 if name == "1962_combine_locker" then
     SendToConsole("ent_fire_output 1962_locker_hack_plug OnHackSuccess")
+end
+
+if name == "3_8731_888_combine_locker" then
+    SendToConsole("ent_fire_output 3_8731_888_locker_hack_plug OnHackSuccess")
 end
 
 if name == "2_8127_elev_button_floor_1_call" then
@@ -363,6 +371,8 @@ if class == "item_hlvr_combine_console_tank" then
 end
 
 if class == "prop_dynamic" and thisEntity:GetModelName() == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
+    local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
+    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     if tostring(thisEntity:GetMaterialGroupMask()) == "5" then
         if player:GetHealth() == player:GetMaxHealth() then
             StartSoundEvent("HealthStation.Deny", player)

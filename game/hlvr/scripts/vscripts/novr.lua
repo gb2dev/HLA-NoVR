@@ -352,7 +352,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         elseif GetMapName() == "a1_intro_world_2" then
             if not loading_save_file then
                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER1_TITLE"})
-                DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil )
+                DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                 SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
                 SendToConsole("ent_create env_message { targetname text_sprint message SPRINT }")
             end
@@ -407,7 +407,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["alpha"]=0, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
 
                     ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
-                    DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil )
+                    DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                 end
             elseif GetMapName() == "a2_pistol" then
                 SendToConsole("ent_fire *_rebar EnablePickup")
@@ -496,7 +496,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
 
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER11_TITLE"})
-                            DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil )
+                            DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
                             SendToConsole("ent_create env_message { targetname text_vortenergy message VORTENERGY }")
                         end
