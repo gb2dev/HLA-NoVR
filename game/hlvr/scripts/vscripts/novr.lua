@@ -419,7 +419,9 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                 SendToConsole("bind F inv_flashlight")
                 SendToConsole("give weapon_shotgun")
 
-                if GetMapName() == "a3_hotel_interior_rooftop" then
+                if GetMapName() == "a2_drainage" then
+                    SendToConsole("ent_fire wheel2_socket setscale 4")
+                elseif GetMapName() == "a3_hotel_interior_rooftop" then
                     ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
                     if not ent then
                         SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
@@ -676,6 +678,7 @@ function FixJeffBatteryPuzzle()
     SendToConsole("ent_create item_hlvr_prop_battery { origin \"959 1970 427\" }")
     SendToConsole("ent_fire @crank_battery kill")
     SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
+    SendToConsole("ent_fire 11478_6233_math_count_wheel_installment SetHitMax 1")
 end
 
 function ShowSprintTutorial()
