@@ -2,9 +2,11 @@
 NO VR Script for Half-Life: Alyx
 
 ## Installation
-Copy the ``game`` folder into your main Half-Life: Alyx installation folder (e.g. ``C:\Program Files (x86)\Steam\steamapps\common\Half-Life Alyx``), replacing existing files.
+Copy the ``game`` folder into your main Half-Life: Alyx installation folder (e.g. ``C:\Program Files (x86)\Steam\steamapps\common\Half-Life Alyx``).
 ## Playing
-Simply add ``-novr -vsync`` to the launch options on Steam and start the game.
+Launch the provided shortcut called "Half-Life Alyx NoVR". You can move it anywhere you want.
+
+If you don't have the game from Steam you can change the path to the installation folder in the shortcut's properties.
 ## Controls
 ### Keyboard and Mouse
 Left Click: Select in Main Menu/Throw Held Object/Primary Attack

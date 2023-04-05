@@ -27,11 +27,11 @@
 		//
 		SearchPaths
 		{
-			Game				novr
+			Game				hlanovr
 			Game				hlvr
 			Game				core
-			Mod					hlvr
-			Write				hlvr
+			Mod				hlvr
+			Write				hlanovr
 			AddonRoot			hlvr_addons
 		}
 	}
