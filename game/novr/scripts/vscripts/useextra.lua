@@ -20,17 +20,14 @@ if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel
 
     local count = 0
     thisEntity:SetThink(function()
-        DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
-        
         if map == "a3_distillery" and name == "verticaldoor_wheel" then
             count = count + 0.001
         else
             count = count + 0.01
         end
+        DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
         if count >= 1 then
-            if not (class == "prop_animinteractable" and thisEntity:GetModelName() == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl") then
-                thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
-            end
+            thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
             if name == "barricade_door_hook" then
                 SendToConsole("ent_fire barricade_door setreturntocompletionstyle 0")
             end

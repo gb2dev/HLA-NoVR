@@ -411,7 +411,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
 
             if GetMapName() == "a2_quarantine_entrance" then
                 if not loading_save_file then
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["rendermode"]=9, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
 
                     ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
                     DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
