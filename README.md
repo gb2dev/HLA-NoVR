@@ -1,4 +1,4 @@
-# HLA-NOVR-Script
+# HLA-NoVR
 NO VR Script for Half-Life: Alyx
 
 ## Installation
