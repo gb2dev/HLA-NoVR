@@ -278,11 +278,8 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("bind space jumpfixed")
         SendToConsole("bind e \"+use;useextra\"")
         SendToConsole("bind v noclip")
-        SendToConsole("bind ctrl +crouch")
+        SendToConsole("bind ctrl +duck")
         SendToConsole("hl2_sprintspeed 140")
-        SendToConsole("cl_forwardspeed 46;cl_backspeed 46;cl_sidespeed 46")
-        SendToConsole("alias -crouch \"-duck;cl_forwardspeed 46;cl_backspeed 46;cl_sidespeed 46\"")
-        SendToConsole("alias +crouch \"+duck;cl_forwardspeed 80;cl_backspeed 80;cl_sidespeed 80\"")
         SendToConsole("bind F5 \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
         SendToConsole("bind F9 \"load quick\"")
         SendToConsole("bind M \"map startup\"")
@@ -311,7 +308,14 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         if ent then
             local angles = ent:GetAngles()
             SendToConsole("setang " .. angles.x .. " " .. angles.y .. " 0")
-            print("setang" .. angles.x .. " " .. angles.y .. " 0")
+            ent:SetThink(function()
+                if Entities:GetLocalPlayer():GetBoundingMaxs().z == 36 then
+                    SendToConsole("cl_forwardspeed 80;cl_backspeed 80;cl_sidespeed 80")
+                else
+                    SendToConsole("cl_forwardspeed 46;cl_backspeed 46;cl_sidespeed 46")
+                end
+                return 0
+            end, "FixCrouchSpeed", 0)
         end
         ent = Entities:FindByName(nil, "text_quicksave")
         if not ent then
@@ -407,7 +411,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
 
             if GetMapName() == "a2_quarantine_entrance" then
                 if not loading_save_file then
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["alpha"]=0, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["rendermode"]=9, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
 
                     ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
                     DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
@@ -777,7 +781,7 @@ function StartCredits(a, b)
     SendToConsole("mouse_disableinput 1")
 end
 
-function StartCredits(a, b)
+function EndCredits(a, b)
     SendToConsole("mouse_disableinput 0")
 end
 

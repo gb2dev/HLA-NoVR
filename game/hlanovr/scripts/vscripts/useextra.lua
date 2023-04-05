@@ -28,7 +28,9 @@ if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel
             count = count + 0.01
         end
         if count >= 1 then
-            thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
+            if not (class == "prop_animinteractable" and thisEntity:GetModelName() == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl") then
+                thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
+            end
             if name == "barricade_door_hook" then
                 SendToConsole("ent_fire barricade_door setreturntocompletionstyle 0")
             end
@@ -51,6 +53,13 @@ elseif name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" the
             return 0
         end
     end, "AnimateCompletionValue", 0)
+end
+
+if class == "prop_ragdoll" then
+    local ent = thisEntity:GetChildren()[1]
+    if ent then
+        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, player, nil)
+    end
 end
 
 if name == "falling_cabinet_door" then
@@ -438,6 +447,7 @@ end
 
 if map == "a2_quarantine_entrance" then
     if name == "toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        thisEntity:Attribute_SetIntValue("used", 1)
         SendToConsole("ent_fire_output toner_path_5 OnPowerOn")
     end
 
@@ -560,7 +570,8 @@ if name == "pallet_lever" then
     SendToConsole("ent_fire_output pallet_logic_extend ontrigger")
 end
 
-if class == "baseanimating" and vlua.find(name, "Console") then
+if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
     SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
     SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
