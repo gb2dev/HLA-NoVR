@@ -6,6 +6,8 @@ Copy the ``game`` folder into your main Half-Life: Alyx installation folder (e.g
 ## Playing
 Launch the provided shortcut called "Half-Life Alyx NoVR". You can move it anywhere you want.
 
+Steam Deck/Linux users need to enable Proton for both Half-Life: Alyx and the mod in order for the game to work (``game\bin\win64\novr.exe``).
+
 If you don't have the game from Steam you can change the path to the installation folder in the shortcut's properties.
 ## Controls
 ### Keyboard and Mouse
