@@ -415,6 +415,11 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
             elseif GetMapName() == "a2_pistol" then
                 SendToConsole("ent_fire *_rebar EnablePickup")
             elseif GetMapName() == "a2_headcrabs_tunnel" then
+                if not loading_save_file then
+                    ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER3_TITLE"})
+                    DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                end
+
                 ent = Entities:GetLocalPlayer()
                 if ent:Attribute_GetIntValue("has_flashlight", 0) == 1 then
                     SendToConsole("bind F inv_flashlight")
@@ -430,6 +435,16 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                     if not ent then
                         SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
                     end
+                elseif GetMapName() == "a3_station_street" then
+                    if not loading_save_file then
+                        ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER4_TITLE"})
+                        DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                    end
+                elseif GetMapName() == "a3_hotel_lobby_basement" then
+                    if not loading_save_file then
+                        ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER5_TITLE"})
+                        DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                    end
                 elseif GetMapName() == "a3_hotel_street" then
                     SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
                     ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(775, 1677, 248), 10)
@@ -442,6 +457,12 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                     end
                 elseif GetMapName() == "a3_c17_processing_plant" then
                     SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
+
+                    if not loading_save_file then
+                        ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER6_TITLE"})
+                        DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                    end
+
                     ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-896, -3768, 348), 10)
                     if ent then
                         ent:Kill()
@@ -458,6 +479,11 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                     SendToConsole("bind h +covermouth")
 
                     if not loading_save_file then
+                        if not loading_save_file then
+                            ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
+                            DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                        end
+
                         ent = Entities:FindByName(nil, "11578_2547_relay_koolaid_setup")
                         ent:RedirectOutput("OnTrigger", "FixJeffBatteryPuzzle", ent)
 
@@ -474,6 +500,11 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                     SendToConsole("bind h \"\"")
 
                     if GetMapName() == "a4_c17_zoo" then
+                        if not loading_save_file then
+                            ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER8_TITLE"})
+                            DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                        end
+
                         ent = Entities:FindByName(nil, "relay_power_receive")
                         ent:RedirectOutput("OnTrigger", "MakeLeverUsable", ent)
 
@@ -486,6 +517,16 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
                         SendToConsole("@prop_phys_portaloo_door DisablePickup")
                     elseif GetMapName() == "a4_c17_tanker_yard" then
                         SendToConsole("ent_fire elev_hurt_player_* Kill")
+
+                        if not loading_save_file then
+                            ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER9_TITLE"})
+                            DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                        end
+                    elseif GetMapName() == "a4_c17_water_tower" then
+                        if not loading_save_file then
+                            ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER10_TITLE"})
+                            DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                        end
                     elseif GetMapName() == "a4_c17_parking_garage" then
                         SendToConsole("ent_fire falling_cabinet_door DisablePickup")
 
