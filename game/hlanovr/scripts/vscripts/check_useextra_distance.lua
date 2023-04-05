@@ -18,11 +18,14 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
         thisEntity:ApplyAbsVelocityImpulse(Vector(direction.x * 2, direction.y * 2, Clamp(direction.z * 3.8, -400, 400)))
         StartSoundEventFromPosition("Grabbity.HoverPing", startVector)
         StartSoundEventFromPosition("Grabbity.Grab", startVector)
+        SendToConsole("bind e \"\"")
         thisEntity:SetThink(function()
             local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 100)
             if vlua.find(ents, thisEntity) then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, nil)
+                DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, nil)
             end
-        end, nil, 0.3)
+            SendToConsole("bind e \"+use;useextra\"")
+        end, nil, 0.35)
     end
 end
