@@ -271,6 +271,7 @@ player_spawn_ev = ListenToGameEvent('player_activate', function(info)
         SendToConsole("bind MOUSE1 +use")
         if not loading_save_file then
             SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+            SendToConsole("setpos 0 -6154 6.473839")
         else
             GoToMainMenu()
         end
