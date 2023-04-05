@@ -53,6 +53,9 @@ end
 pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
     local ent = EntIndexToHScript(info.entindex)
     ent:Attribute_SetIntValue("picked_up", 1)
+    ent:SetThink(function()
+        ent:Attribute_SetIntValue("picked_up", 0)
+    end, "", 0.3)
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
 end, nil)
 
