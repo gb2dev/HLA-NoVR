@@ -34,3 +34,6 @@ F9: Quick Load
 M: Main Menu
 
 P: Pause
+
+## Official Discord Server
+https://discord.gg/AyfBeuZXsR
