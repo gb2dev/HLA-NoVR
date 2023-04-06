@@ -580,14 +580,28 @@ end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
 
-if class == "item_hlvr_crafting_currency_small" then
+if vlua.find(class, "item_hlvr_crafting_currency_") then
     if name == "currency_booby_trap" then
         thisEntity:FireOutput("OnPlayerPickup", nil, nil, nil, 0)
     end
 
     FireGameEvent("item_pickup", item_pickup_params)
-    SendToConsole("hlvr_addresources 0 0 0 1")
+    if vlua.find(class, "large") then
+        SendToConsole("hlvr_addresources 0 0 0 5")
+    else
+        SendToConsole("hlvr_addresources 0 0 0 1")
+    end
     StartSoundEventFromPosition("Inventory.BackpackGrabItemResin", player:EyePosition())
+    
+    -- Show resin count
+    player:SetThink(function()
+        local t = {}
+        player:GatherCriteria(t)
+        local ent = Entities:FindByName(nil, "text_resin")
+        DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+    end, "", 0)
+
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_energygun" then
     FireGameEvent("item_pickup", item_pickup_params)
