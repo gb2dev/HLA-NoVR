@@ -693,7 +693,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function RedirectPistol(a, b)
         ent = Entities:FindByName(nil, "weapon_pistol")
-        ent:RedirectOutput("OnUser4", "EquipPistol", ent)
+        ent:RedirectOutput("OnPlayerPickup", "EquipPistol", ent)
     end
 
     function GivePistol(a, b)
