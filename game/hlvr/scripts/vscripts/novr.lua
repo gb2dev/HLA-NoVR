@@ -245,7 +245,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent:RedirectOutput("OnUser4", "ClimbCellarLadder", ent)
 
                 ent = Entities:FindByName(nil, "larry_ladder")
-                ent:RedirectOutput("OnUser4", "ClimbLarryLadder", ent)
+                if ent then
+                    ent:RedirectOutput("OnUser4", "ClimbLarryLadder", ent)
+                end
             end
         end
     end, "", 0)
@@ -322,11 +324,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                     return 0
                 end, "FixCrouchSpeed", 0)
             end
-            ent = Entities:FindByName(nil, "text_quicksave")
-            if not ent then
-                SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
-                SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 3 x 0.02 y -0.11 }")
-            end
+
+            SendToConsole("ent_remove text_quicksave")
+            SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
+
+            SendToConsole("ent_remove text_resin")
+            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 3 x 0.02 y -0.11 }")
 
             if GetMapName() == "a1_intro_world" then
                 if not loading_save_file then
@@ -499,7 +502,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:RedirectOutput("OnTrigger", "FixJeffBatteryPuzzle", ent)
 
                             -- Hand for covering mouth animation
-                            SendToConsole("bind h +covermouth")
                             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                             local viewmodel_pos = viewmodel:GetAbsOrigin()
                             local viewmodel_ang = viewmodel:GetAngles()

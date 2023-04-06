@@ -4,10 +4,6 @@ local name = thisEntity:GetName()
 local player = Entities:GetLocalPlayer()
 
 if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    if name == "plug_console_starter_lever" then
-        thisEntity:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0)
-    end
-
     if class == "prop_animinteractable" and thisEntity:GetModelName() == "models/props_subway/scenes/desk_lever.vmdl" then
         thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
     else
@@ -19,13 +15,22 @@ if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel
     end
 
     local count = 0
+    if name == "" then
+        thisEntity:SetEntityName("" .. thisEntity:GetEntityIndex())
+    end
     thisEntity:SetThink(function()
+        DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
+        
         if map == "a3_distillery" and name == "verticaldoor_wheel" then
             count = count + 0.001
         else
             count = count + 0.01
         end
-        DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
+
+        if thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
+            SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count)
+        end
+
         if count >= 1 then
             thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
             if name == "barricade_door_hook" then
@@ -333,16 +338,6 @@ if name == "5325_4704_toner_port_train_gate" then
     SendToConsole("ent_fire_output 5325_4704_train_gate_path_22_to_end OnPowerOn")
 end
 
-if name == "interactive_wheel" then
-    SendToConsole("ent_fire 3338_2787_verticaldoor_movelinear open")
-    return
-end
-
-if name == "interactive_wheel2" then
-    SendToConsole("ent_fire 2678_4876_verticaldoor_movelinear open")
-    return
-end
-
 if name == "12712_shotgun_wheel" then
     SendToConsole("ent_fire !picker SetCompletionValue 10")
     return
@@ -352,11 +347,6 @@ if name == "bell" then
     DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "chain_pull", 0, nil, nil)
     DoEntFireByInstanceHandle(thisEntity, "SetPlaybackRate", "8", 0, nil, nil)
     SendToConsole("ent_fire_output bell OnCompletionA_Forward")
-    return
-end
-
-if name == "4910_135_interactive_wheel" then
-    SendToConsole("ent_fire 4910_139_verticaldoor_movelinear Open")
     return
 end
 
