@@ -56,11 +56,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
         local ent = EntIndexToHScript(info.entindex)
-        print(ent)
-        --ent:Attribute_SetIntValue("picked_up", 1)
-        --ent:SetThink(function()
-        --    ent:Attribute_SetIntValue("picked_up", 0)
-        --end, "", 0.35)
+        ent:Attribute_SetIntValue("picked_up", 1)
+        ent:SetThink(function()
+            ent:Attribute_SetIntValue("picked_up", 0)
+        end, "", 0.35)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 
@@ -414,6 +413,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("hidehud 64")
                 SendToConsole("give weapon_pistol")
                 SendToConsole("r_drawviewmodel 1")
+                Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 
                 if GetMapName() == "a2_quarantine_entrance" then
                     if not loading_save_file then
@@ -688,6 +688,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function EquipGravityGloves(a, b)
         SendToConsole("ent_fire relay_give_gravity_gloves trigger")
         SendToConsole("hidehud 1")
+        Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
     end
 
     function RedirectPistol(a, b)
