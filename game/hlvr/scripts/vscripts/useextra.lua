@@ -165,16 +165,50 @@ if class == "item_hlvr_weapon_rapidfire" then
     thisEntity:Kill()
 end
 
-if class == "prop_dynamic" and thisEntity:GetModelName() == "models/props/alyx_hideout/button_plate.vmdl" then
-    SendToConsole("ent_fire 2_8127_elev_button_test_floor_" .. player:Attribute_GetIntValue("next_elevator_floor", 2) .. " Trigger")
+if class == "prop_dynamic" then
+    if thisEntity:GetModelName() == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
+        local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
+        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+        if tostring(thisEntity:GetMaterialGroupMask()) == "5" then
+            if player:GetHealth() == player:GetMaxHealth() then
+                StartSoundEvent("HealthStation.Deny", player)
+            else
+                StartSoundEvent("HealthStation.Start", player)
+                SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+                thisEntity:SetThink(function()
+                    StartSoundEvent("HealthStation.Loop", player)
+                end, "Loop", .7)
+                thisEntity:SetThink(function()
+                    if player:GetHealth() < player:GetMaxHealth() then
+                        player:SetHealth(player:GetHealth() + 1)
+                        return 0.1
+                    else
+                        StopSoundEvent("HealthStation.Loop", player)
+                        StartSoundEvent("HealthStation.Complete", player)
+                        thisEntity:StopThink("Loop")
+                        SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+                    end
+                    
+                end, "Heal", 0)
+            end
+        end
+    elseif thisEntity:GetModelName() == "models/props/alyx_hideout/button_plate.vmdl" then
+        SendToConsole("ent_fire 2_8127_elev_button_test_floor_" .. player:Attribute_GetIntValue("next_elevator_floor", 2) .. " Trigger")
 
-    if player:Attribute_GetIntValue("next_elevator_floor", 2) == 2 then
-        player:Attribute_SetIntValue("next_elevator_floor", 1)
-    else
-        player:Attribute_SetIntValue("next_elevator_floor", 2)
+        if player:Attribute_GetIntValue("next_elevator_floor", 2) == 2 then
+            player:Attribute_SetIntValue("next_elevator_floor", 1)
+        else
+            player:Attribute_SetIntValue("next_elevator_floor", 2)
+        end
+    elseif thisEntity:GetModelName() == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or thisEntity:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+        local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
+        print(ent)
+        if ent then
+            ent:FireOutput("OnHackSuccess", nil, nil, nil, 0)
+            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 0)
+        end
     end
 end
-
 
 if map == "a3_hotel_interior_rooftop" and name == "window_sliding1" then
     SendToConsole("fadein 0.2")
@@ -203,77 +237,8 @@ if name == "2_11128_cshield_station_1" then
     SendToConsole("ent_fire_output 2_11128_cshield_station_hack_plug OnHackSuccess")
 end
 
-if name == "2_8797_combine_locker" then
-    SendToConsole("ent_fire_output 2_8797_locker_hack_plug OnHackSuccess")
-end
-
-if name == "18915_1985_combine_locker" then
-    SendToConsole("ent_fire_output 18915_1985_locker_hack_plug OnHackSuccess")
-end
-
-if name == "2679_3633_combine_locker" then
-    SendToConsole("ent_fire_output 2679_3633_locker_hack_plug OnHackSuccess")
-end
-
-if name == "2_7371_combine_locker" then
-    SendToConsole("ent_fire_output 2_7371_locker_hack_plug OnHackSuccess")
-end
-
-if name == "2_7288_combine_locker" then
-    SendToConsole("ent_fire_output 2_7288_locker_hack_plug OnHackSuccess")
-end
-
-if name == "2_8792_combine_locker" then
-    SendToConsole("ent_fire_output 2_8792_locker_hack_plug OnHackSuccess")
-end
-
-if name == "417_591_combine_locker" then
-    SendToConsole("ent_fire_output 417_591_locker_hack_plug OnHackSuccess")
-end
-
-if name == "2_4255_combine_locker" then
-    SendToConsole("ent_fire_output 2_4255_locker_hack_plug OnHackSuccess")
-end
-
-if name == "351_2845_combine_locker" then
-    SendToConsole("ent_fire_output 351_2845_locker_hack_plug OnHackSuccess")
-end
-
-if name == "2_11759_combine_locker" then
-    SendToConsole("ent_fire_output 2_11759_locker_hack_plug OnHackSuccess")
-end
-
-if name == "2_5877_combine_locker" then
-    SendToConsole("ent_fire_output 2_5877_locker_hack_plug OnHackSuccess")
-end
-
-if name == "2_6661_combine_locker" then
-    SendToConsole("ent_fire_output 2_6661_locker_hack_plug OnHackSuccess")
-end
-
-if name == "879_combine_locker" then
-    SendToConsole("ent_fire_output 879_locker_hack_plug OnHackSuccess")
-end
-
-if name == "1517_1920_combine_locker" then
-    SendToConsole("ent_fire_output 1517_1920_locker_hack_plug OnHackSuccess")
-end
-
-if name == "254_2183_1620_combine_locker" then
-    SendToConsole("ent_fire_output 254_2183_1620_locker_hack_plug OnHackSuccess")
-end
-
 if name == "254_16189_combine_locker" then
-    SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnHackSuccess")
     SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnPuzzleSuccess")
-end
-
-if name == "1962_combine_locker" then
-    SendToConsole("ent_fire_output 1962_locker_hack_plug OnHackSuccess")
-end
-
-if name == "3_8731_888_combine_locker" then
-    SendToConsole("ent_fire_output 3_8731_888_locker_hack_plug OnHackSuccess")
 end
 
 if name == "2_8127_elev_button_floor_1_call" then
@@ -299,18 +264,6 @@ if name == "inside_elevator_button" then
     thisEntity:SetThink(function()
         SendToConsole("-use")
     end, "", 0)
-end
-
-if name == "5325_4205_5030_door_hack_prop" then
-    SendToConsole("ent_fire_output 5325_4205_5030_door_hack_plug OnHackSuccess")
-end
-
-if name == "2_5425_door_hack_prop" then
-    SendToConsole("ent_fire_output 2_5425_door_hack_plug OnHackSuccess")
-end
-
-if name == "2041_door_hack_prop" then
-    SendToConsole("ent_fire_output 2041_door_hack_plug OnHackSuccess")
 end
 
 if name == "console_opener_prop_handle_interact" then
@@ -366,34 +319,6 @@ if class == "item_hlvr_combine_console_tank" then
     end
 end
 
-if class == "prop_dynamic" and thisEntity:GetModelName() == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
-    local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
-    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
-    if tostring(thisEntity:GetMaterialGroupMask()) == "5" then
-        if player:GetHealth() == player:GetMaxHealth() then
-            StartSoundEvent("HealthStation.Deny", player)
-        else
-            StartSoundEvent("HealthStation.Start", player)
-            SendToConsole("ent_fire player_speedmod ModifySpeed 0")
-            thisEntity:SetThink(function()
-                StartSoundEvent("HealthStation.Loop", player)
-            end, "Loop", .7)
-            thisEntity:SetThink(function()
-                if player:GetHealth() < player:GetMaxHealth() then
-                    player:SetHealth(player:GetHealth() + 1)
-                    return 0.1
-                else
-                    StopSoundEvent("HealthStation.Loop", player)
-                    StartSoundEvent("HealthStation.Complete", player)
-                    thisEntity:StopThink("Loop")
-                    SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                end
-                
-            end, "Heal", 0)
-        end
-    end
-end
-
 if name == "room1_lights_circuitbreaker_switch" then
     SendToConsole("ent_fire_output controlroom_circuitbreaker_relay ontrigger")
 end
@@ -409,12 +334,6 @@ if map == "a2_train_yard" then
     if class == "item_hlvr_combine_console_rack" then
         local ent = Entities:FindByName(nil, "5325_3947_combine_console")
         DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
-    end
-end
-
-if map == "a2_drainage" then
-    if name == "2678_5785_door_hack_prop" then
-        SendToConsole("ent_fire_output 2678_5785_door_hack_plug OnHackSuccess")
     end
 end
 
