@@ -33,5 +33,7 @@ M: Main Menu
 
 P: Pause
 
+V: Noclip (if you get stuck)
+
 ## Official Discord Server
 https://discord.gg/AyfBeuZXsR
