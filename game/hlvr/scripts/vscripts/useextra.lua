@@ -330,8 +330,11 @@ if class == "prop_hlvr_crafting_station_console" then
                 player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
                 player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
                 player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
-                SendToConsole("ent_remove weapon_ar2")
-                SendToConsole("give weapon_smg1")
+                ent = Entities:FindByName(nil, "weapon_ar2")
+                if ent then
+                    SendToConsole("ent_remove weapon_ar2")
+                    SendToConsole("give weapon_smg1") 
+                end
             end
         end
 
