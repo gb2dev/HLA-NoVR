@@ -90,6 +90,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        local player = Entities:GetLocalPlayer()
         if viewmodel:GetModelName() ~= "models/grenade.vmdl" then
             if viewmodel:GetModelName() == "models/shotgun.vmdl" then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
