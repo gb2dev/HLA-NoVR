@@ -176,12 +176,13 @@ if class == "prop_dynamic" then
     if thisEntity:GetModelName() == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
         local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
-        if tostring(thisEntity:GetMaterialGroupMask()) == "5" then
+        if tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
             if player:GetHealth() == player:GetMaxHealth() then
                 StartSoundEvent("HealthStation.Deny", player)
             else
                 StartSoundEvent("HealthStation.Start", player)
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+                thisEntity:Attribute_SetIntValue("used", 1)
                 thisEntity:SetThink(function()
                     StartSoundEvent("HealthStation.Loop", player)
                 end, "Loop", .7)
@@ -194,8 +195,8 @@ if class == "prop_dynamic" then
                         StartSoundEvent("HealthStation.Complete", player)
                         thisEntity:StopThink("Loop")
                         SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+                        thisEntity:Attribute_SetIntValue("used", 0)
                     end
-                    
                 end, "Heal", 0)
             end
         end

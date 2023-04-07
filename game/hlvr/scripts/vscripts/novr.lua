@@ -39,7 +39,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         ent = EntIndexToHScript(info.entindex_killed):GetChildren()[1]
         if ent and ent:GetClassname() == "weapon_smg1" then
-            DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 0.01, nil, nil)
+            DoEntFireByInstanceHandle(ent, "Kill", "", 0.02, nil, nil)
         end
     end, nil)
 
@@ -58,6 +58,11 @@ if GlobalSys:CommandLineCheck("-novr") then
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
         local ent = EntIndexToHScript(info.entindex)
         ent:Attribute_SetIntValue("picked_up", 1)
+        Entities:GetLocalPlayer():Attribute_SetIntValue("holding_object", 1)
+        if ent:Attribute_GetIntValue("redirected_object_drop", 0) == 0 then
+            ent:Attribute_SetIntValue("redirected_object_drop", 1)
+            ent:RedirectOutput("OnPhysGunDrop", "ObjectDropped", ent)
+        end
         ent:SetThink(function()
             ent:Attribute_SetIntValue("picked_up", 0)
         end, "", 0.35)
@@ -70,13 +75,17 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("+customattack", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         if viewmodel:GetModelName() == "models/grenade.vmdl" then
-            SendToConsole("+attack2")
+            if Entities:GetLocalPlayer():Attribute_GetIntValue("holding_object", 0) == 0 then
+                SendToConsole("+attack2")
+            else
+                SendToConsole("+attack")
+            end
         else
             SendToConsole("+attack")
             if viewmodel:GetModelName() == "models/pistol.vmdl" then
                 Entities:GetLocalPlayer():SetThink(function()
                     SendToConsole("-attack")
-                end, "StopAttack", 0.02)
+                end, "StopAttack", 0.1)
             end
         end
     end, "", 0)
@@ -896,4 +905,8 @@ if GlobalSys:CommandLineCheck("-novr") then
     function EndCredits(a, b)
         SendToConsole("mouse_disableinput 0")
     end
+end
+
+function ObjectDropped(a, b)
+    Entities:GetLocalPlayer():Attribute_SetIntValue("holding_object", 0)
 end

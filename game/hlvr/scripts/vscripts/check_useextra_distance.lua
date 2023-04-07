@@ -26,6 +26,9 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
             local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 120)
             if vlua.find(ents, thisEntity) then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, nil)
+                if class == "item_hlvr_grenade_frag" then
+                    DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, nil)
+                end
             end
         end, "GrabItem", delay)
     end
