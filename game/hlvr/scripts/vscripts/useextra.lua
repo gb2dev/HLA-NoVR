@@ -1,10 +1,11 @@
 local map = GetMapName()
 local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
+local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
 
-if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    if class == "prop_animinteractable" and thisEntity:GetModelName() == "models/props_subway/scenes/desk_lever.vmdl" then
+if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    if class == "prop_animinteractable" and model == "models/props_subway/scenes/desk_lever.vmdl" then
         thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
     else
         thisEntity:Attribute_SetIntValue("used", 1)
@@ -15,7 +16,7 @@ if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel
     end
 
     local count = 0
-    local is_console = class == "prop_animinteractable" and thisEntity:GetModelName() == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
+    local is_console = class == "prop_animinteractable" and model == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
     if name == "" then
         thisEntity:SetEntityName("" .. thisEntity:GetEntityIndex())
     end
@@ -34,7 +35,7 @@ if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel
             DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
         end
 
-        if thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
+        if model == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
             SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count)
         end
 
@@ -62,6 +63,11 @@ elseif name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" the
             return 0
         end
     end, "AnimateCompletionValue", 0)
+end
+
+if vlua.find(model, "doorhandle") then
+    local ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", thisEntity:GetOrigin(), 60)
+    DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
 end
 
 if class == "prop_ragdoll" then
@@ -173,7 +179,7 @@ if class == "item_hlvr_weapon_rapidfire" then
 end
 
 if class == "prop_dynamic" then
-    if thisEntity:GetModelName() == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
+    if model == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
         local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
         if tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
@@ -200,7 +206,7 @@ if class == "prop_dynamic" then
                 end, "Heal", 0)
             end
         end
-    elseif thisEntity:GetModelName() == "models/props/alyx_hideout/button_plate.vmdl" then
+    elseif model == "models/props/alyx_hideout/button_plate.vmdl" then
         SendToConsole("ent_fire 2_8127_elev_button_test_floor_" .. player:Attribute_GetIntValue("next_elevator_floor", 2) .. " Trigger")
 
         if player:Attribute_GetIntValue("next_elevator_floor", 2) == 2 then
@@ -208,7 +214,7 @@ if class == "prop_dynamic" then
         else
             player:Attribute_SetIntValue("next_elevator_floor", 2)
         end
-    elseif thisEntity:GetModelName() == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or thisEntity:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+    elseif model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
         local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
 
         if ent then

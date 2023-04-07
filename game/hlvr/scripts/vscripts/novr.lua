@@ -24,18 +24,21 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     entity_killed_ev = ListenToGameEvent('entity_killed', function(info)
-        function GibBecomeRagdoll(classname)
-            ent = Entities:FindByClassname(nil, classname)
-            while ent do
-                if vlua.find(ent:GetModelName(), "models/creatures/headcrab_classic/headcrab_classic_gib") then
-                    DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 0.01, nil, nil)
+        local player = Entities:GetLocalPlayer()
+        player:SetThink(function()
+            function GibBecomeRagdoll(classname)
+                ent = Entities:FindByClassname(nil, classname)
+                while ent do
+                    if vlua.find(ent:GetModelName(), "models/creatures/headcrab_classic/headcrab_classic_gib") or vlua.find(ent:GetModelName(), "models/creatures/headcrab_armored/armored_hc_gib") then
+                        DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 0.01, nil, nil)
+                    end
+                    ent = Entities:FindByClassname(ent, classname)
                 end
-                ent = Entities:FindByClassname(ent, classname)
             end
-        end
 
-        GibBecomeRagdoll("prop_physics")
-        GibBecomeRagdoll("prop_ragdoll")
+            GibBecomeRagdoll("prop_physics")
+            GibBecomeRagdoll("prop_ragdoll")
+        end, "GibBecomeRagdoll", 0)
 
         ent = EntIndexToHScript(info.entindex_killed):GetChildren()[1]
         if ent and ent:GetClassname() == "weapon_smg1" then
