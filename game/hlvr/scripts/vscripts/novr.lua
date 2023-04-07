@@ -406,6 +406,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("headcrab_powered_ragdoll 0")
             SendToConsole("combine_grenade_timer 4")
             SendToConsole("sk_max_grenade 9999")
+            SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand disable;viewmodel_offset_y 0\"")
             SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand enable;viewmodel_offset_y -20\"")
