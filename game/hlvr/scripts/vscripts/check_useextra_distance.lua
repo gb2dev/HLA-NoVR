@@ -27,6 +27,6 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
             if vlua.find(ents, thisEntity) then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, nil)
             end
-        end, nil, delay)
+        end, "GrabItem", delay)
     end
 end
