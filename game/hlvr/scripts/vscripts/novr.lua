@@ -61,11 +61,6 @@ if GlobalSys:CommandLineCheck("-novr") then
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
         local ent = EntIndexToHScript(info.entindex)
         ent:Attribute_SetIntValue("picked_up", 1)
-        Entities:GetLocalPlayer():Attribute_SetIntValue("holding_object", 1)
-        if ent:Attribute_GetIntValue("redirected_object_drop", 0) == 0 then
-            ent:Attribute_SetIntValue("redirected_object_drop", 1)
-            ent:RedirectOutput("OnPhysGunDrop", "ObjectDropped", ent)
-        end
         ent:SetThink(function()
             ent:Attribute_SetIntValue("picked_up", 0)
         end, "", 0.35)
@@ -78,11 +73,16 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("+customattack", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         if viewmodel:GetModelName() == "models/grenade.vmdl" then
-            if Entities:GetLocalPlayer():Attribute_GetIntValue("holding_object", 0) == 0 then
-                SendToConsole("+attack2")
-            else
+            SendToConsole("+attack2")
+            Entities:GetLocalPlayer():SetThink(function()
+                SendToConsole("-attack2")
+            end, "StopAttack", 0.02)
+            Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("+attack")
-            end
+            end, "StartAttack2", 0.06)
+            Entities:GetLocalPlayer():SetThink(function()
+                SendToConsole("-attack")
+            end, "StopAttack2", 0.08)
         else
             SendToConsole("+attack")
             if viewmodel:GetModelName() == "models/pistol.vmdl" then
@@ -259,6 +259,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
+            if GetMapName() == "a3_station_street" then
+                if vlua.find(Entities:FindAllInSphere(Vector(934, 1883, -135), 20), player) then
+                    SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
+                end
+            end
+
             if GetMapName() == "a3_hotel_interior_rooftop" then
                 if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 20), player) then
                     ClimbLadderSound()
@@ -271,10 +277,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
-            if GetMapName() == "a3_hotel_lobby_basement" and vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 20), player) then
-                ClimbLadderSound()
-                SendToConsole("fadein 0.2")
-                SendToConsole("setpos_exact 975 -1507 280")
+            if GetMapName() == "a3_hotel_lobby_basement" then
+                if vlua.find(Entities:FindAllInSphere(Vector(1059, -1475, 200), 20), player) then
+                    SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
+                elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 20), player) then
+                    ClimbLadderSound()
+                    SendToConsole("fadein 0.2")
+                    SendToConsole("setpos_exact 975 -1507 280")
+                end
             end
 
             if GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(347,-242,-63), 20), player) then
@@ -908,8 +918,4 @@ if GlobalSys:CommandLineCheck("-novr") then
     function EndCredits(a, b)
         SendToConsole("mouse_disableinput 0")
     end
-end
-
-function ObjectDropped(a, b)
-    Entities:GetLocalPlayer():Attribute_SetIntValue("holding_object", 0)
 end

@@ -255,10 +255,6 @@ if name == "254_16189_combine_locker" then
     SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnPuzzleSuccess")
 end
 
-if name == "2_8127_elev_button_floor_1_call" then
-    SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
-end
-
 if name == "2_203_elev_button_floor_1" then
     SendToConsole("ent_fire_output 2_203_elev_button_floor_1_handpose onhandposed")
 end
@@ -421,10 +417,6 @@ if map == "a3_hotel_lobby_basement" then
         SendToConsole("ent_fire_output path_2_panel onpoweron")
         SendToConsole("ent_fire_output power_logic_enable_lift ontrigger")
     end
-
-    if name == "elev_button_floor_1" then
-        SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
-    end
 end
 
 if GetMapName() == "a3_distillery" then
@@ -529,10 +521,6 @@ if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attrib
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
     SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
     SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
-end
-
-if class == "item_hlvr_grenade_xen" then
-    DoEntFireByInstanceHandle(thisEntity, "ArmGrenade", "", 0, nil, nil)
 end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
