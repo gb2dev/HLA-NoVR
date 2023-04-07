@@ -15,16 +15,23 @@ if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel
     end
 
     local count = 0
+    local is_console = class == "prop_animinteractable" and thisEntity:GetModelName() == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
     if name == "" then
         thisEntity:SetEntityName("" .. thisEntity:GetEntityIndex())
     end
     thisEntity:SetThink(function()
-        DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
-        
+        if not is_console then
+            DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
+        end
+
         if map == "a3_distillery" and name == "verticaldoor_wheel" then
             count = count + 0.001
         else
             count = count + 0.01
+        end
+
+        if is_console then
+            DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
         end
 
         if thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
@@ -34,7 +41,7 @@ if name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel
         if count >= 1 then
             thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
             if name == "barricade_door_hook" then
-                SendToConsole("ent_fire barricade_door setreturntocompletionstyle 0")
+                SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
             end
             return nil
         else
@@ -161,7 +168,7 @@ if class == "item_hlvr_weapon_shotgun" then
 end
 
 if class == "item_hlvr_weapon_rapidfire" then
-    SendToConsole("give weapon_smg1")
+    SendToConsole("give weapon_ar2")
     thisEntity:Kill()
 end
 
@@ -202,7 +209,7 @@ if class == "prop_dynamic" then
         end
     elseif thisEntity:GetModelName() == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or thisEntity:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
         local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
-        print(ent)
+
         if ent then
             ent:FireOutput("OnHackSuccess", nil, nil, nil, 0)
             ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 0)
@@ -308,7 +315,38 @@ if name == "270_trip_mine_item_1" then
 end
 
 if class == "prop_hlvr_crafting_station_console" then
-    SendToConsole("ent_fire prop_hlvr_crafting_station OpenStation")
+    if thisEntity:GetGraphParameter("bBootup") == false then
+        local function AnimTagListener(sTagName, nStatus)
+            if sTagName == 'Bootup Done' and nStatus == 2 then
+                thisEntity:Attribute_SetIntValue("crafting_station_ready", 1)
+            elseif sTagName == 'Crafting Done' and nStatus == 2 then
+                -- TODO: Upgrade Selection
+                SendToConsole("ent_fire text_resin SetText \"Every weapon upgrade acquired (no upgrade selection yet).\"")
+                SendToConsole("ent_fire text_resin Display")
+
+                player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
+                player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
+                player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
+                player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
+                player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
+                player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
+                SendToConsole("ent_remove weapon_ar2")
+                SendToConsole("give weapon_smg1")
+            end
+        end
+
+        thisEntity:RegisterAnimTagListener(AnimTagListener)
+
+        local ent = Entities:FindByClassnameNearest("prop_hlvr_crafting_station", thisEntity:GetOrigin(), 20)
+        DoEntFireByInstanceHandle(ent, "OpenStation", "", 0, nil, nil)
+    elseif thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
+        if thisEntity:GetGraphParameter("bCollectingResin") then
+            thisEntity:SetGraphParameterBool("bCollectingResin", false)
+        else
+            thisEntity:SetGraphParameterBool("bCollectingResin", true)
+            thisEntity:SetGraphParameterBool("bCrafting", true)
+        end
+    end
 end
 
 if class == "item_hlvr_combine_console_tank" then

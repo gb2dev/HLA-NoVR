@@ -63,6 +63,101 @@ if GlobalSys:CommandLineCheck("-novr") then
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 
+
+    -- Custom attack
+
+    Convars:RegisterCommand("+customattack", function()
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        if viewmodel:GetModelName() == "models/grenade.vmdl" then
+            SendToConsole("+attack2")
+        else
+            SendToConsole("+attack")
+            if viewmodel:GetModelName() == "models/pistol.vmdl" then
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("-attack")
+                end, "StopAttack", 0.02)
+            end
+        end
+    end, "", 0)
+
+    Convars:RegisterCommand("-customattack", function()
+        SendToConsole("-attack")
+        SendToConsole("-attack2")
+    end, "", 0)
+
+
+    -- Custom attack 2
+
+    Convars:RegisterCommand("+customattack2", function()
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        if viewmodel:GetModelName() ~= "models/grenade.vmdl" then
+            if viewmodel:GetModelName() == "models/shotgun.vmdl" then
+                if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
+                    SendToConsole("+attack2")
+                end
+            elseif viewmodel:GetModelName() == "models/pistol.vmdl" then
+                if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
+                    SendToConsole("toggle_zoom")
+                end
+            elseif viewmodel:GetModelName() == "models/smg.vmdl" then
+                if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then
+                    SendToConsole("toggle_zoom")
+                end
+            end
+        end
+    end, "", 0)
+
+    Convars:RegisterCommand("-customattack2", function()
+        SendToConsole("-attack")
+        SendToConsole("-attack2")
+    end, "", 0)
+
+
+    -- Custom attack 3
+
+    Convars:RegisterCommand("+customattack3", function()
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        local player = Entities:GetLocalPlayer()
+        if viewmodel:GetModelName() == "models/shotgun.vmdl" then
+            if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 1 then
+                SendToConsole("use weapon_frag")
+                SendToConsole("+attack")
+                SendToConsole("ent_fire weapon_frag hideweapon")
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("-attack")
+                end, "StopAttack", 0.34)
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("use weapon_shotgun")
+                end, "BackToShotgun", 0.64)
+            end
+        elseif viewmodel:GetModelName() == "models/pistol.vmdl" then
+            if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
+                SendToConsole("sk_plr_dmg_pistol 7")
+                SendToConsole("+attack")
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("-attack")
+                end, "StopAttack", 0.02)
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("+attack")
+                end, "StartAttack2", 0.14)
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("-attack")
+                end, "StopAttack2", 0.16)
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("+attack")
+                end, "StartAttack3", 0.28)
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("-attack")
+                    SendToConsole("sk_plr_dmg_pistol 5")
+                end, "StopAttack3", 0.3)
+            end
+        end
+    end, "", 0)
+
+    Convars:RegisterCommand("-customattack3", function()
+    end, "", 0)
+
+
     Convars:RegisterCommand("shootadvisorvortenergy", function()
         local ent = SpawnEntityFromTableSynchronous("env_explosion", {["origin"]="886 -4111.625 -1188.75", ["explosion_type"]="custom", ["explosion_custom_effect"]="particles/vortigaunt_fx/vort_beam_explosion_i_big.vpcf"})
         DoEntFireByInstanceHandle(ent, "Explode", "", 0, nil, nil)
@@ -287,11 +382,14 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind v noclip")
             SendToConsole("bind ctrl +duck")
             SendToConsole("hl2_sprintspeed 140")
+            SendToConsole("hl2_normspeed 140")
+            SendToConsole("hl2_walkspeed 140")
             SendToConsole("bind F5 \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind F9 \"load quick\"")
             SendToConsole("bind M \"map startup\"")
-            SendToConsole("bind MOUSE2 \"\"")
-            SendToConsole("bind MOUSE3 \"\"")
+            SendToConsole("bind MOUSE1 +customattack")
+            SendToConsole("bind MOUSE2 +customattack2")
+            SendToConsole("bind MOUSE3 +customattack3")
             SendToConsole("r_drawviewmodel 0")
             SendToConsole("fov_desired 90")
             SendToConsole("sv_infinite_aux_power 1")
@@ -329,7 +427,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
 
             SendToConsole("ent_remove text_resin")
-            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 3 x 0.02 y -0.11 }")
+            -- TODO: Change holdtime to 3 when no more debug message about missing upgrade selection
+            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 10 x 0.02 y -0.11 }")
 
             if GetMapName() == "a1_intro_world" then
                 if not loading_save_file then
@@ -550,7 +649,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
                         elseif GetMapName() == "a5_vault" then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_smg1")
+                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2")
                             SendToConsole("r_drawviewmodel 0")
 
                             if not loading_save_file then
@@ -570,7 +669,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent = Entities:FindByName(nil, "longcorridor_energysource_01_activate_relay")
                             ent:RedirectOutput("OnTrigger", "GiveVortEnergy", ent)
                         elseif GetMapName() == "a5_ending" then
-                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_smg1")
+                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2")
                             SendToConsole("r_drawviewmodel 0")
                             SendToConsole("bind F \"\"")
 
@@ -753,14 +852,14 @@ if GlobalSys:CommandLineCheck("-novr") then
     function UnequipCombinGunMechanical()
         SendToConsole("ent_fire player_speedmod ModifySpeed 1")
         SendToConsole("ent_fire combine_gun_mechanical ClearParent")
-        SendToConsole("bind MOUSE1 \"+attack\"")
+        SendToConsole("bind MOUSE1 +customattack")
         local ent = Entities:FindByName(nil, "combine_gun_mechanical")
         SendToConsole("ent_setpos " .. ent:entindex() .. " 1479.722 385.634 964.917")
         SendToConsole("r_drawviewmodel 1")
     end
 
     function EnterVaultBeam()
-        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_smg1;ent_remove weapon_frag")
+        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_frag")
         SendToConsole("r_drawviewmodel 0")
         SendToConsole("hidehud 4")
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
@@ -773,7 +872,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function GiveVortEnergy(a, b)
         SendToConsole("bind MOUSE1 shootvortenergy")
-        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_smg1;ent_remove weapon_frag")
+        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_frag")
         SendToConsole("r_drawviewmodel 0")
     end
 
