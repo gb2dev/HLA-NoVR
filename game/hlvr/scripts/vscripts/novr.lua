@@ -67,6 +67,21 @@ if GlobalSys:CommandLineCheck("-novr") then
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 
+    Convars:RegisterCommand("giveallweaponupgrades", function()
+        local player = Entities:GetLocalPlayer()
+        player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
+        player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
+        player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
+        player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
+        player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
+        player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
+        local ent = Entities:FindByClassnameNearest("weapon_ar2", player:GetOrigin(), 20)
+        if ent then
+            SendToConsole("ent_remove weapon_ar2")
+            SendToConsole("give weapon_smg1") 
+        end
+    end, "", 0)
+
 
     -- Custom attack
 
@@ -139,10 +154,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("ent_fire weapon_frag hideweapon")
                 Entities:GetLocalPlayer():SetThink(function()
                     SendToConsole("-attack")
-                end, "StopAttack", 0.34)
+                end, "StopAttack", 0.36)
                 Entities:GetLocalPlayer():SetThink(function()
                     SendToConsole("use weapon_shotgun")
-                end, "BackToShotgun", 0.64)
+                end, "BackToShotgun", 0.66)
             end
         elseif viewmodel:GetModelName() == "models/pistol.vmdl" then
             if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then

@@ -326,18 +326,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 -- TODO: Upgrade Selection
                 SendToConsole("ent_fire text_resin SetText \"Every weapon upgrade acquired (no upgrade selection yet).\"")
                 SendToConsole("ent_fire text_resin Display")
-
-                player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
-                player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
-                player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
-                player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
-                player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
-                player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
-                local ent = Entities:FindByClassnameNearest("weapon_ar2", player:GetOrigin(), 20)
-                if ent then
-                    SendToConsole("ent_remove weapon_ar2")
-                    SendToConsole("give weapon_smg1") 
-                end
+                SendToConsole("giveallweaponupgrades")
             end
         end
 
@@ -521,6 +510,16 @@ if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attrib
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
     SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
     SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
+end
+
+if class == "item_hlvr_grenade_xen" then
+    thisEntity:SetThink(function()
+        if GetPhysVelocity(thisEntity):Length() > 550 then
+            DoEntFireByInstanceHandle(thisEntity, "ArmGrenade", "", 0, nil, nil)
+        else
+            return 0
+        end
+    end, "ArmOnHighVelocity", 0)
 end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
