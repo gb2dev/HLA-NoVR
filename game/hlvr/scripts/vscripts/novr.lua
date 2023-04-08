@@ -487,8 +487,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind v noclip")
             SendToConsole("bind ctrl +duck")
             SendToConsole("hl2_sprintspeed 140")
-            SendToConsole("hl2_normspeed 140")
-            SendToConsole("hl2_walkspeed 140")
             SendToConsole("bind F5 \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind F9 \"load quick\"")
             SendToConsole("bind M \"map startup\"")
@@ -523,7 +521,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("setang " .. angles.x .. " " .. angles.y .. " 0")
                 ent:SetThink(function()
                     if Entities:GetLocalPlayer():GetBoundingMaxs().z == 36 then
-                        SendToConsole("cl_forwardspeed 80;cl_backspeed 80;cl_sidespeed 80")
+                        SendToConsole("cl_forwardspeed 86;cl_backspeed 86;cl_sidespeed 86")
                     else
                         SendToConsole("cl_forwardspeed 46;cl_backspeed 46;cl_sidespeed 46")
                     end
