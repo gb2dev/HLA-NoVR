@@ -282,6 +282,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("npc_kill")
             DoEntFire("!picker", "RunScriptFile", "vortenergyhit", 0, nil, nil)
             StartSoundEventFromPosition("VortMagic.Throw", startVector)
+            local vortEnergyCell = Entities:FindByClassnameNearest("point_vort_energy", Vector(traceTable.pos.x,traceTable.pos.y,traceTable.pos.z), 15)
+            if vortEnergyCell then
+                vortEnergyCell:FireOutput("OnEnergyPulled", nil, nil, nil, 0)
+            end
         end
     end, "", 0)
 
