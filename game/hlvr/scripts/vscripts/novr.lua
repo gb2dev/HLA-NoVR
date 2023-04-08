@@ -40,9 +40,16 @@ if GlobalSys:CommandLineCheck("-novr") then
             GibBecomeRagdoll("prop_ragdoll")
         end, "GibBecomeRagdoll", 0)
 
-        ent = EntIndexToHScript(info.entindex_killed):GetChildren()[1]
+        local ent = EntIndexToHScript(info.entindex_killed):GetChildren()[1]
         if ent and ent:GetClassname() == "weapon_smg1" then
-            DoEntFireByInstanceHandle(ent, "Kill", "", 0.02, nil, nil)
+            ent:SetThink(function()
+                if ent:GetMoveParent() then
+                    print("yes")
+                    return 0
+                else
+                    DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 0.02, nil, nil)
+                end
+            end, "BecomeRagdollWhenNoParent", 0)
         end
     end, nil)
 
@@ -87,23 +94,25 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("+customattack", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-        if viewmodel:GetModelName() == "models/grenade.vmdl" then
-            SendToConsole("+attack2")
-            Entities:GetLocalPlayer():SetThink(function()
-                SendToConsole("-attack2")
-            end, "StopAttack", 0.02)
-            Entities:GetLocalPlayer():SetThink(function()
-                SendToConsole("+attack")
-            end, "StartAttack2", 0.06)
-            Entities:GetLocalPlayer():SetThink(function()
-                SendToConsole("-attack")
-            end, "StopAttack2", 0.08)
-        else
-            SendToConsole("+attack")
-            if viewmodel:GetModelName() == "models/pistol.vmdl" then
+        if viewmodel then
+            if viewmodel:GetModelName() == "models/grenade.vmdl" then
+                SendToConsole("+attack2")
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("-attack2")
+                end, "StopAttack", 0.02)
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("+attack")
+                end, "StartAttack2", 0.06)
                 Entities:GetLocalPlayer():SetThink(function()
                     SendToConsole("-attack")
-                end, "StopAttack", 0.1)
+                end, "StopAttack2", 0.08)
+            else
+                SendToConsole("+attack")
+                if viewmodel:GetModelName() == "models/pistol.vmdl" then
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("-attack")
+                    end, "StopAttack", 0.1)
+                end
             end
         end
     end, "", 0)
@@ -119,7 +128,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
-        if viewmodel:GetModelName() ~= "models/grenade.vmdl" then
+        if viewmodel and viewmodel:GetModelName() ~= "models/grenade.vmdl" then
             if viewmodel:GetModelName() == "models/shotgun.vmdl" then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
                     SendToConsole("+attack2")
@@ -147,38 +156,40 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("+customattack3", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
-        if viewmodel:GetModelName() == "models/shotgun.vmdl" then
-            if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 1 then
-                SendToConsole("use weapon_frag")
-                SendToConsole("+attack")
-                SendToConsole("ent_fire weapon_frag hideweapon")
-                Entities:GetLocalPlayer():SetThink(function()
-                    SendToConsole("-attack")
-                end, "StopAttack", 0.36)
-                Entities:GetLocalPlayer():SetThink(function()
-                    SendToConsole("use weapon_shotgun")
-                end, "BackToShotgun", 0.66)
-            end
-        elseif viewmodel:GetModelName() == "models/pistol.vmdl" then
-            if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
-                SendToConsole("sk_plr_dmg_pistol 7")
-                SendToConsole("+attack")
-                Entities:GetLocalPlayer():SetThink(function()
-                    SendToConsole("-attack")
-                end, "StopAttack", 0.02)
-                Entities:GetLocalPlayer():SetThink(function()
+        if viewmodel then
+            if viewmodel:GetModelName() == "models/shotgun.vmdl" then
+                if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 1 then
+                    SendToConsole("use weapon_frag")
                     SendToConsole("+attack")
-                end, "StartAttack2", 0.14)
-                Entities:GetLocalPlayer():SetThink(function()
-                    SendToConsole("-attack")
-                end, "StopAttack2", 0.16)
-                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("ent_fire weapon_frag hideweapon")
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("-attack")
+                    end, "StopAttack", 0.36)
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("use weapon_shotgun")
+                    end, "BackToShotgun", 0.66)
+                end
+            elseif viewmodel:GetModelName() == "models/pistol.vmdl" then
+                if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
+                    SendToConsole("sk_plr_dmg_pistol 7")
                     SendToConsole("+attack")
-                end, "StartAttack3", 0.28)
-                Entities:GetLocalPlayer():SetThink(function()
-                    SendToConsole("-attack")
-                    SendToConsole("sk_plr_dmg_pistol 5")
-                end, "StopAttack3", 0.3)
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("-attack")
+                    end, "StopAttack", 0.02)
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("+attack")
+                    end, "StartAttack2", 0.14)
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("-attack")
+                    end, "StopAttack2", 0.16)
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("+attack")
+                    end, "StartAttack3", 0.28)
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("-attack")
+                        SendToConsole("sk_plr_dmg_pistol 5")
+                    end, "StopAttack3", 0.3)
+                end
             end
         end
     end, "", 0)
@@ -449,6 +460,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand disable;viewmodel_offset_y 0\"")
             SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand enable;viewmodel_offset_y -20\"")
             SendToConsole("mouse_disableinput 0")
+            SendToConsole("-attack")
+            SendToConsole("-attack2")
             ent = Entities:GetLocalPlayer()
             if ent then
                 local angles = ent:GetAngles()
