@@ -507,7 +507,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_locker_door_* DisablePickup")
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
             SendToConsole("ent_fire electrical_panel_*_door* DisablePickup")
-            SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
             SendToConsole("combine_grenade_timer 4")
@@ -653,6 +652,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                 elseif GetMapName() ~= "a2_hideout" then
                     SendToConsole("bind F inv_flashlight")
                     SendToConsole("give weapon_shotgun")
+
+                    -- Flashlight
+                    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                    local viewmodel_pos = viewmodel:GetAbsOrigin()
+                    local viewmodel_ang = viewmodel:GetAngles()
+                    ent = SpawnEntityFromTableSynchronous("hlvr_flashlight_attachment", {["targetname"]="player_flashlight", ["renderamt"]=0, ["origin"]= viewmodel_pos.x .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z, ["angles"]= viewmodel_ang.x + 2.2 .. " " .. viewmodel_ang.y - 179.28 .. " " .. viewmodel_ang.z })
+                    DoEntFire("player_flashlight", "SetParent", "!activator", 0, viewmodel, nil)
+                    DoEntFire("player_flashlight", "Disable", "", 0, nil, nil)
 
                     if GetMapName() == "a2_drainage" then
                         SendToConsole("ent_fire wheel2_socket setscale 4")
