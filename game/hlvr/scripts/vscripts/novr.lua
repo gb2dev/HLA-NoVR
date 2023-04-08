@@ -576,6 +576,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                        SendToConsole("setpos 3215 2456 465")
+                        SendToConsole("ent_fire traincar_border_trigger Disable")
                     end
                 elseif GetMapName() == "a2_pistol" then
                     SendToConsole("ent_fire *_rebar EnablePickup")
