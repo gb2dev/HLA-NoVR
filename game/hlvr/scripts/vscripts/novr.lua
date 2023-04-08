@@ -44,7 +44,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         if ent and ent:GetClassname() == "weapon_smg1" then
             ent:SetThink(function()
                 if ent:GetMoveParent() then
-                    print("yes")
                     return 0
                 else
                     DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 0.02, nil, nil)
