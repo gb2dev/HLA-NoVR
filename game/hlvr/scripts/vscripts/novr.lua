@@ -73,19 +73,77 @@ if GlobalSys:CommandLineCheck("-novr") then
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 
-    Convars:RegisterCommand("giveallweaponupgrades", function()
-        local player = Entities:GetLocalPlayer()
-        player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
-        player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
-        player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
-        player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
-        player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
-        player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
-        local ent = Entities:FindByClassnameNearest("weapon_ar2", player:GetOrigin(), 20)
-        if ent then
-            SendToConsole("ent_remove weapon_ar2")
-            SendToConsole("give weapon_smg1") 
+    Convars:RegisterConvar("chosen_upgrade", "", "", 0)
+
+    Convars:RegisterConvar("weapon_in_crafting_station", "", "", 0)
+
+    Convars:RegisterCommand("chooseupgrade1", function()
+        local t = {}
+        Entities:GetLocalPlayer():GatherCriteria(t)
+
+        if t.current_crafting_currency >= 10 then
+            if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
+                Convars:SetStr("chosen_upgrade", "pistol_upgrade_aimdownsights")
+                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+                SendToConsole("hlvr_addresources 0 0 0 -10")
+            elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
+                Convars:SetStr("chosen_upgrade", "shotgun_upgrade_doubleshot")
+                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+                SendToConsole("hlvr_addresources 0 0 0 -10")
+            elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
+                Convars:SetStr("chosen_upgrade", "smg_upgrade_aimdownsights")
+                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+                SendToConsole("hlvr_addresources 0 0 0 -10")
+            end
+        else
+            SendToConsole("ent_fire text_resin SetText #HLVR_CraftingStation_NotEnoughResin")
+            SendToConsole("ent_fire text_resin Display")
+            SendToConsole("play sounds/common/wpn_denyselect.vsnd")
+            SendToConsole("cancelupgrade")
         end
+    end, "", 0)
+
+    Convars:RegisterCommand("chooseupgrade2", function()
+        local t = {}
+        Entities:GetLocalPlayer():GatherCriteria(t)
+
+        if t.current_crafting_currency >= 20 then
+            if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
+                Convars:SetStr("chosen_upgrade", "pistol_upgrade_burstfire")
+                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+                SendToConsole("hlvr_addresources 0 0 0 -20")
+            elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
+                Convars:SetStr("chosen_upgrade", "shotgun_upgrade_grenadelauncher")
+                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+                SendToConsole("hlvr_addresources 0 0 0 -20")
+            elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
+                Convars:SetStr("chosen_upgrade", "smg_upgrade_fasterfirerate")
+                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+                SendToConsole("hlvr_addresources 0 0 0 -20")
+            end
+        else
+            SendToConsole("ent_fire text_resin SetText #HLVR_CraftingStation_NotEnoughResin")
+            SendToConsole("ent_fire text_resin Display")
+            SendToConsole("play sounds/common/wpn_denyselect.vsnd")
+            SendToConsole("cancelupgrade")
+        end
+    end, "", 0)
+
+    Convars:RegisterCommand("cancelupgrade", function()
+        Convars:SetStr("chosen_upgrade", "cancel")
+        -- TODO: Give weapon back, but don't fill magazine
+        if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
+            SendToConsole("give weapon_pistol")
+        elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
+            SendToConsole("give weapon_shotgun")
+        elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
+            if Entities:GetLocalPlayer():Attribute_SetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                SendToConsole("give weapon_ar2")
+            else
+                SendToConsole("give weapon_smg1")
+            end
+        end
+        SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
     end, "", 0)
 
 
@@ -479,8 +537,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
 
             SendToConsole("ent_remove text_resin")
-            -- TODO: Change holdtime to 3 when no more debug message about missing upgrade selection
-            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 10 x 0.02 y -0.11 }")
+            -- TODO: Change holdtime to 3 when there is a proper weapon upgrade selection UI
+            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 15 x 0.02 y -0.11 }")
 
             if GetMapName() == "a1_intro_world" then
                 if not loading_save_file then

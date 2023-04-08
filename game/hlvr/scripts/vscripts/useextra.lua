@@ -325,10 +325,31 @@ if class == "prop_hlvr_crafting_station_console" then
             if sTagName == 'Bootup Done' and nStatus == 2 then
                 thisEntity:Attribute_SetIntValue("crafting_station_ready", 1)
             elseif sTagName == 'Crafting Done' and nStatus == 2 then
-                -- TODO: Upgrade Selection
-                SendToConsole("ent_fire text_resin SetText \"Every weapon upgrade acquired (no upgrade selection yet).\"")
-                SendToConsole("ent_fire text_resin Display")
-                SendToConsole("giveallweaponupgrades")
+                if Convars:GetStr("chosen_upgrade") == "pistol_upgrade_aimdownsights" then
+                    player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
+                    SendToConsole("give weapon_pistol")
+                elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
+                    player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
+                    SendToConsole("give weapon_pistol")
+                elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
+                    player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
+                    SendToConsole("give weapon_shotgun")
+                elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
+                    player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
+                    SendToConsole("give weapon_shotgun")
+                elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
+                    player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
+                    if player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                        SendToConsole("give weapon_ar2")
+                    else
+                        SendToConsole("give weapon_smg1")
+                    end
+                elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
+                    player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
+                    SendToConsole("ent_remove weapon_ar2")
+                    SendToConsole("give weapon_smg1")
+                end
+                SendToConsole("ent_fire point_clientui_world_panel Enable")
             end
         end
 
@@ -338,10 +359,58 @@ if class == "prop_hlvr_crafting_station_console" then
         DoEntFireByInstanceHandle(ent, "OpenStation", "", 0, nil, nil)
     elseif thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
         if thisEntity:GetGraphParameter("bCollectingResin") then
+            if Convars:GetStr("chosen_upgrade") == "cancel" then
+                thisEntity:SetGraphParameterBool("bCrafting", false)
+                SendToConsole("ent_fire point_clientui_world_panel Enable")
+            else
+                -- TODO: ent_create point_clientui_world_movie_panel {src_movie "file://{resources}/videos/wupgrade_frabrication.webm" targetname test width 200 height 100 }
+            end
             thisEntity:SetGraphParameterBool("bCollectingResin", false)
+            SendToConsole("bind KP_0 \"\"")
+            SendToConsole("bind KP_1 \"\"")
+            SendToConsole("bind KP_2 \"\"")
         else
             thisEntity:SetGraphParameterBool("bCollectingResin", true)
             thisEntity:SetGraphParameterBool("bCrafting", true)
+            SendToConsole("ent_fire point_clientui_world_panel Disable")
+            local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+            if viewmodel then
+                if viewmodel:GetModelName() == "models/pistol.vmdl" then
+                    SendToConsole("ent_fire weapon_pistol kill 0.02")
+                    SendToConsole("impulse 200")
+                    SendToConsole("ent_fire text_resin SetText \"Choose upgrade with numpad: [1] Reflex Sight (10 Resin), [2] Burst Fire (20 Resin), [0] Cancel\"")
+                    Convars:SetStr("weapon_in_crafting_station", "pistol")
+
+                    SendToConsole("ent_fire text_resin Display")
+                    SendToConsole("bind KP_0 cancelupgrade")
+                    SendToConsole("bind KP_1 chooseupgrade1")
+                    SendToConsole("bind KP_2 chooseupgrade2")
+                elseif viewmodel:GetModelName() == "models/shotgun.vmdl" then
+                    SendToConsole("ent_fire weapon_shotgun kill 0.02")
+                    SendToConsole("impulse 200")
+                    SendToConsole("ent_fire text_resin SetText \"Choose upgrade with numpad: [1] Double Shot (10 Resin), [2] Grenade Launcher (20 Resin), [0] Cancel\"")
+                    Convars:SetStr("weapon_in_crafting_station", "shotgun")
+
+                    SendToConsole("ent_fire text_resin Display")
+                    SendToConsole("bind KP_0 cancelupgrade")
+                    SendToConsole("bind KP_1 chooseupgrade1")
+                    SendToConsole("bind KP_2 chooseupgrade2")
+                elseif viewmodel:GetModelName() == "models/smg.vmdl" then
+                    if player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                        SendToConsole("ent_fire weapon_ar2 kill 0.02")
+                    else
+                        SendToConsole("ent_fire weapon_smg1 kill 0.02")
+                    end
+                    SendToConsole("impulse 200")
+                    SendToConsole("ent_fire text_resin SetText \"Choose upgrade with numpad: [1] Reflex Sight (10 Resin), [2] Faster Fire Rate (20 Resin), [0] Cancel\"")
+                    Convars:SetStr("weapon_in_crafting_station", "smg")
+
+                    SendToConsole("ent_fire text_resin Display")
+                    SendToConsole("bind KP_0 cancelupgrade")
+                    SendToConsole("bind KP_1 chooseupgrade1")
+                    SendToConsole("bind KP_2 chooseupgrade2")
+                end
+            end
         end
     end
 end
