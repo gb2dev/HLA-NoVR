@@ -148,34 +148,6 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, "", 0)
 
 
-    -- Custom attack
-
-    Convars:RegisterCommand("+customattack", function()
-        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-        if viewmodel then
-            if viewmodel:GetModelName() == "models/grenade.vmdl" then
-                SendToConsole("+attack2")
-                Entities:GetLocalPlayer():SetThink(function()
-                    SendToConsole("-attack2")
-                end, "StopAttack", 0.02)
-                Entities:GetLocalPlayer():SetThink(function()
-                    SendToConsole("+attack")
-                end, "StartAttack2", 0.06)
-                Entities:GetLocalPlayer():SetThink(function()
-                    SendToConsole("-attack")
-                end, "StopAttack2", 0.08)
-            else
-                SendToConsole("+attack")
-            end
-        end
-    end, "", 0)
-
-    Convars:RegisterCommand("-customattack", function()
-        SendToConsole("-attack")
-        SendToConsole("-attack2")
-    end, "", 0)
-
-
     -- Custom attack 2
 
     Convars:RegisterCommand("+customattack2", function()
@@ -224,7 +196,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             elseif viewmodel:GetModelName() == "models/pistol.vmdl" then
                 if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
-                    SendToConsole("sk_plr_dmg_pistol 7")
+                    SendToConsole("sk_plr_dmg_pistol 9")
                     SendToConsole("+attack")
                     Entities:GetLocalPlayer():SetThink(function()
                         SendToConsole("-attack")
@@ -240,7 +212,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end, "StartAttack3", 0.28)
                     Entities:GetLocalPlayer():SetThink(function()
                         SendToConsole("-attack")
-                        SendToConsole("sk_plr_dmg_pistol 5")
+                        SendToConsole("sk_plr_dmg_pistol 7")
                     end, "StopAttack3", 0.3)
                 end
             end
@@ -485,12 +457,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind space jumpfixed")
             SendToConsole("bind e \"+use;useextra\"")
             SendToConsole("bind v noclip")
-            SendToConsole("bind ctrl +duck")
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("bind F5 \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind F9 \"load quick\"")
             SendToConsole("bind M \"map startup\"")
-            SendToConsole("bind MOUSE1 +customattack")
             SendToConsole("bind MOUSE2 +customattack2")
             SendToConsole("bind MOUSE3 +customattack3")
             SendToConsole("r_drawviewmodel 0")
@@ -515,6 +485,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("mouse_disableinput 0")
             SendToConsole("-attack")
             SendToConsole("-attack2")
+            SendToConsole("sk_headcrab_runner_health 69")
+            SendToConsole("sk_plr_dmg_pistol 7")
+            SendToConsole("sk_plr_dmg_ar2 9")
+            SendToConsole("sk_plr_dmg_smg1 5")
+
             ent = Entities:GetLocalPlayer()
             if ent then
                 local angles = ent:GetAngles()
@@ -961,7 +936,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function UnequipCombinGunMechanical()
         SendToConsole("ent_fire player_speedmod ModifySpeed 1")
         SendToConsole("ent_fire combine_gun_mechanical ClearParent")
-        SendToConsole("bind MOUSE1 +customattack")
+        SendToConsole("bind MOUSE1 +attack")
         local ent = Entities:FindByName(nil, "combine_gun_mechanical")
         SendToConsole("ent_setpos " .. ent:entindex() .. " 1479.722 385.634 964.917")
         SendToConsole("r_drawviewmodel 1")

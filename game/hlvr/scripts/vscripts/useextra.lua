@@ -71,9 +71,8 @@ if vlua.find(model, "doorhandle") then
 end
 
 if class == "prop_ragdoll" then
-    local ent = thisEntity:GetChildren()[1]
-    if ent then
-        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, player, nil)
+    for k, v in pairs(thisEntity:GetChildren()) do
+        DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
     end
 end
 
