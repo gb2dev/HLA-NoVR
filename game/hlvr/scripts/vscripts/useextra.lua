@@ -7,7 +7,7 @@ local player = Entities:GetLocalPlayer()
 if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if class == "prop_animinteractable" and model == "models/props_subway/scenes/desk_lever.vmdl" then
         thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
-    else
+    elseif name ~= "plug_console_starter_lever" then
         thisEntity:Attribute_SetIntValue("used", 1)
     end
 
@@ -408,6 +408,10 @@ if map == "a3_hotel_lobby_basement" then
     end
 end
 
+if name == "plug_console_starter_lever" then
+    SendToConsole("ent_fire_output plug_console_starter_lever OnCompletionB_Forward")
+end
+
 if GetMapName() == "a3_distillery" then
     if name == "11578_2635_380_button_center" then
         SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher onin")
@@ -460,10 +464,6 @@ if GetMapName() == "a3_distillery" then
 
     if name == "freezer_port_b_2" then
         SendToConsole("ent_fire_output freezer_toner_path_8 onpoweron")
-    end
-
-    if name == "plug_console_starter_lever" then
-        SendToConsole("ent_fire_output plug_console_starter_lever oncompletionb_forward")
     end
 
     if name == "11578_2420_181_antlion_plug_crank_a" then
