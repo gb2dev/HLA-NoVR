@@ -136,9 +136,11 @@ if name == "1489_4074_port_demux" then
 end
 
 if name == "bridge_crank" then
-    SendToConsole("ent_fire driven_bridge SetAnimation combine_barrel_arm_bridge_anim")
+    SendToConsole("ent_fire driven_bridge SetPlaybackRate 1 1")
     SendToConsole("ent_fire drawbridge_brush Enable")
-    StartSoundEventFromPosition("CombineVortPod.Lower", thisEntity:GetOrigin())
+    local ent = Entities:FindByName(nil, "bridge_crank")
+    ent:FireOutput("OnInteractStart", nil, nil, nil, 0)
+    ent:FireOutput("OnInteractStop", nil, nil, nil, 2.8)
 end
 
 if name == "3_8223_prop_button" then
