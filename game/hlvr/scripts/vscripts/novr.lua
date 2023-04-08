@@ -69,7 +69,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         ent:Attribute_SetIntValue("picked_up", 1)
         ent:SetThink(function()
             ent:Attribute_SetIntValue("picked_up", 0)
-        end, "", 0.35)
+        end, "", 0.45)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 
@@ -131,6 +131,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("cancelupgrade", function()
         Convars:SetStr("chosen_upgrade", "cancel")
+        SendToConsole("ent_fire weapon_in_fabricator Kill")
         -- TODO: Give weapon back, but don't fill magazine
         if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
             SendToConsole("give weapon_pistol")
@@ -165,11 +166,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end, "StopAttack2", 0.08)
             else
                 SendToConsole("+attack")
-                if viewmodel:GetModelName() == "models/pistol.vmdl" then
-                    Entities:GetLocalPlayer():SetThink(function()
-                        SendToConsole("-attack")
-                    end, "StopAttack", 0.1)
-                end
             end
         end
     end, "", 0)
@@ -468,6 +464,8 @@ if GlobalSys:CommandLineCheck("-novr") then
         else
             SpawnEntityFromTableSynchronous("player_speedmod", nil)
         end
+
+        SendToConsole("fps_max 120")
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
