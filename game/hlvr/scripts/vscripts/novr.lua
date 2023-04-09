@@ -489,6 +489,18 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_plr_dmg_pistol 7")
             SendToConsole("sk_plr_dmg_ar2 9")
             SendToConsole("sk_plr_dmg_smg1 5")
+            SendToConsole("bind h +covermouth")
+
+            ent = Entities:FindByName(nil, "lefthand")
+            if not ent then
+                -- Hand for covering mouth animation
+                local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                local viewmodel_ang = viewmodel:GetAngles()
+                local viewmodel_pos = viewmodel:GetAbsOrigin() + viewmodel_ang:Forward() * 24 - viewmodel_ang:Up() * 4
+                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
+                DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
+                DoEntFire("lefthand", "Disable", "", 0, nil, nil)
+            end
 
             ent = Entities:GetLocalPlayer()
             if ent then
@@ -503,6 +515,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     return 0
                 end, "FixCrouchSpeed", 0)
             end
+            
 
             SendToConsole("ent_remove text_quicksave")
             SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
@@ -517,6 +530,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("mouse_disableinput 1")
                     SendToConsole("give weapon_bugbait")
                     SendToConsole("hidehud 4")
+                    SendToConsole("bind h \"\"")
                 else
                     MoveFreely()
                 end
@@ -656,6 +670,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
 
                         if not loading_save_file then
+                            ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/construction/construction_yard_lift.vmdl", ["origin"]="-1984 -2456 154", ["angles"]="0 270 0", ["parentname"]="pallet_crane_platform"})
+
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER6_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                         end
@@ -673,8 +689,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:Kill()
                         end
                     elseif GetMapName() == "a3_distillery" then
-                        SendToConsole("bind h +covermouth")
-
                         if not loading_save_file then
                             if not loading_save_file then
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
@@ -683,18 +697,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = Entities:FindByName(nil, "11578_2547_relay_koolaid_setup")
                             ent:RedirectOutput("OnTrigger", "FixJeffBatteryPuzzle", ent)
-
-                            -- Hand for covering mouth animation
-                            local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-                            local viewmodel_pos = viewmodel:GetAbsOrigin()
-                            local viewmodel_ang = viewmodel:GetAngles()
-                            ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x - 24 .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z - 4, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
-                            DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
-                            DoEntFire("lefthand", "Disable", "", 0, nil, nil)
                         end
                     else
-                        SendToConsole("bind h \"\"")
-
                         if GetMapName() == "a4_c17_zoo" then
                             if not loading_save_file then
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER8_TITLE"})
@@ -783,6 +787,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("mouse_disableinput 0")
         SendToConsole("ent_fire player_speedmod ModifySpeed 1")
         SendToConsole("hidehud 96")
+        SendToConsole("bind h +covermouth")
     end
 
     function AcceptEliCall(a, b)

@@ -1,4 +1,4 @@
-Convars:RegisterConvar("sv_jump_force", "150", "The force applied to the player when jumping", 0)
+Convars:RegisterConvar("sv_jump_force", "180", "The force applied to the player when jumping", 0)
 
 Convars:RegisterCommand("jumpfixed", function()
 	local player = Entities:GetLocalPlayer()

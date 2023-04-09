@@ -254,6 +254,8 @@ end
 
 if name == "254_16189_combine_locker" then
     SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnPuzzleSuccess")
+    SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-2018 -1828 216", ["angles"]="0 270 0", ["parentname"]="scanner_return_clip_door"})
+    SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-1888 -1744 216", ["angles"]="0 180 0", ["parentname"]="scanner_return_clip", ["modelscale"]=10})
 end
 
 if name == "2_203_elev_button_floor_1" then
