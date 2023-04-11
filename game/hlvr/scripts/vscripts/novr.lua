@@ -132,6 +132,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("cancelupgrade", function()
         Convars:SetStr("chosen_upgrade", "cancel")
         SendToConsole("ent_fire weapon_in_fabricator Kill")
+        SendToConsole("ent_fire upgrade_ui kill")
         -- TODO: Give weapon back, but don't fill magazine
         if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
             SendToConsole("give weapon_pistol")
@@ -521,8 +522,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
 
             SendToConsole("ent_remove text_resin")
-            -- TODO: Change holdtime to 3 when there is a proper weapon upgrade selection UI
-            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 15 x 0.02 y -0.11 }")
+            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.11 }")
 
             if GetMapName() == "a1_intro_world" then
                 if not loading_save_file then

@@ -370,24 +370,20 @@ if class == "prop_hlvr_crafting_station_console" then
                     SendToConsole("ent_fire point_clientui_world_panel Enable")
                     thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 0)
                 else
+                    SendToConsole("ent_fire upgrade_ui kill")
                     -- TODO: ent_create point_clientui_world_movie_panel {src_movie "file://{resources}/videos/wupgrade_frabrication.webm" targetname test width 200 height 100 }
                 end
                 thisEntity:SetGraphParameterBool("bCollectingResin", false)
-                SendToConsole("bind KP_0 \"\"")
-                SendToConsole("bind KP_1 \"\"")
-                SendToConsole("bind KP_2 \"\"")
             end
         elseif thisEntity:Attribute_GetIntValue("cancel_cooldown_done", 1) == 1 and thisEntity:GetGraphParameter("bCrafting") == false then
             thisEntity:SetGraphParameterBool("bCollectingResin", true)
             thisEntity:SetGraphParameterBool("bCrafting", true)
             thisEntity:Attribute_GetIntValue("crafting_station_ready", 0)
-            SendToConsole("ent_fire point_clientui_world_panel Disable")
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if viewmodel then
                 if viewmodel:GetModelName() == "models/pistol.vmdl" then
                     SendToConsole("ent_fire weapon_pistol kill 0.02")
                     SendToConsole("impulse 200")
-                    SendToConsole("ent_fire text_resin SetText \"Choose upgrade with numpad: [1] Reflex Sight (10 Resin), [2] Burst Fire (20 Resin), [0] Cancel\"")
                     SendToConsole("ent_fire text_resin Display")
                     Convars:SetStr("weapon_in_crafting_station", "pistol")
                     local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
@@ -399,17 +395,32 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/vr_alyxgun/vr_alyxgun_slide_anim_interact.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
 
-                    if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 0 then
-                        SendToConsole("bind KP_1 chooseupgrade1")
-                    elseif player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 0 then
-                        SendToConsole("bind KP_2 chooseupgrade2")
+                    local ents = Entities:FindAllByClassname("point_clientui_world_panel")
+                    DoEntFireByInstanceHandle(ents[1], "Disable", "", 0, nil, nil)
+                    DoEntFireByInstanceHandle(ents[2], "Disable", "", 0, nil, nil)
+                    local angles = ents[2]:GetAngles()
+                    local origin = ents[2]:GetOrigin() + Vector(0,0,0.04)
+                    ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_pistol.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    ent.upgrade1 = function()
+                        if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 0 then
+                            SendToConsole("chooseupgrade1")
+                        end
                     end
-
-                    SendToConsole("bind KP_0 cancelupgrade")
+                    ent.upgrade2 = function()
+                        if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 0 then
+                            SendToConsole("chooseupgrade2")
+                        end
+                    end
+                    ent.cancelupgrade = function()
+                        SendToConsole("cancelupgrade")
+                    end
+                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif viewmodel:GetModelName() == "models/shotgun.vmdl" then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
                     SendToConsole("impulse 200")
-                    SendToConsole("ent_fire text_resin SetText \"Choose upgrade with numpad: [1] Double Shot (10 Resin), [2] Grenade Launcher (20 Resin), [0] Cancel\"")
                     SendToConsole("ent_fire text_resin Display")
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
@@ -420,14 +431,30 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:SetParent(console, "item_attach")
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/vr_shotgun/vr_flip_shotgun_slider.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
-                    
-                    if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 0 then
-                        SendToConsole("bind KP_1 chooseupgrade1")
-                    elseif player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 0 then
-                        SendToConsole("bind KP_2 chooseupgrade2")
-                    end
 
-                    SendToConsole("bind KP_0 cancelupgrade")
+                    local ents = Entities:FindAllByClassname("point_clientui_world_panel")
+                    DoEntFireByInstanceHandle(ents[1], "Disable", "", 0, nil, nil)
+                    DoEntFireByInstanceHandle(ents[2], "Disable", "", 0, nil, nil)
+                    local angles = ents[2]:GetAngles()
+                    local origin = ents[2]:GetOrigin() + Vector(0,0,0.04)
+                    ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_shotgun.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    ent.upgrade1 = function()
+                        if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 0 then
+                            SendToConsole("chooseupgrade1")
+                        end
+                    end
+                    ent.upgrade2 = function()
+                        if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 0 then
+                            SendToConsole("chooseupgrade2")
+                        end
+                    end
+                    ent.cancelupgrade = function()
+                        SendToConsole("cancelupgrade")
+                    end
+                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif viewmodel:GetModelName() == "models/smg.vmdl" then
                     if player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                         SendToConsole("ent_fire weapon_ar2 kill 0.02")
@@ -435,7 +462,6 @@ if class == "prop_hlvr_crafting_station_console" then
                         SendToConsole("ent_fire weapon_smg1 kill 0.02")
                     end
                     SendToConsole("impulse 200")
-                    SendToConsole("ent_fire text_resin SetText \"Choose upgrade with numpad: [1] Reflex Sight (10 Resin), [2] Faster Fire Rate (20 Resin), [0] Cancel\"")
                     SendToConsole("ent_fire text_resin Display")
                     Convars:SetStr("weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
@@ -444,14 +470,30 @@ if class == "prop_hlvr_crafting_station_console" then
                     local origin = ent:GetCenter() - angles:Forward() * 1.6 - Vector(0,0,2.3)
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/w_ipistol/ipistol_wm.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
-                    
-                    if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 0 then
-                        SendToConsole("bind KP_1 chooseupgrade1")
-                    elseif player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                        SendToConsole("bind KP_2 chooseupgrade2")
-                    end
 
-                    SendToConsole("bind KP_0 cancelupgrade")
+                    local ents = Entities:FindAllByClassname("point_clientui_world_panel")
+                    DoEntFireByInstanceHandle(ents[1], "Disable", "", 0, nil, nil)
+                    DoEntFireByInstanceHandle(ents[2], "Disable", "", 0, nil, nil)
+                    local angles = ents[2]:GetAngles()
+                    local origin = ents[2]:GetOrigin() + Vector(0,0,0.04)
+                    ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_smg.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    ent.upgrade1 = function()
+                        if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 0 then
+                            SendToConsole("chooseupgrade1")
+                        end
+                    end
+                    ent.upgrade2 = function()
+                        if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                            SendToConsole("chooseupgrade2")
+                        end
+                    end
+                    ent.cancelupgrade = function()
+                        SendToConsole("cancelupgrade")
+                    end
+                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 end
             end
         end
