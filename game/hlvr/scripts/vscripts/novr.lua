@@ -640,6 +640,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("give weapon_shotgun")
 
                     if GetMapName() == "a2_drainage" then
+                        SendToConsole("ent_fire wheel_socket setscale 4")
                         SendToConsole("ent_fire wheel2_socket setscale 4")
                     elseif GetMapName() == "a3_hotel_interior_rooftop" then
                         ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
