@@ -159,6 +159,14 @@ if name == "carousel" then
     end, "SpinCarousel", 0)
 end
 
+if vlua.find(name, "mailbox") and vlua.find(model, "door") then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2500))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2500))
+    end
+end
+
 if name == "balcony_ladder" then
     ClimbLadderSound()
     SendToConsole("fadein 0.2")
@@ -169,6 +177,14 @@ if name == "russell_entry_window" then
     SendToConsole("fadein 0.2")
     SendToConsole("ent_fire russell_entry_window SetCompletionValue 1")
     SendToConsole("setpos -1728 275 100")
+end
+
+if model == "models/props/fridge_1a_door2.vmdl" or model == "models/props/fridge_1a_door.vmdl" then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+    end
 end
 
 if name == "621_6487_button_pusher_prop" then

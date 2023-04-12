@@ -476,6 +476,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
             SendToConsole("ent_fire electrical_panel_*_door* DisablePickup")
             SendToConsole("ent_fire *_washing_machine_door DisablePickup")
+            SendToConsole("ent_fire *_fridge_door_* DisablePickup")
+            SendToConsole("ent_fire *_mailbox_*_door_* DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
@@ -577,11 +579,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 ent = Entities:FindByName(nil, "hint_crouch_trigger")
                 ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
-
-                SendToConsole("ent_fire gg_training_start_trigger kill")
-
-                ent = Entities:FindByName(nil, "trigger_heli_flyby2")
-                ent:RedirectOutput("OnTrigger", "GivePistol", ent)
 
                 ent = Entities:FindByName(nil, "relay_weapon_pistol_fakefire")
                 ent:RedirectOutput("OnTrigger", "RedirectPistol", ent)
@@ -756,8 +753,8 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, nil)
 
     function GoToMainMenu(a, b)
-        SendToConsole("setpos_exact 805 -80 -26")
-        SendToConsole("setang_exact -5 0 0")
+        SendToConsole("setpos_exact 817 -80 -26")
+        SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("mouse_disableinput 0")
         SendToConsole("hidehud 96")
     end
