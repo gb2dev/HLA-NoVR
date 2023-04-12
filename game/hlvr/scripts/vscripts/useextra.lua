@@ -23,6 +23,7 @@ if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name
         if name == "track_switch_lever" then
             SendToConsole("ent_fire track_switch_lever SetCompletionValue 0.35 10")
             SendToConsole("ent_fire train_switch_reset_relay Trigger 0 10")
+            SendToConsole("ent_fire traincar_01_hackplug Alpha 0")
         else
             thisEntity:Attribute_SetIntValue("used", 1)
         end
