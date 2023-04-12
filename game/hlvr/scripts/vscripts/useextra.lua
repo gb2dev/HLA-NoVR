@@ -814,6 +814,10 @@ if name == "pallet_lever" then
     SendToConsole("ent_fire_output pallet_logic_extend ontrigger")
 end
 
+if class == "item_hlvr_headcrab_gland" then
+    SendToConsole("ent_fire achievement_squeeze_heart FireEvent")
+end
+
 if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
