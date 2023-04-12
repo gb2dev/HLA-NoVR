@@ -442,12 +442,15 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
-            SendToConsole("hidehud 4")
+            SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind MOUSE1 +use")
             if not loading_save_file then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 SendToConsole("setpos 0 -6154 6.473839")
+                ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="140 140 140", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=2})
+                DoEntFireByInstanceHandle(ent, "SetText", "NoVR by GB_2 Development Team", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             else
                 GoToMainMenu()
             end
@@ -462,7 +465,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hl2_normspeed 140")
             SendToConsole("bind F5 \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind F9 \"load quick\"")
-            SendToConsole("bind M \"map startup\"")
+            SendToConsole("bind M \"map startup;save exit\"")
             SendToConsole("bind MOUSE2 +customattack2")
             SendToConsole("bind MOUSE3 +customattack3")
             SendToConsole("r_drawviewmodel 0")
@@ -501,6 +504,12 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hlvr_physcannon_forward_offset 0")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
+
+            if Entities:FindByClassname(nil, "prop_hmd_avatar") then
+                ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="VR_SAVE_NOT_SUPPORTED"})
+                DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+                SendToConsole("play play sounds/ui/beepclear.vsnd")
+            end
 
             ent = Entities:FindByName(nil, "lefthand")
             if not ent then
