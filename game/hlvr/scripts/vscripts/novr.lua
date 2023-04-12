@@ -133,6 +133,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         Convars:SetStr("chosen_upgrade", "cancel")
         SendToConsole("ent_fire weapon_in_fabricator Kill")
         SendToConsole("ent_fire upgrade_ui kill")
+        SendToConsole("weapon_in_crafting_station \"\"")
         -- TODO: Give weapon back, but don't fill magazine
         if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
             SendToConsole("give weapon_pistol")
