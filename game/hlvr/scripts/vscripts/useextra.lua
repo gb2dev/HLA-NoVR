@@ -696,6 +696,7 @@ if map == "a2_quarantine_entrance" then
     if name == "toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
         thisEntity:Attribute_SetIntValue("used", 1)
         SendToConsole("ent_fire_output toner_path_5 OnPowerOn")
+        SendToConsole("ent_fire !picker OnPlugRotated")
     end
 
     if class == "item_hlvr_combine_console_rack" then

@@ -66,6 +66,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
         local ent = EntIndexToHScript(info.entindex)
+        local child = ent:GetChildren()[1]
+        if child and child:GetClassname() == "prop_dynamic" then
+            child:SetEntityName("held_prop_dynamic_override")
+        end
         ent:Attribute_SetIntValue("picked_up", 1)
         ent:SetThink(function()
             ent:Attribute_SetIntValue("picked_up", 0)
@@ -511,6 +515,33 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("play play sounds/ui/beepclear.vsnd")
             end
 
+            if not loading_save_file then
+                SendToConsole("ent_fire npc_barnacle AddOutput \"OnGrab>held_prop_dynamic_override>DisableCollision>>0>-1\"")
+                SendToConsole("ent_fire npc_barnacle AddOutput \"OnRelease>held_prop_dynamic_override>EnableCollision>>0>-1\"")
+                local collidable_props = {
+                    "models/props_c17/oildrum001.vmdl",
+                    "models/props/plastic_container_1.vmdl",
+                    "models/industrial/industrial_board_01.vmdl",
+                    "models/industrial/industrial_board_02.vmdl",
+                    "models/industrial/industrial_board_03.vmdl",
+                    "models/industrial/industrial_board_04.vmdl",
+                    "models/industrial/industrial_board_05.vmdl",
+                    "models/industrial/industrial_board_06.vmdl",
+                    "models/industrial/industrial_board_07.vmdl",
+                }
+                ent = Entities:FindByClassname(nil, "prop_physics")
+                while ent do
+                    local model = ent:GetModelName()
+                    if vlua.find(collidable_props, model) ~= nil then
+                        local angles = ent:GetAngles()
+                        local pos = ent:GetAbsOrigin()
+                        local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
+                        child:SetParent(ent, "")
+                    end
+                    ent = Entities:FindByClassname(ent, "prop_physics")
+                end
+            end
+
             ent = Entities:FindByName(nil, "lefthand")
             if not ent then
                 -- Hand for covering mouth animation
@@ -605,8 +636,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 if GetMapName() == "a2_quarantine_entrance" then
                     if not loading_save_file then
-                        ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="-2100.494 2792.368 200.265", ["angles"]="0 -37.1 0", ["parentname"]="puzzle_crate"})
-
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
