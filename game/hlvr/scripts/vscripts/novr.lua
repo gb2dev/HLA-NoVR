@@ -259,8 +259,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not player:IsUsePressed() then
             DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
-            -- TODO: Remove this old method
-            DoEntFire("!picker", "FireUser4", "", 0, nil, nil)
 
             if GetMapName() == "a5_vault" then
                 if vlua.find(Entities:FindAllInSphere(Vector(-468, 2902, -519), 20), player) then
@@ -268,11 +266,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos -486 2908 -420")
                 end
-            end
-
-            if GetMapName() == "a4_c17_parking_garage" then
-                ent = Entities:FindByName(nil, "toner_sliding_ladder")
-                ent:RedirectOutput("OnUser4", "ClimbGarageLadder", ent)
             end
 
             if GetMapName() == "a4_c17_water_tower" then
@@ -411,13 +404,21 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos_exact 577 1597 668")
                 end
+            end
 
-                ent = Entities:FindByName(nil, "cellar_ladder")
-                ent:RedirectOutput("OnUser4", "ClimbCellarLadder", ent)
+            if GetMapName() == "a1_intro_world" then
+                if vlua.find(Entities:FindAllInSphere(Vector(648,-1758,-141), 20), player) then
+                    ClimbLadderSound()
+                    SendToConsole("fadein 0.2")
+                    SendToConsole("setpos_exact 606 -1752 -70")
+                end
 
-                ent = Entities:FindByName(nil, "larry_ladder")
-                if ent then
-                    ent:RedirectOutput("OnUser4", "ClimbLarryLadder", ent)
+                if vlua.find(Entities:FindAllInSphere(Vector(530,-2331,-84), 20), player) then
+                    ClimbLadderSound()
+                    SendToConsole("fadein 0.2")
+                    SendToConsole("setpos_exact 574 -2328 -130")
+                    SendToConsole("ent_fire 563_vent_door DisablePickup")
+                    SendToConsole("-use")
                 end
             end
         end
@@ -474,6 +475,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_locker_door_* DisablePickup")
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
             SendToConsole("ent_fire electrical_panel_*_door* DisablePickup")
+            SendToConsole("ent_fire *_washing_machine_door DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
@@ -525,40 +527,34 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.11 }")
 
             if GetMapName() == "a1_intro_world" then
+                ent = Entities:FindByName(nil, "51_ladder_hint_trigger")
+                ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
+                SendToConsole("ent_create env_message { targetname text_ladder message LADDER }")
                 if not loading_save_file then
                     SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                     SendToConsole("mouse_disableinput 1")
                     SendToConsole("give weapon_bugbait")
                     SendToConsole("hidehud 4")
                     SendToConsole("bind h \"\"")
+
+                    ent = Entities:FindByName(nil, "relay_start_intro_text")
+                    ent:RedirectOutput("OnTrigger", "DisableUICursor", ent)
+                    ent = Entities:FindByName(nil, "relay_start_dossier")
+                    ent:RedirectOutput("OnTrigger", "DisableUICursor", ent)
+
+                    ent = Entities:FindByName(nil, "relay_teleported_to_refuge")
+                    ent:RedirectOutput("OnTrigger", "MoveFreely", ent)
+
+                    ent = Entities:FindByName(nil, "prop_dogfood")
+                    local angles = ent:GetAngles()
+                    ent:SetAngles(180,angles.y,angles.z)
+                    ent:SetOrigin(ent:GetOrigin() + Vector(0,0,10))
+
+                    ent = Entities:FindByName(nil, "51_ladder_hint_trigger")
+                    ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
                 else
                     MoveFreely()
                 end
-
-                ent = Entities:FindByName(nil, "relay_teleported_to_refuge")
-                ent:RedirectOutput("OnTrigger", "MoveFreely", ent)
-
-                ent = Entities:FindByName(nil, "microphone")
-                ent:RedirectOutput("OnUser4", "AcceptEliCall", ent)
-
-                ent = Entities:FindByName(nil, "greenhouse_door")
-                ent:RedirectOutput("OnUser4", "OpenGreenhouseDoor", ent)
-
-                ent = Entities:FindByName(nil, "205_2653_door")
-                ent:RedirectOutput("OnUser4", "OpenElevator", ent)
-                ent = Entities:FindByName(nil, "205_2653_door2")
-                ent:RedirectOutput("OnUser4", "OpenElevator", ent)
-                ent = Entities:FindByName(nil, "205_8018_button_pusher_prop")
-                ent:RedirectOutput("OnUser4", "OpenElevator", ent)
-
-                ent = Entities:FindByName(nil, "205_8032_button_pusher_prop")
-                ent:RedirectOutput("OnUser4", "RideElevator", ent)
-
-                ent = Entities:FindByName(nil, "563_vent_door")
-                ent:RedirectOutput("OnUser4", "EnterCombineElevator", ent)
-
-                ent = Entities:FindByName(nil, "979_518_button_pusher_prop")
-                ent:RedirectOutput("OnUser4", "OpenCombineElevator", ent)
             elseif GetMapName() == "a1_intro_world_2" then
                 if not loading_save_file then
                     ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER1_TITLE"})
@@ -581,26 +577,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 ent = Entities:FindByName(nil, "hint_crouch_trigger")
                 ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
-                
-                ent = Entities:FindByName(nil, "spawner_scanner")
-                ent:RedirectOutput("OnEntitySpawned", "RedirectHeadset", ent)
-
-                ent = Entities:FindByName(nil, "4962_car_door_left_front")
-                ent:RedirectOutput("OnUser4", "ToggleCarDoor", ent)
-
-                ent = Entities:FindByName(nil, "balcony_ladder")
-                ent:RedirectOutput("OnUser4", "ClimbBalconyLadder", ent)
-
-                ent = Entities:FindByName(nil, "russell_entry_window")
-                ent:RedirectOutput("OnUser4", "OpenRussellWindow", ent)
-
-                ent = Entities:FindByName(nil, "621_6487_button_pusher_prop")
-                ent:RedirectOutput("OnUser4", "OpenRussellDoor", ent)
 
                 SendToConsole("ent_fire gg_training_start_trigger kill")
-
-                ent = Entities:FindByName(nil, "glove_dispenser_brush")
-                ent:RedirectOutput("OnUser4", "EquipGravityGloves", ent)
 
                 ent = Entities:FindByName(nil, "trigger_heli_flyby2")
                 ent:RedirectOutput("OnTrigger", "GivePistol", ent)
@@ -715,7 +693,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire port_health_trap Disable")
                             SendToConsole("ent_fire health_trap_locked_door Unlock")
                             SendToConsole("ent_fire 589_toner_port_5 Disable")
-                            SendToConsole("@prop_phys_portaloo_door DisablePickup")
+                            SendToConsole("ent_fire @prop_phys_portaloo_door DisablePickup")
                         elseif GetMapName() == "a4_c17_tanker_yard" then
                             SendToConsole("ent_fire elev_hurt_player_* Kill")
 
@@ -791,96 +769,14 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("bind h +covermouth")
     end
 
-    function AcceptEliCall(a, b)
-        SendToConsole("ent_fire call_button_relay trigger")
-    end
-
-    function OpenGreenhouseDoor(a, b)
-        local ent = Entities:FindByName(nil, "greenhouse_door")
-        if string.format("%.2f", ent:GetCycle()) == "0.05" then
-            SendToConsole("ent_fire greenhouse_door playanimation alyx_door_open")
-        end
-    end
-
-    function OpenElevator(a, b)
-        SendToConsole("ent_fire debug_roof_elevator_call_relay trigger")
-    end
-
-    function RideElevator(a, b)
-        SendToConsole("ent_fire debug_elevator_relay trigger")
-    end
-
-    function EnterCombineElevator(a, b)
-        SendToConsole("fadein 0.2")
-        SendToConsole("setpos_exact 574 -2328 -115")
-        SendToConsole("ent_setpos 581 540.885 -2331.526 -71.911")
-    end
-
-    function OpenCombineElevator(a, b)
-        SendToConsole("ent_fire debug_choreo_start_relay trigger")
+    function DisableUICursor(a, b)
+        SendToConsole("ent_fire point_clientui_world_panel IgnoreUserInput")
     end
 
     function GetOutOfCrashedVan(a, b)
         SendToConsole("fadein 0.2")
         SendToConsole("setpos_exact -1408 2307 -104")
         SendToConsole("ent_fire 4962_car_door_left_front open")
-    end
-
-    function RedirectHeadset(a, b)
-        local ent = Entities:FindByName(nil, "russell_headset")
-        ent:RedirectOutput("OnUser4", "EquipHeadset", ent)
-    end
-
-    function EquipHeadset(a, b)
-        SendToConsole("ent_fire debug_relay_put_on_headphones trigger")
-        SendToConsole("ent_fire 4962_car_door_left_front close")
-    end
-
-    function ToggleCarDoor(a, b)
-        SendToConsole("ent_fire 4962_car_door_left_front toggle")
-    end
-
-    function ClimbBalconyLadder(a, b)
-        ClimbLadderSound()
-        SendToConsole("fadein 0.2")
-        SendToConsole("setpos_exact -1296 576 80")
-    end
-
-    function ClimbCellarLadder(a, b)
-        ClimbLadderSound()
-        SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
-        SendToConsole("fadein 0.2")
-        SendToConsole("setpos_exact 1004 1775 546")
-    end
-
-    function ClimbLarryLadder(a, b)
-        ClimbLadderSound()
-        SendToConsole("ent_fire larry_ladder SetCompletionValue 1")
-        SendToConsole("fadein 0.2")
-        SendToConsole("ent_fire relay_debug_intro_trench trigger")
-    end
-
-    function ClimbGarageLadder(a, b)
-        ClimbLadderSound()
-        SendToConsole("ent_fire toner_sliding_ladder SetCompletionValue 1")
-        SendToConsole("fadein 0.2")
-        SendToConsole("setpos_exact -367 -416 150")
-    end
-
-    function OpenRussellWindow(a, b)
-        SendToConsole("fadein 0.2")
-        SendToConsole("ent_fire russell_entry_window SetCompletionValue 1")
-        SendToConsole("setpos -1728 275 100")
-    end
-
-    function OpenRussellDoor(a, b)
-        SendToConsole("ent_fire 621_6487_button_branch test")
-    end
-
-    function EquipGravityGloves(a, b)
-        SendToConsole("ent_fire relay_give_gravity_gloves trigger")
-        SendToConsole("hidehud 1")
-        Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
     end
 
     function RedirectPistol(a, b)
@@ -927,6 +823,11 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire @crank_battery kill")
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
         SendToConsole("ent_fire 11478_6233_math_count_wheel_installment SetHitMax 1")
+    end
+
+    function ShowLadderTutorial()
+        SendToConsole("ent_fire text_ladder ShowMessage")
+        SendToConsole("play play sounds/ui/beepclear.vsnd")
     end
 
     function ShowSprintTutorial()

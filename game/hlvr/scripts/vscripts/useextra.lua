@@ -4,7 +4,19 @@ local name = thisEntity:GetName()
 local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
 
+if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("toggle", 1)
+else
+    thisEntity:Attribute_SetIntValue("toggle", 0)
+end
+
 if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    if name == "greenhouse_door" then
+        if string.format("%.2f", thisEntity:GetCycle()) ~= "0.05" then
+            return
+        end
+    end
+    
     if class == "prop_animinteractable" and model == "models/props_subway/scenes/desk_lever.vmdl" then
         thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
     elseif name ~= "plug_console_starter_lever" then
@@ -80,6 +92,10 @@ if name == "falling_cabinet_door" then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1000,0))
 end
 
+if name == "falling_cabinet_door" then
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1000,0))
+end
+
 if vlua.find(name, "_locker_door_") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
 elseif vlua.find(name, "_hazmat_crate_lid") then
@@ -95,6 +111,105 @@ end
 if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") then
     DoEntFireByInstanceHandle(thisEntity, "Close", "", 0, nil, nil)
 end
+
+
+---------- a1_intro_world ----------
+
+if name == "microphone" or name == "call_button_prop" then
+    SendToConsole("ent_fire call_button_relay trigger")
+end
+
+if name == "205_2653_door" or name == "205_2653_door2" or name == "205_8018_button_pusher_prop" then
+    SendToConsole("ent_fire debug_roof_elevator_call_relay trigger")
+end
+
+if name == "205_8032_button_pusher_prop" then
+    SendToConsole("ent_fire debug_elevator_relay trigger")
+end
+
+if model == "models/props/interactive/washing_machine01a_door.vmdl" then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-3000))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,3000))
+    end
+end
+
+if name == "979_518_button_pusher_prop" then
+    SendToConsole("ent_fire debug_choreo_start_relay trigger")
+end
+
+
+---------- a1_intro_world_2 ----------
+
+if name == "russell_headset" then
+    SendToConsole("ent_fire debug_relay_put_on_headphones trigger")
+    SendToConsole("ent_fire 4962_car_door_left_front close")
+end
+
+if name == "4962_car_door_left_front" or name == "4962_car_door_left_front_window" then
+    SendToConsole("ent_fire 4962_car_door_left_front toggle")
+end
+
+if name == "carousel" then
+    SendToConsole("+attack")
+    player:SetThink(function()
+        SendToConsole("-attack")
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-500))
+    end, "SpinCarousel", 0)
+end
+
+if name == "balcony_ladder" then
+    ClimbLadderSound()
+    SendToConsole("fadein 0.2")
+    SendToConsole("setpos_exact -1296 576 67")
+end
+
+if name == "russell_entry_window" then
+    SendToConsole("fadein 0.2")
+    SendToConsole("ent_fire russell_entry_window SetCompletionValue 1")
+    SendToConsole("setpos -1728 275 100")
+end
+
+if name == "621_6487_button_pusher_prop" then
+    SendToConsole("ent_fire 621_6487_button_branch test")
+end
+
+if name == "glove_dispenser_brush" then
+    SendToConsole("ent_fire relay_give_gravity_gloves trigger")
+    SendToConsole("hidehud 1")
+    Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
+end
+
+
+---------- a3_distillery ----------
+
+if name == "cellar_ladder" then
+    ClimbLadderSound()
+    SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
+    SendToConsole("fadein 0.2")
+    SendToConsole("setpos_exact 1004 1775 546")
+end
+
+if name == "larry_ladder" then
+    ClimbLadderSound()
+    SendToConsole("ent_fire larry_ladder SetCompletionValue 1")
+    SendToConsole("fadein 0.2")
+    SendToConsole("ent_fire relay_debug_intro_trench trigger")
+end
+
+
+---------- a4_c17_parking_garage ----------
+
+if name == "toner_sliding_ladder" then
+    ClimbLadderSound()
+    SendToConsole("ent_fire toner_sliding_ladder SetCompletionValue 1")
+    SendToConsole("fadein 0.2")
+    SendToConsole("setpos_exact -367 -416 150")
+end
+
+
+---------- Other ----------
 
 if name == "prop_crowbar" then
     thisEntity:Kill()
@@ -428,6 +543,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     local angles = ent:GetAngles()
                     local origin = ent:GetCenter() - angles:Forward() * 1.5 - Vector(0,0,2.25)
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/vr_shotgun/vr_flip_shotgun_body.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    DoEntFireByInstanceHandle(ent, "SetAnimation", "vr_flip_shotgun_crafting_idle", 0, nil, nil)
                     ent:SetParent(console, "item_attach")
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/vr_shotgun/vr_flip_shotgun_slider.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")

@@ -4,7 +4,7 @@ local startVector = player:EyePosition()
 local eyetrace =
 {
     startpos = startVector;
-    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(82,0,0));
+    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(820,0,0));
     ignore = player;
     mask =  33636363
 }
