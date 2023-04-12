@@ -102,6 +102,8 @@ elseif vlua.find(name, "_hazmat_crate_lid") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-5000,0))
 elseif vlua.find(name, "electrical_panel_") and vlua.find(name, "_door") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
+elseif vlua.find(name, "_dumpster_lid") then
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-500,0))
 end
 
 if vlua.find(name, "_wooden_board") then

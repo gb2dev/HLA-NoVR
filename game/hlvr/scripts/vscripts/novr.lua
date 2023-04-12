@@ -290,10 +290,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a4_c17_tanker_yard" then
-                if vlua.find(Entities:FindAllInSphere(Vector(6980, 2591, 13), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos 6965 2600 261")
+                if vlua.find(Entities:FindAllInSphere(Vector(6980, 2591, 13), 10), player) then
+                    ClimbLadder(260)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(6618, 2938, 334), 10), player) then
+                    ClimbLadder(402)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 20), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
@@ -440,8 +440,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SpawnEntityFromTableSynchronous("player_speedmod", nil)
         end
 
-        SendToConsole("fps_max 120")
-
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
             SendToConsole("hidehud 4")
@@ -479,6 +477,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_washing_machine_door DisablePickup")
             SendToConsole("ent_fire *_fridge_door_* DisablePickup")
             SendToConsole("ent_fire *_mailbox_*_door_* DisablePickup")
+            SendToConsole("ent_fire *_dumpster_lid DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
@@ -805,6 +804,25 @@ if GlobalSys:CommandLineCheck("-novr") then
     function CrouchThroughZooHole(a, b)
         SendToConsole("fadein 0.2")
         SendToConsole("setpos 5393 -1960 -125")
+    end
+
+    function ClimbLadder(height)
+        local ent = Entities:GetLocalPlayer()
+        local ticks = 0
+        ent:SetThink(function()
+            if ent:GetOrigin().z > height then
+                ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 100)
+            else
+                ent:SetVelocity(Vector(0, 0, 0))
+                ent:SetOrigin(ent:GetOrigin() + Vector(0, 0, 2))
+                ticks = ticks + 1
+                if ticks == 25 then
+                    SendToConsole("snd_sos_start_soundevent Step_Player.Ladder_Single")
+                    ticks = 0
+                end
+                return 0
+            end
+        end, "ClimbUp", 0)
     end
 
     function ClimbLadderSound()
