@@ -305,7 +305,7 @@ if name == "589_test_outlet" then
 end
 
 if class == "item_combine_tank_locker" then
-    if thisEntity:GetCycle() <= 0.25 then
+    if thisEntity:GetCycle() <= 0.5 then
         DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "combine_locker_standing", 0, nil, nil)
 
         ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
