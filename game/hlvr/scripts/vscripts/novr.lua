@@ -459,6 +459,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind e \"+use;useextra\"")
             SendToConsole("bind v noclip")
             SendToConsole("hl2_sprintspeed 140")
+            SendToConsole("hl2_normspeed 140")
             SendToConsole("bind F5 \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind F9 \"load quick\"")
             SendToConsole("bind M \"map startup\"")

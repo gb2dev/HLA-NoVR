@@ -20,7 +20,12 @@ if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name
     if class == "prop_animinteractable" and model == "models/props_subway/scenes/desk_lever.vmdl" then
         thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
     elseif name ~= "plug_console_starter_lever" then
-        thisEntity:Attribute_SetIntValue("used", 1)
+        if name == "track_switch_lever" then
+            SendToConsole("ent_fire track_switch_lever SetCompletionValue 0.35 10")
+            SendToConsole("ent_fire train_switch_reset_relay Trigger 0 10")
+        else
+            thisEntity:Attribute_SetIntValue("used", 1)
+        end
     end
 
     if class == "item_health_station_charger" or class == "item_hlvr_combine_console_rack" then
@@ -300,14 +305,16 @@ if name == "589_test_outlet" then
 end
 
 if class == "item_combine_tank_locker" then
-    DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "combine_locker_standing", 0, nil, nil)
+    if thisEntity:GetCycle() <= 0.25 then
+        DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "combine_locker_standing", 0, nil, nil)
 
-    ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
-    while ent do
-        if ent:GetMoveParent() then
-            DoEntFireByInstanceHandle(ent, "EnablePickup", "", 0, nil, nil)
+        ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
+        while ent do
+            if ent:GetMoveParent() then
+                DoEntFireByInstanceHandle(ent, "EnablePickup", "", 0, nil, nil)
+            end
+            ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_tank")
         end
-        ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_tank")
     end
 end
 
@@ -570,10 +577,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
                     local origin = ent:GetCenter() - angles:Forward() * 1.5 - Vector(0,0,2.25)
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/vr_shotgun/vr_flip_shotgun_body.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
-                    DoEntFireByInstanceHandle(ent, "SetAnimation", "vr_flip_shotgun_crafting_idle", 0, nil, nil)
-                    ent:SetParent(console, "item_attach")
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/vr_shotgun/vr_flip_shotgun_slider.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    ent = SpawnEntityFromTableSynchronous("item_hlvr_weapon_shotgun", {["targetname"]="weapon_in_fabricator", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
 
                     local ents = Entities:FindAllByClassname("point_clientui_world_panel")
@@ -651,7 +655,7 @@ if class == "item_hlvr_combine_console_tank" then
     if thisEntity:GetMoveParent() then
         DoEntFireByInstanceHandle(thisEntity, "ClearParent", "", 0, nil, nil)
     else
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(150,0,0))
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(200,0,0))
     end
 end
 
@@ -811,7 +815,10 @@ end
 if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
-    SendToConsole("ent_fire item_hlvr_combine_console_tank DisablePickup")
+    local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", thisEntity:GetCenter(), 20)
+    for k, v in pairs(ents) do
+        DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
+    end
     SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
 end
 
