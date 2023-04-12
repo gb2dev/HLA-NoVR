@@ -1,0 +1,1 @@
+game\bin\win64\hlvr.exe -novr -vsync -console -vconsole
