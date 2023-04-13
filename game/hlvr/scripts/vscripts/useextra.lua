@@ -191,12 +191,6 @@ if vlua.find(name, "mailbox") and vlua.find(model, "door") then
     end
 end
 
-if name == "balcony_ladder" then
-    ClimbLadderSound()
-    SendToConsole("fadein 0.2")
-    SendToConsole("setpos_exact -1296 576 67")
-end
-
 if name == "russell_entry_window" then
     SendToConsole("fadein 0.2")
     SendToConsole("ent_fire russell_entry_window SetCompletionValue 1")
@@ -874,6 +868,7 @@ elseif class == "item_hlvr_clip_energygun" then
     if name == "pistol_clip_1" then
         SendToConsole("ent_remove weapon_bugbait")
         SendToConsole("give weapon_pistol")
+        SendToConsole("ent_fire_output ammo_insert_listener OnEventFired")
     else
         SendToConsole("hlvr_addresources 10 0 0 0")
     end
@@ -916,3 +911,4 @@ elseif class == "item_healthvial" then
         thisEntity:Kill()
     end
 end
+--]]

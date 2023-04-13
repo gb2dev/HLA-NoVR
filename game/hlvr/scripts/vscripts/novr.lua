@@ -414,14 +414,18 @@ if GlobalSys:CommandLineCheck("-novr") then
             if GetMapName() == "a1_intro_world" then
                 if vlua.find(Entities:FindAllInSphere(Vector(648,-1757,-141), 10), player) then
                     ClimbLadder(-64)
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(530,-2331,-84), 20), player) then
+                elseif vlua.find(Entities:FindAllInSphere(Vector(530,-2331,-84), 20), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos_exact 574 -2328 -130")
                     SendToConsole("ent_fire 563_vent_door DisablePickup")
                     SendToConsole("-use")
+                end
+            end
+
+            if GetMapName() == "a1_intro_world_2" then
+                if vlua.find(Entities:FindAllInSphere(Vector(-1268, 573, -63), 10), player) then
+                    ClimbLadder(80)
                 end
             end
         end
@@ -614,13 +618,32 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("ent_create env_message { targetname text_sprint message SPRINT }")
                 end
 
-                SendToConsole("give weapon_bugbait")
-                SendToConsole("hidehud 96")
+                ent = Entities:GetLocalPlayer()
+                if ent:Attribute_GetIntValue("pistol", 0) == 0 then
+                    if ent:Attribute_GetIntValue("gravity_gloves", 0) == 0 then
+                        SendToConsole("hidehud 96")
+                    else
+                        SendToConsole("hidehud 0")
+                        ent:SetThink(function()
+                            SendToConsole("hidehud 1")
+                        end, "", 0)
+                    end
+                    SendToConsole("give weapon_bugbait")
+                else
+                    SendToConsole("r_drawviewmodel 1")
+                end
+
                 SendToConsole("combine_grenade_timer 7")
 
                 if not loading_save_file then
                     ent = Entities:FindByName(nil, "trigger_post_gate")
                     ent:RedirectOutput("OnTrigger", "ShowSprintTutorial", ent)
+
+                    ent = Entities:FindByName(nil, "gate_ammo_trigger")
+                    local origin = ent:GetOrigin()
+                    local angles = ent:GetAngles()
+                    ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["model"]="maps/a1_intro_world_2/entities/gate_ammo_trigger_621_2249_345.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
+                    ent:RedirectOutput("OnDetectedBulletFire", "CheckTutorialPistolEmpty", ent)
                 end
 
                 ent = Entities:FindByName(nil, "scavenge_trigger")
@@ -833,10 +856,11 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function EquipPistol(a, b)
-        SendToConsole("ent_fire_output weapon_equip_listener oneventfired")
+        SendToConsole("ent_fire_output weapon_equip_listener OnEventFired")
         SendToConsole("hidehud 64")
         SendToConsole("r_drawviewmodel 1")
         SendToConsole("ent_fire item_hlvr_weapon_energygun kill")
+        Entities:GetLocalPlayer():Attribute_SetIntValue("pistol", 1)
     end
 
     function MakeLeverUsable(a, b)
@@ -854,7 +878,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local ticks = 0
         ent:SetThink(function()
             if ent:GetOrigin().z > height then
-                ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 100)
+                ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 150)
             else
                 ent:SetVelocity(Vector(0, 0, 0))
                 ent:SetOrigin(ent:GetOrigin() + Vector(0, 0, 2))
@@ -897,6 +921,14 @@ if GlobalSys:CommandLineCheck("-novr") then
     function ShowLadderTutorial()
         SendToConsole("ent_fire text_ladder ShowMessage")
         SendToConsole("play play sounds/ui/beepclear.vsnd")
+    end
+
+    function CheckTutorialPistolEmpty()
+        local player = Entities:GetLocalPlayer()
+        player:Attribute_SetIntValue("pistol_magazine_ammo", player:Attribute_GetIntValue("pistol_magazine_ammo", 0) - 1)
+        if player:Attribute_GetIntValue("pistol_magazine_ammo", 0) % 10 == 0 then
+            SendToConsole("ent_fire_output pistol_chambered_listener OnEventFired")
+        end
     end
 
     function ShowSprintTutorial()
