@@ -274,10 +274,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a4_c17_water_tower" then
-                if vlua.find(Entities:FindAllInSphere(Vector(3314, 6048, 64), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos 3276 6048 142")
+                if vlua.find(Entities:FindAllInSphere(Vector(3314, 6048, 64), 10), player) then
+                    ClimbLadder(142)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2981, 5879, -303), 10), player) then
+                    ClimbLadder(-57)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(2374, 6207, -177), 20), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
@@ -487,6 +487,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_mailbox_*_door_* DisablePickup")
             SendToConsole("ent_fire *_dumpster_lid DisablePickup")
             SendToConsole("ent_fire *_portaloo_seat DisablePickup")
+            SendToConsole("ent_fire *_drawer_* DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")

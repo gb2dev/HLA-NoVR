@@ -120,6 +120,12 @@ elseif vlua.find(name, "_portaloo_seat") then
     else
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
     end
+elseif vlua.find(name, "_drawer_") then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyAbsVelocityImpulse(player:GetForwardVector() * 180)
+    else
+        thisEntity:ApplyAbsVelocityImpulse(-player:GetForwardVector() * 180)
+    end
 end
 
 if vlua.find(name, "_wooden_board") then
