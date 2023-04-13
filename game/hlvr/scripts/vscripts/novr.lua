@@ -412,10 +412,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a1_intro_world" then
-                if vlua.find(Entities:FindAllInSphere(Vector(648,-1758,-141), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 606 -1752 -70")
+                if vlua.find(Entities:FindAllInSphere(Vector(648,-1757,-141), 10), player) then
+                    ClimbLadder(-64)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(530,-2331,-84), 20), player) then
@@ -599,6 +597,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                     local angles = ent:GetAngles()
                     ent:SetAngles(180,angles.y,angles.z)
                     ent:SetOrigin(ent:GetOrigin() + Vector(0,0,10))
+
+                    ent = Entities:FindByName(nil, "relay_heist_monitors_callincoming")
+                    ent:RedirectOutput("OnTrigger", "ShowInteractTutorial", ent)
 
                     ent = Entities:FindByName(nil, "51_ladder_hint_trigger")
                     ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
@@ -885,6 +886,12 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire @crank_battery kill")
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
         SendToConsole("ent_fire 11478_6233_math_count_wheel_installment SetHitMax 1")
+    end
+
+    function ShowInteractTutorial()
+        ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="INTERACT"})
+        DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+        SendToConsole("play play sounds/ui/beepclear.vsnd")
     end
 
     function ShowLadderTutorial()
