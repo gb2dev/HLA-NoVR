@@ -532,6 +532,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     "models/industrial/industrial_board_06.vmdl",
                     "models/industrial/industrial_board_07.vmdl",
                     "models/industrial/industrial_chemical_barrel_02.vmdl",
+                    "models/props_junk/wood_crate001a.vmdl",
+                    "models/props_junk/wood_crate002a.vmdl",
                 }
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
