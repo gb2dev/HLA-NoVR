@@ -905,7 +905,7 @@ elseif class == "item_hlvr_grenade_frag" then
     end
 elseif class == "item_healthvial" then
     if player:GetHealth() < player:GetMaxHealth() then
-        player:SetHealth(min(player:GetHealth() + 10, player:GetMaxHealth()))
+        player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("HealthPen.Stab", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
