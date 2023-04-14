@@ -448,6 +448,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
 
         SendToConsole("mouse_pitchyaw_sensitivity " .. MOUSE_SENSITIVITY)
+        SendToConsole("snd_remove_soundevent HL2Player.UseDeny")
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
