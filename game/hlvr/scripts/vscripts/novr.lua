@@ -474,7 +474,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
             SendToConsole("bind " .. MAIN_MENU .. " \"map startup;save exit\"")
-            SendToConsole("bind " .. PRIMARY_ATTACK .. " +attack")
+            SendToConsole("bind " .. PRIMARY_ATTACK .. " +iv_attack")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
