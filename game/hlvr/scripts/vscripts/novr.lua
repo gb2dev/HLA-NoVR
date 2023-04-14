@@ -451,7 +451,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
-            SendToConsole("addon_enable NoVRMapEdits")
+            SendToConsole("addon_enable novr")
             SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
@@ -473,12 +473,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. NOCLIP .. " noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
-            SendToConsole("bind " .. MAIN_MENU .. " \"map startup;save exit\"")
+            SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +iv_attack")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
-            print(COVER_MOUTH)
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
             SendToConsole("r_drawviewmodel 0")

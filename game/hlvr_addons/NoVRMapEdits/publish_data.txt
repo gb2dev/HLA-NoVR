@@ -1,7 +1,0 @@
-"publish_data"
-{
-	"title"		"NO-VR Map Edits"
-	"source_folder"		"mapedits"
-	"publish_time"		"1680467229"
-	"publish_time_readable"		"04/02/2023 10:27:09 PM"
-}

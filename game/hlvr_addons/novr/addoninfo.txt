@@ -1,0 +1,18 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+{
+	HideInTools = false
+	IsPlayable = true
+	IsTemplate = false
+	maps = [  ]
+	map_extensions = 
+	[
+		{
+			parent_map = "a1_intro_world"
+			extension_map = "a1_intro_world_novr"
+		},
+		{
+			parent_map = "a1_intro_world_2"
+			extension_map = "a1_intro_world_2_novr"
+		},
+	]
+}
