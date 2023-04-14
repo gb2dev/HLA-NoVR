@@ -8,6 +8,7 @@ Copy the ``game`` folder into your main Half-Life: Alyx installation folder (e.g
 Start the game with the launch options ``-novr -vsync``.
 
 ## Controls
+To change the controls/rebind buttons, edit ``game\hlvr\scripts\vscripts\bindings.lua`` in your main Half-Life: Alyx installation folder.
 ### Keyboard and Mouse
 Left Click: Select in Main Menu/Throw Held Object/Primary Attack
 

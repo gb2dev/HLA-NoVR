@@ -1,3 +1,5 @@
+DoIncludeScript("bindings.lua", nil)
+
 local map = GetMapName()
 local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
@@ -264,7 +266,7 @@ if name == "combine_gun_mechanical" and thisEntity:Attribute_GetIntValue("used",
     SendToConsole("ent_fire combine_gun_interact Alpha 0")
     SendToConsole("ent_fire combine_gun_mechanical SetParent !player")
     thisEntity:SetAngles(angles.x - 15, angles.y, angles.z)
-    SendToConsole("bind MOUSE1 \"ent_fire relay_shoot_gun trigger\"")
+    SendToConsole("bind " .. PRIMARY_ATTACK .. " \"ent_fire relay_shoot_gun trigger\"")
     SendToConsole("r_drawviewmodel 0")
     thisEntity:Attribute_SetIntValue("used", 1)
 end
@@ -686,7 +688,7 @@ if map == "a2_headcrabs_tunnel" then
 
     if name == "flashlight" then
         SendToConsole("ent_fire_output flashlight OnAttachedToHand")
-        SendToConsole("bind F inv_flashlight")
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
         player:Attribute_SetIntValue("has_flashlight", 1)
         SendToConsole("ent_remove flashlight")
     end
