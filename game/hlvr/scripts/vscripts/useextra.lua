@@ -941,4 +941,3 @@ elseif class == "item_healthvial" then
         thisEntity:Kill()
     end
 end
---]]

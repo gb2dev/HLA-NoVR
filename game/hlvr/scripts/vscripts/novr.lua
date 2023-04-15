@@ -599,6 +599,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local angles = ent:GetAngles()
                 SendToConsole("setang " .. angles.x .. " " .. angles.y .. " 0")
                 ent:SetThink(function()
+                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", Entities:GetLocalPlayer():GetCenter(), 12)
+                    if shard then
+                        DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
+                    end
+
                     if Entities:GetLocalPlayer():GetBoundingMaxs().z == 36 then
                         SendToConsole("cl_forwardspeed 86;cl_backspeed 86;cl_sidespeed 86")
                     else
@@ -607,7 +612,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                     return 0
                 end, "FixCrouchSpeed", 0)
             end
-            
 
             SendToConsole("ent_remove text_quicksave")
             SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
