@@ -888,6 +888,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
         end
+
+        if INVERT_MOUSE_Y then
+            SendToConsole("bind MOUSE_Y !iv_pitch")
+        end
     end, nil)
 
     function GoToMainMenu(a, b)
