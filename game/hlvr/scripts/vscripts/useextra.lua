@@ -137,9 +137,9 @@ elseif vlua.find(name, "_portaloo_seat") then
     end
 elseif vlua.find(name, "_drawer_") then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-        thisEntity:ApplyAbsVelocityImpulse(player:GetForwardVector() * 180)
+        thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 100)
     else
-        thisEntity:ApplyAbsVelocityImpulse(-player:GetForwardVector() * 180)
+        thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 100)
     end
 end
 
@@ -479,13 +479,6 @@ end
 
 if name == "12712_shotgun_wheel" then
     SendToConsole("ent_fire !picker SetCompletionValue 10")
-    return
-end
-
-if name == "bell" then
-    DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "chain_pull", 0, nil, nil)
-    DoEntFireByInstanceHandle(thisEntity, "SetPlaybackRate", "8", 0, nil, nil)
-    SendToConsole("ent_fire_output bell OnCompletionA_Forward")
     return
 end
 
@@ -902,32 +895,44 @@ elseif class == "item_hlvr_clip_energygun" then
         SendToConsole("hlvr_addresources 10 0 0 0")
     end
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_energygun_multiple" then
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 40 0 0 0")
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_shotgun_multiple" then
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 0 0 4 0")
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_shotgun_single" then
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 0 0 1 0")
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_rapidfire" then
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 0 30 0 0")
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_grenade_frag" then
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
         SendToConsole("give weapon_frag")
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    viewmodel:RemoveEffects(32)
         thisEntity:Kill()
     end
 elseif class == "item_healthvial" then
