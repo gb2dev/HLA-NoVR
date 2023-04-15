@@ -39,6 +39,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             GibBecomeRagdoll("prop_physics")
             GibBecomeRagdoll("prop_ragdoll")
+
+            SendToConsole("ent_fire xen_foliage_bloater BecomeRagdoll")
         end, "GibBecomeRagdoll", 0)
 
         local ent = EntIndexToHScript(info.entindex_killed):GetChildren()[1]
@@ -435,7 +437,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a1_intro_world_2" then
-                if vlua.find(Entities:FindAllInSphere(Vector(-1268, 573, -63), 10), player) then
+                if vlua.find(Entities:FindAllInSphere(Vector(-1268, 573, -63), 10), player) and Entities:FindByName(nil, "balcony_ladder"):GetSequence() == "idle_open" then
                     ClimbLadder(80)
                 end
             end
@@ -521,6 +523,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_dumpster_lid DisablePickup")
             SendToConsole("ent_fire *_portaloo_seat DisablePickup")
             SendToConsole("ent_fire *_drawer_* DisablePickup")
+            SendToConsole("ent_fire *_firebox_door DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
@@ -547,7 +550,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if Entities:FindByClassname(nil, "prop_hmd_avatar") then
                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="VR_SAVE_NOT_SUPPORTED"})
                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-                SendToConsole("play play sounds/ui/beepclear.vsnd")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
             end
 
             if not loading_save_file then
@@ -608,6 +611,21 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             SendToConsole("ent_remove text_quicksave")
             SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
+
+            SendToConsole("ent_remove text_pistol_upgrade_aimdownsights")
+            SendToConsole("ent_create env_message { targetname text_pistol_upgrade_aimdownsights message PISTOL_UPGRADE_AIMDOWNSIGHTS }")
+
+            SendToConsole("ent_remove text_pistol_upgrade_burstfire")
+            SendToConsole("ent_create env_message { targetname text_pistol_upgrade_burstfire message PISTOL_UPGRADE_BURSTFIRE }")
+
+            SendToConsole("ent_remove text_shotgun_upgrade_doubleshot")
+            SendToConsole("ent_create env_message { targetname text_shotgun_upgrade_doubleshot message SHOTGUN_UPGRADE_DOUBLESHOT }")
+
+            SendToConsole("ent_remove text_shotgun_upgrade_grenadelauncher")
+            SendToConsole("ent_create env_message { targetname text_shotgun_upgrade_grenadelauncher message SHOTGUN_UPGRADE_GRENADELAUNCHER }")
+
+            SendToConsole("ent_remove text_smg_upgrade_aimdownsights")
+            SendToConsole("ent_create env_message { targetname text_smg_upgrade_aimdownsights message SMG_UPGRADE_AIMDOWNSIGHTS }")
 
             SendToConsole("ent_remove text_resin")
             SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.16 }")
@@ -961,12 +979,12 @@ if GlobalSys:CommandLineCheck("-novr") then
     function ShowInteractTutorial()
         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="INTERACT"})
         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-        SendToConsole("play play sounds/ui/beepclear.vsnd")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
     function ShowLadderTutorial()
         SendToConsole("ent_fire text_ladder ShowMessage")
-        SendToConsole("play play sounds/ui/beepclear.vsnd")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
     function CheckTutorialPistolEmpty()
@@ -979,24 +997,24 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ShowSprintTutorial()
         SendToConsole("ent_fire text_sprint ShowMessage")
-        SendToConsole("play play sounds/ui/beepclear.vsnd")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
     function ShowCrouchJumpTutorial()
         SendToConsole("ent_fire text_crouchjump ShowMessage")
-        SendToConsole("play play sounds/ui/beepclear.vsnd")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
     function ShowCoverMouthTutorial()   
         if cvar_getf("viewmodel_offset_y") == 0 then
             SendToConsole("ent_fire text_covermouth ShowMessage")
-            SendToConsole("play play sounds/ui/beepclear.vsnd")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
         end
     end
 
     function ShowQuickSaveTutorial()   
         SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
-        SendToConsole("play play sounds/ui/beepclear.vsnd")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
     function EnablePlugLever()
@@ -1021,7 +1039,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ShowVortEnergyTutorial()
         SendToConsole("ent_fire text_vortenergy ShowMessage")
-        SendToConsole("play play sounds/ui/beepclear.vsnd")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
     function GiveVortEnergy(a, b)

@@ -17,6 +17,10 @@ if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name
         return
     end
 
+    if vlua.find(name, "slide_train_door") and Entities:FindByClassnameNearest("phys_constraint", thisEntity:GetCenter(), 20) then
+        return
+    end
+
     if name == "greenhouse_door" then
         if string.format("%.2f", thisEntity:GetCycle()) ~= "0.05" then
             return
@@ -99,7 +103,7 @@ if vlua.find(name, "socket") then
     DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
 end
 
-if class == "prop_ragdoll" then
+if class == "prop_ragdoll" or class == "prop_ragdoll_attached" then
     for k, v in pairs(thisEntity:GetChildren()) do
         DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
     end
@@ -224,6 +228,13 @@ if name == "glove_dispenser_brush" then
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
+end
+
+
+---------- a2_pistol ----------
+
+if model == "models/props/distillery/firebox_1_door_a.vmdl" then
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,200))
 end
 
 
@@ -490,15 +501,23 @@ if class == "prop_hlvr_crafting_station_console" then
             if Convars:GetStr("chosen_upgrade") == "pistol_upgrade_aimdownsights" then
                 player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
                 SendToConsole("give weapon_pistol")
+                SendToConsole("ent_fire text_pistol_upgrade_aimdownsights ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
                 player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
                 SendToConsole("give weapon_pistol")
+                SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
                 player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
                 SendToConsole("give weapon_shotgun")
+                SendToConsole("ent_fire text_shotgun_upgrade_grenadelauncher ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
                 player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
                 SendToConsole("give weapon_shotgun")
+                SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
                 player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
                 if player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
@@ -506,6 +525,8 @@ if class == "prop_hlvr_crafting_station_console" then
                 else
                     SendToConsole("give weapon_smg1")
                 end
+                SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
                 player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
                 SendToConsole("ent_remove weapon_ar2")
