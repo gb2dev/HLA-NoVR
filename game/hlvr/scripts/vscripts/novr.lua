@@ -538,8 +538,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     "models/industrial/industrial_board_06.vmdl",
                     "models/industrial/industrial_board_07.vmdl",
                     "models/industrial/industrial_chemical_barrel_02.vmdl",
-                    "models/props_junk/wood_crate001a.vmdl",
-                    "models/props_junk/wood_crate002a.vmdl",
+                    "models/props/barrel_plastic_1.vmdl",
                 }
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
@@ -584,7 +583,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_create env_message { targetname text_quicksave message GAMESAVED }")
 
             SendToConsole("ent_remove text_resin")
-            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.11 }")
+            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.16 }")
 
             if GetMapName() == "a1_intro_world" then
                 ent = Entities:FindByName(nil, "51_ladder_hint_trigger")
@@ -693,8 +692,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("give weapon_shotgun")
 
                     if GetMapName() == "a2_drainage" then
-                        SendToConsole("ent_fire wheel_socket setscale 4")
-                        SendToConsole("ent_fire wheel2_socket setscale 4")
+                        SendToConsole("ent_fire wheel_socket SetScale 4")
+                        SendToConsole("ent_fire wheel2_socket SetScale 4")
+                        SendToConsole("ent_fire wheel_physics DisablePickup")
+                        ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(941, -1666, 255), 10)
+                        DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>wheel_physics>EnablePickup>>0>1", 0, nil, nil)
                     elseif GetMapName() == "a3_hotel_interior_rooftop" then
                         ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
                         if not ent then
