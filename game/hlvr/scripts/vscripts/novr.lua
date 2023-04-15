@@ -611,6 +611,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent = Entities:FindByName(nil, "relay_teleported_to_refuge")
                     ent:RedirectOutput("OnTrigger", "MoveFreely", ent)
 
+                    SendToConsole("ent_create env_message { targetname text_quicksave_tutorial message QUICKSAVE }")
+                    ent = Entities:FindByClassnameNearest("trigger_once", Vector(-240, 1688, 208), 20)
+                    ent:RedirectOutput("OnTrigger", "ShowQuickSaveTutorial", ent)
+
                     ent = Entities:FindByName(nil, "prop_dogfood")
                     local angles = ent:GetAngles()
                     ent:SetAngles(180,angles.y,angles.z)
@@ -968,6 +972,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire text_covermouth ShowMessage")
             SendToConsole("play play sounds/ui/beepclear.vsnd")
         end
+    end
+
+    function ShowQuickSaveTutorial()   
+        SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
+        SendToConsole("play play sounds/ui/beepclear.vsnd")
     end
 
     function EnablePlugLever()
