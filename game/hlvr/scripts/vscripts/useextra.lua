@@ -94,6 +94,11 @@ if vlua.find(model, "doorhandle") then
     DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
 end
 
+if vlua.find(name, "socket") then
+    local ent = Entities:FindByClassname(thisEntity, "prop_physics") 
+    DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
+end
+
 if class == "prop_ragdoll" then
     for k, v in pairs(thisEntity:GetChildren()) do
         DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
