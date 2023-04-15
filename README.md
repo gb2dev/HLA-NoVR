@@ -38,3 +38,6 @@ V: Noclip (if you get stuck)
 
 ## Official Discord Server
 https://discord.gg/AyfBeuZXsR
+
+## Special Thanks
+Thanks to JJL772 for making the flashlight and jump scripts: https://github.com/JJL772/half-life-alyx-scripts
