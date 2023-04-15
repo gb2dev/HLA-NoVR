@@ -13,6 +13,10 @@ else
 end
 
 if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    if vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
+        return
+    end
+
     if name == "greenhouse_door" then
         if string.format("%.2f", thisEntity:GetCycle()) ~= "0.05" then
             return
@@ -905,6 +909,7 @@ elseif class == "item_hlvr_grenade_frag" then
     end
 elseif class == "item_healthvial" then
     if player:GetHealth() < player:GetMaxHealth() then
+        player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("HealthPen.Stab", player:EyePosition())

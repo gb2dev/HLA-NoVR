@@ -429,6 +429,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(80)
                 end
             end
+
+            if GetMapName() == "a2_pistol" then
+                if vlua.find(Entities:FindAllInSphere(Vector(439, 896, 454), 10), player) then
+                    ClimbLadder(540)
+                end
+            end
         end
     end, "", 0)
 
@@ -539,6 +545,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     "models/industrial/industrial_board_07.vmdl",
                     "models/industrial/industrial_chemical_barrel_02.vmdl",
                     "models/props/barrel_plastic_1.vmdl",
+                    "models/props/barrel_plastic_1_open.vmdl",
                 }
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
@@ -745,14 +752,19 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:Kill()
                         end
                     elseif GetMapName() == "a3_distillery" then
+                        ent = Entities:FindByName(nil, "exit_counter")
+                        ent:RedirectOutput("OnHitMax", "EnablePlugLever", ent)
+
                         if not loading_save_file then
-                            if not loading_save_file then
-                                ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
-                                DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-                            end
+                            ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
+                            DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
                             ent = Entities:FindByName(nil, "11578_2547_relay_koolaid_setup")
                             ent:RedirectOutput("OnTrigger", "FixJeffBatteryPuzzle", ent)
+
+                            SendToConsole("ent_create env_message { targetname text_covermouth message COVERMOUTH }")
+                            ent = Entities:FindByName(nil, "11632_223_cough_volume")
+                            ent:RedirectOutput("OnStartTouch", "ShowCoverMouthTutorial", ent)
                         end
                     else
                         if GetMapName() == "a4_c17_zoo" then
@@ -949,6 +961,17 @@ if GlobalSys:CommandLineCheck("-novr") then
     function ShowCrouchJumpTutorial()
         SendToConsole("ent_fire text_crouchjump ShowMessage")
         SendToConsole("play play sounds/ui/beepclear.vsnd")
+    end
+
+    function ShowCoverMouthTutorial()   
+        if cvar_getf("viewmodel_offset_y") == 0 then
+            SendToConsole("ent_fire text_covermouth ShowMessage")
+            SendToConsole("play play sounds/ui/beepclear.vsnd")
+        end
+    end
+
+    function EnablePlugLever()
+        Entities:GetLocalPlayer():Attribute_SetIntValue("plug_lever", 1)
     end
 
     function UnequipCombinGunMechanical()
