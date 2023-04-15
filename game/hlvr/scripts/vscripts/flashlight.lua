@@ -1,4 +1,4 @@
--- Flashlight script
+-- Flashlight Script made by JJL772: https://github.com/JJL772/half-life-alyx-scripts
 
 -- Convars for the flashlight 
 Convars:RegisterConvar("sv_flashlight_color", "255 255 255 255", "Color of the flashlight", FCVAR_REPLICATED)
