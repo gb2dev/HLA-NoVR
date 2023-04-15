@@ -500,7 +500,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. MOVE_BACK .. " +iv_back")
             SendToConsole("bind " .. MOVE_LEFT .. " +iv_left")
             SendToConsole("bind " .. MOVE_RIGHT .. " +iv_right")
-            SendToConsole("bind " .. CROUCH .. " +iv_crouch")
+            SendToConsole("bind " .. CROUCH .. " +iv_duck")
             SendToConsole("bind " .. SPRINT .. " +iv_sprint")
             SendToConsole("bind " .. PAUSE .. " pause")
             SendToConsole("hl2_sprintspeed 140")
