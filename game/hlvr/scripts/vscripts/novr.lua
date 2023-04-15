@@ -154,6 +154,16 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
     end, "", 0)
 
+    Convars:RegisterCommand("slowgrenade", function()
+        Entities:GetLocalPlayer():SetThink(function()
+            local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+            if viewmodel and viewmodel:GetModelName() == "models/grenade.vmdl" then
+                local grenade = Entities:FindByClassname(nil, "item_hlvr_grenade_frag")
+                grenade:ApplyAbsVelocityImpulse(-GetPhysVelocity(grenade) * 0.7)
+            end
+        end, "SlowGrenade", 0.04)
+    end, "", 0)
+
 
     -- Custom attack 2
 
@@ -481,10 +491,18 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
             SendToConsole("bind " .. MAIN_MENU .. " \"addon_play startup\"")
-            SendToConsole("bind " .. PRIMARY_ATTACK .. " +iv_attack")
+            SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
+            SendToConsole("bind " .. RELOAD .. " +reload")
+            SendToConsole("bind " .. MOVE_FORWARD .. " +iv_forward")
+            SendToConsole("bind " .. MOVE_BACK .. " +iv_back")
+            SendToConsole("bind " .. MOVE_LEFT .. " +iv_left")
+            SendToConsole("bind " .. MOVE_RIGHT .. " +iv_right")
+            SendToConsole("bind " .. CROUCH .. " +iv_crouch")
+            SendToConsole("bind " .. SPRINT .. " +iv_sprint")
+            SendToConsole("bind " .. PAUSE .. " pause")
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
             SendToConsole("r_drawviewmodel 0")
@@ -512,6 +530,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sv_gravity 500")
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand disable;viewmodel_offset_y 0\"")
             SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand enable;viewmodel_offset_y -20\"")
+            SendToConsole("alias -customattack \"-iv_attack;slowgrenade\"")
+            SendToConsole("alias +customattack +iv_attack")
             SendToConsole("mouse_disableinput 0")
             SendToConsole("-attack")
             SendToConsole("-attack2")

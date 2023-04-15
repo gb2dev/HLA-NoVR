@@ -546,7 +546,6 @@ if class == "prop_hlvr_crafting_station_console" then
                 if viewmodel:GetModelName() == "models/pistol.vmdl" then
                     SendToConsole("ent_fire weapon_pistol kill 0.02")
                     SendToConsole("impulse 200")
-                    SendToConsole("ent_fire text_resin Display")
                     Convars:SetStr("weapon_in_crafting_station", "pistol")
                     local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -583,7 +582,6 @@ if class == "prop_hlvr_crafting_station_console" then
                 elseif viewmodel:GetModelName() == "models/shotgun.vmdl" then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
                     SendToConsole("impulse 200")
-                    SendToConsole("ent_fire text_resin Display")
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -599,12 +597,12 @@ if class == "prop_hlvr_crafting_station_console" then
                     local origin = ents[2]:GetOrigin() + Vector(0,0,0.04)
                     ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_shotgun.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent.upgrade1 = function()
-                        if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 0 then
+                        if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 0 then
                             SendToConsole("chooseupgrade1")
                         end
                     end
                     ent.upgrade2 = function()
-                        if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 0 then
+                        if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 0 then
                             SendToConsole("chooseupgrade2")
                         end
                     end
@@ -622,7 +620,6 @@ if class == "prop_hlvr_crafting_station_console" then
                         SendToConsole("ent_fire weapon_smg1 kill 0.02")
                     end
                     SendToConsole("impulse 200")
-                    SendToConsole("ent_fire text_resin Display")
                     Convars:SetStr("weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
