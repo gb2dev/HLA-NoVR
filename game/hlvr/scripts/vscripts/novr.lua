@@ -523,6 +523,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_portaloo_seat DisablePickup")
             SendToConsole("ent_fire *_drawer_* DisablePickup")
             SendToConsole("ent_fire *_firebox_door DisablePickup")
+            SendToConsole("ent_fire *_trashbin02_lid DisablePickup")
+            SendToConsole("ent_fire *_car_door_rear DisablePickup")
+            SendToConsole("ent_fire *_antenna_* DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
@@ -634,15 +637,13 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.16 }")
 
             if GetMapName() == "a1_intro_world" then
-                ent = Entities:FindByName(nil, "51_ladder_hint_trigger")
-                ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
-                SendToConsole("ent_create env_message { targetname text_ladder message LADDER }")
                 if not loading_save_file then
                     SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                     SendToConsole("mouse_disableinput 1")
                     SendToConsole("give weapon_bugbait")
                     SendToConsole("hidehud 4")
                     SendToConsole("bind " .. COVER_MOUTH .. " \"\"")
+                    SendToConsole("ent_fire tv_apartment_decoy_door DisableCollision")
 
                     ent = Entities:FindByName(nil, "relay_start_intro_text")
                     ent:RedirectOutput("OnTrigger", "DisableUICursor", ent)
@@ -664,6 +665,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent = Entities:FindByName(nil, "relay_heist_monitors_callincoming")
                     ent:RedirectOutput("OnTrigger", "ShowInteractTutorial", ent)
 
+                    SendToConsole("ent_create env_message { targetname text_ladder message LADDER }")
                     ent = Entities:FindByName(nil, "51_ladder_hint_trigger")
                     ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
                 else

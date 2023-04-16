@@ -141,6 +141,18 @@ elseif vlua.find(name, "_drawer_") then
     else
         thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 100)
     end
+elseif vlua.find(name, "_trashbin02_lid") then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1000,0))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-3000,0))
+    end
+elseif vlua.find(name, "_car_door_rear") then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1500,0))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-2800,0))
+    end
 end
 
 if vlua.find(name, "_wooden_board") then
@@ -168,10 +180,14 @@ end
 
 if model == "models/props/interactive/washing_machine01a_door.vmdl" then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-3000))
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
     else
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,3000))
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
     end
+end
+
+if vlua.find(model, "models/props/c17/antenna01") then
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
 end
 
 if name == "979_518_button_pusher_prop" then
@@ -186,8 +202,9 @@ if name == "russell_headset" then
     SendToConsole("ent_fire 4962_car_door_left_front close")
 end
 
-if name == "4962_car_door_left_front" or name == "4962_car_door_left_front_window" then
-    SendToConsole("ent_fire 4962_car_door_left_front toggle")
+if vlua.find(model, "car_sedan_a01") and (vlua.find(model, "glass") or vlua.find(model, "door")) then
+    local ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", thisEntity:GetOrigin(), 30)
+    DoEntFireByInstanceHandle(ent, "Toggle", "", 0, nil, nil)
 end
 
 if name == "carousel" then
