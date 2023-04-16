@@ -39,8 +39,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             GibBecomeRagdoll("prop_physics")
             GibBecomeRagdoll("prop_ragdoll")
-
-            SendToConsole("ent_fire xen_foliage_bloater BecomeRagdoll")
         end, "GibBecomeRagdoll", 0)
 
         local ent = EntIndexToHScript(info.entindex_killed):GetChildren()[1]
