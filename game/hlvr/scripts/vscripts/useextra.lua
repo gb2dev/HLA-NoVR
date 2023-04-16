@@ -12,12 +12,16 @@ else
     thisEntity:Attribute_SetIntValue("toggle", 0)
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or class == "item_hlvr_combine_console_rack") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     end
 
     if vlua.find(name, "slide_train_door") and Entities:FindByClassnameNearest("phys_constraint", thisEntity:GetCenter(), 20) then
+        return
+    end
+
+    if name == "12712_shotgun_wheel" and Entities:FindByNameNearest("12712_shotgun_bar_for_wheel", thisEntity:GetCenter(), 20) then
         return
     end
 
@@ -55,12 +59,19 @@ if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name
 
         if map == "a3_distillery" and name == "verticaldoor_wheel" then
             count = count + 0.001
+        elseif name == "12712_shotgun_wheel" then
+            count = count + 0.003
         else
             count = count + 0.01
         end
 
         if is_console then
             DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
+        end
+
+        if name == "12712_shotgun_wheel" then
+            DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "" .. count, 0, nil, nil)
+            SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count / 2)
         end
 
         if model == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
@@ -71,6 +82,11 @@ if not vlua.find(model, "doorhandle") and name ~= "12712_shotgun_wheel" and name
             thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
             if name == "barricade_door_hook" then
                 SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
+            end
+            if name == "12712_shotgun_wheel" then
+                local bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
+                bar:SetOrigin(Vector(711.395874, 1319.248047, -168.302490))
+                bar:SetAngles(0.087952, 120.220528, 90.588112)
             end
             return nil
         else
@@ -202,8 +218,8 @@ if name == "russell_headset" then
     SendToConsole("ent_fire 4962_car_door_left_front close")
 end
 
-if vlua.find(model, "car_sedan_a01") and (vlua.find(model, "glass") or vlua.find(model, "door")) then
-    local ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", thisEntity:GetOrigin(), 30)
+if vlua.find(model, "car_sedan_a0") and (vlua.find(model, "glass") or vlua.find(model, "door")) then
+    local ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", thisEntity:GetOrigin(), 40)
     DoEntFireByInstanceHandle(ent, "Toggle", "", 0, nil, nil)
 end
 
@@ -492,11 +508,6 @@ end
 if name == "5325_4704_toner_port_train_gate" then
     SendToConsole("ent_fire_output 5325_4704_train_gate_path_20_to_end OnPowerOn")
     SendToConsole("ent_fire_output 5325_4704_train_gate_path_22_to_end OnPowerOn")
-end
-
-if name == "12712_shotgun_wheel" then
-    SendToConsole("ent_fire !picker SetCompletionValue 10")
-    return
 end
 
 if name == "270_trip_mine_item_1" then

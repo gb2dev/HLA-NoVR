@@ -691,6 +691,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                     SendToConsole("give weapon_bugbait")
                 else
+                    SendToConsole("hidehud 64")
                     SendToConsole("r_drawviewmodel 1")
                 end
 
@@ -705,16 +706,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                     local angles = ent:GetAngles()
                     ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["model"]="maps/a1_intro_world_2/entities/gate_ammo_trigger_621_2249_345.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
                     ent:RedirectOutput("OnDetectedBulletFire", "CheckTutorialPistolEmpty", ent)
+
+                    ent = Entities:FindByName(nil, "scavenge_trigger")
+                    ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
+
+                    ent = Entities:FindByName(nil, "hint_crouch_trigger")
+                    ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
+
+                    ent = Entities:FindByName(nil, "relay_weapon_pistol_fakefire")
+                    ent:RedirectOutput("OnTrigger", "RedirectPistol", ent)
                 end
-
-                ent = Entities:FindByName(nil, "scavenge_trigger")
-                ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
-
-                ent = Entities:FindByName(nil, "hint_crouch_trigger")
-                ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
-
-                ent = Entities:FindByName(nil, "relay_weapon_pistol_fakefire")
-                ent:RedirectOutput("OnTrigger", "RedirectPistol", ent)
             else
                 SendToConsole("hidehud 64")
                 SendToConsole("give weapon_pistol")
