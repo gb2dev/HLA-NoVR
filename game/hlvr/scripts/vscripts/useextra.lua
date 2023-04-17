@@ -503,7 +503,8 @@ if name == "ChoreoPhysProxy" then
     SendToConsole("ent_fire eli_fall_relay Trigger")
 end
 
-if name == "traincar_01_hatch" then
+if name == "traincar_01_hatch" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output traincar_01_hackplug OnHackSuccess")
 end
 

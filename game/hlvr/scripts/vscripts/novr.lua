@@ -752,6 +752,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_fire wheel_physics DisablePickup")
                         ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(941, -1666, 255), 10)
                         DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>wheel_physics>EnablePickup>>0>1", 0, nil, nil)
+                    elseif GetMapName() == "a2_train_yard" then
+                        if not loading_save_file then
+                            ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1080 3200 -350", ["angles"]="0 12 0", ["modelscale"]=5, ["targetname"]="elipreventfall"})
+                            ent = Entities:FindByName(nil, "eli_rescue_3_relay")
+                            ent:RedirectOutput("OnTrigger", "RemoveEliPreventFall", ent)
+                        end
                     elseif GetMapName() == "a3_hotel_interior_rooftop" then
                         ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
                         if not ent then
@@ -935,6 +941,11 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("r_drawviewmodel 1")
         SendToConsole("ent_fire item_hlvr_weapon_energygun kill")
         Entities:GetLocalPlayer():Attribute_SetIntValue("pistol", 1)
+    end
+
+    function RemoveEliPreventFall(a, b)
+        ent = Entities:FindByName(nil, "elipreventfall")
+        ent:Kill()
     end
 
     function MakeLeverUsable(a, b)
