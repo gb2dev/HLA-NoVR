@@ -600,8 +600,26 @@ if GlobalSys:CommandLineCheck("-novr") then
             if ent then
                 local angles = ent:GetAngles()
                 SendToConsole("setang " .. angles.x .. " " .. angles.y .. " 0")
+                local look_delta = QAngle(0, 0, 0)
+                local move_delta = Vector(0, 0, 0)
                 ent:SetThink(function()
-                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", Entities:GetLocalPlayer():GetCenter(), 12)
+                    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                    local player = Entities:GetLocalPlayer()
+
+                    local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y / 2000
+                    local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x / 2000
+                    local angle = player:GetAngles()
+                    angle = QAngle(0, -angle.y, 0)
+                    move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
+
+                    local weapon_sway_x = Lerp(0.01, cvar_getf("viewmodel_offset_x"), RotationDelta(look_delta, viewmodel:GetAngles()).y) * 0.95
+                    local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.95
+                    look_delta = viewmodel:GetAngles()
+
+                    cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
+                    cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
+
+                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 12)
                     if shard then
                         DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
                     end
@@ -859,7 +877,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
                         elseif GetMapName() == "a5_vault" then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2")
+                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
                             SendToConsole("r_drawviewmodel 0")
 
                             if not loading_save_file then
@@ -879,7 +897,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent = Entities:FindByName(nil, "longcorridor_energysource_01_activate_relay")
                             ent:RedirectOutput("OnTrigger", "GiveVortEnergy", ent)
                         elseif GetMapName() == "a5_ending" then
-                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2")
+                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
                             SendToConsole("r_drawviewmodel 0")
                             SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
 
@@ -1052,7 +1070,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function EnterVaultBeam()
-        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_frag")
+        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
         SendToConsole("r_drawviewmodel 0")
         SendToConsole("hidehud 4")
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
@@ -1065,7 +1083,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function GiveVortEnergy(a, b)
         SendToConsole("bind " .. PRIMARY_ATTACK .. " shootvortenergy")
-        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_frag")
+        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
         SendToConsole("r_drawviewmodel 0")
     end
 
@@ -1085,5 +1103,19 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function EndCredits(a, b)
         SendToConsole("mouse_disableinput 0")
+    end
+
+    function sin(x)
+        local result = 0
+        local sign = 1
+        local term = x
+      
+        for i = 1, 10 do -- increase the number of iterations for more accuracy
+          result = result + sign * term
+          sign = -sign
+          term = term * x * x / ((2 * i) * (2 * i + 1))
+        end
+      
+        return result
     end
 end
