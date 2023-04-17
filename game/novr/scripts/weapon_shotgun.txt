@@ -6,7 +6,7 @@ GameFileWeaponInfo_t
 	"printname"				"#HLVR_Weapon_Name_Shotgun"
 	"viewmodel"				"models/weapons/v_shotgun.vmdl"
 	"playermodel"			"models/weapons/vr_shotgun/vr_shotgun.vmdl"
-	"anim_prefix"			"pistol" //"shotgun"
+	"anim_prefix"			"shotgun"
 	"muzzleflash_particle"	"particles/weapon_fx/muzzleflash_heavy_shotgun.vpcf"
 	"tracer_particle"		"particles/tracer_fx/alyxgun_cannon_tracer.vpcf"
 
