@@ -145,7 +145,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
             SendToConsole("give weapon_shotgun")
         elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
-            if Entities:GetLocalPlayer():Attribute_SetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+            if Entities:GetLocalPlayer():Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                 SendToConsole("give weapon_ar2")
             else
                 SendToConsole("give weapon_smg1")

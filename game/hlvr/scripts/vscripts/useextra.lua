@@ -544,7 +544,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
                 player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
-                if player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                     SendToConsole("give weapon_ar2")
                 else
                     SendToConsole("give weapon_smg1")
@@ -592,7 +592,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     SendToConsole("ent_fire weapon_pistol kill 0.02")
                     SendToConsole("impulse 200")
                     Convars:SetStr("weapon_in_crafting_station", "pistol")
-                    local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
+                    local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
                     local origin = ent:GetCenter() - angles:Forward() * 1.5 - Vector(0,0,2.25)
@@ -628,7 +628,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
                     SendToConsole("impulse 200")
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
-                    local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
+                    local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
                     local origin = ent:GetCenter() - angles:Forward() * 1.5 - Vector(0,0,2.25)
@@ -659,18 +659,18 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif viewmodel:GetModelName() == "models/smg.vmdl" then
-                    if player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                    if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                         SendToConsole("ent_fire weapon_ar2 kill 0.02")
                     else
                         SendToConsole("ent_fire weapon_smg1 kill 0.02")
                     end
                     SendToConsole("impulse 200")
                     Convars:SetStr("weapon_in_crafting_station", "smg")
-                    local console = Entities:FindByClassname(nil, "prop_hlvr_crafting_station_console")
+                    local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
-                    local origin = ent:GetCenter() - angles:Forward() * 1.6 - Vector(0,0,2.3)
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/w_ipistol/ipistol_wm.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    local origin = ent:GetCenter() - angles:Forward() * 1.5 - Vector(0,0,2.25)
+                    ent = SpawnEntityFromTableSynchronous("item_hlvr_weapon_rapidfire", {["targetname"]="weapon_in_fabricator", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
 
                     local ents = Entities:FindAllByClassname("point_clientui_world_panel")
