@@ -1,4 +1,6 @@
 if GlobalSys:CommandLineCheck("-novr") then
+    unstuck_table = {}
+
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
     DoIncludeScript("jumpfix.lua", nil)
@@ -81,6 +83,30 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
 
     Convars:RegisterConvar("weapon_in_crafting_station", "", "", 0)
+
+    Convars:RegisterCommand("unstuck", function()
+        local player = Entities:GetLocalPlayer()
+        local startVector = player:GetOrigin()
+        local traceTable =
+        {
+            startpos = startVector;
+            endpos = startVector;
+            ignore = player;
+            mask =  33636363;
+            min = player:GetBoundingMins();
+            max = player:GetBoundingMaxs()
+        }
+
+        TraceHull(traceTable)
+
+        if traceTable.hit then
+            Entities:GetLocalPlayer():SetThink(function()            
+                if player:GetVelocity() == Vector(0, 0, 0) and unstuck_table[1] then
+                    player:SetOrigin(unstuck_table[1])
+                end
+            end, "", 0.02)
+        end
+    end, "", 0)
 
     Convars:RegisterCommand("chooseupgrade1", function()
         local t = {}
@@ -484,6 +510,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
         else
             SendToConsole("binddefaults")
+            SendToConsole("alias +backfixed \"+iv_back;unstuck\"")
+            SendToConsole("alias -backfixed -iv_back")
             SendToConsole("bind " .. JUMP .. " jumpfixed")
             SendToConsole("bind " .. INTERACT .. " \"+use;useextra\"")
             SendToConsole("bind " .. NOCLIP .. " noclip")
@@ -497,7 +525,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. QUICK_SWAP .. " lastinv")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
             SendToConsole("bind " .. MOVE_FORWARD .. " +iv_forward")
-            SendToConsole("bind " .. MOVE_BACK .. " +iv_back")
+            SendToConsole("bind " .. MOVE_BACK .. " +backfixed")
             SendToConsole("bind " .. MOVE_LEFT .. " +iv_left")
             SendToConsole("bind " .. MOVE_RIGHT .. " +iv_right")
             SendToConsole("bind " .. CROUCH .. " +iv_duck")
@@ -602,9 +630,17 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("setang " .. angles.x .. " " .. angles.y .. " 0")
                 local look_delta = QAngle(0, 0, 0)
                 local move_delta = Vector(0, 0, 0)
+
                 ent:SetThink(function()
                     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                     local player = Entities:GetLocalPlayer()
+
+                    if move_delta ~= Vector(0, 0, 0) then
+                        table.insert(unstuck_table, player:GetOrigin())
+                        if #unstuck_table > 75 then
+                            table.remove(unstuck_table, 1)
+                        end
+                    end
 
                     local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y / 4000
                     local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x / 4000
@@ -1117,5 +1153,18 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
       
         return result
+    end
+
+    function dump(o)
+        if type(o) == 'table' then
+           local s = '{ '
+           for k,v in pairs(o) do
+              if type(k) ~= 'number' then k = '"'..k..'"' end
+              s = s .. '['..k..'] = ' .. dump(v) .. ','
+           end
+           return s .. '} '
+        else
+           return tostring(o)
+        end
     end
 end
