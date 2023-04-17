@@ -171,15 +171,15 @@ if GlobalSys:CommandLineCheck("-novr") then
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
         if viewmodel and viewmodel:GetModelName() ~= "models/grenade.vmdl" then
-            if viewmodel:GetModelName() == "models/shotgun.vmdl" then
+            if viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
                     SendToConsole("+attack2")
                 end
-            elseif viewmodel:GetModelName() == "models/pistol.vmdl" then
+            elseif viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
                 end
-            elseif viewmodel:GetModelName() == "models/smg.vmdl" then
+            elseif viewmodel:GetModelName() == "models/weapons/smg1.vmdl" then
                 if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
                 end
@@ -199,7 +199,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
         if viewmodel then
-            if viewmodel:GetModelName() == "models/shotgun.vmdl" then
+            if viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
                 if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 1 then
                     SendToConsole("use weapon_frag")
                     SendToConsole("+attack")
@@ -211,7 +211,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("use weapon_shotgun")
                     end, "BackToShotgun", 0.66)
                 end
-            elseif viewmodel:GetModelName() == "models/pistol.vmdl" then
+            elseif viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
                 if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
                     SendToConsole("sk_plr_dmg_pistol 9")
                     SendToConsole("+attack")
