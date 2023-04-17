@@ -1,0 +1,79 @@
+// Shotgun
+
+GameFileWeaponInfo_t
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"				"#HLVR_Weapon_Name_Shotgun"
+	"viewmodel"				"models/weapons/v_shotgun.vmdl"
+	"playermodel"			"models/weapons/vr_shotgun/vr_shotgun.vmdl"
+	"anim_prefix"			"pistol" //"shotgun"
+	"muzzleflash_particle"	"particles/weapon_fx/muzzleflash_heavy_shotgun.vpcf"
+	"tracer_particle"		"particles/tracer_fx/alyxgun_cannon_tracer.vpcf"
+
+	"bucket"				"3"
+	"bucket_position"		"0"
+	"bucket_360"			"1"
+	"bucket_position_360"	"1"
+
+	"clip_size"				"6"
+	"primary_ammo"			"Buckshot"
+	"secondary_ammo"		"grenade"
+	"autoswitchto"			"1"
+
+	"weight"				"4"
+	"rumble"				"5"
+	"item_flags"			"0"
+
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+
+		"empty"				"Pistol.NoAmmo"
+		"reload"			"Shotgun.LoadShell"
+		"special1"			"Weapon_Shotgun.Special1"
+		"single_shot"		"Shotgun.Fire"
+		"double_shot"		"Weapon_Shotgun.Double"
+
+		// NPC WEAPON SOUNDS
+		"reload_npc"		"Weapon_Shotgun.NPC_Reload"
+		"single_shot_npc"	"CombineShotgun.Fire"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"d" //"b"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"d" //"b"
+		}
+		"weapon_small"
+		{
+				"font"		"WeaponIconsSmall"
+				"character"	"d" //"b"
+		}
+		"ammo"
+		{
+				"font"		"AmmoIconsSmall" //"WeaponIconsSmall"
+				"character"	"s"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"materials/sprites/crosshairs.vmat"
+				"x"			"0"
+				"y"			"48"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}

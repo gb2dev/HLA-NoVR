@@ -1,0 +1,26 @@
+// Base script
+enumeration "NPCState"
+{
+	"None"		"0"
+	"Idle"		"1"
+	"Alert"		"2"
+	"Combat"	"3"
+	"Scripted"	"4"
+	"PlayDead"	"5"
+	"Dead"		"6"
+}
+
+response "NullResponse"
+
+
+// Talker Manifests
+// criterion has to be on the top as that's loaded first
+#include "talker/npc_combine_criterion.txt"
+#include "talker/npc_combine_charger.txt"
+#include "talker/npc_combine_grunt.txt"
+#include "talker/npc_combine_officer.txt"
+#include "talker/npc_combine_suppressor.txt"
+#include "talker/npc_combine_choreo.txt"
+//#include "talker/npc_combine.txt"
+#include "talker/player.txt"
+#include talker/player_novr.txt

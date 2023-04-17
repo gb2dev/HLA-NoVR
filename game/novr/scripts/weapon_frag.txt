@@ -1,0 +1,70 @@
+GameFileWeaponInfo_t
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"				"Grenade"
+	"viewmodel"				"models/grenade.vmdl"
+	"playermodel"			"models/weapons/vr_grenade/grenade.vmdl"
+	"anim_prefix"			"Grenade"
+	"bucket"				"4"
+	"bucket_position"		"0"
+	"bucket_360"			"3"
+	"bucket_position_360"	"0"
+
+	"clip_size"				"-1"
+	"clip2_size"			"-1"
+	"default_clip"			"1"
+	"default_clip2"			"-1"
+	"autoswitchfrom"		"1"
+
+	"primary_ammo"			"grenade"
+	"secondary_ammo"		"None"
+
+	"weight"				"1"
+	"item_flags"			"18"	// ITEM_FLAG_NOAUTORELOAD | ITEM_FLAG_EXHAUSTIBLE
+
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+		"special1"		"WeaponFrag.Roll"
+		"double_shot"	"BaseCombatCharacter.StopWeaponSounds"
+		"single_shot"	"BaseCombatCharacter.StopWeaponSounds"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"l" //"k"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"l" //"k"
+		}
+		"weapon_small"
+		{
+				"font"		"WeaponIconsSmall"
+				"character"	"l" //"k"
+		}
+		"ammo"
+		{
+				"font"		"AmmoIconsSmall" //"WeaponIconsSmall"
+				"character"	"v"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"materials/sprites/crosshairs.vmat"
+				"x"			"48"
+				"y"			"72"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}
