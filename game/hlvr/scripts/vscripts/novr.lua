@@ -468,7 +468,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
-            SendToConsole("addon_enable novr")
             SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
@@ -490,7 +489,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. NOCLIP .. " noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
-            SendToConsole("bind " .. MAIN_MENU .. " \"addon_play startup\"")
+            SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
@@ -526,6 +525,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_trashbin02_lid DisablePickup")
             SendToConsole("ent_fire *_car_door_rear DisablePickup")
             SendToConsole("ent_fire *_antenna_* DisablePickup")
+            SendToConsole("ent_fire ticktacktoe_* DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")

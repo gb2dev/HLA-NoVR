@@ -5,7 +5,9 @@ NoVR Script for Half-Life: Alyx
 Copy the ``game`` folder into your main Half-Life: Alyx installation folder (e.g. ``C:\Program Files (x86)\Steam\steamapps\common\Half-Life Alyx``).
 
 ## Playing
-Start the game with the launch options ``-novr -vsync``. For the best experience, when starting a new game choose "PLAY WITH ADDONS", so the maps will be optimized to prevent glitches.
+Start the game with the launch options ``-novr -vsync``.
+
+You can also get the NoVR Map Edits addon for smoother traversal and less out of bounds glitches: https://steamcommunity.com/sharedfiles/filedetails/?id=2956743603
 
 ## Controls
 To change the controls/rebind buttons, edit ``game\hlvr\scripts\vscripts\bindings.lua`` in your main Half-Life: Alyx installation folder.

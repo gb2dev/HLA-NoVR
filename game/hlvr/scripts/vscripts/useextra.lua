@@ -169,6 +169,8 @@ elseif vlua.find(name, "_car_door_rear") then
     else
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-2800,0))
     end
+elseif vlua.find(name, "ticktacktoe_") then
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,RandomInt(1000, 3000),0))
 end
 
 if vlua.find(name, "_wooden_board") then
