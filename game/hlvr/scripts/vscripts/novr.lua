@@ -606,8 +606,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                     local player = Entities:GetLocalPlayer()
 
-                    local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y / 2000
-                    local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x / 2000
+                    local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y / 4000
+                    local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x / 4000
                     local angle = player:GetAngles()
                     angle = QAngle(0, -angle.y, 0)
                     move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
