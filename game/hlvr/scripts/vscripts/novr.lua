@@ -561,8 +561,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_max_grenade 9999")
             SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
-            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand disable;viewmodel_offset_y 0\"")
-            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand enable;viewmodel_offset_y -20\"")
+            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Alpha 0;viewmodel_offset_y 0\"")
+            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand Alpha 255;viewmodel_offset_y -20\"")
             SendToConsole("alias -customattack \"-iv_attack;slowgrenade\"")
             SendToConsole("alias +customattack +iv_attack")
             SendToConsole("mouse_disableinput 0")
@@ -621,7 +621,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local viewmodel_pos = viewmodel:GetAbsOrigin() + viewmodel_ang:Forward() * 24 - viewmodel_ang:Up() * 4
                 ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
                 DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
-                DoEntFire("lefthand", "Disable", "", 0, nil, nil)
+                DoEntFire("lefthand", "Alpha", "0", 0, nil, nil)
             end
 
             ent = Entities:GetLocalPlayer()
@@ -642,18 +642,20 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end
                     end
 
-                    local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y / 4000
-                    local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x / 4000
-                    local angle = player:GetAngles()
-                    angle = QAngle(0, -angle.y, 0)
-                    move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
+                    if Entities:FindByName(nil, "lefthand"):GetRenderAlpha() == 0 then
+                        local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y / 4000
+                        local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x / 4000
+                        local angle = player:GetAngles()
+                        angle = QAngle(0, -angle.y, 0)
+                        move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
 
-                    local weapon_sway_x = Lerp(0.01, cvar_getf("viewmodel_offset_x"), RotationDelta(look_delta, viewmodel:GetAngles()).y) * 0.95
-                    local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.95
-                    look_delta = viewmodel:GetAngles()
+                        local weapon_sway_x = Lerp(0.01, cvar_getf("viewmodel_offset_x"), RotationDelta(look_delta, viewmodel:GetAngles()).y) * 0.95
+                        local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.95
+                        look_delta = viewmodel:GetAngles()
 
-                    cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
-                    cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
+                        cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
+                        cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
+                    end
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 12)
                     if shard then
