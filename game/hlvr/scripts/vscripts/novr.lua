@@ -561,8 +561,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_max_grenade 9999")
             SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
-            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Alpha 0;viewmodel_offset_y 0\"")
-            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand Alpha 255;viewmodel_offset_y -20\"")
+            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
+            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand Enable;viewmodel_offset_y -20\"")
             SendToConsole("alias -customattack \"-iv_attack;slowgrenade\"")
             SendToConsole("alias +customattack +iv_attack")
             SendToConsole("mouse_disableinput 0")
@@ -621,7 +621,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local viewmodel_pos = viewmodel:GetAbsOrigin() + viewmodel_ang:Forward() * 24 - viewmodel_ang:Up() * 4
                 ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
                 DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
-                DoEntFire("lefthand", "Alpha", "0", 0, nil, nil)
+                DoEntFire("lefthand", "Disable", "", 0, nil, nil)
             end
 
             ent = Entities:GetLocalPlayer()
@@ -642,7 +642,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end
                     end
 
-                    if Entities:FindByName(nil, "lefthand"):GetRenderAlpha() == 0 then
+                    if cvar_getf("viewmodel_offset_y") ~= -20 then
                         local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y / 4000
                         local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x / 4000
                         local angle = player:GetAngles()
