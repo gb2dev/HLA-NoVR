@@ -1110,7 +1110,6 @@ if GlobalSys:CommandLineCheck("-novr") then
     function EnterVaultBeam()
         SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
         SendToConsole("r_drawviewmodel 0")
-        SendToConsole("hidehud 4")
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
     end
 
