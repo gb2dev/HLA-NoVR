@@ -2,7 +2,7 @@ GameFileWeaponInfo_t
 {
 	// Weapon data is loaded by both the Game and Client DLLs.
 	"printname"				"Grenade"
-	"viewmodel"				"models/grenade.vmdl"
+	"viewmodel"				"models/weapons/v_grenade.vmdl"
 	"playermodel"			"models/weapons/vr_grenade/grenade.vmdl"
 	"anim_prefix"			"Grenade"
 	"bucket"				"4"
