@@ -9,6 +9,8 @@ Start the game with the launch options ``-novr -vsync``.
 
 You can also get the NoVR Map Edits addon for smoother traversal and less out of bounds glitches: https://steamcommunity.com/sharedfiles/filedetails/?id=2956743603
 
+If you get stuck try to move back or crouch! In case that does not help you can enable noclip with V.
+
 ## Controls
 To change the controls/rebind buttons, edit ``game\hlvr\scripts\vscripts\bindings.lua`` in your main Half-Life: Alyx installation folder.
 ### Keyboard and Mouse

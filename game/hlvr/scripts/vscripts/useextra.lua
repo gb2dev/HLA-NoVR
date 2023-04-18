@@ -883,12 +883,12 @@ end
 
 if class == "item_hlvr_grenade_xen" then
     thisEntity:SetThink(function()
-        if GetPhysVelocity(thisEntity):Length() > 550 then
+        if GetPhysVelocity(thisEntity):Length() > 300 then
             DoEntFireByInstanceHandle(thisEntity, "ArmGrenade", "", 0, nil, nil)
         else
             return 0
         end
-    end, "ArmOnHighVelocity", 0)
+    end, "ArmOnHighVelocity", 0.1)
 end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
