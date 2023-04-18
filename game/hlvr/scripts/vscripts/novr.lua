@@ -183,7 +183,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("slowgrenade", function()
         Entities:GetLocalPlayer():SetThink(function()
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-            if viewmodel and viewmodel:GetModelName() == "models/grenade.vmdl" then
+            if viewmodel and viewmodel:GetModelName() == "models/weapons/v_grenade.vmdl" then
                 local grenade = Entities:FindByClassname(nil, "item_hlvr_grenade_frag")
                 grenade:ApplyAbsVelocityImpulse(-GetPhysVelocity(grenade) * 0.7)
             end
@@ -196,7 +196,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
-        if viewmodel and viewmodel:GetModelName() ~= "models/grenade.vmdl" then
+        if viewmodel and viewmodel:GetModelName() ~= "models/weapons/v_grenade.vmdl" then
             if viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
                     SendToConsole("+attack2")
