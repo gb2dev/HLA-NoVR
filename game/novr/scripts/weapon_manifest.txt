@@ -1,0 +1,12 @@
+weapon_manifest
+{
+	"file"		"scripts/weapon_alyxgun.txt"
+	"file"		"scripts/weapon_ar2.txt"
+	"file"		"scripts/weapon_frag.txt"
+	"file"		"scripts/weapon_heavymg.txt"
+	"file"		"scripts/weapon_charger_melee.txt"
+	"file"		"scripts/weapon_shotgun.txt"
+	"file"		"scripts/weapon_smg1.txt"
+	"file"		"scripts/weapon_pistol.txt"
+	"file"		"scripts/weapon_bugbait.txt"
+}

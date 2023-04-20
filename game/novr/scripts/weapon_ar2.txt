@@ -1,0 +1,88 @@
+// Small Machine Gun 1
+
+GameFileWeaponInfo_t
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"	"#HLVR_Weapon_Name_RapidFire"
+	"viewmodel"				"models/smg.vmdl"
+	"playermodel"			"models/weapons/w_ipistol/ipistol_wm.vmdl"	
+	"anim_prefix"			"smg2"
+	"muzzleflash_particle"	"particles/weapon_fx/muzzleflash_smg_heavy_fire_light.vpcf"
+	"tracer_particle"		"particles/tracer_fx/smg_tracer.vpcf"
+
+	"bucket"				"2"
+	"bucket_position"		"0"
+	"bucket_360"			"1"
+	"bucket_position_360"	"0"
+
+	"clip_size"				"30"
+	"clip2_size"			"-1"
+
+	"default_clip"			"30"
+	"default_clip2"			"-1"
+
+	"primary_ammo"			"SMG1"
+	"secondary_ammo"		""
+	"autoswitchto"			"1"
+
+	"weight"				"3"
+	"rumble"				"3"
+	"item_flags"			"0"
+
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+		"reload"		"RapidFire.ReplaceCapsules"
+		"reload_npc"		"Weapon_SMG1.NPC_Reload"
+		"empty"				"RapidFire.EmptyPowerCellDryFire"
+		"single_shot"		"RapidFire.SingleShot"
+		"single_shot_npc"	"CombineSMG.Fire"
+		"special1"			"Weapon_SMG1.Special1"
+		"special2"			"Weapon_SMG1.Special2"
+		"double_shot"		"Weapon_SMG1.Double"
+		"burst"				"Weapon_SMG1.Burst"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"e" //"a"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"e" //"a"
+		}
+		"weapon_small"
+		{
+				"font"		"WeaponIconsSmall"
+				"character"	"e" //"a"
+		}
+		"ammo"
+		{
+				"font"		"AmmoIconsSmall" //"WeaponIconsSmall"
+				"character"	"r"
+		}
+		"ammo2"
+		{
+				"font"		"AmmoIconsSmall" //"WeaponIconsSmall"
+				"character"	"t"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"materials/sprites/crosshairs.vmat"
+				"x"			"0"
+				"y"			"48"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}

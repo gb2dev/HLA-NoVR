@@ -1,0 +1,76 @@
+// Pistol
+
+GameFileWeaponInfo_t
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"				"#HLVR_Weapon_Name_Pistol"
+	"viewmodel"				"models/pistol.vmdl"
+	"playermodel"			"models/weapons/pistol/w_pistol.vmdl"
+	"anim_prefix"			"pistol"
+	"muzzleflash_particle"	"particles/weapon_fx/muzzleflash_pistol_firec.vpcf"
+	"tracer_particle"		"particles/tracer_fx/pistol_tracer.vpcf"
+	
+	"bucket"				"1"
+	"bucket_position"		"0"
+	"bucket_360"			"0"
+	"bucket_position_360"	"0"
+
+	"clip_size"				"20"
+	"primary_ammo"			"Pistol"
+	"secondary_ammo"		"None"
+
+	"weight"				"2"
+	"rumble"				"1"
+	"item_flags"			"0"
+
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+		"reload"		"Pistol.ClipInsert"
+		"reload_npc"		"Pistol.ClipInsert"
+		"empty"				"Pistol.NoAmmo"
+		"single_shot"		"AlyxPistol.Fire"
+		"single_shot_npc"	"AlyxPistol.Fire"
+		"special1"			"Weapon_Pistol.Special1"
+		"special2"			"Weapon_Pistol.Special2"
+		"burst"				"Weapon_Pistol.Burst"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIcons"
+				"character"	"c" //"d"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelected"
+				"character"	"c" //"d"
+		}
+		"weapon_small"
+		{
+				"font"		"WeaponIconsSmall"
+				"character"	"c" //"d"
+		}
+		"ammo"
+		{
+				"font"		"AmmoIconsSmall" //"WeaponIconsSmall"
+				"character"	"p"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"materials/sprites/crosshairs.vmat"
+				"x"			"0"
+				"y"			"48"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}
