@@ -21,9 +21,13 @@ end
 
 -- Toner Puzzles
 
+-- First Path in the Puzzle
 local toner_start_path
+-- Last/Success Path
 local toner_end_path
+-- example_toner_path = {"leads_to_this_junction", point1, point2, point3, ...}
 local toner_paths
+-- example_toner_junction = {type (0=straight, 1=right angle), "activated_toner_path_1", "activated_toner_path_2", "activated_toner_path_3", "activated_toner_path_4"}
 local toner_junctions
 
 if map == "a2_quarantine_entrance" then

@@ -817,6 +817,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 
                 if GetMapName() == "a2_quarantine_entrance" then
+                    -- Default Junction Rotations
                     Entities:FindByName(nil, "toner_junction_1"):Attribute_SetIntValue("junction_rotation", 1)
                     Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 3)
                     Entities:FindByName(nil, "toner_junction_3"):Attribute_SetIntValue("junction_rotation", 1)
