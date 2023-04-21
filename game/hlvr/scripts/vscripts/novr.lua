@@ -293,6 +293,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("npc_kill")
             DoEntFire("!picker", "RunScriptFile", "vortenergyhit", 0, nil, nil)
             StartSoundEventFromPosition("VortMagic.Throw", startVector)
+            local vortEnergyCell = Entities:FindByClassnameNearest("point_vort_energy", Vector(traceTable.pos.x,traceTable.pos.y,traceTable.pos.z), 15)
+            if vortEnergyCell then
+                vortEnergyCell:FireOutput("OnEnergyPulled", nil, nil, nil, 0)
+            end
         end
     end, "", 0)
 
@@ -301,6 +305,25 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not player:IsUsePressed() then
             DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
+
+            local startVector = player:EyePosition()
+            local traceTable =
+            {
+                startpos = startVector;
+                endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(100, 0, 0));
+                ignore = player;
+                mask =  33636363
+            }
+        
+            TraceLine(traceTable)
+        
+            if traceTable.hit 
+            then
+                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
+                if ent then
+                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+                end
+            end
 
             if GetMapName() == "a5_vault" then
                 if vlua.find(Entities:FindAllInSphere(Vector(-468, 2902, -519), 20), player) then
@@ -794,6 +817,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                 Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 
                 if GetMapName() == "a2_quarantine_entrance" then
+                    -- Default Junction Rotations
+                    Entities:FindByName(nil, "toner_junction_1"):Attribute_SetIntValue("junction_rotation", 1)
+                    Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 3)
+                    Entities:FindByName(nil, "toner_junction_3"):Attribute_SetIntValue("junction_rotation", 1)
+
                     if not loading_save_file then
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)

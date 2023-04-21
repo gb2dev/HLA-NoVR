@@ -12,6 +12,147 @@ else
     thisEntity:Attribute_SetIntValue("toggle", 0)
 end
 
+if thisEntity:Attribute_GetIntValue("junction_rotation", 0) == 3 then
+    thisEntity:Attribute_SetIntValue("junction_rotation", 0)
+else
+    thisEntity:Attribute_SetIntValue("junction_rotation", thisEntity:Attribute_GetIntValue("junction_rotation", 0) + 1)
+end
+
+
+-- Toner Puzzles
+
+-- First Path in the Puzzle
+local toner_start_path
+-- Last/Success Path
+local toner_end_path
+-- example_toner_path = {"leads_to_this_junction", point1, point2, point3, ...}
+local toner_paths
+-- example_toner_junction = {type (0=straight, 1=right angle), "activated_toner_path_1", "activated_toner_path_2", "activated_toner_path_3", "activated_toner_path_4"}
+local toner_junctions
+
+if map == "a2_quarantine_entrance" then
+    toner_start_path = "toner_path_1"
+    toner_end_path = "toner_path_5"
+
+    toner_paths = {
+        toner_path_1 = {"toner_junction_1", Vector(-912, 1150.47, 100), Vector(-912, 1112, 100)},
+        toner_path_2 = {"toner_junction_2", Vector(-912, 1112, 100), Vector(-912, 1099, 100), Vector(-912, 1099, 108.658), Vector(-912, 1087.5, 108.658), Vector(-929, 1087.5, 108.658)},
+        toner_path_3 = {"", Vector(-929, 1087.5, 108.658), Vector(-929, 1087.5, 144), Vector(-946, 1087.5, 144)},
+        toner_path_5 = {"", Vector(-970, 1087.5, 98.4348), Vector(-986, 1087.5, 98.4348)},
+        toner_path_7 = {"toner_junction_3", Vector(-929, 1087.5, 108.658), Vector(-929, 1087.5, 98.4348), Vector(-947, 1087.5, 98.4348), Vector(-947, 1087.5, 69.5763), Vector(-947, 1087.5, 98.4348), Vector(-970, 1087.5, 98.4348)},
+    }
+    
+    toner_junctions = {
+        toner_junction_1 = {0, "toner_path_2", "", "toner_path_2", ""},
+        toner_junction_2 = {1, "toner_path_3", "toner_path_7", "", ""},
+        toner_junction_3 = {0, "toner_path_5", "", "toner_path_5", ""},
+    }
+end
+
+function draw_toner_path(toner_path)
+    for i = 3, #toner_path do
+        DebugDrawBox(Vector(0,0,0), toner_path[i - 1], toner_path[i], 255, 0, 0, 255, 10)
+    end
+end
+
+function draw_toner_junction(junction, center, angles)
+    local type = junction[1]
+
+    if type == 0 then
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-5,-0.5))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,5,0.5))
+        DebugDrawBox(center, min, max, 255, 0, 0, 255, 10)
+    elseif type == 1 then
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-5,-0.5))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0.5))
+        DebugDrawBox(center, min, max, 255, 0, 0, 255, 10)
+
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-0.5,-0.5))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0.5,5))
+        DebugDrawBox(center, min, max, 255, 0, 0, 255, 10)
+    end
+end
+
+function toggle_toner_junction()
+    local junction = toner_junctions[thisEntity:GetName()]
+
+    if junction then
+        DebugDrawClear()
+        for toner_path_name, toner_path in pairs(toner_paths) do
+            draw_toner_path(toner_path)
+        end
+
+        local angles = thisEntity:GetAngles()
+        StartSoundEventFromPosition("Toner.JunctionRotate", player:EyePosition())
+
+        local new_index = thisEntity:Attribute_GetIntValue("junction_rotation", 0) + 1
+        local old_index = new_index - 1
+        if old_index == 0 then
+            old_index = 4
+        end
+
+        ent = Entities:FindByClassname(nil, "info_hlvr_toner_path")
+        while ent do
+            ent:FireOutput("OnPowerOff", nil, nil, nil, 0)
+            ent = Entities:FindByClassname(ent, "info_hlvr_toner_path")
+        end
+
+        local toner_path = toner_start_path
+        while toner_path ~= "" do
+            local junction_name = toner_paths[toner_path][1]
+            local junction_entity = Entities:FindByName(nil, junction_name)
+            if junction_entity then
+                local activated_path = junction_entity:Attribute_GetIntValue("junction_rotation", 0) + 2
+                local next_path = toner_junctions[junction_name][activated_path]
+                toner_path = next_path
+                if next_path ~= "" then
+                    SendToConsole("ent_fire_output " .. next_path .. " OnPowerOn")
+                    if next_path == toner_end_path then
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+
+                        player:Attribute_SetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 1)
+                    end
+                end
+            else
+                toner_path = ""
+            end
+        end
+
+        for junction_name, junction in pairs(toner_junctions) do
+            local junction_entity = Entities:FindByName(nil, junction_name)
+            local angles = junction_entity:GetAngles()
+            angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
+            draw_toner_junction(junction, junction_entity:GetCenter(), angles)
+        end
+    end
+end
+
+if class == "info_hlvr_toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("used", 1)
+    DoEntFireByInstanceHandle(thisEntity, "OnPlugRotated", "", 0, nil, nil)
+    DebugDrawClear()
+    for junction_name, junction in pairs(toner_junctions) do
+        local junction_entity = Entities:FindByName(nil, junction_name)
+        local angles = junction_entity:GetAngles()
+        angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
+        draw_toner_junction(junction, junction_entity:GetCenter(), angles)
+    end
+    for toner_path_name, toner_path in pairs(toner_paths) do
+        draw_toner_path(toner_path)
+    end
+end
+
+if class == "info_hlvr_toner_junction" and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 0) == 0 then
+    toggle_toner_junction()
+end
+
+
 if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)[2]:GetCycle() == 1)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
@@ -426,9 +567,12 @@ if class == "prop_dynamic" then
     elseif model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
         local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
 
-        if ent then
-            ent:FireOutput("OnHackSuccess", nil, nil, nil, 0)
-            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 0)
+        if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
+			ent:Attribute_SetIntValue("used", 1)
+            DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+            DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+            ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
         end
     end
 end
@@ -746,12 +890,6 @@ if map == "a2_headcrabs_tunnel" then
 end
 
 if map == "a2_quarantine_entrance" then
-    if name == "toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-        thisEntity:Attribute_SetIntValue("used", 1)
-        SendToConsole("ent_fire_output toner_path_5 OnPowerOn")
-        SendToConsole("ent_fire !picker OnPlugRotated")
-    end
-
     if class == "item_hlvr_combine_console_rack" and Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)[2]:GetCycle() == 1 then
         local ent = Entities:FindByName(nil, "17670_combine_console")
         DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
