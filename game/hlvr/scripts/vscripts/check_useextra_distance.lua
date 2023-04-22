@@ -37,7 +37,7 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
     }
     if eyetrace.hit or thisEntity:GetName() == "ChoreoPhysProxy" then
         DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
-    elseif vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery") then
+    elseif player:Attribute_GetIntValue("disable_gg", 0) == 0 and vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery") then
         local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
         FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
         local direction = startVector - thisEntity:GetAbsOrigin()
@@ -48,14 +48,16 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
         if VectorDistance(startVector, thisEntity:GetAbsOrigin()) > 350 then
             delay = 0.45
         end
+        player:Attribute_SetIntValue("disable_gg", 1)
         thisEntity:SetThink(function()
             local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 120)
-            if vlua.find(ents, thisEntity) then
+            if vlua.find(ents, thisEntity) and player:Attribute_GetIntValue("disable_gg_autopickup", 0) == 0 then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
                 if class == "item_hlvr_grenade_frag" then
                     DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, player)
                 end
             end
+            player:Attribute_SetIntValue("disable_gg", 0)
         end, "GrabItem", delay)
     end
 end

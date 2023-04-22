@@ -68,6 +68,11 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
+        local player = Entities:GetLocalPlayer()
+        player:Attribute_SetIntValue("disable_gg_autopickup", 1)
+        player:SetThink(function()
+            player:Attribute_SetIntValue("disable_gg_autopickup", 0)
+        end, "EnableGGAutoPickup", 1)
         local ent = EntIndexToHScript(info.entindex)
         local child = ent:GetChildren()[1]
         if child and child:GetClassname() == "prop_dynamic" then
@@ -774,6 +779,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                     DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                     SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
                     SendToConsole("ent_create env_message { targetname text_sprint message SPRINT }")
+                    SendToConsole("ent_create env_message { targetname text_gg message GRAVITYGLOVES }")
+
+                    SendToConsole("ent_fire russell_entry_window SetCompletionValue 0.4")
                 end
 
                 ent = Entities:GetLocalPlayer()
@@ -797,6 +805,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if not loading_save_file then
                     ent = Entities:FindByName(nil, "trigger_post_gate")
                     ent:RedirectOutput("OnTrigger", "ShowSprintTutorial", ent)
+
+                    ent = Entities:FindByName(nil, "gg_training_start_trigger")
+                    ent:RedirectOutput("OnTrigger", "ShowGravityGlovesTutorial", ent)
 
                     ent = Entities:FindByName(nil, "gate_ammo_trigger")
                     local origin = ent:GetOrigin()
@@ -1120,6 +1131,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ShowSprintTutorial()
         SendToConsole("ent_fire text_sprint ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    function ShowGravityGlovesTutorial()
+        SendToConsole("ent_fire text_gg ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
