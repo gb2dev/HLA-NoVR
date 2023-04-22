@@ -400,6 +400,14 @@ if name == "russell_entry_window" then
     SendToConsole("setpos -1728 275 100")
 end
 
+if vlua.find(model, "models/props/interior_furniture/interior_furniture_cabinet_002_door_") then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+    end
+end
+
 if model == "models/props/fridge_1a_door2.vmdl" or model == "models/props/fridge_1a_door.vmdl" then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
