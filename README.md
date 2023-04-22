@@ -40,6 +40,8 @@ P: Pause
 
 V: Noclip (if you get stuck)
 
+C: Console
+
 ## Official Discord Server
 https://discord.gg/AyfBeuZXsR
 

@@ -69,6 +69,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
         local ent = EntIndexToHScript(info.entindex)
+        if VectorDistanceSq(ent:GetCenter(), player:EyePosition()) > 4000 then
+            ent:SetOrigin(player:EyePosition() + player:GetForwardVector() * 40 + (ent:GetOrigin() - ent:GetCenter()))
+        end
         local child = ent:GetChildren()[1]
         if child and child:GetClassname() == "prop_dynamic" then
             child:SetEntityName("held_prop_dynamic_override")
@@ -596,7 +599,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_plr_dmg_ar2 9")
             SendToConsole("sk_plr_dmg_smg1 5")
             SendToConsole("player_use_radius 60")
-            SendToConsole("hlvr_physcannon_forward_offset 0")
+            SendToConsole("hlvr_physcannon_forward_offset -8")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
 
