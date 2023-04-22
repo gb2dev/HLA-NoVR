@@ -896,9 +896,13 @@ if map == "a4_c17_parking_garage" then
 end
 
 if map == "a2_train_yard" then
-    if class == "item_hlvr_combine_console_rack" and Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)[2]:GetCycle() == 1 then
-        local ent = Entities:FindByName(nil, "5325_3947_combine_console")
-        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+    local ents = Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)
+    for i = 1, #ents do
+        local ent = ents[i]
+        if ent:GetModelName() == "models/props_combine/combine_consoles/handle_plate.vmdl" and ent:GetCycle() == 1 then
+            local ent = Entities:FindByName(nil, "5325_3947_combine_console")
+            DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+        end
     end
 end
 
@@ -917,9 +921,13 @@ if map == "a2_headcrabs_tunnel" then
 end
 
 if map == "a2_quarantine_entrance" then
-    if class == "item_hlvr_combine_console_rack" and Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)[2]:GetCycle() == 1 then
-        local ent = Entities:FindByName(nil, "17670_combine_console")
-        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+    local ents = Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)
+    for i = 1, #ents do
+        local ent = ents[i]
+        if ent:GetModelName() == "models/props_combine/combine_consoles/handle_plate.vmdl" and ent:GetCycle() == 1 then
+            local ent = Entities:FindByName(nil, "17670_combine_console")
+            DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+        end
     end
     
     if name == "27788_combine_locker" then
