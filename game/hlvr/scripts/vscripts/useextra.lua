@@ -732,7 +732,7 @@ if class == "prop_hlvr_crafting_station_console" then
             thisEntity:Attribute_GetIntValue("crafting_station_ready", 0)
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if viewmodel then
-                if viewmodel:GetModelName() == "models/pistol.vmdl" then
+                if viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
                     SendToConsole("ent_fire weapon_pistol kill 0.02")
                     SendToConsole("impulse 200")
                     Convars:SetStr("weapon_in_crafting_station", "pistol")
@@ -768,7 +768,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
-                elseif viewmodel:GetModelName() == "models/shotgun.vmdl" then
+                elseif viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
                     SendToConsole("impulse 200")
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
@@ -802,7 +802,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
-                elseif viewmodel:GetModelName() == "models/smg.vmdl" then
+                elseif viewmodel:GetModelName() == "models/weapons/smg1.vmdl" then
                     if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                         SendToConsole("ent_fire weapon_ar2 kill 0.02")
                     else
