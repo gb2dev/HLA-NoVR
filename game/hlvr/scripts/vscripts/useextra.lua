@@ -544,10 +544,14 @@ if class == "prop_dynamic" then
     if model == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
         local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
-        if tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        ent = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
+        if ent:GetSequence() == "idle_deployed" and tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
             if player:GetHealth() == player:GetMaxHealth() then
                 StartSoundEvent("HealthStation.Deny", player)
             else
+                if map == "a2_quarantine_entrance" then
+                    SendToConsole("ent_fire_output health_station OnHealingPlayerStart")
+                end
                 StartSoundEvent("HealthStation.Start", player)
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 thisEntity:Attribute_SetIntValue("used", 1)
@@ -559,6 +563,9 @@ if class == "prop_dynamic" then
                         player:SetHealth(player:GetHealth() + 1)
                         return 0.1
                     else
+                        if map == "a2_quarantine_entrance" then
+                            SendToConsole("ent_fire_output health_station OnHealingPlayerStop")
+                        end
                         StopSoundEvent("HealthStation.Loop", player)
                         StartSoundEvent("HealthStation.Complete", player)
                         thisEntity:StopThink("Loop")
