@@ -423,8 +423,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if traceTable.hit 
                 then
                     local ent = Entities:FindByClassnameNearest("func_physical_button", traceTable.pos, 10)
-                    if ent then
+                    if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
                         ent:FireOutput("OnIn", nil, nil, nil, 0)
+                        ent:Attribute_SetIntValue("used", 1)
                         StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
                     end
                 end
@@ -858,7 +859,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if ent:Attribute_GetIntValue("has_flashlight", 0) == 1 then
                         SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
                     end
-                elseif GetMapName() ~= "a2_hideout" then
+                elseif GetMapName() == "a2_hideout" then
+                    if not loading_save_file then
+                        ent = Entities:FindByName(nil, "8271_button_counter")
+                        ent:RedirectOutput("OnHitMax", "DisableHideoutPuzzleButtons", ent)
+
+                        ent = Entities:FindByName(nil, "8271_relay_reset_buttons")
+                        ent:RedirectOutput("OnTrigger", "ResetHideoutPuzzleButtons", ent)
+                    end
+                else
                     SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
 
                     if GetMapName() == "a2_drainage" then
@@ -1058,6 +1067,24 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("r_drawviewmodel 1")
         SendToConsole("ent_fire item_hlvr_weapon_energygun kill")
         Entities:GetLocalPlayer():Attribute_SetIntValue("pistol", 1)
+    end
+
+    function DisableHideoutPuzzleButtons(a, b)
+        ent = Entities:FindByClassname(nil, "func_physical_button")
+        while ent do
+            ent:Attribute_SetIntValue("used", 1)
+            ent = Entities:FindByClassname(ent, "func_physical_button")
+        end
+    end
+
+    function ResetHideoutPuzzleButtons(a, b)
+        ent = Entities:FindByClassname(nil, "func_physical_button")
+        ent:SetThink(function()
+            while ent do
+                ent:Attribute_SetIntValue("used", 0)
+                ent = Entities:FindByClassname(ent, "func_physical_button")
+            end
+        end, "", 3)
     end
 
     function RemoveEliPreventFall(a, b)
