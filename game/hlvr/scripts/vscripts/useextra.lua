@@ -337,11 +337,23 @@ if name == "205_8032_button_pusher_prop" then
     SendToConsole("ent_fire debug_elevator_relay trigger")
 end
 
+if model == "models/props/eli_manor/antique_globe01a.vmdl" then
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,1000))
+end
+
 if model == "models/props/interactive/washing_machine01a_door.vmdl" then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
     else
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+    end
+end
+
+if model == "models/props/interactive/washing_machine01a_loader.vmdl" then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 100)
+    else
+        thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 100)
     end
 end
 

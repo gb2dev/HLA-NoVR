@@ -69,9 +69,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
         local ent = EntIndexToHScript(info.entindex)
-        if VectorDistanceSq(ent:GetCenter(), player:EyePosition()) > 4000 then
-            ent:SetOrigin(player:EyePosition() + player:GetForwardVector() * 40 + (ent:GetOrigin() - ent:GetCenter()))
-        end
         local child = ent:GetChildren()[1]
         if child and child:GetClassname() == "prop_dynamic" then
             child:SetEntityName("held_prop_dynamic_override")
@@ -570,6 +567,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
             SendToConsole("ent_fire electrical_panel_*_door* DisablePickup")
             SendToConsole("ent_fire *_washing_machine_door DisablePickup")
+            SendToConsole("ent_fire *_washing_machine_loader DisablePickup")
             SendToConsole("ent_fire *_fridge_door_* DisablePickup")
             SendToConsole("ent_fire *_mailbox_*_door_* DisablePickup")
             SendToConsole("ent_fire *_dumpster_lid DisablePickup")
@@ -580,6 +578,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_car_door_rear DisablePickup")
             SendToConsole("ent_fire *_antenna_* DisablePickup")
             SendToConsole("ent_fire ticktacktoe_* DisablePickup")
+            SendToConsole("ent_fire *_antique_globe DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
@@ -1025,7 +1024,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function GetOutOfCrashedVan(a, b)
         SendToConsole("fadein 0.2")
-        SendToConsole("setpos_exact -1408 2307 -104")
+        SendToConsole("setpos_exact -1408 2307 -114")
         SendToConsole("ent_fire 4962_car_door_left_front open")
     end
 
