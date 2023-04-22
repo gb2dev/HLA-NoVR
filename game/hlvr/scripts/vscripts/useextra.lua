@@ -293,10 +293,18 @@ elseif vlua.find(name, "_portaloo_seat") then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
     end
 elseif vlua.find(name, "_drawer_") then
-    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-        thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 100)
+    if vlua.find(model, "models/props/desk_1_drawer_") then
+        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+            thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetRightVector() * 100)
+        else
+            thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetRightVector() * 100)
+        end
     else
-        thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 100)
+        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+            thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 100)
+        else
+            thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 100)
+        end
     end
 elseif vlua.find(name, "_trashbin02_lid") then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
