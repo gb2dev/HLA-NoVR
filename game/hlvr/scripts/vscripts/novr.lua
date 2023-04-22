@@ -585,7 +585,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_antenna_* DisablePickup")
             SendToConsole("ent_fire ticktacktoe_* DisablePickup")
             SendToConsole("ent_fire *_antique_globe DisablePickup")
-            SendToConsole("ent_fire *_door* DisablePickup")
+            SendToConsole("ent_fire *_door1 DisablePickup")
+            SendToConsole("ent_fire *_door2 DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
@@ -604,7 +605,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_plr_dmg_pistol 7")
             SendToConsole("sk_plr_dmg_ar2 9")
             SendToConsole("sk_plr_dmg_smg1 5")
-            SendToConsole("player_use_radius 60")
+            SendToConsole("player_use_radius 45")
             SendToConsole("hlvr_physcannon_forward_offset -5")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
