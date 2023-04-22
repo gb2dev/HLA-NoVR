@@ -72,7 +72,8 @@ if GlobalSys:CommandLineCheck("-novr") then
         player:Attribute_SetIntValue("disable_gg_autopickup", 1)
         player:SetThink(function()
             player:Attribute_SetIntValue("disable_gg_autopickup", 0)
-        end, "EnableGGAutoPickup", 1)
+            player:Attribute_SetIntValue("disable_gg", 0)
+        end, "EnableGG", 0.45)
         local ent = EntIndexToHScript(info.entindex)
         local child = ent:GetChildren()[1]
         if child and child:GetClassname() == "prop_dynamic" then
@@ -605,7 +606,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_plr_dmg_pistol 7")
             SendToConsole("sk_plr_dmg_ar2 9")
             SendToConsole("sk_plr_dmg_smg1 5")
-            SendToConsole("player_use_radius 48")
+            SendToConsole("player_use_radius 60")
             SendToConsole("hlvr_physcannon_forward_offset -5")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
@@ -854,6 +855,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if not loading_save_file then
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER3_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                        ent = SpawnEntityFromTableSynchronous("prop_physics_override", {["targetname"]="shotgun_pickup_blocker", ["CollisionGroupOverride"]=5, ["renderamt"]=0, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl", ["origin"]="605.122 1397.567 -32.079", ["modelscale"]=2})
+                        ent:SetParent(Entities:FindByName(nil, "12712_hanging_shotgun_zombie"), "hand_r")
                     end
 
                     ent = Entities:GetLocalPlayer()

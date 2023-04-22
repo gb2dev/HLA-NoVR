@@ -225,9 +225,10 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
                 SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
             end
             if name == "12712_shotgun_wheel" then
-                local bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
-                bar:SetOrigin(Vector(711.395874, 1319.248047, -168.302490))
-                bar:SetAngles(0.087952, 120.220528, 90.588112)
+                local bar = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["model"]="models/props/misc_debris/vort_winch_pipe.vmdl", ["origin"]="711.395874 1319.248047 -168.302490", ["angles"]="0.087952 120.220528 90.588112"})
+                bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
+                bar:Kill()
+                SendToConsole("ent_remove shotgun_pickup_blocker")
             end
             return nil
         else
