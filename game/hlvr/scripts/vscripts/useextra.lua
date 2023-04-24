@@ -579,7 +579,9 @@ if class == "prop_dynamic" then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 thisEntity:Attribute_SetIntValue("used", 1)
                 thisEntity:SetThink(function()
-                    StartSoundEvent("HealthStation.Loop", player)
+                    if player:GetHealth() < player:GetMaxHealth() then
+                        StartSoundEvent("HealthStation.Loop", player)
+                    end
                 end, "Loop", .7)
                 thisEntity:SetThink(function()
                     if player:GetHealth() < player:GetMaxHealth() then
@@ -591,7 +593,6 @@ if class == "prop_dynamic" then
                         end
                         StopSoundEvent("HealthStation.Loop", player)
                         StartSoundEvent("HealthStation.Complete", player)
-                        thisEntity:StopThink("Loop")
                         SendToConsole("ent_fire player_speedmod ModifySpeed 1")
                         thisEntity:Attribute_SetIntValue("used", 0)
                     end
@@ -681,8 +682,8 @@ if name == "console_opener_prop_handle_interact" then
     SendToConsole("ent_fire_output console_opener_logic_isselected_5 ontrue")
 end
 
-if name == "@pod_shell" then
-    SendToConsole("ent_fire @pod_shell unlock")
+if name == "@pod_shell" or name == "pod_insides" then
+    SendToConsole("ent_fire @pod_shell Unlock")
 end
 
 if name == "ChoreoPhysProxy" then

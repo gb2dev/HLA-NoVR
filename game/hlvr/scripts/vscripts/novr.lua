@@ -69,11 +69,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
         local player = Entities:GetLocalPlayer()
-        player:Attribute_SetIntValue("disable_gg_autopickup", 1)
-        player:SetThink(function()
-            player:Attribute_SetIntValue("disable_gg_autopickup", 0)
-            player:Attribute_SetIntValue("disable_gg", 0)
-        end, "EnableGG", 0.45)
         local ent = EntIndexToHScript(info.entindex)
         local child = ent:GetChildren()[1]
         if child and child:GetClassname() == "prop_dynamic" then
@@ -82,7 +77,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         ent:Attribute_SetIntValue("picked_up", 1)
         ent:SetThink(function()
             ent:Attribute_SetIntValue("picked_up", 0)
-        end, "", 0.1)
+        end, "", 0.02)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 
@@ -854,6 +849,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("ent_fire *_rebar EnablePickup")
                 elseif GetMapName() == "a2_headcrabs_tunnel" then
                     if not loading_save_file then
+                        SendToConsole("ent_fire traincar_border_trigger DisablePickup")
+
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER3_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
