@@ -554,10 +554,12 @@ end
 
 if class == "item_hlvr_weapon_rapidfire" then
     SendToConsole("give weapon_ar2")
-    local ent = Entities:FindByClassnameNearest("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 20)
-    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, player, player)
-    ent = Entities:FindByClassnameNearest("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 20)
-    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, player, player)
+    if map == "a3_hotel_interior_rooftop" then
+        local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
+        for k, v in pairs(ents) do
+            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
+        end
+    end
     SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
 end
 

@@ -1,20 +1,16 @@
 local class = thisEntity:GetClassname()
 local player = Entities:GetLocalPlayer()
 local startVector = player:EyePosition()
-local radius = cvar_getf("player_use_radius")
-if thisEntity:GetClassname() == "prop_ragdoll" then
-    radius = 80
-end
 local eyetrace =
 {
     startpos = startVector;
-    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(radius,0,0));
+    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(80,0,0));
     ignore = player;
     mask =  33636363
 }
 TraceLine(eyetrace)
 
-if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
+function GravityGlovePull()
     local ignore_props = {
         "models/props/hazmat/hazmat_crate_lid.vmdl",
         "models/props/electric_box_door_1_32_48_front.vmdl",
@@ -39,9 +35,7 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
         "models/props/interior_furniture/interior_locker_001_door_d.vmdl",
         "models/props/interior_furniture/interior_locker_001_door_e.vmdl",
     }
-    if eyetrace.hit or vlua.find(thisEntity:GetName(), "socket") or thisEntity:GetName() == "ChoreoPhysProxy" then
-        DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
-    elseif player:Attribute_GetIntValue("disable_gg", 0) == 0 and vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery" or thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl") then
+    if player:Attribute_GetIntValue("disable_gg", 0) == 0 and vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery" or thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl") then
         local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
         FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
         local direction = startVector - thisEntity:GetAbsOrigin()
@@ -50,7 +44,7 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
         StartSoundEventFromPosition("Grabbity.Grab", startVector)
         local delay = 0.35
         if VectorDistance(startVector, thisEntity:GetAbsOrigin()) < 100 then
-            delay = 0.15
+            delay = 0.2
         elseif VectorDistance(startVector, thisEntity:GetAbsOrigin()) > 350 then
             delay = 0.45
         end
@@ -65,5 +59,16 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
             end
             player:Attribute_SetIntValue("disable_gg", 0)
         end, "GrabItem", delay)
+    end
+end
+
+if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
+    if eyetrace.hit and VectorDistance(startVector, eyetrace.pos) <= cvar_getf("player_use_radius") or vlua.find(thisEntity:GetName(), "socket") or thisEntity:GetName() == "ChoreoPhysProxy" then
+        DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
+        if VectorDistance(startVector, eyetrace.pos) <= cvar_getf("player_use_radius") then
+            GravityGlovePull()
+        end
+    else
+        GravityGlovePull()
     end
 end
