@@ -202,6 +202,8 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
             count = count + 0.001
         elseif name == "12712_shotgun_wheel" then
             count = count + 0.003
+        elseif name == "console_selector_interact" then
+            count = count + 0.0005
         else
             count = count + 0.01
         end
@@ -223,12 +225,16 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
             thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
             if name == "barricade_door_hook" then
                 SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
-            end
-            if name == "12712_shotgun_wheel" then
+            elseif name == "12712_shotgun_wheel" then
                 local bar = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["model"]="models/props/misc_debris/vort_winch_pipe.vmdl", ["origin"]="711.395874 1319.248047 -168.302490", ["angles"]="0.087952 120.220528 90.588112"})
                 bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
                 bar:Kill()
                 SendToConsole("ent_remove shotgun_pickup_blocker")
+            elseif name == "console_opener_prop_handle_interact" then
+                SendToConsole("ent_fire_output console_opener_prop_handle_interact OnCompletionA")
+                Entities:FindByName(nil, "console_selector_interact"):Attribute_SetIntValue("used", 0)
+            elseif name == "console_selector_interact" then
+                SendToConsole("ent_fire_output console_opener_logic_isselected_* ontrue")
             end
             return nil
         else
@@ -672,14 +678,6 @@ if name == "inside_elevator_button" then
     thisEntity:SetThink(function()
         SendToConsole("-use")
     end, "", 0)
-end
-
-if name == "console_opener_prop_handle_interact" then
-    SendToConsole("ent_fire_output console_opener_logic_isselected_1 ontrue")
-    SendToConsole("ent_fire_output console_opener_logic_isselected_2 ontrue")
-    SendToConsole("ent_fire_output console_opener_logic_isselected_3 ontrue")
-    SendToConsole("ent_fire_output console_opener_logic_isselected_4 ontrue")
-    SendToConsole("ent_fire_output console_opener_logic_isselected_5 ontrue")
 end
 
 if name == "@pod_shell" or name == "pod_insides" then
