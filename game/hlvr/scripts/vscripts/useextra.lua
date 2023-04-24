@@ -256,7 +256,7 @@ if vlua.find(model, "doorhandle") then
     DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
 end
 
-if vlua.find(name, "socket") then    
+if vlua.find(name, "socket") then
     local ent = Entities:FindByClassname(thisEntity, "prop_physics") 
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "check_useextra_distance", 0, player, player)
 end
@@ -549,12 +549,16 @@ end
 if class == "item_hlvr_weapon_shotgun" then
     SendToConsole("give weapon_shotgun")
     SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
-    thisEntity:Kill()
+    SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
 end
 
 if class == "item_hlvr_weapon_rapidfire" then
     SendToConsole("give weapon_ar2")
-    thisEntity:Kill()
+    local ent = Entities:FindByClassnameNearest("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 20)
+    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, player, player)
+    ent = Entities:FindByClassnameNearest("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 20)
+    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, player, player)
+    SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
 end
 
 if class == "prop_dynamic" then

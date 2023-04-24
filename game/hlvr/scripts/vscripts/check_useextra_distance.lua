@@ -1,10 +1,14 @@
 local class = thisEntity:GetClassname()
 local player = Entities:GetLocalPlayer()
 local startVector = player:EyePosition()
+local radius = cvar_getf("player_use_radius")
+if thisEntity:GetClassname() == "prop_ragdoll" then
+    radius = 80
+end
 local eyetrace =
 {
     startpos = startVector;
-    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(cvar_getf("player_use_radius"),0,0));
+    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(radius,0,0));
     ignore = player;
     mask =  33636363
 }
