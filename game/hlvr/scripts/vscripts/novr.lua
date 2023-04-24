@@ -604,7 +604,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_plr_dmg_pistol 7")
             SendToConsole("sk_plr_dmg_ar2 9")
             SendToConsole("sk_plr_dmg_smg1 5")
-            SendToConsole("player_use_radius 60")
+            --SendToConsole("player_use_radius 60")
             SendToConsole("hlvr_physcannon_forward_offset -5")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
@@ -647,6 +647,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     "models/industrial/industrial_chemical_barrel_02.vmdl",
                     "models/props/barrel_plastic_1.vmdl",
                     "models/props/barrel_plastic_1_open.vmdl",
+                    "models/props_c17/oildrum001_explosive.vmdl",
                 }
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
@@ -682,6 +683,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent:SetThink(function()
                     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                     local player = Entities:GetLocalPlayer()
+
+                    cvar_setf("player_use_radius", min(2200/abs(player:GetAngles().x),60))
 
                     if move_delta ~= Vector(0, 0, 0) then
                         table.insert(unstuck_table, player:GetOrigin())
@@ -874,11 +877,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
 
                     if GetMapName() == "a2_drainage" then
-                        SendToConsole("ent_fire wheel_socket SetScale 4")
-                        SendToConsole("ent_fire wheel2_socket SetScale 4")
-                        SendToConsole("ent_fire wheel_physics DisablePickup")
-                        ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(941, -1666, 255), 10)
-                        DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>wheel_physics>EnablePickup>>0>1", 0, nil, nil)
+                        if not loading_save_file then
+                            SendToConsole("ent_fire math_count_wheel2_installment addoutput \"OnChangedFromMin>relay_install_wheel2>Trigger>>0>1\"")
+                            SendToConsole("ent_fire math_count_wheel_installment addoutput \"OnChangedFromMin>relay_install_wheel>Trigger>>0>1\"")
+                            SendToConsole("ent_fire wheel_physics DisablePickup")
+                            ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(941, -1666, 255), 10)
+                            DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>wheel_physics>EnablePickup>>0>1", 0, nil, nil)
+                        end
                     elseif GetMapName() == "a2_train_yard" then
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1080 3200 -350", ["angles"]="0 12 0", ["modelscale"]=5, ["targetname"]="elipreventfall"})

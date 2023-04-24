@@ -4,7 +4,7 @@ local startVector = player:EyePosition()
 local eyetrace =
 {
     startpos = startVector;
-    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(60,0,0));
+    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(cvar_getf("player_use_radius"),0,0));
     ignore = player;
     mask =  33636363
 }
@@ -35,9 +35,9 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
         "models/props/interior_furniture/interior_locker_001_door_d.vmdl",
         "models/props/interior_furniture/interior_locker_001_door_e.vmdl",
     }
-    if eyetrace.hit or thisEntity:GetName() == "ChoreoPhysProxy" then
+    if eyetrace.hit or vlua.find(thisEntity:GetName(), "socket") or thisEntity:GetName() == "ChoreoPhysProxy" then
         DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
-    elseif player:Attribute_GetIntValue("disable_gg", 0) == 0 and vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery") then
+    elseif player:Attribute_GetIntValue("disable_gg", 0) == 0 and vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery" or thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl") then
         local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
         FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
         local direction = startVector - thisEntity:GetAbsOrigin()
@@ -45,12 +45,14 @@ if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
         StartSoundEventFromPosition("Grabbity.HoverPing", startVector)
         StartSoundEventFromPosition("Grabbity.Grab", startVector)
         local delay = 0.35
-        if VectorDistance(startVector, thisEntity:GetAbsOrigin()) > 350 then
+        if VectorDistance(startVector, thisEntity:GetAbsOrigin()) < 100 then
+            delay = 0.15
+        elseif VectorDistance(startVector, thisEntity:GetAbsOrigin()) > 350 then
             delay = 0.45
         end
         player:Attribute_SetIntValue("disable_gg", 1)
         thisEntity:SetThink(function()
-            local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 120)
+            local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 100)
             if vlua.find(ents, thisEntity) and player:Attribute_GetIntValue("disable_gg_autopickup", 0) == 0 then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
                 if class == "item_hlvr_grenade_frag" then

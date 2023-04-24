@@ -256,9 +256,9 @@ if vlua.find(model, "doorhandle") then
     DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
 end
 
-if vlua.find(name, "socket") then
+if vlua.find(name, "socket") then    
     local ent = Entities:FindByClassname(thisEntity, "prop_physics") 
-    DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
+    DoEntFireByInstanceHandle(ent, "RunScriptFile", "check_useextra_distance", 0, player, player)
 end
 
 if class == "prop_ragdoll" or class == "prop_ragdoll_attached" then
