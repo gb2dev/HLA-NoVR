@@ -82,7 +82,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         ent:Attribute_SetIntValue("picked_up", 1)
         ent:SetThink(function()
             ent:Attribute_SetIntValue("picked_up", 0)
-        end, "", 0.45)
+        end, "", 0.1)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 

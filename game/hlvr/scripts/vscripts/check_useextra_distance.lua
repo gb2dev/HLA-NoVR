@@ -62,13 +62,16 @@ function GravityGlovePull()
     end
 end
 
-if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
-    if eyetrace.hit and VectorDistance(startVector, eyetrace.pos) <= cvar_getf("player_use_radius") or vlua.find(thisEntity:GetName(), "socket") or thisEntity:GetName() == "ChoreoPhysProxy" then
+if eyetrace.hit or vlua.find(thisEntity:GetName(), "socket") or thisEntity:GetName() == "ChoreoPhysProxy" then
+    if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
         DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
-        if VectorDistance(startVector, eyetrace.pos) <= cvar_getf("player_use_radius") then
-            GravityGlovePull()
-        end
-    else
-        GravityGlovePull()
     end
+
+    if VectorDistance(startVector, eyetrace.pos) > cvar_getf("player_use_radius") then
+        thisEntity:SetThink(function()
+            GravityGlovePull()
+        end, "GrabItem", 0.02)
+    end
+else
+    GravityGlovePull()
 end
