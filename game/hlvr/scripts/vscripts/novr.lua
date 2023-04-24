@@ -391,10 +391,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             if GetMapName() == "a3_hotel_lobby_basement" then
                 if vlua.find(Entities:FindAllInSphere(Vector(1059, -1475, 200), 20), player) then
                     SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
-                elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 975 -1507 280")
+                elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 10), player) then
+                    ClimbLadder(280)
                 end
             end
 
@@ -849,8 +847,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("ent_fire *_rebar EnablePickup")
                 elseif GetMapName() == "a2_headcrabs_tunnel" then
                     if not loading_save_file then
-                        SendToConsole("ent_fire traincar_border_trigger DisablePickup")
-
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER3_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
