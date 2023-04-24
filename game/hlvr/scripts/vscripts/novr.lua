@@ -403,10 +403,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
-            if GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(347,-242,-63), 20), player) then
-                ClimbLadderSound()
-                SendToConsole("fadein 0.2")
-                SendToConsole("setpos_exact 347 -297 2")
+            if GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(348, -252, -62), 10), player) then
+                ClimbLadder(22)
             end
 
             if GetMapName() == "a2_hideout" then
