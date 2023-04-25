@@ -81,11 +81,19 @@ TraceLine(eyetrace)
 
 if eyetrace.hit or vlua.find(thisEntity:GetName(), "socket") or thisEntity:GetName() == "ChoreoPhysProxy" then
     if eyetrace.enthit == thisEntity then
-        DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
+        player:SetThink(function()
+            if IsValidEntity(thisEntity) then
+                DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
+            end
+        end, "useextra", 0.02)
     end
 
     if VectorDistance(startVector, eyetrace.pos) > cvar_getf("player_use_radius") then
-        GravityGlovePull()
+        player:SetThink(function()
+            if IsValidEntity(thisEntity) then
+                GravityGlovePull()
+            end
+        end, "GravityGlovePull", 0.02)
     end
 else
     GravityGlovePull()
