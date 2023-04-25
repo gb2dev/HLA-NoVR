@@ -897,7 +897,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
-                elseif viewmodel:GetModelName() == "models/weapons/smg1.vmdl" then
+                elseif viewmodel:GetModelName() == "models/weapons/v_smg1.vmdl" then
                     if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                         SendToConsole("ent_fire weapon_ar2 kill 0.02")
                     else
