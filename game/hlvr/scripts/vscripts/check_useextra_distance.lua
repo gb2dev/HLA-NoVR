@@ -1,4 +1,8 @@
 function GravityGlovePull()
+    if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 then
+        return
+    end
+
     local class = thisEntity:GetClassname()
     local player = Entities:GetLocalPlayer()
     local startVector = player:EyePosition()

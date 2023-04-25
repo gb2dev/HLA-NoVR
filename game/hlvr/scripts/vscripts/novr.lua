@@ -75,6 +75,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             child:SetEntityName("held_prop_dynamic_override")
         end
         ent:Attribute_SetIntValue("picked_up", 1)
+        ent:SetThink(function()
+            ent:Attribute_SetIntValue("picked_up", 0)
+        end, "", 0.02)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 
