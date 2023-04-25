@@ -391,6 +391,30 @@ if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") the
     DoEntFireByInstanceHandle(thisEntity, "Close", "", 0, nil, nil)
 end
 
+if vlua.find(model, "van_a0") then
+    local name = thisEntity:GetName():gsub("_window", "")
+    local ent = Entities:FindByName(nil, name)
+    if ent then
+        if thisEntity == ent then
+            if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+                thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 100)
+            else
+                thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 100)
+            end
+        else
+            DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+        end
+    end
+end
+
+if vlua.find(model, "car_sedan_a0") then
+    local name = thisEntity:GetName():gsub("_door", ""):gsub("car", "car_door"):gsub("_window", "")
+    local ent = Entities:FindByName(nil, name)
+    if ent then
+        DoEntFireByInstanceHandle(ent, "Toggle", "", 0, nil, nil)
+    end
+end
+
 
 ---------- a1_intro_world ----------
 
@@ -440,11 +464,6 @@ end
 if name == "russell_headset" then
     SendToConsole("ent_fire debug_relay_put_on_headphones trigger")
     SendToConsole("ent_fire 4962_car_door_left_front close")
-end
-
-if vlua.find(model, "car_sedan_a0") and (vlua.find(model, "glass") or vlua.find(model, "door")) then
-    local ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", thisEntity:GetOrigin(), 40)
-    DoEntFireByInstanceHandle(ent, "Toggle", "", 0, nil, nil)
 end
 
 if name == "carousel" then

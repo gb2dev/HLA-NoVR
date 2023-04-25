@@ -576,6 +576,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_antique_globe DisablePickup")
             SendToConsole("ent_fire *_door1 DisablePickup")
             SendToConsole("ent_fire *_door2 DisablePickup")
+            SendToConsole("ent_fire *_van_door_* DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
