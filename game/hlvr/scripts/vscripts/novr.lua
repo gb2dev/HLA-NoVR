@@ -185,12 +185,8 @@ if GlobalSys:CommandLineCheck("-novr") then
         Entities:GetLocalPlayer():SetThink(function()
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if viewmodel and viewmodel:GetModelName() == "models/weapons/v_grenade.vmdl" then
-                local player = Entities:GetLocalPlayer()
-                local grenade = Entities:FindByClassnameNearest("item_hlvr_grenade_frag", player:EyePosition(), 50)
-                if grenade then
-                    grenade:ApplyAbsVelocityImpulse(-GetPhysVelocity(grenade) * 0.7)
-                    player:Attribute_SetIntValue("grenades", player:Attribute_GetIntValue("grenades", 0) - 1)
-                end
+                local grenade = Entities:FindByClassname(nil, "item_hlvr_grenade_frag")
+                grenade:ApplyAbsVelocityImpulse(-GetPhysVelocity(grenade) * 0.7)
             end
         end, "SlowGrenade", 0.04)
     end, "", 0)
@@ -587,7 +583,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
             SendToConsole("combine_grenade_timer 4")
-            SendToConsole("sk_max_grenade 2")
+            SendToConsole("sk_max_grenade 9999")
             SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
@@ -920,8 +916,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
 
                         if not loading_save_file then
-                            SendToConsole("ent_fire vent_door DisablePickup")
-
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/construction/construction_yard_lift.vmdl", ["origin"]="-1984 -2456 154", ["angles"]="0 270 0", ["parentname"]="pallet_crane_platform"})
 
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER6_TITLE"})
