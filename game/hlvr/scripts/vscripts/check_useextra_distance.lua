@@ -1,16 +1,20 @@
-local class = thisEntity:GetClassname()
-local player = Entities:GetLocalPlayer()
-local startVector = player:EyePosition()
-local eyetrace =
-{
-    startpos = startVector;
-    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(60,0,0));
-    ignore = player;
-    mask =  33636363
-}
-TraceLine(eyetrace)
-
 function GravityGlovePull()
+    local class = thisEntity:GetClassname()
+    local player = Entities:GetLocalPlayer()
+    local startVector = player:EyePosition()
+    local eyetrace =
+    {
+        startpos = startVector;
+        endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(1000,0,0));
+        ignore = player;
+        mask =  33636363
+    }
+    TraceLine(eyetrace)
+
+    if eyetrace.enthit ~= thisEntity then
+        return
+    end
+
     local ignore_props = {
         "models/props/hazmat/hazmat_crate_lid.vmdl",
         "models/props/electric_box_door_1_32_48_front.vmdl",
@@ -61,9 +65,23 @@ function GravityGlovePull()
     end
 end
 
+local class = thisEntity:GetClassname()
+local player = Entities:GetLocalPlayer()
+local startVector = player:EyePosition()
+local eyetrace =
+{
+    startpos = startVector;
+    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(60,0,0));
+    ignore = player;
+    mask =  33636363
+}
+TraceLine(eyetrace)
+
 if eyetrace.hit or vlua.find(thisEntity:GetName(), "socket") or thisEntity:GetName() == "ChoreoPhysProxy" then
     if thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 then
-        DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
+        if eyetrace.enthit == thisEntity then
+            DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
+        end
 
         if VectorDistance(startVector, eyetrace.pos) > cvar_getf("player_use_radius") then
             GravityGlovePull()
