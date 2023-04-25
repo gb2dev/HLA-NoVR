@@ -27,7 +27,7 @@ local toner_start_path
 local toner_end_path
 -- example_toner_path = {"leads_to_this_junction", point1, point2, point3, ...}
 local toner_paths
--- example_toner_junction = {type (0=straight, 1=right angle), "activated_toner_path_1", "activated_toner_path_2", "activated_toner_path_3", "activated_toner_path_4"}
+-- example_toner_junction = {type (0=straight, 1=right angle, 2=two right angles, 3=static T), "activated_toner_path_1", "activated_toner_path_2", "activated_toner_path_3", "activated_toner_path_4"}
 local toner_junctions
 
 if map == "a2_quarantine_entrance" then
@@ -35,11 +35,11 @@ if map == "a2_quarantine_entrance" then
     toner_end_path = "toner_path_5"
 
     toner_paths = {
-        toner_path_1 = {"toner_junction_1", Vector(-912, 1150.47, 100), Vector(-912, 1112, 100)},
-        toner_path_2 = {"toner_junction_2", Vector(-912, 1112, 100), Vector(-912, 1099, 100), Vector(-912, 1099, 108.658), Vector(-912, 1087.5, 108.658), Vector(-929, 1087.5, 108.658)},
-        toner_path_3 = {"", Vector(-929, 1087.5, 108.658), Vector(-929, 1087.5, 144), Vector(-946, 1087.5, 144)},
-        toner_path_5 = {"", Vector(-970, 1087.5, 98.4348), Vector(-986, 1087.5, 98.4348)},
-        toner_path_7 = {"toner_junction_3", Vector(-929, 1087.5, 108.658), Vector(-929, 1087.5, 98.4348), Vector(-947, 1087.5, 98.4348), Vector(-947, 1087.5, 69.5763), Vector(-947, 1087.5, 98.4348), Vector(-970, 1087.5, 98.4348)},
+        toner_path_1 = {"toner_junction_1", Vector(-912.1, 1150.47, 100), Vector(-912.1, 1112, 100)},
+        toner_path_2 = {"toner_junction_2", Vector(-912.1, 1112, 100), Vector(-912.1, 1099, 100), Vector(-912.1, 1099, 108.658), Vector(-912.1, 1088.1, 108.658), Vector(-929, 1088.1, 108.658)},
+        toner_path_3 = {"", Vector(-929, 1088.1, 108.658), Vector(-929, 1088.1, 144), Vector(-946, 1088.1, 144)},
+        toner_path_5 = {"", Vector(-970, 1088.1, 98.4348), Vector(-986, 1088.1, 98.4348)},
+        toner_path_7 = {"toner_junction_3", Vector(-929, 1088.1, 108.658), Vector(-929, 1088.1, 98.4348), Vector(-947, 1088.1, 98.4348), Vector(-947, 1088.1, 69.5763), Vector(-947, 1088.1, 98.4348), Vector(-970, 1088.1, 98.4348)},
     }
     
     toner_junctions = {
@@ -47,11 +47,29 @@ if map == "a2_quarantine_entrance" then
         toner_junction_2 = {1, "toner_path_3", "toner_path_7", "", ""},
         toner_junction_3 = {0, "toner_path_5", "", "toner_path_5", ""},
     }
+elseif map == "a2_headcrabs_tunnel" then
+    toner_start_path = "toner_path_1"
+    toner_end_path = ""
+
+    toner_paths = {
+        toner_path_1 = {"toner_junction_1", Vector(-440.082, -591.641, 10.1066), Vector(-456.077, -582.406, 10.1066)},
+        toner_path_2 = {"", Vector(-456.077, -582.406, 10.1066), Vector(-456.077, -582.406, 1.25), Vector(-492.011, -561.866, 1.25), Vector(-508.747, -590.854, 1.25)},
+        toner_path_3 = {"toner_junction_2", Vector(-456.077, -582.406, 10.1066), Vector(-456.077, -582.406, 20.25), Vector(-489.012, -563.389, 20.25), Vector(-507.848, -589.466, 20.25), Vector(-563.691, -557.735, 20.25), Vector(-563.471, -557.356, 0.5)},
+        toner_path_5 = {"", Vector(-563.471, -557.356, 0.5), Vector(-591.523, -541.157, 0.5), Vector(-583.348, -527.429, 0.5), Vector(-612.043, -511.988, 3.5)},
+        toner_path_6 = {"", Vector(-563.471, -557.356, 0.5), Vector(-551.359, -564.352, 0.5), Vector(-518.847, -584.56, 0.5)},
+        toner_path_8 = {"", Vector(), Vector()},
+    }
+
+    toner_junctions = {
+        toner_junction_1 = {2, "toner_path_3", "toner_path_2", "toner_path_3", "toner_path_2"},
+        toner_junction_2 = {2, "toner_path_6", "toner_path_5", "toner_path_6", "toner_path_5"},
+        --toner_junction_i = {0, "toner_path_8", "", "toner_path_8", ""},
+    }
 end
 
 function draw_toner_path(toner_path)
     for i = 3, #toner_path do
-        DebugDrawBox(Vector(0,0,0), toner_path[i - 1], toner_path[i], 255, 0, 0, 255, 10)
+        DebugDrawLine(toner_path[i - 1], toner_path[i], 0, 0, 255, false, -1)
     end
 end
 
@@ -59,17 +77,49 @@ function draw_toner_junction(junction, center, angles)
     local type = junction[1]
 
     if type == 0 then
-        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-5,-0.5))
-        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,5,0.5))
-        DebugDrawBox(center, min, max, 255, 0, 0, 255, 10)
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,3,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
     elseif type == 1 then
-        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-5,-0.5))
-        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0.5))
-        DebugDrawBox(center, min, max, 255, 0, 0, 255, 10)
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
 
-        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-0.5,-0.5))
-        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0.5,5))
-        DebugDrawBox(center, min, max, 255, 0, 0, 255, 10)
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,3))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+    elseif type == 2 then
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,3))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,3,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-3))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
+        DebugDrawLine(center + min, center + max, 0, 0, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
+        DebugDrawLine(center + min, center + max, 0, 0, 0, true, -1)
     end
 end
 
@@ -117,6 +167,10 @@ function toggle_toner_junction()
                         StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
 
                         player:Attribute_SetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 1)
+
+                        player:SetThink(function()
+                            DebugDrawClear()
+                        end, "TonerComplete", 3)
                     end
                 end
             else
@@ -921,11 +975,6 @@ if map == "a2_train_yard" then
 end
 
 if map == "a2_headcrabs_tunnel" then
-    if name == "toner_start" then
-        SendToConsole("ent_fire_output toner_path_2 OnPowerOff")
-        SendToConsole("ent_fire_output toner_path_8 OnPowerOff")
-    end
-
     if name == "flashlight" then
         SendToConsole("ent_fire_output flashlight OnAttachedToHand")
         SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")

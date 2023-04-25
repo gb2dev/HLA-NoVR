@@ -645,7 +645,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
                     local model = ent:GetModelName()
-                    if vlua.find(collidable_props, model) ~= nil then
+                    if vlua.find(collidable_props, model) ~= nil and ent:GetName() ~= "6391_prop_physics_olidrum" then
                         local angles = ent:GetAngles()
                         local pos = ent:GetAbsOrigin()
                         local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
@@ -852,6 +852,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         ent = SpawnEntityFromTableSynchronous("prop_physics_override", {["targetname"]="shotgun_pickup_blocker", ["CollisionGroupOverride"]=5, ["renderamt"]=0, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl", ["origin"]="605.122 1397.567 -32.079", ["modelscale"]=2})
                         ent:SetParent(Entities:FindByName(nil, "12712_hanging_shotgun_zombie"), "hand_r")
+
+                        -- Default Junction Rotations
+                        Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 1)
                     end
 
                     ent = Entities:GetLocalPlayer()
