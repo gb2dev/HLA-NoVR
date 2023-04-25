@@ -503,6 +503,17 @@ if model == "models/props/distillery/firebox_1_door_a.vmdl" then
 end
 
 
+---------- a3_c17_processing_plant ----------
+
+if name == "vent_door" then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-1000))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,1000))
+    end
+end
+
+
 ---------- a3_distillery ----------
 
 if name == "cellar_ladder" then
@@ -1203,7 +1214,7 @@ elseif class == "item_hlvr_grenade_frag" then
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
         SendToConsole("give weapon_frag")
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-    viewmodel:RemoveEffects(32)
+        viewmodel:RemoveEffects(32)
         thisEntity:Kill()
     end
 elseif class == "item_healthvial" then
