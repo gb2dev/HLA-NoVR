@@ -389,7 +389,7 @@ elseif vlua.find(name, "_drawer") then
         else
             thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetRightVector() * 100)
         end
-    elseif vlua.find(model, "models/props/interior_furniture/interior_kitchen_drawer_") then
+    elseif vlua.find(model, "models/props/interior_furniture/interior_kitchen_drawer_") or model == "models/props/interior_furniture/interior_furniture_cabinet_001_drawer.vmdl" then
         if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
             thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetRightVector() * 100)
         else
