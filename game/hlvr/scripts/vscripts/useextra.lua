@@ -895,9 +895,6 @@ if class == "prop_hlvr_crafting_station_console" then
                 thisEntity:SetGraphParameterBool("bCollectingResin", false)
             end
         elseif thisEntity:Attribute_GetIntValue("cancel_cooldown_done", 1) == 1 and thisEntity:GetGraphParameter("bCrafting") == false then
-            thisEntity:SetGraphParameterBool("bCollectingResin", true)
-            thisEntity:SetGraphParameterBool("bCrafting", true)
-            thisEntity:Attribute_GetIntValue("crafting_station_ready", 0)
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if viewmodel then
                 if viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
@@ -1008,7 +1005,12 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
+                else
+                    return
                 end
+                thisEntity:SetGraphParameterBool("bCollectingResin", true)
+                thisEntity:SetGraphParameterBool("bCrafting", true)
+                thisEntity:Attribute_GetIntValue("crafting_station_ready", 0)
             end
         end
         if thisEntity:GetGraphParameter("bCrafting") == false then
