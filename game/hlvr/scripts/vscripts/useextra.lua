@@ -222,7 +222,7 @@ function is_combine_console_locked()
     return true
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "elev_anim_door") and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) then
+if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     end
@@ -261,7 +261,7 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
                 end
             end, "", 0)
             SendToConsole("ent_fire traincar_01_hackplug Alpha 0")
-        else
+        elseif not vlua.find(name, "elev_anim_door") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
     end
@@ -331,7 +331,9 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
         end
     end, "AnimateCompletionValue", 0)
 elseif name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
-    thisEntity:Attribute_SetIntValue("used", 1)
+    if not vlua.find(name, "elev_anim_door") then
+        thisEntity:Attribute_SetIntValue("used", 1)
+    end
 
     local count = 0
     thisEntity:SetThink(function()
