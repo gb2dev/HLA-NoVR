@@ -423,10 +423,18 @@ elseif vlua.find(name, "ticktacktoe_") then
 end
 
 if vlua.find(model, "models/props/interior_furniture/interior_kitchen_cabinet_") or vlua.find(model, "models/props/interior_furniture/interior_furniture_cabinet_") then
-    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2500))
+    if vlua.find(model, "002") then
+        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
+        else
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-2000,0))
+        end
     else
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2500))
+        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+        else
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+        end
     end
 end
 
