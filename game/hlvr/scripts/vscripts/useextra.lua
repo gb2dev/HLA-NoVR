@@ -191,14 +191,16 @@ if class == "info_hlvr_toner_port" then--and thisEntity:Attribute_GetIntValue("u
     --thisEntity:Attribute_SetIntValue("used", 1)
     DoEntFireByInstanceHandle(thisEntity, "OnPlugRotated", "", 0, nil, nil)
     DebugDrawClear()
-    for junction_name, junction in pairs(toner_junctions) do
-        local junction_entity = Entities:FindByName(nil, junction_name)
-        local angles = junction_entity:GetAngles()
-        angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
-        draw_toner_junction(junction, junction_entity:GetCenter(), angles)
-    end
-    for toner_path_name, toner_path in pairs(toner_paths) do
-        draw_toner_path(toner_path)
+    if toner_junctions then
+        for junction_name, junction in pairs(toner_junctions) do
+            local junction_entity = Entities:FindByName(nil, junction_name)
+            local angles = junction_entity:GetAngles()
+            angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
+            draw_toner_junction(junction, junction_entity:GetCenter(), angles)
+        end
+        for toner_path_name, toner_path in pairs(toner_paths) do
+            draw_toner_path(toner_path)
+        end
     end
 end
 
@@ -207,7 +209,18 @@ if class == "info_hlvr_toner_junction" and player:Attribute_GetIntValue("circuit
 end
 
 
-if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)[2]:GetCycle() == 1)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+function is_combine_console_locked()
+    local ents = Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)
+    for i = 1, #ents do
+        local ent = ents[i]
+        if ent:GetModelName() == "models/props_combine/combine_consoles/handle_plate.vmdl" and ent:GetCycle() == 1 then
+            return false
+        end
+    end
+    return true
+end
+
+if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     end
@@ -226,12 +239,20 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
         end
     end
     
+    local count = 0
     if class == "prop_animinteractable" and model == "models/props_subway/scenes/desk_lever.vmdl" then
         thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
     elseif name ~= "plug_console_starter_lever" then
         if name == "track_switch_lever" then
-            SendToConsole("ent_fire track_switch_lever SetCompletionValue 0.35 10")
-            SendToConsole("ent_fire train_switch_reset_relay Trigger 0 10")
+            count = 0.35
+            player:SetThink(function()
+                if player:Attribute_GetIntValue("use_released", 0) == 1 then
+                    SendToConsole("ent_fire track_switch_lever SetCompletionValue 0.35 0")
+                    SendToConsole("ent_fire train_switch_reset_relay Trigger 0 0")
+                else
+                    return 0
+                end
+            end, "", 0)
             SendToConsole("ent_fire traincar_01_hackplug Alpha 0")
         else
             thisEntity:Attribute_SetIntValue("used", 1)
@@ -242,7 +263,6 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
         DoEntFireByInstanceHandle(thisEntity, "EnableOnlyRunForward", "", 0, nil, nil)
     end
 
-    local count = 0
     local is_console = class == "prop_animinteractable" and model == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
     if name == "" then
         thisEntity:SetEntityName("" .. thisEntity:GetEntityIndex())
@@ -273,6 +293,10 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
 
         if model == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
             SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count)
+        end
+
+        if name == "track_switch_lever" and player:Attribute_GetIntValue("use_released", 0) == 1 then
+            return nil
         end
 
         if count >= 1 then
@@ -994,13 +1018,9 @@ if map == "a4_c17_parking_garage" then
 end
 
 if map == "a2_train_yard" then
-    local ents = Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)
-    for i = 1, #ents do
-        local ent = ents[i]
-        if ent:GetModelName() == "models/props_combine/combine_consoles/handle_plate.vmdl" and ent:GetCycle() == 1 then
-            local ent = Entities:FindByName(nil, "5325_3947_combine_console")
-            DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
-        end
+    if is_combine_console_locked() == false then
+        local ent = Entities:FindByName(nil, "5325_3947_combine_console")
+        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
     end
 end
 
@@ -1014,13 +1034,9 @@ if map == "a2_headcrabs_tunnel" then
 end
 
 if map == "a2_quarantine_entrance" then
-    local ents = Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)
-    for i = 1, #ents do
-        local ent = ents[i]
-        if ent:GetModelName() == "models/props_combine/combine_consoles/handle_plate.vmdl" and ent:GetCycle() == 1 then
-            local ent = Entities:FindByName(nil, "17670_combine_console")
-            DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
-        end
+    if is_combine_console_locked() == false then
+        local ent = Entities:FindByName(nil, "17670_combine_console")
+        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
     end
     
     if name == "27788_combine_locker" then

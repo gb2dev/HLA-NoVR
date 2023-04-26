@@ -305,6 +305,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
 
         if not player:IsUsePressed() then
+            player:Attribute_SetIntValue("use_released", 0)
             DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
 
             local startVector = player:EyePosition()
@@ -492,6 +493,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(540)
                 end
             end
+        else
+            player:Attribute_SetIntValue("use_released", 1)
         end
     end, "", 0)
 
