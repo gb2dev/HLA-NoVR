@@ -900,7 +900,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                             DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>wheel_physics>EnablePickup>>0>1", 0, nil, nil)
                         end
                     elseif GetMapName() == "a2_train_yard" then
+                        ent = Entities:FindByName(nil, "relay_train_will_crash")
+                        ent:RedirectOutput("OnTrigger", "DisableTrainLever", ent)
                         if not loading_save_file then
+                            -- mission_fail_relay
+
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1080 3200 -350", ["angles"]="0 12 0", ["modelscale"]=5, ["targetname"]="elipreventfall"})
                             ent = Entities:FindByName(nil, "eli_rescue_3_relay")
                             ent:RedirectOutput("OnTrigger", "RemoveEliPreventFall", ent)
@@ -1113,6 +1117,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function EnableShotgunWheel(a, b)
         Entities:FindByName(nil, "12712_shotgun_wheel"):Attribute_SetIntValue("used", 0)
+    end
+
+    function DisableTrainLever(a, b)
+        Entities:GetLocalPlayer():Attribute_SetIntValue("released_train_lever_once", 1)
     end
 
     function RemoveEliPreventFall(a, b)
