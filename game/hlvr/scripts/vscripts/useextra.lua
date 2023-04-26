@@ -758,11 +758,13 @@ if name == "power_stake_1_start" then
     SendToConsole("ent_fire toner_path_6_relay_debug Trigger")
 end
 
-if name == "2_11128_cshield_station_prop_button" then
+if name == "2_11128_cshield_station_prop_button" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire 2_11128_cshield_station_relay_button_pressed Trigger")
 end
 
-if name == "2_11128_cshield_station_1" then
+if name == "2_11128_cshield_station_1" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output 2_11128_cshield_station_hack_plug OnHackSuccess")
 end
 
