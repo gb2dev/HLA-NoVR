@@ -518,7 +518,7 @@ end
 ---------- a2_pistol ----------
 
 if model == "models/props/distillery/firebox_1_door_a.vmdl" then
-    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,200))
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
 end
 
 
