@@ -391,7 +391,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if GetMapName() == "a3_hotel_lobby_basement" then
                 if vlua.find(Entities:FindAllInSphere(Vector(1059, -1475, 200), 20), player) then
-                    SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
+                    if player:Attribute_GetIntValue("EnabledHotelLobbyPower", 0) == 1 then
+                        SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
+                    else
+                        SendToConsole("ent_fire elev_button_floor_1 Press")
+                    end
                 elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 10), player) then
                     ClimbLadder(280)
                 end
@@ -923,6 +927,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER5_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                            ent = Entities:FindByName(nil, "power_stake_1_start")
+                            ent:Attribute_SetIntValue("used", 1)
+
+                            ent = Entities:FindByName(nil, "417_149_powerunit_relay_battery_inserted")
+                            ent:RedirectOutput("OnTrigger", "EnableHotelLobbyPower", ent)
                         end
                     elseif GetMapName() == "a3_hotel_street" then
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
@@ -1126,6 +1136,11 @@ if GlobalSys:CommandLineCheck("-novr") then
     function RemoveEliPreventFall(a, b)
         ent = Entities:FindByName(nil, "elipreventfall")
         ent:Kill()
+    end
+
+    function EnableHotelLobbyPower(a, b)
+        ent = Entities:FindByName(nil, "power_stake_1_start")
+        ent:Attribute_SetIntValue("used", 0)
     end
 
     function MakeLeverUsable(a, b)

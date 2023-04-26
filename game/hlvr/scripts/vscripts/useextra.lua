@@ -187,7 +187,7 @@ function toggle_toner_junction()
     end
 end
 
-if class == "info_hlvr_toner_port" then--and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if class == "info_hlvr_toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     --thisEntity:Attribute_SetIntValue("used", 1)
     DoEntFireByInstanceHandle(thisEntity, "OnPlugRotated", "", 0, nil, nil)
     DebugDrawClear()
@@ -754,9 +754,11 @@ if name == "2860_window_sliding1" then
     SendToConsole("setpos_exact 1437 -1422 140")
 end
 
-if name == "power_stake_1_start" then
-    SendToConsole("ent_fire_output toner_path_alarm_1 OnPowerOn")
-    SendToConsole("ent_fire toner_path_6_relay_debug Trigger")
+if map == "a3_station_street" then
+    if name == "power_stake_1_start" then
+        SendToConsole("ent_fire_output toner_path_alarm_1 OnPowerOn")
+        SendToConsole("ent_fire toner_path_6_relay_debug Trigger")
+    end
 end
 
 if name == "2_11128_cshield_station_prop_button" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
@@ -1053,10 +1055,10 @@ if map == "a2_quarantine_entrance" then
 end
 
 if map == "a3_hotel_lobby_basement" then
-    if name == "power_stake_1_start" then
-        SendToConsole("ent_fire_output power_logic_enable_lights ontrigger")
-        SendToConsole("ent_fire_output path_2_panel onpoweron")
-        SendToConsole("ent_fire_output power_logic_enable_lift ontrigger")
+    if name == "power_stake_1_start" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        SendToConsole("ent_fire_output power_logic_enable_lights OnTrigger")
+        SendToConsole("ent_fire_output toner_path_11 OnPowerOn")
+        player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
     end
 end
 
