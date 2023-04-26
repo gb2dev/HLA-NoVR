@@ -776,7 +776,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if not loading_save_file then
                     ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER1_TITLE"})
                     DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-                    SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
                     SendToConsole("ent_create env_message { targetname text_sprint message SPRINT }")
                     SendToConsole("ent_create env_message { targetname text_gg message GRAVITYGLOVES }")
 
@@ -814,9 +813,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["model"]="maps/a1_intro_world_2/entities/gate_ammo_trigger_621_2249_345.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
                     ent:RedirectOutput("OnDetectedBulletFire", "CheckTutorialPistolEmpty", ent)
 
-                    ent = Entities:FindByName(nil, "scavenge_trigger")
-                    ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
-
                     ent = Entities:FindByName(nil, "hint_crouch_trigger")
                     ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
 
@@ -842,6 +838,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
+                        SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
+                        ent = Entities:FindByName(nil, "28677_hint_mantle_delay")
+                        ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
+
                         SendToConsole("setpos 3215 2456 465")
                         SendToConsole("ent_fire traincar_border_trigger Disable")
                     end
@@ -862,6 +862,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         Entities:FindByName(nil, "12712_shotgun_wheel"):Attribute_SetIntValue("used", 1)
                         ent = Entities:FindByName(nil, "12712_293_relay_zombies_hitting_wall")
                         ent:RedirectOutput("OnTrigger", "EnableShotgunWheel", ent)
+                        
+                        SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
+                        ent = Entities:FindByName(nil, "15493_hint_mantle_delay")
+                        ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
                     end
 
                     ent = Entities:GetLocalPlayer()
@@ -875,6 +879,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         ent = Entities:FindByName(nil, "8271_relay_reset_buttons")
                         ent:RedirectOutput("OnTrigger", "ResetHideoutPuzzleButtons", ent)
+
+                        SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
+                        ent = Entities:FindByName(nil, "2861_4065_hint_mantle_delay")
+                        ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
                     end
                 else
                     SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
@@ -1187,6 +1195,9 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function ShowCrouchJumpTutorial()
+        SendToConsole("ent_fire 28677_hint_mantle_delay Disable")
+        SendToConsole("ent_fire 15493_hint_mantle_delay Disable")
+        SendToConsole("ent_fire 2861_4065_hint_mantle_delay Disable")
         SendToConsole("ent_fire text_crouchjump ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
