@@ -940,6 +940,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:RedirectOutput("OnTrigger", "EnableHotelLobbyPower", ent)
                         end
                     elseif GetMapName() == "a3_hotel_street" then
+                        if not loading_save_file then
+                            Entities:FindByName(nil, "elev_anim_door"):Attribute_SetIntValue("toggle", 1)
+                        end
+
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
                         Entities:FindByName(nil, "console_selector_interact"):Attribute_SetIntValue("used", 1)
                         ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(775, 1677, 248), 10)

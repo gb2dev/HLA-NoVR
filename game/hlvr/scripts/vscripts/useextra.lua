@@ -6,10 +6,12 @@ local name = thisEntity:GetName()
 local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
 
-if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-    thisEntity:Attribute_SetIntValue("toggle", 1)
-else
-    thisEntity:Attribute_SetIntValue("toggle", 0)
+if not (vlua.find(name, "elev_anim_door") and thisEntity:GetVelocity() ~= Vector(0, 0, 0)) then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:Attribute_SetIntValue("toggle", 1)
+    else
+        thisEntity:Attribute_SetIntValue("toggle", 0)
+    end
 end
 
 if thisEntity:Attribute_GetIntValue("junction_rotation", 0) == 3 then
@@ -220,7 +222,7 @@ function is_combine_console_locked()
     return true
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) then
+if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and not vlua.find(name, "elev_anim_door") and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) then
     if vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     end
@@ -820,7 +822,11 @@ if name == "inside_elevator_button" then
 end
 
 if name == "@pod_shell" or name == "pod_insides" then
-    SendToConsole("ent_fire @pod_shell Unlock")
+    local ent = Entities:FindByName(nil, "@pod_shell")
+    if ent:Attribute_GetIntValue("used", 0) == 0 then
+        ent:Attribute_SetIntValue("used", 1)
+        SendToConsole("ent_fire @pod_shell Unlock")
+    end
 end
 
 if name == "ChoreoPhysProxy" then
