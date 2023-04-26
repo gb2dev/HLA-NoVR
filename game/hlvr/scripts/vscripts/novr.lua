@@ -380,14 +380,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a3_hotel_interior_rooftop" then
-                if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 2339 -1839 560")
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2345, -1834, 758), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 2345 -1834 840")
+                if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
+                    ClimbLadder(560)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2320, -1832, 757), 10), player) then
+                    ClimbLadder(840, true)
                 end
             end
 
@@ -1162,15 +1158,17 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("setpos 5393 -1960 -125")
     end
 
-    function ClimbLadder(height)
+    function ClimbLadder(height, do_not_push_forward)
         local ent = Entities:GetLocalPlayer()
         local ticks = 0
         ent:SetThink(function()
             if ent:GetOrigin().z > height then
-                ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 150)
+                if not do_not_push_forward then
+                    ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 150)
+                end
             else
                 ent:SetVelocity(Vector(0, 0, 0))
-                ent:SetOrigin(ent:GetOrigin() + Vector(0, 0, 2))
+                ent:SetOrigin(ent:GetOrigin() + Vector(0, 0, 2.1))
                 ticks = ticks + 1
                 if ticks == 25 then
                     SendToConsole("snd_sos_start_soundevent Step_Player.Ladder_Single")

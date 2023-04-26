@@ -372,8 +372,12 @@ if vlua.find(name, "_locker_door_") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
 elseif vlua.find(name, "_hazmat_crate_lid") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-5000,0))
-elseif vlua.find(name, "electrical_panel_") and vlua.find(name, "_door") then
-    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
+elseif vlua.find(model, "electric_box_door") then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
+    end
 elseif vlua.find(name, "_dumpster_lid") then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
