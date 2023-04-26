@@ -577,7 +577,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_mailbox_*_door_* DisablePickup")
             SendToConsole("ent_fire *_dumpster_lid DisablePickup")
             SendToConsole("ent_fire *_portaloo_seat DisablePickup")
-            SendToConsole("ent_fire *_drawer_* DisablePickup")
+            SendToConsole("ent_fire *_drawer* DisablePickup")
             SendToConsole("ent_fire *_firebox_door DisablePickup")
             SendToConsole("ent_fire *_trashbin02_lid DisablePickup")
             SendToConsole("ent_fire *_car_door_rear DisablePickup")

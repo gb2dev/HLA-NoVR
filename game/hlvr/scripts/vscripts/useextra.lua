@@ -382,12 +382,18 @@ elseif vlua.find(name, "_portaloo_seat") then
     else
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
     end
-elseif vlua.find(name, "_drawer_") then
+elseif vlua.find(name, "_drawer") then
     if vlua.find(model, "models/props/desk_1_drawer_") then
         if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
             thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetRightVector() * 100)
         else
             thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetRightVector() * 100)
+        end
+    elseif vlua.find(model, "models/props/interior_furniture/interior_kitchen_drawer_") then
+        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+            thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetRightVector() * 100)
+        else
+            thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetRightVector() * 100)
         end
     else
         if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
@@ -410,6 +416,14 @@ elseif vlua.find(name, "_car_door_rear") then
     end
 elseif vlua.find(name, "ticktacktoe_") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,RandomInt(1000, 3000),0))
+end
+
+if vlua.find(model, "models/props/interior_furniture/interior_kitchen_cabinet_") then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+    end
 end
 
 if vlua.find(name, "_wooden_board") then
