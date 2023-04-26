@@ -715,6 +715,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                         DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
                     end
 
+                    if Entities:FindByClassnameNearest("func_tracktrain", player:GetCenter(), 80) then
+                        SendToConsole("bind " .. INTERACT .. " \"useextra\"")
+                        SendToConsole("-use")
+                    else
+                        SendToConsole("bind " .. INTERACT .. " \"+use;useextra\"")
+                    end
+
                     if Entities:GetLocalPlayer():GetBoundingMaxs().z == 36 then
                         SendToConsole("cl_forwardspeed 86;cl_backspeed 86;cl_sidespeed 86")
                     else
