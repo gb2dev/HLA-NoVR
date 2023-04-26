@@ -71,6 +71,7 @@ function GravityGlovePull()
     end
 end
 
+local name = thisEntity:GetName()
 local class = thisEntity:GetClassname()
 local player = Entities:GetLocalPlayer()
 local startVector = player:EyePosition()
@@ -83,8 +84,8 @@ local eyetrace =
 }
 TraceLine(eyetrace)
 
-if eyetrace.hit or vlua.find(thisEntity:GetName(), "socket") then
-    if eyetrace.enthit == thisEntity then
+if eyetrace.hit or vlua.find(name, "socket") then
+    if eyetrace.enthit == thisEntity or vlua.find(name, "door_hack") then
         player:SetThink(function()
             if IsValidEntity(thisEntity) then
                 DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
