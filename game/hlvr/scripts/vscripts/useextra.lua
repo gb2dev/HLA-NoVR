@@ -425,6 +425,7 @@ if vlua.find(model, "van_a0") then
     local ent = Entities:FindByName(nil, name)
     if ent then
         if thisEntity == ent then
+            DoEntFireByInstanceHandle(ent, "Toggle", "", 0, nil, nil)
             if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
                 thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 100)
             else
