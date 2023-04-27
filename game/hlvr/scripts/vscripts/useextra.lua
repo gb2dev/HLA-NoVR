@@ -680,9 +680,9 @@ if name == "3_8223_prop_button" then
     SendToConsole("ent_fire_output 3_8223_handpose_combine_switchbox_button_press OnHandPosed")
 end
 
-if name == "3_8223_mesh_combine_switch_box" then
+if name == "3_8223_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output 3_8223_switch_box_hack_plug OnHackSuccess")
-
 end
 
 if name == "589_test_outlet" then

@@ -362,14 +362,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(260)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(6618, 2938, 334), 10), player) then
                     ClimbLadder(402)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos 6118 3903 686")
-                elseif vlua.find(Entities:FindAllInSphere(Vector(5434, 5755, 273), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos 5450, 5714, 403")
+                elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 10), player) then
+                    ClimbLadder(686)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(5434, 5755, 273), 10), player) then
+                    ClimbLadder(403)
                 end
             end
 
@@ -600,6 +596,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("-attack")
             SendToConsole("-attack2")
             SendToConsole("sk_headcrab_runner_health 69")
+            SendToConsole("sk_antlion_worker_spit_interval_max 2")
+            SendToConsole("sk_antlion_worker_spit_interval_min 1")
+            SendToConsole("sk_antlion_worker_spit_speed 1200")
             SendToConsole("sk_plr_dmg_pistol 7")
             SendToConsole("sk_plr_dmg_ar2 9")
             SendToConsole("sk_plr_dmg_smg1 5")
