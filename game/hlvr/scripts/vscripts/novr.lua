@@ -1018,6 +1018,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                             if not loading_save_file then
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER9_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                                ent = Entities:FindByName(nil, "elevator_path_1")
+                                ent:RedirectOutput("OnPass", "EnableToiletElevatorLever", ent)
+
+                                SendToConsole("ent_fire @prop_phys_portaloo_door DisablePickup")
                             end
                         elseif GetMapName() == "a4_c17_water_tower" then
                             if not loading_save_file then
@@ -1265,10 +1270,16 @@ if GlobalSys:CommandLineCheck("-novr") then
         Entities:GetLocalPlayer():Attribute_SetIntValue("plug_lever", 1)
     end
 
+    function EnableToiletElevatorLever()
+        local ent = Entities:FindByName(nil, "plug_console_starter_lever")
+        ent:Attribute_SetIntValue("used", 0)
+        DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
+    end
+
     function UnequipCombinGunMechanical()
         SendToConsole("ent_fire player_speedmod ModifySpeed 1")
         SendToConsole("ent_fire combine_gun_mechanical ClearParent")
-        SendToConsole("bind " .. PRIMARY_ATTACK .. " +attack")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
         local ent = Entities:FindByName(nil, "combine_gun_mechanical")
         SendToConsole("ent_setpos " .. ent:entindex() .. " 1479.722 385.634 964.917")
         SendToConsole("r_drawviewmodel 1")
@@ -1292,7 +1303,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function RemoveVortEnergy(a, b)
-        SendToConsole("bind " .. PRIMARY_ATTACK .. " +attack")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
         SendToConsole("r_drawviewmodel 1")
         SendToConsole("give weapon_frag")
     end

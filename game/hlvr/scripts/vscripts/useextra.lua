@@ -223,7 +223,7 @@ function is_combine_console_locked()
 end
 
 if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    if vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
+    if map == "a3_distillery" and vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     end
 
@@ -374,6 +374,8 @@ end
 
 if vlua.find(name, "_locker_door_") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
+elseif vlua.find(name, "_portaloo_door") then
+    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-1500))
 elseif vlua.find(name, "_hazmat_crate_lid") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-5000,0))
 elseif vlua.find(model, "electric_box_door") then
@@ -1098,6 +1100,14 @@ if map == "a3_hotel_lobby_basement" then
 end
 
 if name == "plug_console_starter_lever" then
+    if map == "a4_c17_tanker_yard" then
+        if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
+            return
+        end
+
+        thisEntity:Attribute_SetIntValue("used", 1)
+    end
+
     SendToConsole("ent_fire_output plug_console_starter_lever OnCompletionB_Forward")
 end
 
