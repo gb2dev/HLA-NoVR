@@ -84,8 +84,8 @@ local eyetrace =
 }
 TraceLine(eyetrace)
 
-if eyetrace.hit or vlua.find(name, "socket") then
-    if eyetrace.enthit == thisEntity then
+if eyetrace.hit then
+    if eyetrace.enthit == thisEntity or name == "russell_entry_window" or vlua.find(name, "socket") then
         player:SetThink(function()
             if IsValidEntity(thisEntity) then
                 DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)

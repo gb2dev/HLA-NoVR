@@ -790,6 +790,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER1_TITLE"})
                     DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                     SendToConsole("ent_create env_message { targetname text_sprint message SPRINT }")
+                    SendToConsole("ent_create env_message { targetname text_crouch message CROUCH }")
                     SendToConsole("ent_create env_message { targetname text_gg message GRAVITYGLOVES }")
 
                     SendToConsole("ent_fire russell_entry_window SetCompletionValue 0.4")
@@ -816,6 +817,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if not loading_save_file then
                     ent = Entities:FindByName(nil, "trigger_post_gate")
                     ent:RedirectOutput("OnTrigger", "ShowSprintTutorial", ent)
+
+                    ent = Entities:FindByName(nil, "@hint_crouch_locker_trigger")
+                    ent:RedirectOutput("OnStartTouch", "ShowCrouchTutorial", ent)
 
                     ent = Entities:FindByName(nil, "gg_training_start_trigger")
                     ent:RedirectOutput("OnTrigger", "ShowGravityGlovesTutorial", ent)
@@ -1224,6 +1228,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ShowSprintTutorial()
         SendToConsole("ent_fire text_sprint ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    function ShowCrouchTutorial()
+        SendToConsole("ent_fire text_crouch ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
