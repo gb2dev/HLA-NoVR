@@ -1253,6 +1253,10 @@ elseif class == "item_hlvr_clip_energygun" then
         SendToConsole("ent_remove weapon_bugbait")
         SendToConsole("give weapon_pistol")
         SendToConsole("ent_fire_output ammo_insert_listener OnEventFired")
+        player:SetThink(function()
+            SendToConsole("ent_fire text_shoot ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+        end, "ShowShootTutorial", 4)
     else
         SendToConsole("hlvr_addresources 10 0 0 0")
     end

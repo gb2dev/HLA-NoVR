@@ -792,6 +792,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("ent_create env_message { targetname text_sprint message SPRINT }")
                     SendToConsole("ent_create env_message { targetname text_crouch message CROUCH }")
                     SendToConsole("ent_create env_message { targetname text_gg message GRAVITYGLOVES }")
+                    SendToConsole("ent_create env_message { targetname text_shoot message SHOOT }")
 
                     SendToConsole("ent_fire russell_entry_window SetCompletionValue 0.4")
                 end
