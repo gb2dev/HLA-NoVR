@@ -80,12 +80,12 @@ local eyetrace =
     startpos = startVector;
     endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(60,0,0));
     ignore = player;
-    mask =  33636363
+    mask = -1
 }
 TraceLine(eyetrace)
 
 if eyetrace.hit or vlua.find(name, "socket") then
-    if eyetrace.enthit == thisEntity or vlua.find(name, "door_hack") then
+    if eyetrace.enthit == thisEntity then
         player:SetThink(function()
             if IsValidEntity(thisEntity) then
                 DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)

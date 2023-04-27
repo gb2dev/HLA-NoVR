@@ -539,7 +539,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("alias +backfixed \"+iv_back;unstuck\"")
             SendToConsole("alias -backfixed -iv_back")
             SendToConsole("bind " .. JUMP .. " jumpfixed")
-            SendToConsole("bind " .. INTERACT .. " \"+use;useextra\"")
             SendToConsole("bind " .. NOCLIP .. " noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
@@ -751,6 +750,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.16 }")
 
             if GetMapName() == "a1_intro_world" then
+                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="test", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})
                 if not loading_save_file then
                     SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                     SendToConsole("mouse_disableinput 1")

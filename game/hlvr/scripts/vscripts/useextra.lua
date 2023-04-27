@@ -514,6 +514,10 @@ if model == "models/props/interactive/washing_machine01a_loader.vmdl" then
     end
 end
 
+if name == "door_named_for_audio_ent_02" then
+    DoEntFireByInstanceHandle(thisEntity, "InteractStart", "", 0, nil, nil)
+end
+
 if vlua.find(model, "models/props/c17/antenna01") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
 end
