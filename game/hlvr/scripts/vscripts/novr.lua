@@ -1022,6 +1022,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 ent = Entities:FindByName(nil, "elevator_path_1")
                                 ent:RedirectOutput("OnPass", "EnableToiletElevatorLever", ent)
 
+                                ent = Entities:FindByName(nil, "waste_vial_template_1")
+                                ent:RedirectOutput("OnEntitySpawned", "DisableBarnacleHealthVialPickup", ent)
+
                                 SendToConsole("ent_fire @prop_phys_portaloo_door DisablePickup")
                             end
                         elseif GetMapName() == "a4_c17_water_tower" then
@@ -1274,6 +1277,13 @@ if GlobalSys:CommandLineCheck("-novr") then
         local ent = Entities:FindByName(nil, "plug_console_starter_lever")
         ent:Attribute_SetIntValue("used", 0)
         DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
+    end
+
+    function DisableBarnacleHealthVialPickup()
+        ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(4733, 5708, 383), 10)
+        DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>waste_vial_item_1>EnablePickup>>0>1", 0, nil, nil)
+
+        SendToConsole("ent_fire waste_vial_item_1 DisablePickup")
     end
 
     function UnequipCombinGunMechanical()
