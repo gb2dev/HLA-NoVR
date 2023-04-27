@@ -451,7 +451,7 @@ if vlua.find(name, "_wooden_board") then
 end
 
 if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") then
-    DoEntFireByInstanceHandle(thisEntity, "Close", "", 0, nil, nil)
+    DoEntFireByInstanceHandle(thisEntity, "InteractStart", "", 0, nil, nil)
 end
 
 if vlua.find(model, "van_a0") then
@@ -1244,7 +1244,7 @@ if vlua.find(class, "item_hlvr_crafting_currency_") then
         local ent = Entities:FindByName(nil, "text_resin")
         DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
         DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
-    end, "", 0)
+    end, "", 0.02)
 
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_energygun" then
