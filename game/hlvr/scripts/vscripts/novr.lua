@@ -182,15 +182,15 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, "", 0)
 
     Convars:RegisterCommand("slowgrenade", function()
-        Entities:GetLocalPlayer():SetThink(function()
-            local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-            if viewmodel and viewmodel:GetModelName() == "models/weapons/v_grenade.vmdl" then
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        if viewmodel and viewmodel:GetModelName() == "models/weapons/v_grenade.vmdl" then
+            Entities:GetLocalPlayer():SetThink(function()
                 local grenade = Entities:FindByClassname(nil, "item_hlvr_grenade_frag")
                 if grenade then
                     grenade:ApplyAbsVelocityImpulse(-GetPhysVelocity(grenade) * 0.7)
                 end
-            end
-        end, "SlowGrenade", 0.04)
+            end, "SlowGrenade", 0.04)
+        end
     end, "", 0)
 
 
