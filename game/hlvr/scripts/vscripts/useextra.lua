@@ -432,6 +432,14 @@ elseif vlua.find(name, "ticktacktoe_") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,RandomInt(1000, 3000),0))
 end
 
+if model == "models/props/zoo/vet_cage_square.vmdl" then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+    end
+end
+
 if vlua.find(model, "models/props/interior_furniture/interior_kitchen_cabinet_") or vlua.find(model, "models/props/interior_furniture/interior_furniture_cabinet_") then
     if vlua.find(model, "002") then
         if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
