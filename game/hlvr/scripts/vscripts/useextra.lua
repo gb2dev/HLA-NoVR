@@ -261,7 +261,7 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
                 end
             end, "", 0)
             SendToConsole("ent_fire traincar_01_hackplug Alpha 0")
-        elseif not vlua.find(name, "elev_anim_door") then
+        elseif not vlua.find(name, "elev_anim_door") and not vlua.find(name, "tractor_beam_console_lever") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
     end
