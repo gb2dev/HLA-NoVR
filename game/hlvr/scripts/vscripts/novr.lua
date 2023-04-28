@@ -1015,9 +1015,20 @@ if GlobalSys:CommandLineCheck("-novr") then
                         elseif GetMapName() == "a4_c17_tanker_yard" then
                             SendToConsole("ent_fire elev_hurt_player_* Kill")
 
+                            if Entities:GetLocalPlayer():Attribute_GetIntValue("eavesdropping", 0) == 1 then
+                                SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
+                                SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+                            end
+
                             if not loading_save_file then
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER9_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                                ent = Entities:FindByClassnameNearest("trigger_once", Vector(6243, 4212, 612), 20)
+                                ent:RedirectOutput("OnTrigger", "StartRevealEavesdrop", ent)
+
+                                ent = Entities:FindByName(nil, "ss_scanner_enter")
+                                ent:RedirectOutput("OnEndSequence", "StopRevealEavesdrop", ent)
 
                                 ent = Entities:FindByName(nil, "elevator_path_1")
                                 ent:RedirectOutput("OnPass", "EnableToiletElevatorLever", ent)
@@ -1273,10 +1284,19 @@ if GlobalSys:CommandLineCheck("-novr") then
         Entities:GetLocalPlayer():Attribute_SetIntValue("plug_lever", 1)
     end
 
-    function EnableToiletElevatorLever()
-        local ent = Entities:FindByName(nil, "plug_console_starter_lever")
-        ent:Attribute_SetIntValue("used", 0)
-        DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
+    function StartRevealEavesdrop()
+        SendToConsole("impulse 200")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
+        SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+        SendToConsole("disable_flashlight")
+        Entities:GetLocalPlayer():Attribute_SetIntValue("eavesdropping", 1)
+    end
+
+    function StopRevealEavesdrop()
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+        SendToConsole("impulse 200")
+        Entities:GetLocalPlayer():Attribute_SetIntValue("eavesdropping", 0)
     end
 
     function DisableBarnacleHealthVialPickup()

@@ -80,3 +80,9 @@ Convars:RegisterCommand("inv_flashlight", function()
 		create_flashlight()
 	end 
 end, "Toggles the flashlight", 0)
+
+Convars:RegisterCommand("disable_flashlight", function()
+	if flashlight_ent ~= nil then
+		destroy_flashlight()
+	end 
+end, "Disables the flashlight", 0)
