@@ -208,7 +208,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
                 end
-            elseif viewmodel:GetModelName() == "models/weapons/smg1.vmdl" then
+            elseif viewmodel:GetModelName() == "models/weapons/v_smg1.vmdl" then
                 if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
                 end
