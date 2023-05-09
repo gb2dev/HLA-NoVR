@@ -1058,13 +1058,13 @@ if class == "item_hlvr_combine_console_tank" then
         DoEntFireByInstanceHandle(thisEntity, "ClearParent", "", 0, nil, nil)
     else
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-        local look_delta = viewmodel:GetAngles()
+        local look_delta = player:EyeAngles()
         player:SetThink(function()
             if player:Attribute_GetIntValue("use_released", 0) == 0 then
                 thisEntity:SetAngularVelocity(0,0,0)
-                local x = -180 * RotationDelta(look_delta, viewmodel:GetAngles()).x
-                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(Clamp(x, -20, 18) , 0, 0))
-                look_delta = viewmodel:GetAngles()
+                local x = (look_delta.x - player:EyeAngles().x) * -180
+                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(Clamp(x, -18, 18) , 0, 0))
+                look_delta = player:EyeAngles()
                 return 0
             end
         end, "Interacting", 0)
