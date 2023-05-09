@@ -864,6 +864,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = Entities:FindByName(nil, "28677_hint_mantle_delay")
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
 
+                        SendToConsole("ent_create env_message { targetname text_holdinteract message HOLD_INTERACT }")
+
                         SendToConsole("setpos 3215 2456 465")
                         SendToConsole("ent_fire traincar_border_trigger Disable")
                     end
@@ -1271,6 +1273,15 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire 2861_4065_hint_mantle_delay Disable")
         SendToConsole("ent_fire text_crouchjump ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    function ShowHoldInteractTutorial()
+        local player = Entities:GetLocalPlayer()
+        if player:Attribute_GetIntValue("hold_interact_tutorial_shown", 0) == 0 then
+            player:Attribute_SetIntValue("hold_interact_tutorial_shown", 1)
+            SendToConsole("ent_fire text_holdinteract ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+        end
     end
 
     function ShowCoverMouthTutorial()   

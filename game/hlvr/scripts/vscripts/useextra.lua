@@ -1057,7 +1057,17 @@ if class == "item_hlvr_combine_console_tank" then
     if thisEntity:GetMoveParent() then
         DoEntFireByInstanceHandle(thisEntity, "ClearParent", "", 0, nil, nil)
     else
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(200,0,0))
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        local look_delta = viewmodel:GetAngles()
+        player:SetThink(function()
+            if player:Attribute_GetIntValue("use_released", 0) == 0 then
+                thisEntity:SetAngularVelocity(0,0,0)
+                local x = -180 * RotationDelta(look_delta, viewmodel:GetAngles()).x
+                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(Clamp(x, -20, 18) , 0, 0))
+                look_delta = viewmodel:GetAngles()
+                return 0
+            end
+        end, "Interacting", 0)
     end
 end
 
@@ -1217,6 +1227,13 @@ if class == "item_hlvr_headcrab_gland" then
 end
 
 if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    if map == "a2_quarantine_entrance" then
+        ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
+        while ent do
+            ent:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", ent)
+            ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_rack")
+        end
+    end
     thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
     local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", thisEntity:GetCenter(), 20)
