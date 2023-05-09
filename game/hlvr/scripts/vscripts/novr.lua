@@ -4,6 +4,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
     DoIncludeScript("jumpfix.lua", nil)
+    DoIncludeScript("wristpockets.lua", nil)
 
     if player_hurt_ev ~= nil then
         StopListeningToGameEvent(player_hurt_ev)
@@ -555,7 +556,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
             SendToConsole("r_drawviewmodel 0")
-            SendToConsole("fov_desired 90")
+            SendToConsole("fov_desired " .. FOV)
             SendToConsole("sv_infinite_aux_power 1")
             SendToConsole("cc_spectator_only 1")
             SendToConsole("sv_gameinstructor_disable 1")
@@ -748,6 +749,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             SendToConsole("ent_remove text_resin")
             SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.16 }")
+			
+            WristPockets_StartupPreparations()
+            WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
 
             if GetMapName() == "a1_intro_world" then
                 ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="test", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})

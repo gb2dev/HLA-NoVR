@@ -7,7 +7,7 @@ NoVR Script for Half-Life: Alyx
 You can also get the [NoVR Map Edits addon](https://steamcommunity.com/sharedfiles/filedetails/?id=2956743603) for smoother traversal and less out of bounds glitches.
 
 ## Controls
-To change the controls/rebind buttons, edit ``game\hlvr\scripts\vscripts\bindings.lua`` in your main Half-Life: Alyx installation folder.
+To change the controls/rebind buttons or change your FOV, edit ``game\hlvr\scripts\vscripts\bindings.lua`` in your main Half-Life: Alyx installation folder.
 
 If you get stuck try to move back or crouch! In case that does not help you can enable noclip with V.
 
@@ -22,7 +22,13 @@ Ctrl: Crouch
 
 Shift: Sprint
 
-E: Interact/Pick Up Object
+E: Interact/Pick Up Object/Gravity Gloves/Put Valuable Item in Wrist Pocket
+
+Z: Use Health Pen in Wrist Pocket
+
+X: Use Grenade in Wrist Pocket
+
+C: Drop Object in Wrist Pocket
 
 F: Flashlight (if you have it)
 

@@ -1265,7 +1265,7 @@ if vlua.find(class, "item_hlvr_crafting_currency_") then
     end, "", 0.02)
 
     thisEntity:Kill()
-elseif class == "item_hlvr_clip_energygun" then
+elseif class == "item_hlvr_clip_energygun" or class == "item_hlvr_clip_generic_pistol" then
     FireGameEvent("item_pickup", item_pickup_params)
     if name == "pistol_clip_1" then
         SendToConsole("ent_remove weapon_bugbait")
@@ -1282,7 +1282,7 @@ elseif class == "item_hlvr_clip_energygun" then
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
-elseif class == "item_hlvr_clip_energygun_multiple" then
+elseif class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_generic_pistol_multiple" then
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 40 0 0 0")
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
@@ -1311,13 +1311,21 @@ elseif class == "item_hlvr_clip_rapidfire" then
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_grenade_frag" then
+    local goesInPocket = true
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
-        FireGameEvent("item_pickup", item_pickup_params)
-        StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-        SendToConsole("give weapon_frag")
-        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-        viewmodel:RemoveEffects(32)
-        thisEntity:Kill()
+        if goesInPocket then
+			-- player can hold 2 grenades on pockets, and one in hand
+			-- for now, all grenades will go straight into pockets
+			WristPockets_PickUpGrenade(player, thisEntity)
+			FireGameEvent("item_pickup", item_pickup_params)
+		else
+			FireGameEvent("item_pickup", item_pickup_params)
+			StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+			SendToConsole("give weapon_frag")
+			local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+			viewmodel:RemoveEffects(32)
+			thisEntity:Kill()
+		end
     end
 elseif class == "item_healthvial" then
     if player:GetHealth() < player:GetMaxHealth() then
@@ -1328,5 +1336,8 @@ elseif class == "item_healthvial" then
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success02", player:EyePosition())
         thisEntity:Kill()
+	else
+		WristPockets_PickUpHealthPen(player, thisEntity)
+		FireGameEvent("item_pickup", item_pickup_params)
     end
 end

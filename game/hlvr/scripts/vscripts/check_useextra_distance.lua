@@ -55,7 +55,7 @@ function GravityGlovePull()
         thisEntity:SetThink(function()
             local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 60)
             if vlua.find(ents, thisEntity) then
-                if thisEntity:GetMass() ~= 1 then
+                if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
                     DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
                 end
                 if class == "item_hlvr_grenade_frag" then
@@ -86,7 +86,9 @@ local eyetrace =
 TraceLine(eyetrace)
 
 if eyetrace.hit then
+    local useRoutine = 0
     if eyetrace.enthit == thisEntity or name == "russell_entry_window" or vlua.find(name, "socket") then
+        useRoutine = 1
         player:SetThink(function()
             if IsValidEntity(thisEntity) then
                 DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
@@ -100,6 +102,8 @@ if eyetrace.hit then
                 GravityGlovePull()
             end
         end, "GravityGlovePull", 0.02)
+    elseif useRoutine == 0 and IsValidEntity(thisEntity) then
+		DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
     end
 else
     if thisEntity:GetName() == "ChoreoPhysProxy" then
