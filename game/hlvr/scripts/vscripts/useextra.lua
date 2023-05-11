@@ -714,6 +714,12 @@ if class == "item_combine_tank_locker" then
     end
 end
 
+if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
+	SendToConsole("give weapon_pistol")
+	SendToConsole("ent_remove weapon_bugbait")
+	thisEntity:Kill()
+end
+
 if class == "item_hlvr_weapon_shotgun" then
     SendToConsole("give weapon_shotgun")
     SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
