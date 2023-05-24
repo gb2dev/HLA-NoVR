@@ -26,9 +26,7 @@ E: Interact/Pick Up Object/Gravity Gloves/Put Valuable Item in Wrist Pocket
 
 Z: Use Health Pen in Wrist Pocket
 
-X: Use Grenade in Wrist Pocket
-
-C: Drop Object in Wrist Pocket
+X: Drop Object in Wrist Pocket
 
 F: Flashlight (if you have it)
 
