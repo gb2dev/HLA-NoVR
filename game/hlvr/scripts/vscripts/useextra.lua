@@ -1334,7 +1334,7 @@ elseif class == "item_hlvr_clip_rapidfire" then
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_grenade_frag" then
-    local goesInPocket = true
+    local goesInPocket = false -- keep the code to use it with proper tweaks
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         if goesInPocket then
 			-- player can hold 2 grenades on pockets, and one in hand
