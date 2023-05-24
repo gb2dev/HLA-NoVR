@@ -8,16 +8,17 @@ WPOCKETS_USE_HEALTHPEN = "Z"
 WPOCKETS_DROPITEM      = "X"
 
 -- starts from 1
-local itemsClasses = { "item_healthvial", "item_hlvr_grenade_frag", "item_hlvr_prop_battery", "prop_physics", "item_hlvr_health_station_vial" } 
+local itemsClasses = { "item_healthvial", "item_hlvr_grenade_frag", "item_hlvr_prop_battery", "prop_physics", "item_hlvr_health_station_vial", "prop_reviver_heart" } 
 
---local itemsStrings = { "[z] He", "[x] Gr", "[c] Ba", "[c] It", "[c] Vi"  }
-local itemsStrings = { "$", "^", "*", "<", "'" }
+--local itemsStrings = { "[z] He", "[x] Gr", "[c] Ba", "[c] It", "[c] Vi", "[c] Rv"  }
+local itemsStrings = { "$", "^", "*", "<", "'", "|" }
 -- font:
 -- $ - Health Pen
 -- ^ - Grenade
 -- * - Battery, 
 -- < - Item (prop_physics) (Is bottle icon correct?)
 -- ' - Health Station Vial
+-- | - Reviver's Heart
 
 --local itemsUniqueStrings = { "[c] Vo", "[c] Ca"  }
 local itemsUniqueStrings = { "<", ">"  }
@@ -25,7 +26,7 @@ local itemsUniqueStrings = { "<", ">"  }
 -- > - Keycard
 
 -- pocketslots_slot1-2 values: 
--- 0 - Empty, 1 - Health Pen, 2 - Grenade, 3 - Battery, 4 - Item (prop_physics), 5 - Health Station Vial
+-- 0 - Empty, 1 - Health Pen, 2 - Grenade, 3 - Battery, 4 - Item (prop_physics), 5 - Health Station Vial, 6 - Reviver's Heart
 
 function WristPockets_StartupPreparations()
 	local text = Entities:FindByName(nil, "text_pocketslots")
@@ -169,14 +170,16 @@ end
 function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 	local itemClass = itemEnt:GetClassname()
 	local itemModel = itemEnt:GetModelName()
-	if itemClass == "item_hlvr_prop_battery" or itemModel == "models/props/misc/keycard_001.vmdl" or itemModel == "models/props/distillery/bottle_vodka.vmdl" or itemClass == "item_hlvr_health_station_vial" then
+	if itemClass == "item_hlvr_prop_battery" or itemModel == "models/props/misc/keycard_001.vmdl" or itemModel == "models/props/distillery/bottle_vodka.vmdl" or itemClass == "item_hlvr_health_station_vial" or itemClass == "prop_reviver_heart" then
 		local itemId = 0
-		if itemClass == "item_hlvr_prop_battery" then -- TODO add prop_reviver_heart
+		if itemClass == "item_hlvr_prop_battery" then
 			itemId = 3
 		elseif itemClass == "prop_physics" then -- generic quest item
 			itemId = 4
 		elseif itemClass == "item_hlvr_health_station_vial" then
 			itemId = 5 -- valuable item, but usually without ent name
+		elseif itemClass == "prop_reviver_heart" then
+			itemId = 6 -- valuable item, but usually without ent name
 		end
 		local pocketSlotId = GetFreePocketSlot(playerEnt)
 		
@@ -282,7 +285,7 @@ Convars:RegisterCommand("pocketslots_dropitem", function()
 				StartSoundEventFromPosition("HealthStation.Deny", player:EyePosition())
 				print("[WristPockets] Cannot drop item - too close to obstacle.")
 			else
-				if itemTypeId == 3 or itemTypeId == 4 or itemTypeId == 5 then
+				if itemTypeId == 3 or itemTypeId == 4 or itemTypeId == 5 or itemTypeId == 6 then
 					local entName = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
 					if entName ~= "" and not Storage:LoadBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps") then
 						ent = Entities:FindByName(nil, entName)
