@@ -1,10 +1,11 @@
 require "storage"
 -- Fake Wrist Pockets, by Hypercycle
+-- Note: all pocket grenades mechanics is currently disabled
 
 -- bindings
 WPOCKETS_USE_HEALTHPEN = "Z"
-WPOCKETS_USE_GRENADE   = "X"
-WPOCKETS_DROPITEM      = "C"
+--WPOCKETS_USE_GRENADE   = "X"
+WPOCKETS_DROPITEM      = "X"
 
 -- starts from 1
 local itemsClasses = { "item_healthvial", "item_hlvr_grenade_frag", "item_hlvr_prop_battery", "prop_physics", "item_hlvr_health_station_vial" } 
@@ -37,9 +38,9 @@ function WristPockets_StartupPreparations()
 	end -- game cannot display newly recreated game_text on map bootup, so keep it
 	-- and fade-in fx stops working, so disable it too
 
-	SendToConsole("sk_max_grenade 1") -- force only 1 grenade on hands
+	--SendToConsole("sk_max_grenade 1") -- force only 1 grenade on hands
 	SendToConsole("bind " .. WPOCKETS_USE_HEALTHPEN .. " pocketslots_healthpen") -- use health pen
-	SendToConsole("bind " .. WPOCKETS_USE_GRENADE .. " pocketslots_grenade") -- add HL2 grenade as a weapon
+	--SendToConsole("bind " .. WPOCKETS_USE_GRENADE .. " pocketslots_grenade") -- add HL2 grenade as a weapon
 	SendToConsole("bind " .. WPOCKETS_DROPITEM .. " pocketslots_dropitem") -- drop item from one of slots
 end
 
