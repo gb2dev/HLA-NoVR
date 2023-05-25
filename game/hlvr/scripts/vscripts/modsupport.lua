@@ -1,6 +1,9 @@
 -- Mod support, by Hypercycle
 -- Note: scripting style is copied from early NoVR script and based on millions of if-else
 
+-- specific mod bindings
+RTR1_USEVORTENERGY = "C"
+
 -- TODO implement addon list ids checking?
 local addonMaps = {
 	-- Extra-Ordinary Value
@@ -28,6 +31,15 @@ local addonMaps = {
 	"zombies_part_5",
 	"catacombsfinal2",
 	"zombies_part_6",
+	-- Return to Rapture I
+	"bioshock1",
+	"bioshock2",
+	"bioshock3",
+	"bioshock4",
+	"bioshock5",
+	"bioshock6small",
+	"bioshock7",
+	"bioshock8ending",
 	-- Single good maps
 	"mc1_higgue",
 	"belomorskaya",
@@ -295,6 +307,20 @@ function ModSupport_CheckForLadderOrTeleport()
             SendToConsole("setpos_exact -2249.137 -4267.437 120")
         end
     end
+	--
+    -- Addon: Return to Rapture I
+	--
+	if map == "bioshock1" then
+        if vlua.find(Entities:FindAllInSphere(Vector(-2151,-2476,608), 20), player) then -- not a ladder
+            ClimbLadder(1170, true)
+			local ent = Entities:GetLocalPlayer()
+			ent:SetThink(function()
+				SendToConsole("fadein 0.2")
+				SendToConsole("setpos_exact -2139.035 -2420.382 1210")
+				ent:StopThink("ClimbTeleport")
+			end, "ClimbTeleport", 3)
+        end
+    end
 end
 
 --
@@ -311,6 +337,14 @@ function ModCommon_DisablePlayerActions(a, b)
     SendToConsole("hidehud 4")
     SendToConsole("ent_fire player_speedmod ModifySpeed 0")
     SendToConsole("bind MOUSE1 \"\"")
+end
+
+function ModCommon_DisablePlayerMovement(a, b)
+    SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+end
+
+function ModCommon_EnablePlayerMovement(a, b)
+    SendToConsole("ent_fire player_speedmod ModifySpeed 1")
 end
 
 function ModBelomorskaya_EquipFlare(a, b) -- TODO works bad
@@ -454,6 +488,85 @@ end
 
 function ModResidentAlyx_Lvl4AllowToDetonateBarrels(a, b)
     Entities:GetLocalPlayer():Attribute_SetIntValue("plug_lever", 1) -- workaround on current NoVR version, to allow player use crank switches later
+end
+
+function ModReturnToRapture_Map1AllowMovement(a, b)
+    SendToConsole("hidehud 64")
+    SendToConsole("r_drawviewmodel 1")
+	SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+	SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+end
+
+function ModReturnToRapture_Map1BuggedBathyHint(a, b)
+    ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+    DoEntFireByInstanceHandle(ent, "SetText", "NoVR: in case of sudden stop, crouch + jump", 0, nil, nil)
+    DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+end
+
+function ModReturnToRapture_UseVortEnergyConvar()
+    Convars:RegisterCommand("rtr1_usevortenergy", function()
+        local player = Entities:GetLocalPlayer()
+		local vortAmmo = player:Attribute_GetIntValue("rtr1_vortenergy", 0)
+		if vortAmmo > 0 then
+			local startVector = player:EyePosition()
+			local traceTable =
+			{
+				startpos = startVector;
+				endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(1000000, 0, 0));
+				ignore = player;
+				mask = 33636363
+			}
+			TraceLine(traceTable)
+	
+			if traceTable.hit then
+				ent = SpawnEntityFromTableSynchronous("env_explosion", {["origin"]=traceTable.pos.x .. " " .. traceTable.pos.y .. " " .. traceTable.pos.z, ["explosion_type"]="custom", ["explosion_custom_effect"]="particles/vortigaunt_fx/vort_beam_explosion_i_big.vpcf"})
+				DoEntFireByInstanceHandle(ent, "Explode", "", 0, nil, nil)
+				SendToConsole("npc_kill")
+				DoEntFire("!picker", "RunScriptFile", "vortenergyhit", 0, nil, nil)
+				StartSoundEventFromPosition("VortMagic.Throw", startVector)
+				vortAmmo = vortAmmo - 1
+				player:Attribute_SetIntValue("rtr1_vortenergy", vortAmmo)
+				handmodel = Entities:FindByName(nil, "novr_rtr1_plasmidhand")
+				if vortAmmo < 1 then
+					DoEntFireByInstanceHandle(handmodel, "Disable", "", 0, nil, nil)
+				end
+				if GetMapName() == "bioshock2" then
+					ent = Entities:FindByName(nil, "larry when bol released")
+					if ent and handmodel:Attribute_GetIntValue("map2wowsound_used", 0) then
+						DoEntFireByInstanceHandle(ent, "StartSound", "", 0, nil, nil) -- NPC reaction
+						handmodel:Attribute_SetIntValue("map2wowsound_used", 1)
+					end
+				end
+			end
+		else
+			print("[RTR1 Plasmids] Player don't have any vort energy cells to use.")
+		end
+    end, "", 0)
+end
+
+function ModReturnToRapture_Map2UsePlasmidsHint(a, b)
+    ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+    DoEntFireByInstanceHandle(ent, "SetText", "Press E to get the Energy cell\nPress C to shoot Energy", 0, nil, nil)
+    DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+	SendToConsole("play sounds/ui/beepclear.vsnd")
+end
+
+function ModReturnToRapture_AddVortEnergyAmmo(player)
+    local vortAmmo = player:Attribute_GetIntValue("rtr1_vortenergy", 0)
+	player:Attribute_SetIntValue("rtr1_vortenergy", vortAmmo + 1)
+	
+	ent = Entities:FindByName(nil, "novr_rtr1_plasmidhand")
+    if not ent then
+		-- Hand to hold plasmid powers
+		local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        local viewmodel_ang = viewmodel:GetAngles()
+        local viewmodel_pos = viewmodel:GetAbsOrigin() + viewmodel_ang:Forward() * 24 - viewmodel_ang:Up() * 4
+        ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="novr_rtr1_plasmidhand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x + 13 .. " " .. viewmodel_pos.y + 6 .. " " .. viewmodel_pos.z - 5, ["angles"]= viewmodel_ang.x - 20 .. " " .. viewmodel_ang.y .. " " .. viewmodel_ang.z - 50 })
+        DoEntFire("novr_rtr1_plasmidhand", "SetParent", "!activator", 0, viewmodel, nil)
+        --DoEntFire("novr_rtr1_plasmidhand", "Disable", "", 0, nil, nil)
+	else 
+		DoEntFire("novr_rtr1_plasmidhand", "Enable", "", 0, nil, nil)
+    end
 end
 
 -- this trick allows to avoid game crash during Main Menu loading, by keeping current loaded addons
@@ -740,8 +853,54 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
 	elseif map == "zombies_part_6" then
 		SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
 	--
+	-- Addon: Return to Rapture I
 	--
-	--
+	elseif map == "bioshock1" then
+		if not isSaveLoaded then
+			SendToConsole("give weapon_pistol")
+			SendToConsole("hlvr_addresources 40 0 5 0")
+			SendToConsole("r_drawviewmodel 0")
+			SendToConsole("hidehud 96")
+			SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+			SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
+			SendToConsole("ent_fire rapture2 lock")
+			-- glitchy vita-chamber doors
+			ent = Entities:FindByName(nil, "8405_door bol1")
+			DoEntFireByInstanceHandle(ent, "lock", "", 0, nil, nil)
+			ent = Entities:FindByName(nil, "8405_door bol2")
+			DoEntFireByInstanceHandle(ent, "lock", "", 0, nil, nil)
+			ent = Entities:FindByName(nil, "8465_door bol3")
+			DoEntFireByInstanceHandle(ent, "lock", "", 0, nil, nil)
+			ent = Entities:FindByName(nil, "9506_door bol1")
+			DoEntFireByInstanceHandle(ent, "lock", "", 0, nil, nil)
+		end
+		ent = Entities:FindByName(nil, "camera01")
+		ent:RedirectOutput("OnEndFollow", "ModReturnToRapture_Map1AllowMovement", ent)
+		
+		ent = Entities:FindByClassnameNearest("prop_animinteractable", Vector(1195, -47, 1529), 25)
+		ent:SetEntityName("novr_tower_alarm")
+		-- since bathy collisions is messed up, elevator entity can stuck on HL2 character causing it to stop
+		ent = Entities:FindByName(nil, "2101_elev_relay_move")
+		ent:RedirectOutput("OnTrigger", "ModReturnToRapture_Map1BuggedBathyHint", ent)
+	elseif map == "bioshock2" then
+		SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+		SendToConsole("bind " .. RTR1_USEVORTENERGY .. " rtr1_usevortenergy")
+		ModReturnToRapture_UseVortEnergyConvar()
+		if not isSaveLoaded then
+			-- TODO model is temporary, needs something primitive
+			SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="35.621 -389.042 966", ["renderamt"]=0, ["targetname"]="novr_interactclip_energysource1", ["modelscale"]=0.25})
+			
+		end
+		SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["model"]="models/props/plastic_container_1.vmdl", ["origin"]="106.034 -1191.038 948", ["renderamt"]=255, ["targetname"]="novr_interactclip_energysource2", ["modelscale"]=0.25})
+		ent = Entities:FindByName(nil, "4445_enable")
+		ent:RedirectOutput("OnTrigger", "ModReturnToRapture_Map2UsePlasmidsHint", ent)
+	elseif map == "bioshock3" then
+		SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+		SendToConsole("bind " .. RTR1_USEVORTENERGY .. " rtr1_usevortenergy")
+		ModReturnToRapture_UseVortEnergyConvar()
+		if not isSaveLoaded then
+			player:Attribute_SetIntValue("rtr1_vortenergy", 0)
+		end
 	end
 end
 
@@ -1265,8 +1424,72 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
         end
     end
     if map == "zombies_part_4" then
-        if name == "15911_antlion_plug_crank_a" then -- unlock on map story moment
+        if name == "15911_antlion_plug_crank_a" then
             SendToConsole("ent_fire_output 15911_antlion_plug_crank_a oncompletionc_forward")
+        end
+    end
+	--
+	-- Addon: Return to Rapture I
+	--
+    if map == "bioshock1" then
+        if name == "novr_tower_alarm" then 
+			SendToConsole("ent_fire rapture2 unlock")
+			SendToConsole("ent_fire_output novr_tower_alarm OnInteractStop")
+        end
+		if vlua.find(Entities:FindAllInSphere(Vector(1569,104,54), 30), player) then -- vita plug 1
+            local ent = Entities:FindByNameNearest("8405_391_locker_hack_plug", player:GetCenter(), 20)
+            if ent then
+                ent:FireOutput("OnHackStarted", nil, nil, nil, 0)
+                DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+            end
+        end
+		if vlua.find(Entities:FindAllInSphere(Vector(-764,-2533,374), 30), player) then -- vita plug 2
+            local ent = Entities:FindByNameNearest("8435_391_locker_hack_plug2", player:GetCenter(), 20)
+            if ent then
+                ent:FireOutput("OnHackStarted", nil, nil, nil, 0)
+                DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+            end
+        end
+		if vlua.find(Entities:FindAllInSphere(Vector(-2280,-2291,1270), 30), player) then -- vita plug 3
+            local ent = Entities:FindByNameNearest("8465_391_locker_hack_plug3", player:GetCenter(), 20)
+            if ent then
+                ent:FireOutput("OnHackStarted", nil, nil, nil, 0)
+                DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+            end
+        end
+		if vlua.find(Entities:FindAllInSphere(Vector(-2475,-3405,1275), 40), player) then -- circus machine with buttons 1
+            StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
+            SendToConsole("ent_fire_output 12247_32_button_center_pusher onin")
+        end
+		if vlua.find(Entities:FindAllInSphere(Vector(-2532,-3023,1137), 40), player) then -- circus machine with buttons 2
+            StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
+            SendToConsole("ent_fire_output 12245_6_button_center_pusher onin")
+        end
+    end
+	if map == "bioshock2" then
+        if name == "novr_interactclip_energysource1" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then 
+			thisEntity:Attribute_SetIntValue("used", 1)
+			SendToConsole("ent_fire_output 4445_vort_energysource OnEnergyPulled")
+			ModReturnToRapture_AddVortEnergyAmmo(player)
+        end
+		if name == "novr_interactclip_energysource2" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then 
+			thisEntity:Attribute_SetIntValue("used", 1)
+			SendToConsole("ent_fire_output 4679_vort_energysource OnEnergyPulled")
+			ModReturnToRapture_AddVortEnergyAmmo(player)
+        end
+		if vlua.find(Entities:FindAllInSphere(Vector(-230,-411,950), 40), player) then -- circus machine with buttons 1
+            StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
+            SendToConsole("ent_fire_output 4815_2_button_center_pusher onin")
+        end
+		if name == "3980_button_pusher_prop" then
+            StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
+            SendToConsole("ent_fire_output 3980_button_center_pusher onin")
         end
     end
 end

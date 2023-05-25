@@ -6,4 +6,6 @@ function Precache(context)
 	PrecacheModel("models/weapons/vr_alyxhealth/vr_health_pen_capsule.vmdl", context)
 	PrecacheModel("models/weapons/vr_grenade/grenade_handle.vmdl", context)
 	PrecacheModel("models/props/distillery/bottle_vodka.vmdl", context)
+	
+	PrecacheModel("models/props/plastic_container_1.vmdl", context)
 end
