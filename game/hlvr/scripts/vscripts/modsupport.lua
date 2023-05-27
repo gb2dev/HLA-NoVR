@@ -321,6 +321,15 @@ function ModSupport_CheckForLadderOrTeleport()
 			end, "ClimbTeleport", 3)
         end
     end
+	if map == "bioshock2" then
+        if vlua.find(Entities:FindAllInSphere(Vector(-560,-1279,742), 8), player) then -- 1
+            ClimbLadder(908)
+        elseif vlua.find(Entities:FindAllInSphere(Vector(-560,-1258,896), 8), player) then -- 1r
+            ClimbLadderSound() 
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact -557.674 -1286.535 752")
+        end
+    end
 end
 
 --
@@ -529,10 +538,12 @@ function ModReturnToRapture_UseVortEnergyConvar()
 				handmodel = Entities:FindByName(nil, "novr_rtr1_plasmidhand")
 				if vortAmmo < 1 then
 					DoEntFireByInstanceHandle(handmodel, "Disable", "", 0, nil, nil)
+					local vortFxId = handmodel:Attribute_GetIntValue("rtr1_vortenergy_fx", 0)
+					ParticleManager:DestroyParticle(vortFxId, false)
 				end
 				if GetMapName() == "bioshock2" then
 					ent = Entities:FindByName(nil, "larry when bol released")
-					if ent and handmodel:Attribute_GetIntValue("map2wowsound_used", 0) then
+					if ent and handmodel:Attribute_GetIntValue("map2wowsound_used", 0) == 0 then
 						DoEntFireByInstanceHandle(ent, "StartSound", "", 0, nil, nil) -- NPC reaction
 						handmodel:Attribute_SetIntValue("map2wowsound_used", 1)
 					end
@@ -552,8 +563,10 @@ function ModReturnToRapture_Map2UsePlasmidsHint(a, b)
 end
 
 function ModReturnToRapture_AddVortEnergyAmmo(player)
+	StartSoundEventFromPosition("VortMagic.Pull", player:EyePosition())
     local vortAmmo = player:Attribute_GetIntValue("rtr1_vortenergy", 0)
-	player:Attribute_SetIntValue("rtr1_vortenergy", vortAmmo + 1)
+	vortAmmo = vortAmmo + 1
+	player:Attribute_SetIntValue("rtr1_vortenergy", vortAmmo)
 	
 	ent = Entities:FindByName(nil, "novr_rtr1_plasmidhand")
     if not ent then
@@ -567,6 +580,15 @@ function ModReturnToRapture_AddVortEnergyAmmo(player)
 	else 
 		DoEntFire("novr_rtr1_plasmidhand", "Enable", "", 0, nil, nil)
     end
+	if vortAmmo == 1 then
+		local vortFx = ParticleManager:CreateParticle("particles/vortigaunt_fx/vort_energy_hand_residual.vpcf", 0, ent)
+		ent:Attribute_SetIntValue("rtr1_vortenergy_fx", vortFx)
+	end
+end
+
+function ModReturnToRapture_ResetVortPlasmid(player)
+	player:Attribute_SetIntValue("rtr1_vortenergy", 0)
+	DoEntFire("novr_rtr1_plasmidhand", "Disable", "", 0, nil, nil)
 end
 
 -- this trick allows to avoid game crash during Main Menu loading, by keeping current loaded addons
@@ -899,7 +921,7 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
 		SendToConsole("bind " .. RTR1_USEVORTENERGY .. " rtr1_usevortenergy")
 		ModReturnToRapture_UseVortEnergyConvar()
 		if not isSaveLoaded then
-			player:Attribute_SetIntValue("rtr1_vortenergy", 0)
+			ModReturnToRapture_ResetVortPlasmid(player)
 		end
 	end
 end
