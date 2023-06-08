@@ -587,7 +587,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
             SendToConsole("combine_grenade_timer 4")
-            SendToConsole("sk_max_grenade 9999")
+            SendToConsole("sk_max_grenade 3")
             SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
