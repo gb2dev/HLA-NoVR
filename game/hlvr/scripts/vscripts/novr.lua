@@ -71,15 +71,17 @@ if GlobalSys:CommandLineCheck("-novr") then
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
         local player = Entities:GetLocalPlayer()
         local ent = EntIndexToHScript(info.entindex)
-        local child = ent:GetChildren()[1]
-        if child and child:GetClassname() == "prop_dynamic" then
-            child:SetEntityName("held_prop_dynamic_override")
+        if ent then
+            local child = ent:GetChildren()[1]
+            if child and child:GetClassname() == "prop_dynamic" then
+                child:SetEntityName("held_prop_dynamic_override")
+            end
+            ent:Attribute_SetIntValue("picked_up", 1)
+            ent:SetThink(function()
+                ent:Attribute_SetIntValue("picked_up", 0)
+            end, "", 0.02)
+            DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
         end
-        ent:Attribute_SetIntValue("picked_up", 1)
-        ent:SetThink(function()
-            ent:Attribute_SetIntValue("picked_up", 0)
-        end, "", 0.02)
-        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
     end, nil)
 
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)

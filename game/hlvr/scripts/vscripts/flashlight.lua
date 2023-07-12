@@ -15,7 +15,7 @@ local function destroy_flashlight()
 	if not flashlight_ent == nil and flashlight_ent:IsNull() then
 		flashlight_ent = nil
 	end
-	EmitSoundOnClient("HL2Player.FlashLightOff",player)
+	EmitSoundOnClient("HL2Player.FlashLightOff",Entities:GetLocalPlayer())
 end 
 
 local function create_flashlight()
