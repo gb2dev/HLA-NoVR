@@ -5,6 +5,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("flashlight.lua", nil)
     DoIncludeScript("jumpfix.lua", nil)
     DoIncludeScript("wristpockets.lua", nil)
+    DoIncludeScript("viewmodels.lua", nil)
 
     if player_hurt_ev ~= nil then
         StopListeningToGameEvent(player_hurt_ev)
@@ -207,7 +208,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
                     SendToConsole("+attack2")
                 end
-            elseif viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
+            elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
                 end
@@ -243,7 +244,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("use weapon_shotgun")
                     end, "BackToShotgun", 0.66)
                 end
-            elseif viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
+            elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
                     SendToConsole("sk_plr_dmg_pistol 9")
                     SendToConsole("+attack")
@@ -542,11 +543,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
             SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
-            SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+            SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. RELOAD .. " +reload")
-            SendToConsole("bind " .. QUICK_SWAP .. " lastinv")
+            SendToConsole("bind " .. QUICK_SWAP .. " \"lastinv;viewmodel_update\"")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
             SendToConsole("bind " .. MOVE_FORWARD .. " +iv_forward")
             SendToConsole("bind " .. MOVE_BACK .. " +backfixed")
@@ -754,6 +755,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 			
             WristPockets_StartupPreparations()
             WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
+            Viewmodels_Init()
 
             if GetMapName() == "a1_intro_world" then
                 ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="test", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})

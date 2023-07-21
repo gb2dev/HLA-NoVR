@@ -877,11 +877,13 @@ if class == "prop_hlvr_crafting_station_console" then
             if Convars:GetStr("chosen_upgrade") == "pistol_upgrade_aimdownsights" then
                 player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
                 SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_pistol_upgrade_aimdownsights ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
                 player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
                 SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
@@ -937,7 +939,7 @@ if class == "prop_hlvr_crafting_station_console" then
         elseif thisEntity:Attribute_GetIntValue("cancel_cooldown_done", 1) == 1 and thisEntity:GetGraphParameter("bCrafting") == false then
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if viewmodel then
-                if viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
+                if string.match(viewmodel:GetModelName(), "v_pistol") then
                     SendToConsole("ent_fire weapon_pistol kill 0.02")
                     SendToConsole("impulse 200")
                     Convars:SetStr("weapon_in_crafting_station", "pistol")
