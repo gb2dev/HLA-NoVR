@@ -182,6 +182,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("give weapon_smg1")
             end
         end
+        SendToConsole("viewmodel_update")
         SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
     end, "", 0)
 
@@ -212,7 +213,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
                 end
-            elseif viewmodel:GetModelName() == "models/weapons/v_smg1.vmdl" then
+            elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                 if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
                 end

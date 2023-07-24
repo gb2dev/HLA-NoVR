@@ -35,6 +35,16 @@ function Viewmodels_UpgradeModel()
     local pistol_viewmodel_shroud = "models/weapons/v_pistol_shroud.vmdl"
     local pistol_viewmodel_base = "models/weapons/v_pistol.vmdl"
 
+    -- Fetch smg1 upgrades
+    local smg_aimdownsights = player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0)
+    local smg_fasterfirerate = player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0)
+
+    -- List of smg1 viewmodels
+    local smg_search_str = "v_smg1"
+    local smg_viewmodel_holo = "models/weapons/v_smg1_holo.vmdl"
+    local smg_viewmodel_powerpack = "models/weapons/v_smg1_powerpack.vmdl"
+    local smg_viewmodel_base = "models/weapons/v_smg1.vmdl"
+
     -- Update weapon viewmodel
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     if viewmodel then
@@ -72,6 +82,39 @@ function Viewmodels_UpgradeModel()
                 end
             end
         end
+
+        -- Set upgraded smg1 viewmodels
+        if string.match(viewmodel_name, smg_search_str) then
+            -- holo and powerpack
+            if smg_aimdownsights == 1 and smg_fasterfirerate == 1 then
+                if string.match(viewmodel_name, smg_viewmodel_holo) then
+                    return
+                else
+                    viewmodel:SetModel(smg_viewmodel_holo)
+                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s)", smg_viewmodel_holo, smg_aimdownsights, smg_fasterfirerate))
+                    return
+                end
+            -- holo
+            elseif smg_aimdownsights == 1 and smg_fasterfirerate == 0 then
+                if string.match(viewmodel_name, smg_viewmodel_holo) then
+                    return
+                else
+                    viewmodel:SetModel(smg_viewmodel_holo)
+                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s)", smg_viewmodel_holo, smg_aimdownsights, smg_fasterfirerate))
+                    return
+                end
+            -- powerpack
+            elseif smg_aimdownsights == 0 and smg_fasterfirerate == 1 then
+                if string.match(viewmodel_name, smg_viewmodel_powerpack) then
+                    return
+                else
+                    viewmodel:SetModel(smg_viewmodel_powerpack)
+                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s)", smg_viewmodel_powerpack, smg_aimdownsights, smg_fasterfirerate))
+                    return
+                end
+            end
+        end
+
     end
 end
 

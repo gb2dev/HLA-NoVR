@@ -903,12 +903,14 @@ if class == "prop_hlvr_crafting_station_console" then
                 else
                     SendToConsole("give weapon_smg1")
                 end
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
                 player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
                 SendToConsole("ent_remove weapon_ar2")
                 SendToConsole("give weapon_smg1")
+                SendToConsole("viewmodel_update")
             end
             SendToConsole("ent_fire point_clientui_world_panel Enable")
             SendToConsole("ent_fire weapon_in_fabricator Kill")
@@ -1009,13 +1011,14 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
-                elseif viewmodel:GetModelName() == "models/weapons/v_smg1.vmdl" then
+                elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                     if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                         SendToConsole("ent_fire weapon_ar2 kill 0.02")
                     else
                         SendToConsole("ent_fire weapon_smg1 kill 0.02")
                     end
                     SendToConsole("impulse 200")
+                    SendToConsole("lastinv") -- fix for impulse 200 not hiding the smg somehow
                     Convars:SetStr("weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
