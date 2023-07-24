@@ -2,8 +2,8 @@
 
 -- Convars for the flashlight 
 Convars:RegisterConvar("sv_flashlight_color", "255 255 255 255", "Color of the flashlight", FCVAR_REPLICATED)
-Convars:RegisterConvar("sv_flashlight_brightness", "2", "Brightness of the flashlight", FCVAR_REPLICATED)
-Convars:RegisterConvar("sv_flashlight_shadowtex_size", "128", "The X and Y size of the shadow texture", FCVAR_REPLICATED)
+Convars:RegisterConvar("sv_flashlight_brightness", "1", "Brightness of the flashlight", FCVAR_REPLICATED)
+Convars:RegisterConvar("sv_flashlight_shadowtex_size", "1024", "The X and Y size of the shadow texture", FCVAR_REPLICATED)
 Convars:RegisterConvar("sv_flashlight_range", "700", "max range of the flashlight", FCVAR_REPLICATED)
 
 local function destroy_flashlight()
@@ -46,7 +46,7 @@ local function create_flashlight()
  		indirectlight = "0",
  		attenuation1 = "0.0",
  		attenuation2 = "1.0",	
- 		innerconeangle = "20",
+ 		innerconeangle = "10",
 		outerconeangle = "32",
 		lightcookie = "flashlight" 
 	}
@@ -66,7 +66,11 @@ local function create_flashlight()
 		local player = Entities:GetLocalPlayer() 
 		local ang = player:EyeAngles()
 		-- TODO: Why does EyePosition break things sometimes?
-		flashlight_ent:SetLocalOrigin(player:EyePosition() - player:GetOrigin()) 
+		local flPos = player:EyePosition()
+		flPos.x = flPos.x + 1 -- near or far of player
+		flPos.y = flPos.y + 3.5 -- left or right 
+		flPos.z = flPos.z - 1 -- higher or lower of player
+		flashlight_ent:SetLocalOrigin(flPos - player:GetOrigin()) 
 		flashlight_ent:SetLocalAngles(ang.x, 0, 0)
 		return FrameTime()
 	end, "flashlight_think", 0)
