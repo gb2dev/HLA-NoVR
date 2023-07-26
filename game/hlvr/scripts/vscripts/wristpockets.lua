@@ -113,8 +113,13 @@ function WristPockets_CheckPocketItemsOnLoading(playerEnt, saveLoading)
 		if not saveLoading then -- erase teleported items on level change
 			ErasePocketSlot(playerEnt, 1)
 			ErasePocketSlot(playerEnt, 2)
+			-- This delay of calling update hud function will show wrist pocket icons on map change
+			playerEnt:SetThink(function()
+				WristPockets_UpdateHUD()
+			end, "WristPockets_MapChange", 1)
+		else
+			WristPockets_UpdateHUD()
 		end
-		WristPockets_UpdateHUD()
 	end -- on first appear, icons can be too bold because of antialiasing bug
 	PrecacheModels()
 end
