@@ -649,7 +649,12 @@ if name == "l_candler" or name == "r_candler" then
     SendToConsole("ent_fire_output g_release_hand1 OnHandPosed")
     SendToConsole("ent_fire_output g_release_hand2 OnHandPosed")
     SendToConsole("ent_fire player_speedmod ModifySpeed 0")
-    SendToConsole("hidehud 4")
+    -- If subtitles are deactivated hide also the custom hud elements
+    if Convars:GetStr("cc_subtitles") == "0" then
+        SendToConsole("r_drawvgui 0")
+    else
+        SendToConsole("hidehud 4")
+    end
 end
 
 if name == "combine_gun_mechanical" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
