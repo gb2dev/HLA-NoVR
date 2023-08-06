@@ -765,6 +765,7 @@ if class == "prop_dynamic" then
                 thisEntity:SetThink(function()
                     if player:GetHealth() < player:GetMaxHealth() then
                         player:SetHealth(player:GetHealth() + 1)
+                        HUDHearts_UpdateHealth()
                         return 0.1
                     else
                         if map == "a2_quarantine_entrance" then
@@ -1293,7 +1294,8 @@ if vlua.find(class, "item_hlvr_crafting_currency_") then
         local t = {}
         player:GatherCriteria(t)
         local ent = Entities:FindByName(nil, "text_resin")
-        DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
+        --DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "SetText", "0f " .. t.current_crafting_currency, 0, nil, nil)
         DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
     end, "", 0.02)
 
@@ -1364,6 +1366,7 @@ elseif class == "item_healthvial" then
     if player:GetHealth() < player:GetMaxHealth() then
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
+        HUDHearts_UpdateHealth()
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("HealthPen.Stab", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())

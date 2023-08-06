@@ -6,6 +6,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("jumpfix.lua", nil)
     DoIncludeScript("wristpockets.lua", nil)
     DoIncludeScript("viewmodels.lua", nil)
+    DoIncludeScript("hudhearts.lua", nil)
 
     if player_hurt_ev ~= nil then
         StopListeningToGameEvent(player_hurt_ev)
@@ -22,6 +23,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         if GetPhysVelocity(Entities:GetLocalPlayer()).z < -450 then
             SendToConsole("ent_fire !player SetHealth 0")
         end
+
+        -- Update hud hearts
+        HUDHearts_UpdateHealth()
+
     end, nil)
 
     if entity_killed_ev ~= nil then
@@ -757,6 +762,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             WristPockets_StartupPreparations()
             WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
             Viewmodels_Init()
+            HUDHearts_StartupPreparations()
 
             if GetMapName() == "a1_intro_world" then
                 ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="test", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})

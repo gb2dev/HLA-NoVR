@@ -11,7 +11,8 @@ WPOCKETS_DROPITEM      = "X"
 local itemsClasses = { "item_healthvial", "item_hlvr_grenade_frag", "item_hlvr_prop_battery", "prop_physics", "item_hlvr_health_station_vial", "prop_reviver_heart" } 
 
 --local itemsStrings = { "[z] He", "[x] Gr", "[c] Ba", "[c] It", "[c] Vi", "[c] Rv"  }
-local itemsStrings = { "$", "^", "*", "<", "'", "|" }
+--local itemsStrings = { "$", "^", "*", "<", "'", "|" }
+local itemsStrings = { "f", "l", "h", "j", "g", "i" }
 -- font:
 -- $ - Health Pen
 -- ^ - Grenade
@@ -21,7 +22,8 @@ local itemsStrings = { "$", "^", "*", "<", "'", "|" }
 -- | - Reviver's Heart
 
 --local itemsUniqueStrings = { "[c] Vo", "[c] Ca"  }
-local itemsUniqueStrings = { "<", ">"  }
+--local itemsUniqueStrings = { "<", ">"  }
+local itemsUniqueStrings = { "j", "k"  }
 -- < - Bottle
 -- > - Keycard
 

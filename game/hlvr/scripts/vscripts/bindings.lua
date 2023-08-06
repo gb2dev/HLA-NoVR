@@ -20,5 +20,5 @@ QUICK_LOAD        = "F9"
 MAIN_MENU         = "M"
 PAUSE             = "P"
 NOCLIP            = "V"
-CONSOLE           = "~"
+CONSOLE           = "B"
 FOV               = 90.0
