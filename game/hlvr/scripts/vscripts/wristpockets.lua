@@ -92,6 +92,14 @@ local function GetFreePocketSlot(playerEnt)
 	return 0 -- no free slots
 end
 
+function WristPockets_PlayerHasFreePocketSlot(playerEnt)
+	if GetFreePocketSlot(playerEnt) ~= 0 then
+		return true
+	else
+		return false
+	end
+end
+
 local function ErasePocketSlot(playerEnt, itemSlot)
 	if not Storage:LoadBoolean("pocketslots_slot" .. itemSlot .. "_keepacrossmaps") then
 		playerEnt:Attribute_SetIntValue("pocketslots_slot" .. itemSlot .. "", 0)

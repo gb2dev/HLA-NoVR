@@ -709,8 +709,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                         angle = QAngle(0, -angle.y, 0)
                         move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
 
-                        local weapon_sway_x = Lerp(0.01, cvar_getf("viewmodel_offset_x"), RotationDelta(look_delta, viewmodel:GetAngles()).y) * 0.95
-                        local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.95
+                        local weapon_sway_x = Lerp(0.01, cvar_getf("viewmodel_offset_x"), RotationDelta(look_delta, viewmodel:GetAngles()).y) * 0.70
+                        local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.65
                         look_delta = viewmodel:GetAngles()
 
                         cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
