@@ -1351,7 +1351,7 @@ elseif class == "item_hlvr_grenade_frag" then
 		end
     end
 elseif class == "item_healthvial" then
-    if player:GetHealth() < player:GetMaxHealth() then
+    if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         FireGameEvent("item_pickup", item_pickup_params)
