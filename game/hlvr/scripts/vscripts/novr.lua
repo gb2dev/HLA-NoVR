@@ -205,6 +205,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
 
     -- Custom attack 2
+    Convars:RegisterConvar("zoom_active", "", "", 0)
 
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
@@ -217,10 +218,33 @@ if GlobalSys:CommandLineCheck("-novr") then
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
+                    if cvar_getf("zoom_active") == 0 then
+                        cvar_setf("viewmodel_offset_x", -0.87)
+                        cvar_setf("viewmodel_offset_y", -1.1)
+                        cvar_setf("viewmodel_offset_z", 0)
+                        cvar_setf("zoom_active", 1)
+                    else
+                        cvar_setf("viewmodel_offset_x", 0)
+                        cvar_setf("viewmodel_offset_y", 0)
+                        cvar_setf("viewmodel_offset_z", 0)
+                        cvar_setf("zoom_active", 0)
+                    end
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                 if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then
                     SendToConsole("toggle_zoom")
+                    if cvar_getf("zoom_active") == 0 then
+                        cvar_setf("viewmodel_offset_x", -0.9)
+                        cvar_setf("viewmodel_offset_y", 0)
+                        cvar_setf("viewmodel_offset_z", -0.27)
+                        cvar_setf("zoom_active", 1)
+                    else
+                        SendToConsole("-zoom")
+                        cvar_setf("viewmodel_offset_x", 0)
+                        cvar_setf("viewmodel_offset_y", 0)
+                        cvar_setf("viewmodel_offset_z", 0)
+                        cvar_setf("zoom_active", 0)
+                    end
                 end
             end
         end
@@ -713,8 +737,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                         local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.65
                         look_delta = viewmodel:GetAngles()
 
-                        cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
-                        cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
+                        -- Set weapon sway and view bob if zoom is not active
+                        if cvar_getf("zoom_active") == 0 then
+                            cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
+                            cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
+                        end
+
                     end
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 12)
