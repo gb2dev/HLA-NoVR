@@ -205,7 +205,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
         if viewmodel and viewmodel:GetModelName() ~= "models/weapons/v_grenade.vmdl" then
-            if viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
+            if string.match(viewmodel:GetModelName(), "v_shotgun") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
                     SendToConsole("+attack2")
                 end
@@ -233,7 +233,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
         if viewmodel then
-            if viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
+            if string.match(viewmodel:GetModelName(), "v_shotgun") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 1 then
                     SendToConsole("use weapon_frag")
                     SendToConsole("+attack")
@@ -243,6 +243,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end, "StopAttack", 0.36)
                     Entities:GetLocalPlayer():SetThink(function()
                         SendToConsole("use weapon_shotgun")
+                        SendToConsole("viewmodel_update")
                     end, "BackToShotgun", 0.66)
                 end
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
