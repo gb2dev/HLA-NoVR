@@ -11,8 +11,8 @@ WPOCKETS_DROPITEM      = "X"
 local itemsClasses = { "item_healthvial", "item_hlvr_grenade_frag", "item_hlvr_prop_battery", "prop_physics", "item_hlvr_health_station_vial", "prop_reviver_heart" } 
 
 --local itemsStrings = { "[z] He", "[x] Gr", "[c] Ba", "[c] It", "[c] Vi", "[c] Rv"  }
---local itemsStrings = { "$", "^", "*", "<", "'", "|" }
-local itemsStrings = { "f", "l", "h", "j", "g", "i" }
+local itemsStrings = { "$", "^", "*", "<", "'", "|" }
+--local itemsStrings = { "f", "l", "h", "j", "g", "i" }
 -- font:
 -- $ - Health Pen
 -- ^ - Grenade
@@ -22,8 +22,8 @@ local itemsStrings = { "f", "l", "h", "j", "g", "i" }
 -- | - Reviver's Heart
 
 --local itemsUniqueStrings = { "[c] Vo", "[c] Ca"  }
---local itemsUniqueStrings = { "<", ">"  }
-local itemsUniqueStrings = { "j", "k"  }
+local itemsUniqueStrings = { "<", ">"  }
+--local itemsUniqueStrings = { "j", "k"  }
 -- < - Bottle
 -- > - Keycard
 
@@ -33,11 +33,11 @@ local itemsUniqueStrings = { "j", "k"  }
 function WristPockets_StartupPreparations()
 	local text = Entities:FindByName(nil, "text_pocketslots")
 	if not text then
-		SendToConsole("ent_create game_text { targetname text_pocketslots effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 4 fxtime 0 holdtime 9999 x 0.1497 y -0.031 }")
+		SendToConsole("ent_create game_text { targetname text_pocketslots effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 4 fxtime 0 holdtime 9999 x 0.162 y -0.030 }")
 	end
 	local textEmpty = Entities:FindByName(nil, "text_pocketslots_empty")
 	if not textEmpty then
-		SendToConsole("ent_create game_text { targetname text_pocketslots_empty effect 0 spawnflags 1 color \"236 193 39\" color2 \"92 107 192\" fadein 0 fadeout 0 channel 4 fxtime 0 holdtime 0 x 0.1497 y -0.031 }")
+		SendToConsole("ent_create game_text { targetname text_pocketslots_empty effect 0 spawnflags 1 color \"236 193 39\" color2 \"92 107 192\" fadein 0 fadeout 0 channel 4 fxtime 0 holdtime 0 x 0.162 y -0.030 }")
 	end -- game cannot display newly recreated game_text on map bootup, so keep it
 	-- and fade-in fx stops working, so disable it too
 
@@ -78,7 +78,8 @@ function WristPockets_UpdateHUD()
 	local pocketSlot1Msg = SetSlotItemMsg(player:Attribute_GetIntValue("pocketslots_slot1", 0), 1)
 	local pocketSlot2Msg = SetSlotItemMsg(player:Attribute_GetIntValue("pocketslots_slot2", 0), 2)
 	
-	DoEntFireByInstanceHandle(textEntity, "SetText", "" .. pocketSlot2Msg .. "\n" .. pocketSlot1Msg .. "", 0, nil, nil)
+	--DoEntFireByInstanceHandle(textEntity, "SetText", "" .. pocketSlot2Msg .. "\n" .. pocketSlot1Msg .. "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntity, "SetText", "" .. pocketSlot1Msg .. pocketSlot2Msg .. "", 0, nil, nil)
 	ShowEmptyText() -- avoid text antialiasing bug, display empty message and normal one after
 	DoEntFireByInstanceHandle(textEntity, "Display", "", 0.1, nil, nil)
 end
@@ -327,3 +328,10 @@ Convars:RegisterCommand("pocketslots_dropitem", function()
 		end 
 	end
 end, "Drop one item from pockets, if any exists", 0)
+
+Convars:RegisterCommand("wristpockets_recreate" , function()
+	SendToConsole("ent_remove text_pocketslots")
+	SendToConsole("ent_remove text_pocketslots_empty")
+	WristPockets_StartupPreparations()
+	WristPockets_UpdateHUD()
+end, "Recreate wristpocket icons", 0)

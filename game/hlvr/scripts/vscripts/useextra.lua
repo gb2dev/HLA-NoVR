@@ -1294,8 +1294,7 @@ if vlua.find(class, "item_hlvr_crafting_currency_") then
         local t = {}
         player:GatherCriteria(t)
         local ent = Entities:FindByName(nil, "text_resin")
-        --DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
-        DoEntFireByInstanceHandle(ent, "SetText", "0f " .. t.current_crafting_currency, 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
         DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
     end, "", 0.02)
 

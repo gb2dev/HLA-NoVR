@@ -1,64 +1,106 @@
 
+-- Display hud heart icons by withoutaface
+
 function HUDHearts_StartupPreparations()
-	if not Entities:FindByName(nil, "text_hearts") then
-		SendToConsole("ent_create game_text { targetname text_hearts effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 9999 x 0.02745 y -0.046 }")	
+	if not Entities:FindByName(nil, "text_hearts_background") then
+		SendToConsole("ent_create game_text { targetname text_hearts_background effect 0 spawnflags 1 color \"121 97 11\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 2 fxtime 0 holdtime 9999 x 0.0277 y -0.0357 }")	
 	end
 
+	if not Entities:FindByName(nil, "text_hearts") then
+		SendToConsole("ent_create game_text { targetname text_hearts effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 9999 x 0.0277 y -0.0357 }")	
+	end
+
+	-- Define heart icons if health is below 20
+	if not Entities:FindByName(nil, "text_hearts_red") then
+		SendToConsole("ent_create game_text { targetname text_hearts_red effect 0 spawnflags 1 color \"180 0 0\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 9999 x 0.0277 y -0.0357 }")	
+	end
+
+	-- Trigger initial hearts update
 	local player = Entities:GetLocalPlayer()
 	player:SetThink(function()
+		HUDHearts_Background()
 		HUDHearts_UpdateHealth()
 	end, "HUDHearts_MapChange", 1)
 
 	print("[HUDHearts] Start up done")
 end
 
+function HUDHearts_Background()
+	local textEntityBackground = Entities:FindByName(nil, "text_hearts_background")
+
+	-- Show background hearts
+	local heart_icons_background = "{ { {"
+	DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntityBackground, "SetText", "" .. heart_icons_background ..  "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0.1, nil, nil)
+end
+
 function HUDHearts_UpdateHealth()
 	local player = Entities:GetLocalPlayer()
 	local textEntity = Entities:FindByName(nil, "text_hearts")
+	local textEntityRed = Entities:FindByName(nil, "text_hearts_red")
 	
 	local health = player:GetHealth()
-	local heart_icons = "000"
+	local heart_icons = ""
 
 	if health >= 96 then
-		heart_icons = "000"
+		heart_icons = "{ { {"
 	elseif health >= 88 then
-		heart_icons = "001"
+		heart_icons = "{ { }"
 	elseif health >= 77 then
-		heart_icons = "002"
+		heart_icons = "{ { §"
 	elseif health > 66 then
-		heart_icons = "003"
+		heart_icons = "{ { °"
 	elseif health >= 63 then
-		heart_icons = "00"
+		heart_icons = "{ {"
 	elseif health >= 55 then
-		heart_icons = "01"
+		heart_icons = "{ }"
 	elseif health >= 44 then
-		heart_icons = "02"
+		heart_icons = "{ §"
 	elseif health > 33 then
-		heart_icons = "03"
+		heart_icons = "{ °"
 	elseif health >= 30 then
-		heart_icons = "0"
+		heart_icons = "{"
 	elseif health >= 22 then
-		heart_icons = "1"
+		heart_icons = "}"
 	elseif health >= 11 then
-		heart_icons = "2"
+		heart_icons = "§"
 	else
-		heart_icons = "3"
-	end 
+		heart_icons = "°"
+	end
 
-	--DoEntFireByInstanceHandle(textEntity, "SetText", " ", 0, nil, nil)
-	DoEntFireByInstanceHandle(textEntity, "Display", "", 0, nil, nil)
+	-- Switch to red color if health is below 20
+	if health < 20 then
+		DoEntFireByInstanceHandle(textEntity, "Display", "", 0, nil, nil)
+		DoEntFireByInstanceHandle(textEntityRed, "Display", "", 0, nil, nil)
+		DoEntFireByInstanceHandle(textEntityRed, "SetText", "" .. heart_icons ..  "", 0, nil, nil)
+		DoEntFireByInstanceHandle(textEntityRed, "Display", "", 0.1, nil, nil)
+	else
+		DoEntFireByInstanceHandle(textEntityRed, "Display", "", 0, nil, nil)
+		DoEntFireByInstanceHandle(textEntity, "Display", "", 0, nil, nil)
+		DoEntFireByInstanceHandle(textEntity, "SetText", "" .. heart_icons ..  "", 0, nil, nil)
+		DoEntFireByInstanceHandle(textEntity, "Display", "", 0.1, nil, nil)
+	end
 
-	DoEntFireByInstanceHandle(textEntity, "SetText", "" .. heart_icons ..  "", 0, nil, nil)
-	--ShowEmptyText() -- avoid text antialiasing bug, display empty message and normal one after
-	DoEntFireByInstanceHandle(textEntity, "Display", "", 0.1, nil, nil)
+	print(string.format("[HUDHearts] Set heart icons to %s health", health))
 end
 
 Convars:RegisterCommand("hudhearts_updatehealth" , function()
 	HUDHearts_UpdateHealth()
-end, "Lua code test", 0)
+end, "Update hud heart icons", 0)
 
-Convars:RegisterCommand("hudhearts_debug_set_health_40" , function()
+Convars:RegisterCommand("hudhearts_recreate" , function()
+	SendToConsole("ent_remove text_hearts_background")
+	SendToConsole("ent_remove text_hearts_red")
+	SendToConsole("ent_remove text_hearts")
+	HUDHearts_StartupPreparations()
+end, "Recreate hud heart icons", 0)
+
+Convars:RegisterConvar("hudhearts_debug_health", "", "", 40)
+
+Convars:RegisterCommand("hudhearts_debug_set_health" , function()
+	local health_desired = cvar_getf("hudhearts_debug_health")
 	local player = Entities:GetLocalPlayer()
-	player:SetHealth(40)
+	player:SetHealth(health_desired)
 	HUDHearts_UpdateHealth()
-end, "Lua code test", 0)
+end, "Test hud hearts", 0)
