@@ -5,6 +5,10 @@ function Precache(context)
 	PrecacheModel("models/weapons/v_pistol_shroud.vmdl", context)
 	PrecacheModel("models/weapons/v_pistol_shroud_stock.vmdl", context)
 	PrecacheModel("models/weapons/v_pistol_stock.vmdl", context)
+	-- Precache shotgun models
+	PrecacheModel("models/weapons/v_shotgun_burst_grenade.vmdl", context)
+    PrecacheModel("models/weapons/v_shotgun_burst.vmdl", context)
+    PrecacheModel("models/weapons/v_shotgun_grenade.vmdl", context)
 	-- Precache smg1 models
 	PrecacheModel("models/weapons/v_smg1_holo.vmdl", context)
 	PrecacheModel("models/weapons/v_smg1_powerpack.vmdl", context)
