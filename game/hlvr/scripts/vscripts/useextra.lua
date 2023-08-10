@@ -895,11 +895,13 @@ if class == "prop_hlvr_crafting_station_console" then
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
                 player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
                 SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_shotgun_upgrade_grenadelauncher ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
                 player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
                 SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
@@ -983,9 +985,10 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
-                elseif viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
+                elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
                     SendToConsole("impulse 200")
+                    SendToConsole("lastinv") -- fix for impulse 200 not hiding the shotgun somehow
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)

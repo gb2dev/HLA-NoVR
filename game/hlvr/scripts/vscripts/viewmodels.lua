@@ -35,6 +35,17 @@ function Viewmodels_UpgradeModel()
     local pistol_viewmodel_shroud = "models/weapons/v_pistol_shroud.vmdl"
     local pistol_viewmodel_base = "models/weapons/v_pistol.vmdl"
 
+    -- Fetch shotgun upgrades
+    local shotgun_doubleshot = player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0)
+    local shotgun_grenadelauncher = player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0)
+
+    -- List of shotgun viewmodels
+    local shotgun_search_str = "v_shotgun"
+    local shotgun_viewmodel_burst_grenade = "models/weapons/v_shotgun_burst_grenade.vmdl"
+    local shotgun_viewmodel_burst = "models/weapons/v_shotgun_burst.vmdl"
+    local shotgun_viewmodel_grenade = "models/weapons/v_shotgun_grenade.vmdl"
+    local shotgun_viewmodel_base = "models/weapons/v_shotgun.vmdl"
+
     -- Fetch smg1 upgrades
     local smg_aimdownsights = player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0)
     local smg_fasterfirerate = player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0)
@@ -68,7 +79,7 @@ function Viewmodels_UpgradeModel()
                     return
                 else
                     viewmodel:SetModel(pistol_viewmodel_shroud)
-                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s)", pistol_viewmodel_shroud_stock, pistol_aimdownsights, pistol_burstfire))
+                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s)", pistol_viewmodel_shroud, pistol_aimdownsights, pistol_burstfire))
                     return
                 end
             -- stock
@@ -77,7 +88,39 @@ function Viewmodels_UpgradeModel()
                     return
                 else
                     viewmodel:SetModel(pistol_viewmodel_stock)
-                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s)", pistol_viewmodel_shroud_stock, pistol_aimdownsights, pistol_burstfire))
+                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s)", pistol_viewmodel_stock, pistol_aimdownsights, pistol_burstfire))
+                    return
+                end
+            end
+        end
+
+        -- Set upgraded shotgun viewmodels
+        if string.match(viewmodel_name, shotgun_search_str) then
+            -- burst and grenade
+            if shotgun_doubleshot == 1 and shotgun_grenadelauncher == 1 then
+                if string.match(viewmodel_name, shotgun_viewmodel_burst_grenade) then
+                    return
+                else
+                    viewmodel:SetModel(shotgun_viewmodel_burst_grenade)
+                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_burst_grenade, shotgun_doubleshot, shotgun_grenadelauncher))
+                    return
+                end
+            -- burst
+            elseif shotgun_doubleshot == 1 and shotgun_grenadelauncher == 0 then
+                if string.match(viewmodel_name, shotgun_viewmodel_burst) then
+                    return
+                else
+                    viewmodel:SetModel(shotgun_viewmodel_burst)
+                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_burst, shotgun_doubleshot, shotgun_grenadelauncher))
+                    return
+                end
+            -- grenade
+            elseif shotgun_doubleshot == 0 and shotgun_grenadelauncher == 1 then
+                if string.match(viewmodel_name, shotgun_viewmodel_grenade) then
+                    return
+                else
+                    viewmodel:SetModel(shotgun_viewmodel_grenade)
+                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_grenade, shotgun_doubleshot, shotgun_grenadelauncher))
                     return
                 end
             end
