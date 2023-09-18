@@ -31,8 +31,10 @@ function Viewmodels_UpgradeModel()
     -- List of pistol viewmodels
     local pistol_search_str = "v_pistol"
     local pistol_viewmodel_shroud_stock = "models/weapons/v_pistol_shroud_stock.vmdl"
+    local pistol_viewmodel_shroud_stock_ads = "models/weapons/v_pistol_shroud_stock_ads.vmdl"
     local pistol_viewmodel_stock = "models/weapons/v_pistol_stock.vmdl"
     local pistol_viewmodel_shroud = "models/weapons/v_pistol_shroud.vmdl"
+    local pistol_viewmodel_shroud_ads = "models/weapons/v_pistol_shroud_ads.vmdl"
     local pistol_viewmodel_base = "models/weapons/v_pistol.vmdl"
 
     -- Fetch shotgun upgrades
@@ -53,6 +55,7 @@ function Viewmodels_UpgradeModel()
     -- List of smg1 viewmodels
     local smg_search_str = "v_smg1"
     local smg_viewmodel_holo = "models/weapons/v_smg1_holo.vmdl"
+    local smg_viewmodel_holo_ads = "models/weapons/v_smg1_holo_ads.vmdl"
     local smg_viewmodel_powerpack = "models/weapons/v_smg1_powerpack.vmdl"
     local smg_viewmodel_base = "models/weapons/v_smg1.vmdl"
 
@@ -66,7 +69,7 @@ function Viewmodels_UpgradeModel()
         if string.match(viewmodel_name, pistol_search_str) then
             -- shroud and stock
             if pistol_aimdownsights == 1 and pistol_burstfire == 1 then
-                if string.match(viewmodel_name, pistol_viewmodel_shroud_stock) then
+                if string.match(viewmodel_name, pistol_viewmodel_shroud_stock) or string.match(viewmodel_name, pistol_viewmodel_shroud_stock_ads) then
                     return
                 else
                     viewmodel:SetModel(pistol_viewmodel_shroud_stock)
@@ -75,7 +78,7 @@ function Viewmodels_UpgradeModel()
                 end
             -- shroud
             elseif pistol_aimdownsights == 1 and pistol_burstfire == 0 then
-                if string.match(viewmodel_name, pistol_viewmodel_shroud) then
+                if string.match(viewmodel_name, pistol_viewmodel_shroud) or string.match(viewmodel_name, pistol_viewmodel_shroud_ads) then
                     return
                 else
                     viewmodel:SetModel(pistol_viewmodel_shroud)
@@ -130,7 +133,7 @@ function Viewmodels_UpgradeModel()
         if string.match(viewmodel_name, smg_search_str) then
             -- holo and powerpack
             if smg_aimdownsights == 1 and smg_fasterfirerate == 1 then
-                if string.match(viewmodel_name, smg_viewmodel_holo) then
+                if string.match(viewmodel_name, smg_viewmodel_holo) or string.match(viewmodel_name, smg_viewmodel_holo_ads) then
                     return
                 else
                     viewmodel:SetModel(smg_viewmodel_holo)
@@ -139,7 +142,7 @@ function Viewmodels_UpgradeModel()
                 end
             -- holo
             elseif smg_aimdownsights == 1 and smg_fasterfirerate == 0 then
-                if string.match(viewmodel_name, smg_viewmodel_holo) then
+                if string.match(viewmodel_name, smg_viewmodel_holo) or string.match(viewmodel_name, smg_viewmodel_holo_ads) then
                     return
                 else
                     viewmodel:SetModel(smg_viewmodel_holo)

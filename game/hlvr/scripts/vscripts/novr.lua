@@ -6,6 +6,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("jumpfix.lua", nil)
     DoIncludeScript("wristpockets.lua", nil)
     DoIncludeScript("viewmodels.lua", nil)
+    DoIncludeScript("viewmodels_animation.lua", nil)
     DoIncludeScript("hudhearts.lua", nil)
 
     if player_hurt_ev ~= nil then
@@ -210,6 +211,16 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
+
+        -- Reset viewmodel after auto weapon switch
+        if viewmodel and cvar_getf("fov_desired") == 40 and not string.match(viewmodel:GetModelName(), "_ads.vmdl") then
+            ViewmodelAnimation_ResetAnimation()
+            cvar_setf("fov_desired", FOV)
+            cvar_setf("viewmodel_offset_x", 0)
+            cvar_setf("viewmodel_offset_y", 0)
+            cvar_setf("viewmodel_offset_z", 0)
+        end
+
         if viewmodel and viewmodel:GetModelName() ~= "models/weapons/v_grenade.vmdl" then
             if string.match(viewmodel:GetModelName(), "v_shotgun") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
@@ -217,33 +228,44 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
-                    SendToConsole("toggle_zoom")
-                    if cvar_getf("zoom_active") == 0 then
-                        cvar_setf("viewmodel_offset_x", -0.87)
-                        cvar_setf("viewmodel_offset_y", -1.1)
-                        cvar_setf("viewmodel_offset_z", 0)
-                        cvar_setf("zoom_active", 1)
+                    if cvar_getf("fov_desired") > 40 then
+                        --cvar_setf("viewmodel_offset_x", -0.005)
+                        cvar_setf("viewmodel_offset_y", 0)
+                        cvar_setf("viewmodel_offset_z", -0.04)
+                        ViewmodelAnimation_HIPtoADS()
+                        player:SetThink(function()
+                            cvar_setf("fov_desired", 40)
+                            cvar_setf("viewmodel_offset_x", -0.005)
+                        end, "ZoomActivate", 1)
                     else
+                        cvar_setf("fov_desired", FOV)
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
-                        cvar_setf("zoom_active", 0)
+                        ViewmodelAnimation_ADStoHIP()
                     end
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
-                if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then
-                    SendToConsole("toggle_zoom")
-                    if cvar_getf("zoom_active") == 0 then
-                        cvar_setf("viewmodel_offset_x", -0.9)
+                if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then                    
+                    if cvar_getf("fov_desired") > 40 then
+                        --cvar_setf("viewmodel_offset_x", 0.115)
                         cvar_setf("viewmodel_offset_y", 0)
-                        cvar_setf("viewmodel_offset_z", -0.27)
-                        cvar_setf("zoom_active", 1)
+                        cvar_setf("viewmodel_offset_z", -0.7)
+                        ViewmodelAnimation_HIPtoADS()
+                        player:SetThink(function()
+                            cvar_setf("fov_desired", 40)
+                            cvar_setf("viewmodel_offset_x", 0.115)
+                        end, "ZoomActivate", 1)
                     else
-                        SendToConsole("-zoom")
+                        cvar_setf("fov_desired", FOV)
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
-                        cvar_setf("viewmodel_offset_z", 0)
-                        cvar_setf("zoom_active", 0)
+                        --cvar_setf("viewmodel_offset_z", 0)
+                        ViewmodelAnimation_ADStoHIP()
+                        
+                        player:SetThink(function()
+                            cvar_setf("viewmodel_offset_z", 0)  
+                        end, "ZoomDeactivate", 0.5)
                     end
                 end
             end
@@ -739,7 +761,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         look_delta = viewmodel:GetAngles()
 
                         -- Set weapon sway and view bob if zoom is not active
-                        if cvar_getf("zoom_active") == 0 then
+                        if cvar_getf("fov_desired") > 40 then
                             cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
                             cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
                         end
@@ -791,6 +813,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             WristPockets_StartupPreparations()
             WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
             Viewmodels_Init()
+            ViewmodelAnimation_StartupPreparations()
+            if not loading_save_file then
+                ViewmodelAnimation_LevelChange()
+            end
             HUDHearts_StartupPreparations()
 
             if GetMapName() == "a1_intro_world" then
