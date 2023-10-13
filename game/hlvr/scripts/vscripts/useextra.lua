@@ -649,18 +649,26 @@ if name == "l_candler" or name == "r_candler" then
     SendToConsole("ent_fire_output g_release_hand1 OnHandPosed")
     SendToConsole("ent_fire_output g_release_hand2 OnHandPosed")
     SendToConsole("ent_fire player_speedmod ModifySpeed 0")
-    SendToConsole("hidehud 4")
+    -- If subtitles are deactivated hide also the custom hud elements
+    if Convars:GetStr("cc_subtitles") == "0" then
+        SendToConsole("r_drawvgui 0")
+    else
+        SendToConsole("hidehud 4")
+    end
 end
 
-if name == "combine_gun_mechanical" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    SendToConsole("ent_fire player_speedmod ModifySpeed 0")
-    local angles = thisEntity:GetAngles()
-    SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical")
-    SendToConsole("ent_fire combine_gun_interact Alpha 0")
-    SendToConsole("ent_fire combine_gun_mechanical SetParent !player")
-    thisEntity:SetAngles(angles.x - 15, angles.y, angles.z)
-    SendToConsole("bind " .. PRIMARY_ATTACK .. " \"ent_fire relay_shoot_gun trigger\"")
-    SendToConsole("r_drawviewmodel 0")
+if name == "combine_gun_mechanical" then
+    SendToConsole("bind J novr_leavecombinegun")
+	if thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+		ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+		DoEntFireByInstanceHandle(ent, "SetText", "Press [J] to get out", 0, nil, nil)
+		DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+		
+		ent = Entities:FindByName(nil, "combine_gun_interact") -- parent gun entity
+		ent:Attribute_SetIntValue("ready", 1)
+		ent:SaveQAngle("OrigAngle", ent:GetAngles())
+	end
+	EquipCombineGunMechanical(player)
     thisEntity:Attribute_SetIntValue("used", 1)
 end
 
@@ -1351,7 +1359,7 @@ elseif class == "item_hlvr_grenade_frag" then
 		end
     end
 elseif class == "item_healthvial" then
-    if player:GetHealth() < player:GetMaxHealth() then
+    if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         FireGameEvent("item_pickup", item_pickup_params)

@@ -90,6 +90,14 @@ local function GetFreePocketSlot(playerEnt)
 	return 0 -- no free slots
 end
 
+function WristPockets_PlayerHasFreePocketSlot(playerEnt)
+	if GetFreePocketSlot(playerEnt) ~= 0 then
+		return true
+	else
+		return false
+	end
+end
+
 local function ErasePocketSlot(playerEnt, itemSlot)
 	if not Storage:LoadBoolean("pocketslots_slot" .. itemSlot .. "_keepacrossmaps") then
 		playerEnt:Attribute_SetIntValue("pocketslots_slot" .. itemSlot .. "", 0)
@@ -113,8 +121,13 @@ function WristPockets_CheckPocketItemsOnLoading(playerEnt, saveLoading)
 		if not saveLoading then -- erase teleported items on level change
 			ErasePocketSlot(playerEnt, 1)
 			ErasePocketSlot(playerEnt, 2)
+			-- This delay of calling update hud function will show wrist pocket icons on map change
+			playerEnt:SetThink(function()
+				WristPockets_UpdateHUD()
+			end, "WristPockets_MapChange", 1)
+		else
+			WristPockets_UpdateHUD()
 		end
-		WristPockets_UpdateHUD()
 	end -- on first appear, icons can be too bold because of antialiasing bug
 	PrecacheModels()
 end

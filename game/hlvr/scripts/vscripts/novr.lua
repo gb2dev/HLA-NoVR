@@ -1,5 +1,6 @@
 if GlobalSys:CommandLineCheck("-novr") then
-    unstuck_table = {}
+    require "storage"
+	unstuck_table = {}
 
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
@@ -522,12 +523,23 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
+            SendToConsole("bind " .. CROUCH .. " \"\"")
             if not loading_save_file then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 SendToConsole("setpos 0 -6154 6.473839")
                 ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="140 140 140", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=2})
                 DoEntFireByInstanceHandle(ent, "SetText", "NoVR by GB_2 Development Team", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+
+                if Convars:GetBool("vr_enable_fake_vr") then
+                    SendToConsole("vr_fakemove_mlook_speed 0")
+                    SendToConsole("vr_fakemove_speed 0")
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("ent_setpos 79 0 -6154 36.473839")
+                    end, "", 0)
+                    ent = SpawnEntityFromTableSynchronous("info_hlvr_equip_player", {["energygun"]=true, ["pistol_upgrade_reflexsight"]=true})
+                    DoEntFireByInstanceHandle(ent, "EquipNow", "", 0, nil, nil)
+                end
             else
                 GoToMainMenu()
             end
@@ -1055,11 +1067,39 @@ if GlobalSys:CommandLineCheck("-novr") then
                         elseif GetMapName() == "a4_c17_parking_garage" then
                             SendToConsole("ent_fire falling_cabinet_door DisablePickup")
 
-                            ent = Entities:FindByName(nil, "relay_ufo_beam_surge")
-                            ent:RedirectOutput("OnTrigger", "UnequipCombinGunMechanical", ent)
-
                             ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
                             ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
+							
+							SendToConsole("ent_fire combine_gun_grab_handle ClearParent aim_gun")
+							SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical") -- attach one of gun handles to the main model
+							
+							ent = Entities:FindByName(nil, "relay_shoot_gun")
+                            ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
+							Convars:RegisterCommand("novr_shootcombinegun", function()
+								ent = Entities:FindByName(nil, "combine_gun_interact")
+								if ent:Attribute_GetIntValue("ready", 0) == 1 then
+									SendToConsole("ent_fire relay_shoot_gun trigger")
+									ent:Attribute_SetIntValue("ready", 0)
+								end
+							end, "", 0)
+							if loading_save_file then
+								SendToConsole("novr_leavecombinegun") -- avoid softlock
+							end
+							Convars:RegisterCommand("novr_leavecombinegun", function()
+								ent = Entities:FindByName(nil, "combine_gun_interact")
+								if ent:Attribute_GetIntValue("active", 0) == 1 then 
+									ent:StopThink("UsingCombineGun") 
+									ent:FireOutput("OnInteractStop", nil, nil, nil, 0)
+									local gunAngle = ent:LoadQAngle("OrigAngle")
+									ent:SetAngles(gunAngle.x,gunAngle.y,gunAngle.z)
+									ent:Attribute_SetIntValue("active", 0)
+									SendToConsole("ent_fire combine_gun_mechanical enablecollision")
+									SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+									SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+									SendToConsole("r_drawviewmodel 1")
+									SendToConsole("unbind J")
+								end
+							end, "", 0)
                         elseif GetMapName() == "a5_vault" then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
                             SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
@@ -1108,10 +1148,16 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, nil)
 
     function GoToMainMenu(a, b)
-        SendToConsole("setpos_exact 817 -80 -26")
+        if Convars:GetBool("vr_enable_fake_vr") then
+            SendToConsole("vr_enable_fake_vr 0")
+            SendToConsole("setpos_exact 817 -80 6")
+        else
+            SendToConsole("setpos_exact 817 -80 -26")
+        end
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("mouse_disableinput 0")
         SendToConsole("hidehud 96")
+        
     end
 
     function MoveFreely(a, b)
@@ -1324,13 +1370,38 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire waste_vial_item_1 DisablePickup")
     end
 
-    function UnequipCombinGunMechanical()
-        SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-        SendToConsole("ent_fire combine_gun_mechanical ClearParent")
-        SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
-        local ent = Entities:FindByName(nil, "combine_gun_mechanical")
-        SendToConsole("ent_setpos " .. ent:entindex() .. " 1479.722 385.634 964.917")
-        SendToConsole("r_drawviewmodel 1")
+    function EquipCombineGunMechanical(player)
+		SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+		SendToConsole("bind " .. PRIMARY_ATTACK .. " novr_shootcombinegun")
+		SendToConsole("ent_fire combine_gun_mechanical disablecollision")
+		SendToConsole("r_drawviewmodel 0")
+		
+		local ent = Entities:FindByName(nil, "combine_gun_interact") -- Take interaction gun entity instead of base model
+		ent:Attribute_SetIntValue("active", 1)
+		ent:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0) -- ammo charge sound
+		ent:FireOutput("OnInteractStart", nil, nil, nil, 0)
+		ent:SetThink(function()
+			ent:SetAngles(player:EyeAngles().x * -1,player:EyeAngles().y - 180,0)
+			return 0.05
+		end, "UsingCombineGun", 0)
+    end
+	
+	function CombineGunHandleAnim()
+		-- todo: deal with handleState weird lua numeric error
+		local ent = Entities:FindByName(nil, "combine_gun_interact")
+		ent:FireOutput("OnCompletionD_Forward", nil, nil, nil, 0) -- charge sounds
+		local handleState = 0.0
+		ent:SetThink(function()
+			if handleState < 1 then
+				handleState = handleState + 0.05
+				DoEntFireByInstanceHandle(ent, "SetCompletionValue", tostring(handleState), 0, nil, nil)
+			else
+				ent:FireOutput("OnCompletionC_Forward", nil, nil, nil, 0) -- charge sounds
+				ent:Attribute_SetIntValue("ready", 1) -- ready to shoot
+				ent:StopThink("UsingCombineGunHandle")
+			end
+			return 0.05
+		end, "UsingCombineGunHandle", 0)
     end
 
     function EnterVaultBeam()
