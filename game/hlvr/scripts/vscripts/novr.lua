@@ -522,12 +522,23 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
+            SendToConsole("bind " .. CROUCH .. " \"\"")
             if not loading_save_file then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 SendToConsole("setpos 0 -6154 6.473839")
                 ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="140 140 140", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=2})
                 DoEntFireByInstanceHandle(ent, "SetText", "NoVR by GB_2 Development Team", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+
+                if Convars:GetBool("vr_enable_fake_vr") then
+                    SendToConsole("vr_fakemove_mlook_speed 0")
+                    SendToConsole("vr_fakemove_speed 0")
+                    Entities:GetLocalPlayer():SetThink(function()
+                        SendToConsole("ent_setpos 79 0 -6154 36.473839")
+                    end, "", 0)
+                    ent = SpawnEntityFromTableSynchronous("info_hlvr_equip_player", {["energygun"]=true, ["pistol_upgrade_reflexsight"]=true})
+                    DoEntFireByInstanceHandle(ent, "EquipNow", "", 0, nil, nil)
+                end
             else
                 GoToMainMenu()
             end
@@ -1108,10 +1119,16 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, nil)
 
     function GoToMainMenu(a, b)
-        SendToConsole("setpos_exact 817 -80 -26")
+        if Convars:GetBool("vr_enable_fake_vr") then
+            SendToConsole("vr_enable_fake_vr 0")
+            SendToConsole("setpos_exact 817 -80 6")
+        else
+            SendToConsole("setpos_exact 817 -80 -26")
+        end
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("mouse_disableinput 0")
         SendToConsole("hidehud 96")
+        
     end
 
     function MoveFreely(a, b)
