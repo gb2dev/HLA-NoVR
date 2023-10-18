@@ -5,7 +5,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
     DoIncludeScript("jumpfix.lua", nil)
-    DoIncludeScript("wristpockets.lua", nil)
+    --DoIncludeScript("wristpockets.lua", nil)
     DoIncludeScript("viewmodels.lua", nil)
     DoIncludeScript("viewmodels_animation.lua", nil)
     DoIncludeScript("hudhearts.lua", nil)
@@ -533,10 +533,12 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a3_distillery" then
-                if vlua.find(Entities:FindAllInSphere(Vector(20,-518,211), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 20 -471 452")
+                if vlua.find(Entities:FindAllInSphere(Vector(20,-496,211), 10), player) then
+                    ClimbLadder(462, false)
+                end
+
+                if vlua.find(Entities:FindAllInSphere(Vector(-24,-151,426), 5), player) then
+                    ClimbLadder(560)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(515,1595,578), 20), player) then
@@ -757,7 +759,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                 local viewmodel_ang = viewmodel:GetAngles()
                 local viewmodel_pos = viewmodel:GetAbsOrigin() + viewmodel_ang:Forward() * 24 - viewmodel_ang:Up() * 4
-                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["origin"]= viewmodel_pos.x .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
+                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["disableshadows"]=true, ["origin"]= viewmodel_pos.x .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
                 DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
                 DoEntFire("lefthand", "Disable", "", 0, nil, nil)
             end
@@ -801,7 +803,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     end
 
-                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 12)
+                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 15)
                     if shard then
                         DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
                     end
@@ -843,8 +845,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_remove text_resin")
             SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.16 }")
 			
-            WristPockets_StartupPreparations()
-            WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
+            --WristPockets_StartupPreparations()
+            --WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
             Viewmodels_Init()
             if not loading_save_file then
                 ViewmodelAnimation_LevelChange()
@@ -1011,8 +1013,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     if GetMapName() == "a2_drainage" then
                         if not loading_save_file then
-                            SendToConsole("ent_fire math_count_wheel2_installment addoutput \"OnChangedFromMin>relay_install_wheel2>Trigger>>0>1\"")
-                            SendToConsole("ent_fire math_count_wheel_installment addoutput \"OnChangedFromMin>relay_install_wheel>Trigger>>0>1\"")
+                            SendToConsole("ent_fire math_count_wheel2_installment AddOutput \"OnChangedFromMin>relay_install_wheel2>Trigger>>0>1\"")
+                            SendToConsole("ent_fire math_count_wheel_installment AddOutput \"OnChangedFromMin>relay_install_wheel>Trigger>>0>1\"")
                             SendToConsole("ent_fire wheel_physics DisablePickup")
                             ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(941, -1666, 255), 10)
                             DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>wheel_physics>EnablePickup>>0>1", 0, nil, nil)
@@ -1099,6 +1101,20 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_create env_message { targetname text_covermouth message COVERMOUTH }")
                             ent = Entities:FindByName(nil, "11632_223_cough_volume")
                             ent:RedirectOutput("OnStartTouch", "ShowCoverMouthTutorial", ent)
+
+                            SendToConsole("ent_fire timer_gun_equipped Kill")
+                            SendToConsole("ent_fire timer_gun_equipped_b Kill")
+                            ent = Entities:FindByName(nil, "vcd_larry_talk_01")
+                            ent:RedirectOutput("OnCompletion", "LarrySeesGun", ent)
+
+                            ent = Entities:FindByClassnameNearest("prop_handpose", Vector(925, 1102, 578), 50)
+                            if ent then
+                                DoEntFireByInstanceHandle(ent, "Kill", "", 0, nil, nil)
+                            end
+
+                            -- Detect shooting so Jeff hears it
+                            ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["targetname"]="bullet_trigger", ["modelscale"]=1000, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl"})
+                            DoEntFireByInstanceHandle(ent, "AddOutput", "OnDetectedBulletFire>!player>GenerateBlindZombieSound>>0>-1", 0, nil, nil)
                         end
                     else
                         if GetMapName() == "a4_c17_zoo" then
@@ -1332,6 +1348,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if not do_not_push_forward then
                     ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 150)
                 end
+                SendToConsole("+iv_duck;-iv_duck")
             else
                 ent:SetVelocity(Vector(0, 0, 0))
                 ent:SetOrigin(ent:GetOrigin() + Vector(0, 0, 2.1))
@@ -1362,7 +1379,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"959 1970 427\" }")
         SendToConsole("ent_fire @crank_battery kill")
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
-        SendToConsole("ent_fire 11478_6233_math_count_wheel_installment SetHitMax 1")
+        SendToConsole("ent_fire 11478_6233_math_count_wheel_installment SetHitMax 2")
     end
 
     function ShowInteractTutorial()
@@ -1416,8 +1433,9 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end
 
-    function ShowCoverMouthTutorial()   
-        if cvar_getf("viewmodel_offset_y") == 0 then
+    function ShowCoverMouthTutorial()
+        print(cvar_getf("viewmodel_offset_y"))
+        if cvar_getf("viewmodel_offset_y") ~= -20 then
             SendToConsole("ent_fire text_covermouth ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
         end
@@ -1426,6 +1444,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     function ShowQuickSaveTutorial()   
         SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    function LarrySeesGun()   
+        SendToConsole("ent_fire_output @player_proxy OnWeaponActive")
     end
 
     function EnablePlugLever()

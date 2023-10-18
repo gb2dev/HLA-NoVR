@@ -222,7 +222,7 @@ function is_combine_console_locked()
     return true
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if map == "a3_distillery" and vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     end
@@ -261,6 +261,21 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
                 end
             end, "", 0)
             SendToConsole("ent_fire traincar_01_hackplug Alpha 0")
+        elseif map == "a3_distillery" and name == "verticaldoor_wheel" then
+            count = 0
+            player:SetThink(function()
+                local jeff = Entities:FindByClassname(ent, "npc_zombie_blind")
+                if player:Attribute_GetIntValue("use_released", 0) == 1 and count < 10 or vlua.find(Entities:FindAllInSphere(Vector(291, 291, 322), 10), jeff) then
+                    SendToConsole("ent_fire verticaldoor_wheel EnableReturnToCompletion 0 0")
+                    SendToConsole("ent_fire @verticaldoor SetSpeed 100")
+                    SendToConsole("ent_fire @verticaldoor Close")
+                else
+                    SendToConsole("ent_fire verticaldoor_wheel DisableReturnToCompletion 0 0")
+                    SendToConsole("ent_fire @verticaldoor SetSpeed 10")
+                    SendToConsole("ent_fire @verticaldoor Open")
+                    return 0
+                end
+            end, "", 0)
         elseif not vlua.find(name, "elev_anim_door") and not vlua.find(name, "tractor_beam_console_lever") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
@@ -279,9 +294,7 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
             DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
         end
 
-        if map == "a3_distillery" and name == "verticaldoor_wheel" then
-            count = count + 0.001
-        elseif name == "12712_shotgun_wheel" then
+        if name == "12712_shotgun_wheel" then
             count = count + 0.003
         elseif name == "console_selector_interact" then
             count = count + 0.0005
@@ -306,11 +319,20 @@ if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_
             return nil
         end
 
+        if map == "a3_distillery" and name == "verticaldoor_wheel" then
+            local jeff = Entities:FindByClassname(ent, "npc_zombie_blind")
+            if player:Attribute_GetIntValue("use_released", 0) == 1 or vlua.find(Entities:FindAllInSphere(Vector(291, 291, 322), 10), jeff) then
+                thisEntity:Attribute_SetIntValue("used", 0)
+                return nil
+            end
+        end
+
         if vlua.find(name, "elev_anim_door") then
             DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "", 0, nil, nil)
         end
 
-        if count >= 1 then
+        
+        if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
             thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
             if name == "barricade_door_hook" then
                 SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
@@ -613,18 +635,16 @@ end
 
 ---------- a3_distillery ----------
 
+if name == "larry_ladder" then
+    SendToConsole("ent_fire_output larry_ladder OnCompletionA")
+    SendToConsole("ent_fire_output larry_ladder OnCompletionC")
+end
+
 if name == "cellar_ladder" then
     ClimbLadderSound()
     SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
     SendToConsole("fadein 0.2")
     SendToConsole("setpos_exact 1004 1775 546")
-end
-
-if name == "larry_ladder" then
-    ClimbLadderSound()
-    SendToConsole("ent_fire larry_ladder SetCompletionValue 1")
-    SendToConsole("fadein 0.2")
-    SendToConsole("ent_fire relay_debug_intro_trench trigger")
 end
 
 
@@ -1158,11 +1178,12 @@ if GetMapName() == "a3_distillery" then
     end
 
     if name == "intro_rollup_door" then
-        SendToConsole("ent_fire_output intro_rollup_door oncompletiona_forward")
-        SendToConsole("ent_fire door_xen_crust break")
-        SendToConsole("ent_fire relay_door_xen_crust_c trigger")
-        SendToConsole("ent_fire relay_door_xen_crust_d trigger")
-        SendToConsole("ent_fire relay_door_xen_crust_e trigger")
+        SendToConsole("ent_fire_output intro_rollup_door OnCompletionA_Forward")
+        SendToConsole("ent_fire door_xen_crust Break")
+        SendToConsole("ent_fire relay_door_xen_crust_c Trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_d Trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_e Trigger")
+        SendToConsole("ent_fire @snd_music_bz_hello Kill")
     end
 
     if name == "barricade_door" then
@@ -1179,8 +1200,8 @@ if GetMapName() == "a3_distillery" then
     end
 
     if name == "verticaldoor_wheel" then
-        SendToConsole("ent_fire @verticaldoor setspeed 10")
-        SendToConsole("ent_fire @verticaldoor open")
+        --SendToConsole("ent_fire @verticaldoor setspeed 10")
+        --SendToConsole("ent_fire @verticaldoor open")
     end
 
     if name == "11479_2385_button_pusher_prop" then
@@ -1353,22 +1374,29 @@ elseif class == "item_hlvr_clip_rapidfire" then
 elseif class == "item_hlvr_grenade_frag" then
     local goesInPocket = false -- keep the code to use it with proper tweaks
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
-        if goesInPocket then
-			-- player can hold 2 grenades on pockets, and one in hand
-			-- for now, all grenades will go straight into pockets
-			WristPockets_PickUpGrenade(player, thisEntity)
-			FireGameEvent("item_pickup", item_pickup_params)
-		else
-			FireGameEvent("item_pickup", item_pickup_params)
-			StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-			SendToConsole("give weapon_frag")
-			local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-			viewmodel:RemoveEffects(32)
-			thisEntity:Kill()
-		end
+        FireGameEvent("item_pickup", item_pickup_params)
+        StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+        SendToConsole("give weapon_frag")
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        viewmodel:RemoveEffects(32)
+        thisEntity:Kill()
+        --if goesInPocket then
+		--	-- player can hold 2 grenades on pockets, and one in hand
+		--	-- for now, all grenades will go straight into pockets
+		--	WristPockets_PickUpGrenade(player, thisEntity)
+		--	FireGameEvent("item_pickup", item_pickup_params)
+		--else
+		--	FireGameEvent("item_pickup", item_pickup_params)
+		--	StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+		--	SendToConsole("give weapon_frag")
+		--	local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+		--	viewmodel:RemoveEffects(32)
+		--	thisEntity:Kill()
+		--end
     end
 elseif class == "item_healthvial" then
-    if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
+    if player:GetHealth() < (player:GetMaxHealth()) then
+    --if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         HUDHearts_UpdateHealth()
@@ -1377,8 +1405,8 @@ elseif class == "item_healthvial" then
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success02", player:EyePosition())
         thisEntity:Kill()
-	else
-		WristPockets_PickUpHealthPen(player, thisEntity)
-		FireGameEvent("item_pickup", item_pickup_params)
+	--else
+	--	WristPockets_PickUpHealthPen(player, thisEntity)
+	--	FireGameEvent("item_pickup", item_pickup_params)
     end
 end
