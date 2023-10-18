@@ -95,12 +95,3 @@ Convars:RegisterCommand("hudhearts_recreate" , function()
 	SendToConsole("ent_remove text_hearts")
 	HUDHearts_StartupPreparations()
 end, "Recreate hud heart icons", 0)
-
-Convars:RegisterConvar("hudhearts_debug_health", "", "", 40)
-
-Convars:RegisterCommand("hudhearts_debug_set_health" , function()
-	local health_desired = cvar_getf("hudhearts_debug_health")
-	local player = Entities:GetLocalPlayer()
-	player:SetHealth(health_desired)
-	HUDHearts_UpdateHealth()
-end, "Test hud hearts", 0)

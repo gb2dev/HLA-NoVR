@@ -222,7 +222,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             cvar_setf("viewmodel_offset_z", 0)
         end
 
-        if viewmodel and viewmodel:GetModelName() ~= "models/weapons/v_grenade.vmdl" then
+        if viewmodel and not string.match(viewmodel:GetModelName(), "v_grenade") then
             if string.match(viewmodel:GetModelName(), "v_shotgun") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
                     SendToConsole("+attack2")
@@ -251,11 +251,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if cvar_getf("fov_desired") > 40 then
                         --cvar_setf("viewmodel_offset_x", 0.115)
                         cvar_setf("viewmodel_offset_y", 0)
-                        cvar_setf("viewmodel_offset_z", -0.7)
+                        cvar_setf("viewmodel_offset_z", -0.045)
                         ViewmodelAnimation_HIPtoADS()
                         player:SetThink(function()
                             cvar_setf("fov_desired", 40)
-                            cvar_setf("viewmodel_offset_x", 0.115)
+                            cvar_setf("viewmodel_offset_x", 0.025)
                         end, "ZoomActivate", 1)
                     else
                         cvar_setf("fov_desired", FOV)
@@ -288,15 +288,35 @@ if GlobalSys:CommandLineCheck("-novr") then
             if string.match(viewmodel:GetModelName(), "v_shotgun") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 1 then
                     SendToConsole("use weapon_frag")
-                    SendToConsole("+attack")
-                    SendToConsole("ent_fire weapon_frag hideweapon")
                     Entities:GetLocalPlayer():SetThink(function()
-                        SendToConsole("-attack")
-                    end, "StopAttack", 0.36)
+                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                        -- Do not eqip grenade viewmodel if there is no weapon frag entity
+                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
+                            viewmodel:SetModel("models/weapons/v_grenade_novr.vmdl")
+                        end
+                    end, "SwitchViewmodel", 1)
+                    -- Hide grenade viewmodel
+                    SendToConsole("ent_fire weapon_frag hideweapon")
+                    -- Start attack
+                    Entities:GetLocalPlayer():SetThink(function()
+                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                        -- This will prevent shotgun attack if grenade amount is 0
+                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
+                            SendToConsole("+attack")
+                        end
+                    end, "StartAttack", 1.26)
+                    -- Stop attack
+                    Entities:GetLocalPlayer():SetThink(function()
+                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
+                            SendToConsole("-attack")
+                        end
+                    end, "StopAttack", 1.36)
+                    -- Equip shotgun
                     Entities:GetLocalPlayer():SetThink(function()
                         SendToConsole("use weapon_shotgun")
                         SendToConsole("viewmodel_update")
-                    end, "BackToShotgun", 0.66)
+                    end, "BackToShotgun", 1.66)
                 end
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
@@ -621,6 +641,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. CROUCH .. " +iv_duck")
             SendToConsole("bind " .. SPRINT .. " +iv_sprint")
             SendToConsole("bind " .. PAUSE .. " pause")
+            SendToConsole("bind " .. VIEWM_INSPECT .. " viewmodel_inspect_animation")
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
             SendToConsole("r_drawviewmodel 0")
@@ -825,7 +846,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             WristPockets_StartupPreparations()
             WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
             Viewmodels_Init()
-            ViewmodelAnimation_StartupPreparations()
             if not loading_save_file then
                 ViewmodelAnimation_LevelChange()
             end

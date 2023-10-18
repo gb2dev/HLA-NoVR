@@ -1,22 +1,12 @@
 
 -- Play viewmodel animations by withoutaface
 
---require "viewmodels"
-
-VIEWM_INSPECT = "T"
-VIEWM_RESET = "L"
-
 local smg_viewmodel_holo = "models/weapons/v_smg1_holo.vmdl"
 local smg_viewmodel_holo_ads = "models/weapons/v_smg1_holo_ads.vmdl"
 local pistol_viewmodel_shroud = "models/weapons/v_pistol_shroud.vmdl"
 local pistol_viewmodel_shroud_ads = "models/weapons/v_pistol_shroud_ads.vmdl"
 local pistol_viewmodel_shroud_stock = "models/weapons/v_pistol_shroud_stock.vmdl"
 local pistol_viewmodel_shroud_stock_ads = "models/weapons/v_pistol_shroud_stock_ads.vmdl"
-
-function ViewmodelAnimation_StartupPreparations()
-    SendToConsole("bind " .. VIEWM_INSPECT .. " viewmodel_inspect_animation")
-    SendToConsole("bind " .. VIEWM_RESET .. " viewmodel_reset")
-end
 
 -- LevelChange is called in novr.lua
 function ViewmodelAnimation_LevelChange()

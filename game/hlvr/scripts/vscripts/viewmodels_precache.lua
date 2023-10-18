@@ -20,4 +20,5 @@ function Precache(context)
 	PrecacheModel("models/weapons/vr_shotgun/vr_flip_shotgun_body.vmdl", context)
 	PrecacheModel("models/weapons/vr_shotgun/vr_flip_shotgun_magazine_tube.vmdl", context)
 	PrecacheModel("models/weapons/vr_shotgun/vr_flip_shotgun_slider.vmdl", context)
+	PrecacheModel("models/weapons/v_grenade_novr.vmdl", context)
 end

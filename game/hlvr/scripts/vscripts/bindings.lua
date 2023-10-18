@@ -21,4 +21,7 @@ MAIN_MENU         = "M"
 PAUSE             = "P"
 NOCLIP            = "V"
 CONSOLE           = "B"
+VIEWM_INSPECT     = "T"
+WPOCKETS_USE_HEALTHPEN = "Z"
+WPOCKETS_DROPITEM      = "X"
 FOV               = 90.0

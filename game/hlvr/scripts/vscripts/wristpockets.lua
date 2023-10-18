@@ -3,9 +3,11 @@ require "storage"
 -- Note: all pocket grenades mechanics is currently disabled
 
 -- bindings
-WPOCKETS_USE_HEALTHPEN = "Z"
+require "bindings"
+-- Moved to bindings file
+--WPOCKETS_USE_HEALTHPEN = "Z"
 --WPOCKETS_USE_GRENADE   = "X"
-WPOCKETS_DROPITEM      = "X"
+--WPOCKETS_DROPITEM      = "X"
 
 -- starts from 1
 local itemsClasses = { "item_healthvial", "item_hlvr_grenade_frag", "item_hlvr_prop_battery", "prop_physics", "item_hlvr_health_station_vial", "prop_reviver_heart" } 
