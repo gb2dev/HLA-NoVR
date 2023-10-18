@@ -1022,6 +1022,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire timer_gun_equipped_b Kill")
                             ent = Entities:FindByName(nil, "vcd_larry_talk_01")
                             ent:RedirectOutput("OnCompletion", "LarrySeesGun", ent)
+
+                            -- Detect shooting so Jeff hears it
+                            ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["targetname"]="bullet_trigger", ["modelscale"]=1000, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl"})
+                            DoEntFireByInstanceHandle(ent, "AddOutput", "OnDetectedBulletFire>!player>GenerateBlindZombieSound>>0>-1", 0, nil, nil)
                         end
                     else
                         if GetMapName() == "a4_c17_zoo" then
