@@ -55,7 +55,8 @@ function GravityGlovePull()
         thisEntity:SetThink(function()
             local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 60)
             if vlua.find(ents, thisEntity) then
-                if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
+                if thisEntity:GetMass() ~= 1 then
+                --if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
                     DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
                 end
                 if class == "item_hlvr_grenade_frag" then

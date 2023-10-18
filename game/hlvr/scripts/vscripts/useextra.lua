@@ -1344,22 +1344,29 @@ elseif class == "item_hlvr_clip_rapidfire" then
 elseif class == "item_hlvr_grenade_frag" then
     local goesInPocket = false -- keep the code to use it with proper tweaks
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
-        if goesInPocket then
-			-- player can hold 2 grenades on pockets, and one in hand
-			-- for now, all grenades will go straight into pockets
-			WristPockets_PickUpGrenade(player, thisEntity)
-			FireGameEvent("item_pickup", item_pickup_params)
-		else
-			FireGameEvent("item_pickup", item_pickup_params)
-			StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-			SendToConsole("give weapon_frag")
-			local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-			viewmodel:RemoveEffects(32)
-			thisEntity:Kill()
-		end
+        FireGameEvent("item_pickup", item_pickup_params)
+        StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+        SendToConsole("give weapon_frag")
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        viewmodel:RemoveEffects(32)
+        thisEntity:Kill()
+        --if goesInPocket then
+		--	-- player can hold 2 grenades on pockets, and one in hand
+		--	-- for now, all grenades will go straight into pockets
+		--	WristPockets_PickUpGrenade(player, thisEntity)
+		--	FireGameEvent("item_pickup", item_pickup_params)
+		--else
+		--	FireGameEvent("item_pickup", item_pickup_params)
+		--	StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+		--	SendToConsole("give weapon_frag")
+		--	local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+		--	viewmodel:RemoveEffects(32)
+		--	thisEntity:Kill()
+		--end
     end
 elseif class == "item_healthvial" then
-    if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
+    if player:GetHealth() < (player:GetMaxHealth()) then
+    --if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         FireGameEvent("item_pickup", item_pickup_params)
@@ -1367,8 +1374,8 @@ elseif class == "item_healthvial" then
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success02", player:EyePosition())
         thisEntity:Kill()
-	else
-		WristPockets_PickUpHealthPen(player, thisEntity)
-		FireGameEvent("item_pickup", item_pickup_params)
+	--else
+	--	WristPockets_PickUpHealthPen(player, thisEntity)
+	--	FireGameEvent("item_pickup", item_pickup_params)
     end
 end
