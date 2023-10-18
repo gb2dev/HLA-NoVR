@@ -1340,8 +1340,9 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end
 
-    function ShowCoverMouthTutorial()   
-        if cvar_getf("viewmodel_offset_y") == 0 then
+    function ShowCoverMouthTutorial()
+        print(cvar_getf("viewmodel_offset_y"))
+        if cvar_getf("viewmodel_offset_y") ~= -20 then
             SendToConsole("ent_fire text_covermouth ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
         end
