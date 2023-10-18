@@ -261,6 +261,21 @@ if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@p
                 end
             end, "", 0)
             SendToConsole("ent_fire traincar_01_hackplug Alpha 0")
+        elseif map == "a3_distillery" and name == "verticaldoor_wheel" then
+            count = 0
+            player:SetThink(function()
+                local jeff = Entities:FindByClassname(ent, "npc_zombie_blind")
+                if player:Attribute_GetIntValue("use_released", 0) == 1 and count < 10 or vlua.find(Entities:FindAllInSphere(Vector(291, 291, 322), 10), jeff) then
+                    SendToConsole("ent_fire verticaldoor_wheel EnableReturnToCompletion 0 0")
+                    SendToConsole("ent_fire @verticaldoor SetSpeed 100")
+                    SendToConsole("ent_fire @verticaldoor Close")
+                else
+                    SendToConsole("ent_fire verticaldoor_wheel DisableReturnToCompletion 0 0")
+                    SendToConsole("ent_fire @verticaldoor SetSpeed 10")
+                    SendToConsole("ent_fire @verticaldoor Open")
+                    return 0
+                end
+            end, "", 0)
         elseif not vlua.find(name, "elev_anim_door") and not vlua.find(name, "tractor_beam_console_lever") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
@@ -279,9 +294,7 @@ if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@p
             DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
         end
 
-        if map == "a3_distillery" and name == "verticaldoor_wheel" then
-            count = count + 0.001
-        elseif name == "12712_shotgun_wheel" then
+        if name == "12712_shotgun_wheel" then
             count = count + 0.003
         elseif name == "console_selector_interact" then
             count = count + 0.0005
@@ -306,11 +319,20 @@ if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@p
             return nil
         end
 
+        if map == "a3_distillery" and name == "verticaldoor_wheel" then
+            local jeff = Entities:FindByClassname(ent, "npc_zombie_blind")
+            if player:Attribute_GetIntValue("use_released", 0) == 1 or vlua.find(Entities:FindAllInSphere(Vector(291, 291, 322), 10), jeff) then
+                thisEntity:Attribute_SetIntValue("used", 0)
+                return nil
+            end
+        end
+
         if vlua.find(name, "elev_anim_door") then
             DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "", 0, nil, nil)
         end
 
-        if count >= 1 then
+        
+        if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
             thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
             if name == "barricade_door_hook" then
                 SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
@@ -1169,8 +1191,8 @@ if GetMapName() == "a3_distillery" then
     end
 
     if name == "verticaldoor_wheel" then
-        SendToConsole("ent_fire @verticaldoor setspeed 10")
-        SendToConsole("ent_fire @verticaldoor open")
+        --SendToConsole("ent_fire @verticaldoor setspeed 10")
+        --SendToConsole("ent_fire @verticaldoor open")
     end
 
     if name == "11479_2385_button_pusher_prop" then

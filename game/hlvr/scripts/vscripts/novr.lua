@@ -724,7 +724,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
                     end
 
-                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 12)
+                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 15)
                     if shard then
                         DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
                     end
@@ -1290,7 +1290,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"959 1970 427\" }")
         SendToConsole("ent_fire @crank_battery kill")
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
-        SendToConsole("ent_fire 11478_6233_math_count_wheel_installment SetHitMax 1")
+        SendToConsole("ent_fire 11478_6233_math_count_wheel_installment SetHitMax 2")
     end
 
     function ShowInteractTutorial()
