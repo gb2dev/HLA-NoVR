@@ -463,6 +463,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(462, false)
                 end
 
+                if vlua.find(Entities:FindAllInSphere(Vector(-24,-151,426), 5), player) then
+                    ClimbLadder(560)
+                end
+
                 if vlua.find(Entities:FindAllInSphere(Vector(515,1595,578), 20), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")

@@ -222,7 +222,7 @@ function is_combine_console_locked()
     return true
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if map == "a3_distillery" and vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     end
@@ -613,18 +613,15 @@ end
 
 ---------- a3_distillery ----------
 
+if name == "larry_ladder" then
+    SendToConsole("ent_fire_output larry_ladder OnCompletionC")
+end
+
 if name == "cellar_ladder" then
     ClimbLadderSound()
     SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
     SendToConsole("fadein 0.2")
     SendToConsole("setpos_exact 1004 1775 546")
-end
-
-if name == "larry_ladder" then
-    ClimbLadderSound()
-    SendToConsole("ent_fire larry_ladder SetCompletionValue 1")
-    SendToConsole("fadein 0.2")
-    SendToConsole("ent_fire relay_debug_intro_trench trigger")
 end
 
 
