@@ -27,8 +27,6 @@
 		//
 		SearchPaths
 		{
-			Game				novr_animation_team
-			Game				novr_experimental
 			Game				novr
 			Game				hlvr
 			Game				core
