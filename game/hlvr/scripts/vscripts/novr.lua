@@ -1023,6 +1023,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent = Entities:FindByName(nil, "vcd_larry_talk_01")
                             ent:RedirectOutput("OnCompletion", "LarrySeesGun", ent)
 
+                            ent = Entities:FindByClassnameNearest("prop_handpose", Vector(925, 1102, 578), 50)
+                            if ent then
+                                DoEntFireByInstanceHandle(ent, "Kill", "", 0, nil, nil)
+                            end
+
                             -- Detect shooting so Jeff hears it
                             ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["targetname"]="bullet_trigger", ["modelscale"]=1000, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl"})
                             DoEntFireByInstanceHandle(ent, "AddOutput", "OnDetectedBulletFire>!player>GenerateBlindZombieSound>>0>-1", 0, nil, nil)
