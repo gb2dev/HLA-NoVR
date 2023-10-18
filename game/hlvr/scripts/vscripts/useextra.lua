@@ -614,6 +614,7 @@ end
 ---------- a3_distillery ----------
 
 if name == "larry_ladder" then
+    SendToConsole("ent_fire_output larry_ladder OnCompletionA")
     SendToConsole("ent_fire_output larry_ladder OnCompletionC")
 end
 
