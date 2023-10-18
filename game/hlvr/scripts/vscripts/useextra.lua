@@ -788,6 +788,7 @@ if class == "prop_dynamic" then
                 thisEntity:SetThink(function()
                     if player:GetHealth() < player:GetMaxHealth() then
                         player:SetHealth(player:GetHealth() + 1)
+                        HUDHearts_UpdateHealth()
                         return 0.1
                     else
                         if map == "a2_quarantine_entrance" then
@@ -905,21 +906,25 @@ if class == "prop_hlvr_crafting_station_console" then
             if Convars:GetStr("chosen_upgrade") == "pistol_upgrade_aimdownsights" then
                 player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
                 SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_pistol_upgrade_aimdownsights ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
                 player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
                 SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
                 player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
                 SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_shotgun_upgrade_grenadelauncher ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
                 player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
                 SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
@@ -929,12 +934,14 @@ if class == "prop_hlvr_crafting_station_console" then
                 else
                     SendToConsole("give weapon_smg1")
                 end
+                SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
                 player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
                 SendToConsole("ent_remove weapon_ar2")
                 SendToConsole("give weapon_smg1")
+                SendToConsole("viewmodel_update")
             end
             SendToConsole("ent_fire point_clientui_world_panel Enable")
             SendToConsole("ent_fire weapon_in_fabricator Kill")
@@ -965,7 +972,7 @@ if class == "prop_hlvr_crafting_station_console" then
         elseif thisEntity:Attribute_GetIntValue("cancel_cooldown_done", 1) == 1 and thisEntity:GetGraphParameter("bCrafting") == false then
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if viewmodel then
-                if viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
+                if string.match(viewmodel:GetModelName(), "v_pistol") then
                     SendToConsole("ent_fire weapon_pistol kill 0.02")
                     SendToConsole("impulse 200")
                     Convars:SetStr("weapon_in_crafting_station", "pistol")
@@ -1001,9 +1008,10 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
-                elseif viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
+                elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
                     SendToConsole("impulse 200")
+                    SendToConsole("lastinv") -- fix for impulse 200 not hiding the shotgun somehow
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -1035,13 +1043,14 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
                     ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
-                elseif viewmodel:GetModelName() == "models/weapons/v_smg1.vmdl" then
+                elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                     if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                         SendToConsole("ent_fire weapon_ar2 kill 0.02")
                     else
                         SendToConsole("ent_fire weapon_smg1 kill 0.02")
                     end
                     SendToConsole("impulse 200")
+                    SendToConsole("lastinv") -- fix for impulse 200 not hiding the smg somehow
                     Convars:SetStr("weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -1390,6 +1399,7 @@ elseif class == "item_healthvial" then
     --if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
+        HUDHearts_UpdateHealth()
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("HealthPen.Stab", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())

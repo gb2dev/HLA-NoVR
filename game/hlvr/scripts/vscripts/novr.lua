@@ -6,6 +6,9 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("flashlight.lua", nil)
     DoIncludeScript("jumpfix.lua", nil)
     --DoIncludeScript("wristpockets.lua", nil)
+    DoIncludeScript("viewmodels.lua", nil)
+    DoIncludeScript("viewmodels_animation.lua", nil)
+    DoIncludeScript("hudhearts.lua", nil)
 
     if player_hurt_ev ~= nil then
         StopListeningToGameEvent(player_hurt_ev)
@@ -22,6 +25,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         if GetPhysVelocity(Entities:GetLocalPlayer()).z < -450 then
             SendToConsole("ent_fire !player SetHealth 0")
         end
+
+        -- Update hud hearts
+        HUDHearts_UpdateHealth()
+
     end, nil)
 
     if entity_killed_ev ~= nil then
@@ -182,6 +189,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("give weapon_smg1")
             end
         end
+        SendToConsole("viewmodel_update")
         SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
     end, "", 0)
 
@@ -199,22 +207,67 @@ if GlobalSys:CommandLineCheck("-novr") then
 
 
     -- Custom attack 2
+    Convars:RegisterConvar("zoom_active", "", "", 0)
 
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
-        if viewmodel and viewmodel:GetModelName() ~= "models/weapons/v_grenade.vmdl" then
-            if viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
+
+        -- Reset viewmodel after auto weapon switch
+        if viewmodel and cvar_getf("fov_desired") == 40 and not string.match(viewmodel:GetModelName(), "_ads.vmdl") then
+            ViewmodelAnimation_ResetAnimation()
+            cvar_setf("fov_desired", FOV)
+            cvar_setf("viewmodel_offset_x", 0)
+            cvar_setf("viewmodel_offset_y", 0)
+            cvar_setf("viewmodel_offset_z", 0)
+        end
+
+        if viewmodel and not string.match(viewmodel:GetModelName(), "v_grenade") then
+            if string.match(viewmodel:GetModelName(), "v_shotgun") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 1 then
                     SendToConsole("+attack2")
                 end
-            elseif viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
+            elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
-                    SendToConsole("toggle_zoom")
+                    if cvar_getf("fov_desired") > 40 then
+                        --cvar_setf("viewmodel_offset_x", -0.005)
+                        cvar_setf("viewmodel_offset_y", 0)
+                        cvar_setf("viewmodel_offset_z", -0.04)
+                        ViewmodelAnimation_HIPtoADS()
+                        player:SetThink(function()
+                            cvar_setf("fov_desired", 40)
+                            cvar_setf("viewmodel_offset_x", -0.005)
+                        end, "ZoomActivate", 1)
+                    else
+                        cvar_setf("fov_desired", FOV)
+                        cvar_setf("viewmodel_offset_x", 0)
+                        cvar_setf("viewmodel_offset_y", 0)
+                        cvar_setf("viewmodel_offset_z", 0)
+                        ViewmodelAnimation_ADStoHIP()
+                    end
                 end
-            elseif viewmodel:GetModelName() == "models/weapons/v_smg1.vmdl" then
-                if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then
-                    SendToConsole("toggle_zoom")
+            elseif string.match(viewmodel:GetModelName(), "v_smg1") then
+                if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then                    
+                    if cvar_getf("fov_desired") > 40 then
+                        --cvar_setf("viewmodel_offset_x", 0.115)
+                        cvar_setf("viewmodel_offset_y", 0)
+                        cvar_setf("viewmodel_offset_z", -0.045)
+                        ViewmodelAnimation_HIPtoADS()
+                        player:SetThink(function()
+                            cvar_setf("fov_desired", 40)
+                            cvar_setf("viewmodel_offset_x", 0.025)
+                        end, "ZoomActivate", 1)
+                    else
+                        cvar_setf("fov_desired", FOV)
+                        cvar_setf("viewmodel_offset_x", 0)
+                        cvar_setf("viewmodel_offset_y", 0)
+                        --cvar_setf("viewmodel_offset_z", 0)
+                        ViewmodelAnimation_ADStoHIP()
+                        
+                        player:SetThink(function()
+                            cvar_setf("viewmodel_offset_z", 0)  
+                        end, "ZoomDeactivate", 0.5)
+                    end
                 end
             end
         end
@@ -232,19 +285,40 @@ if GlobalSys:CommandLineCheck("-novr") then
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
         if viewmodel then
-            if viewmodel:GetModelName() == "models/weapons/v_shotgun.vmdl" then
+            if string.match(viewmodel:GetModelName(), "v_shotgun") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 1 then
                     SendToConsole("use weapon_frag")
-                    SendToConsole("+attack")
-                    SendToConsole("ent_fire weapon_frag hideweapon")
                     Entities:GetLocalPlayer():SetThink(function()
-                        SendToConsole("-attack")
-                    end, "StopAttack", 0.36)
+                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                        -- Do not eqip grenade viewmodel if there is no weapon frag entity
+                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
+                            viewmodel:SetModel("models/weapons/v_grenade_novr.vmdl")
+                        end
+                    end, "SwitchViewmodel", 1)
+                    -- Hide grenade viewmodel
+                    SendToConsole("ent_fire weapon_frag hideweapon")
+                    -- Start attack
+                    Entities:GetLocalPlayer():SetThink(function()
+                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                        -- This will prevent shotgun attack if grenade amount is 0
+                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
+                            SendToConsole("+attack")
+                        end
+                    end, "StartAttack", 1.26)
+                    -- Stop attack
+                    Entities:GetLocalPlayer():SetThink(function()
+                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
+                            SendToConsole("-attack")
+                        end
+                    end, "StopAttack", 1.36)
+                    -- Equip shotgun
                     Entities:GetLocalPlayer():SetThink(function()
                         SendToConsole("use weapon_shotgun")
-                    end, "BackToShotgun", 0.66)
+                        SendToConsole("viewmodel_update")
+                    end, "BackToShotgun", 1.66)
                 end
-            elseif viewmodel:GetModelName() == "models/weapons/v_pistol.vmdl" then
+            elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
                     SendToConsole("sk_plr_dmg_pistol 9")
                     SendToConsole("+attack")
@@ -556,11 +630,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
             SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
-            SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+            SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. RELOAD .. " +reload")
-            SendToConsole("bind " .. QUICK_SWAP .. " lastinv")
+            SendToConsole("bind " .. QUICK_SWAP .. " \"lastinv;viewmodel_update\"")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
             SendToConsole("bind " .. MOVE_FORWARD .. " +iv_forward")
             SendToConsole("bind " .. MOVE_BACK .. " +backfixed")
@@ -569,6 +643,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. CROUCH .. " +iv_duck")
             SendToConsole("bind " .. SPRINT .. " +iv_sprint")
             SendToConsole("bind " .. PAUSE .. " pause")
+            SendToConsole("bind " .. VIEWM_INSPECT .. " viewmodel_inspect_animation")
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
             SendToConsole("r_drawviewmodel 0")
@@ -716,12 +791,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                         angle = QAngle(0, -angle.y, 0)
                         move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
 
-                        local weapon_sway_x = Lerp(0.01, cvar_getf("viewmodel_offset_x"), RotationDelta(look_delta, viewmodel:GetAngles()).y) * 0.95
-                        local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.95
+                        local weapon_sway_x = Lerp(0.01, cvar_getf("viewmodel_offset_x"), RotationDelta(look_delta, viewmodel:GetAngles()).y) * 0.70
+                        local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.65
                         look_delta = viewmodel:GetAngles()
 
-                        cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
-                        cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
+                        -- Set weapon sway and view bob if zoom is not active
+                        if cvar_getf("fov_desired") > 40 then
+                            cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
+                            cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
+                        end
+
                     end
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 15)
@@ -768,6 +847,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 			
             --WristPockets_StartupPreparations()
             --WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
+            Viewmodels_Init()
+            if not loading_save_file then
+                ViewmodelAnimation_LevelChange()
+            end
+            HUDHearts_StartupPreparations()
 
             if GetMapName() == "a1_intro_world" then
                 ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="test", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})
