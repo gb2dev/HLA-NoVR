@@ -459,7 +459,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a3_distillery" then
-                if vlua.find(Entities:FindAllInSphere(Vector(20,-496,211), 8), player) then
+                if vlua.find(Entities:FindAllInSphere(Vector(20,-496,211), 10), player) then
                     ClimbLadder(462, false)
                 end
 
@@ -925,8 +925,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     if GetMapName() == "a2_drainage" then
                         if not loading_save_file then
-                            SendToConsole("ent_fire math_count_wheel2_installment addoutput \"OnChangedFromMin>relay_install_wheel2>Trigger>>0>1\"")
-                            SendToConsole("ent_fire math_count_wheel_installment addoutput \"OnChangedFromMin>relay_install_wheel>Trigger>>0>1\"")
+                            SendToConsole("ent_fire math_count_wheel2_installment AddOutput \"OnChangedFromMin>relay_install_wheel2>Trigger>>0>1\"")
+                            SendToConsole("ent_fire math_count_wheel_installment AddOutput \"OnChangedFromMin>relay_install_wheel>Trigger>>0>1\"")
                             SendToConsole("ent_fire wheel_physics DisablePickup")
                             ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(941, -1666, 255), 10)
                             DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>wheel_physics>EnablePickup>>0>1", 0, nil, nil)
@@ -1013,6 +1013,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_create env_message { targetname text_covermouth message COVERMOUTH }")
                             ent = Entities:FindByName(nil, "11632_223_cough_volume")
                             ent:RedirectOutput("OnStartTouch", "ShowCoverMouthTutorial", ent)
+
+                            SendToConsole("ent_fire timer_gun_equipped Kill")
+                            SendToConsole("ent_fire timer_gun_equipped_b Kill")
+                            ent = Entities:FindByName(nil, "vcd_larry_talk_01")
+                            ent:RedirectOutput("OnCompletion", "LarrySeesGun", ent)
                         end
                     else
                         if GetMapName() == "a4_c17_zoo" then
@@ -1341,6 +1346,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     function ShowQuickSaveTutorial()   
         SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    function LarrySeesGun()   
+        SendToConsole("ent_fire_output @player_proxy OnWeaponActive")
     end
 
     function EnablePlugLever()
