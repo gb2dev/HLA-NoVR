@@ -459,10 +459,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a3_distillery" then
-                if vlua.find(Entities:FindAllInSphere(Vector(20,-518,211), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 20 -471 452")
+                if vlua.find(Entities:FindAllInSphere(Vector(20,-496,211), 8), player) then
+                    ClimbLadder(462, false)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(515,1595,578), 20), player) then
@@ -1248,6 +1246,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if not do_not_push_forward then
                     ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 150)
                 end
+                SendToConsole("+iv_duck;-iv_duck")
             else
                 ent:SetVelocity(Vector(0, 0, 0))
                 ent:SetOrigin(ent:GetOrigin() + Vector(0, 0, 2.1))
