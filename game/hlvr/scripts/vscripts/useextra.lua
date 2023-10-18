@@ -1147,11 +1147,12 @@ if GetMapName() == "a3_distillery" then
     end
 
     if name == "intro_rollup_door" then
-        SendToConsole("ent_fire_output intro_rollup_door oncompletiona_forward")
-        SendToConsole("ent_fire door_xen_crust break")
-        SendToConsole("ent_fire relay_door_xen_crust_c trigger")
-        SendToConsole("ent_fire relay_door_xen_crust_d trigger")
-        SendToConsole("ent_fire relay_door_xen_crust_e trigger")
+        SendToConsole("ent_fire_output intro_rollup_door OnCompletionA_Forward")
+        SendToConsole("ent_fire door_xen_crust Break")
+        SendToConsole("ent_fire relay_door_xen_crust_c Trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_d Trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_e Trigger")
+        SendToConsole("ent_fire @snd_music_bz_hello Kill")
     end
 
     if name == "barricade_door" then
