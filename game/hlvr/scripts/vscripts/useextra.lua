@@ -222,11 +222,20 @@ function is_combine_console_locked()
     return true
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    if map == "a3_distillery" and vlua.find(name, "plug") and player:Attribute_GetIntValue("plug_lever", 0) == 0 then
+if map == "a3_distillery" and vlua.find(name, "plug") then
+    print ("TEST" .. tostring(player:Attribute_GetIntValue("plug_lever", 0)))
+    if player:Attribute_GetIntValue("plug_lever", 0) == 0 then
+        return
+    elseif name == "11578_2420_181_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 2 then
+        return
+    elseif name == "11578_2420_183_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 3 then
+        return
+    elseif name == "antlion_plug_crank_c" and player:Attribute_GetIntValue("plug_lever", 0) ~= 4 then
         return
     end
+end
 
+if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "slide_train_door") and Entities:FindByClassnameNearest("phys_constraint", thisEntity:GetCenter(), 20) then
         return
     end

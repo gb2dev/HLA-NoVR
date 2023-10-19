@@ -1089,7 +1089,19 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end
                     elseif GetMapName() == "a3_distillery" then
                         ent = Entities:FindByName(nil, "exit_counter")
-                        ent:RedirectOutput("OnHitMax", "EnablePlugLever", ent)
+                        ent:RedirectOutput("OnHitMax", "EnablePlugLever1", ent)
+
+                        ent = Entities:FindByName(nil, "11578_2420_181_relay_unlock_controls")
+                        ent:RedirectOutput("OnTrigger", "EnablePlugLever2", ent)
+
+                        ent = Entities:FindByName(nil, "11578_2420_183_relay_unlock_controls")
+                        ent:RedirectOutput("OnTrigger", "EnablePlugLever3", ent)
+
+                        ent = Entities:FindByName(nil, "@branch_bz_locked_up")
+                        ent:RedirectOutput("OnTrue", "EnablePlugLever4", ent)
+
+                        ent = Entities:FindByName(nil, "11578_2420_183_relay_control_reset")
+                        ent:RedirectOutput("OnTrigger", "EnablePlugLever1", ent)
 
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
@@ -1450,8 +1462,20 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire_output @player_proxy OnWeaponActive")
     end
 
-    function EnablePlugLever()
+    function EnablePlugLever1()
         Entities:GetLocalPlayer():Attribute_SetIntValue("plug_lever", 1)
+    end
+
+    function EnablePlugLever2()
+        Entities:GetLocalPlayer():Attribute_SetIntValue("plug_lever", 2)
+    end
+
+    function EnablePlugLever3()
+        Entities:GetLocalPlayer():Attribute_SetIntValue("plug_lever", 3)
+    end
+
+    function EnablePlugLever4()
+        Entities:GetLocalPlayer():Attribute_SetIntValue("plug_lever", 4)
     end
 
     function StartRevealEavesdrop()
