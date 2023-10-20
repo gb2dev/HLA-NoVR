@@ -9,7 +9,11 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("viewmodels.lua", nil)
     DoIncludeScript("viewmodels_animation.lua", nil)
     DoIncludeScript("hudhearts.lua", nil)
-
+	
+	DoIncludeScript("modsupport.lua", nil)
+	local isModActive = ModSupport_IsAddonMap(GetMapName())
+	-- https://github.com/VladManyanov/HLA-NOVR-Mods
+	
     if player_hurt_ev ~= nil then
         StopListeningToGameEvent(player_hurt_ev)
     end
@@ -17,8 +21,12 @@ if GlobalSys:CommandLineCheck("-novr") then
     player_hurt_ev = ListenToGameEvent('player_hurt', function(info)
         -- Hack to stop pausing the game on death
         if info.health == 0 then
-            SendToConsole("reload")
-            SendToConsole("r_drawvgui 0")
+            if isModActive then -- trick to avoid game crash on death during addon play
+				SendToConsole("load quick")
+			else
+				SendToConsole("reload")
+				SendToConsole("r_drawvgui 0")
+			end
         end
 
         -- Kill on fall damage
@@ -531,7 +539,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("setpos_exact -1392 -2471 53")
                 end
             end
-
+			
+			ModSupport_CheckForLadderOrTeleport()
+			
             if GetMapName() == "a3_distillery" then
                 if vlua.find(Entities:FindAllInSphere(Vector(20,-496,211), 10), player) then
                     ClimbLadder(462, false)
@@ -707,7 +717,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if not loading_save_file then
-                if is_on_map_or_later("a2_quarantine_entrance") then
+                -- use custom weapon rules for addon maps
+                if not isModActive and is_on_map_or_later("a2_quarantine_entrance") then
                     SendToConsole("give weapon_pistol")
                 
                     if is_on_map_or_later("a2_drainage") then
@@ -945,6 +956,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("hidehud 64")
                 SendToConsole("r_drawviewmodel 1")
                 Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
+				
+				if isModActive then
+					ModSupport_MapBootupScripts(loading_save_file)
+				end
 
                 if GetMapName() == "a2_quarantine_entrance" then
                     if not loading_save_file then
@@ -1009,7 +1024,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
                     end
                 else
-                    SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+                    if isModActive == false then --Default NoVR-mod weapon rule
+						SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+					end
 
                     if GetMapName() == "a2_drainage" then
                         if not loading_save_file then
