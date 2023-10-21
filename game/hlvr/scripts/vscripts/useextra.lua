@@ -652,6 +652,7 @@ end
 if name == "glove_dispenser_brush" then
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
+    SendToConsole("hudhearts_show")
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 end
 
@@ -716,6 +717,8 @@ if name == "l_candler" or name == "r_candler" then
     else
         SendToConsole("hidehud 4")
     end
+    -- Just to make sure the heart icons are gone, hidehud 4 seems fine
+    SendToConsole("hudhearts_hide")
 end
 
 if name == "combine_gun_mechanical" then

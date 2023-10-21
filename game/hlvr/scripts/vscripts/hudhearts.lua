@@ -16,11 +16,13 @@ function HUDHearts_StartupPreparations()
 	end
 
 	-- Trigger initial hearts update
-	local player = Entities:GetLocalPlayer()
-	player:SetThink(function()
-		HUDHearts_Background()
-		HUDHearts_UpdateHealth()
-	end, "HUDHearts_MapChange", 1)
+	if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
+		local player = Entities:GetLocalPlayer()
+		player:SetThink(function()
+			HUDHearts_Background()
+			HUDHearts_UpdateHealth()
+		end, "HUDHearts_MapChange", 1)
+	end
 
 	print("[HUDHearts] Start up done")
 end
@@ -85,9 +87,38 @@ function HUDHearts_UpdateHealth()
 	print(string.format("[HUDHearts] Set heart icons to %s health", health))
 end
 
+function HUDHearts_Hide()
+	local textEntityBackground = Entities:FindByName(nil, "text_hearts_background")
+	local textEntity = Entities:FindByName(nil, "text_hearts")
+	local textEntityRed = Entities:FindByName(nil, "text_hearts_red")
+
+	DoEntFireByInstanceHandle(textEntityBackground, "SetText", "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntity, "SetText", "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntity, "Display", "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntityRed, "SetText", "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntityRed, "Display", "", 0, nil, nil)
+
+	print("[HUDHearts] Hide hud hearts")
+end
+
+function HUDHearts_Show()
+	HUDHearts_Background()
+	HUDHearts_UpdateHealth()
+	print("[HUDHearts] Show hud hearts")
+end
+
 Convars:RegisterCommand("hudhearts_updatehealth" , function()
 	HUDHearts_UpdateHealth()
 end, "Update hud heart icons", 0)
+
+Convars:RegisterCommand("hudhearts_hide" , function()
+	HUDHearts_Hide()
+end, "Hide hud heart icons", 0)
+
+Convars:RegisterCommand("hudhearts_show" , function()
+	HUDHearts_Show()
+end, "Show hud heart icons", 0)
 
 Convars:RegisterCommand("hudhearts_recreate" , function()
 	SendToConsole("ent_remove text_hearts_background")
