@@ -27,7 +27,9 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
 
         -- Update hud hearts
-        HUDHearts_UpdateHealth()
+        if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
+            HUDHearts_UpdateHealth()
+        end
 
     end, nil)
 
@@ -915,6 +917,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                 else
                     SendToConsole("hidehud 64")
                     SendToConsole("r_drawviewmodel 1")
+                end
+
+                -- Show hud hearts if player picked up the gravity gloves
+                if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
+                    ent:SetThink(function()
+                        HUDHearts_Show()
+                    end, "", 1.5)
                 end
 
                 SendToConsole("combine_grenade_timer 7")
