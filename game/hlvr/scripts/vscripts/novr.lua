@@ -217,8 +217,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
 
     -- Custom attack 2
-    Convars:RegisterConvar("zoom_active", "", "", 0)
-
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
@@ -240,7 +238,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
                     if cvar_getf("fov_desired") > 40 then
-                        --cvar_setf("viewmodel_offset_x", -0.005)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", -0.04)
                         ViewmodelAnimation_HIPtoADS()
@@ -259,7 +256,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                 if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then                    
                     if cvar_getf("fov_desired") > 40 then
-                        --cvar_setf("viewmodel_offset_x", 0.115)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", -0.045)
                         ViewmodelAnimation_HIPtoADS()
@@ -271,12 +267,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                         cvar_setf("fov_desired", FOV)
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
-                        --cvar_setf("viewmodel_offset_z", 0)
+                        cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
-                        
-                        player:SetThink(function()
-                            cvar_setf("viewmodel_offset_z", 0)  
-                        end, "ZoomDeactivate", 0.5)
                     end
                 end
             end

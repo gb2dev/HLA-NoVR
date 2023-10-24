@@ -132,17 +132,12 @@ function ViewmodelAnimation_ADStoHIP()
         
         viewmodel_name = viewmodel:GetModelName()
 		print(string.format("Play ads to hip for viewmodel %s on sequence %s", viewmodel_name, viewmodel_sequence))
-        
-        -- ADS_TO_HIP
-        if string.match(viewmodel_name, "v_smg1") then
-            player:SetThink(function()
-                --viewmodel:ResetSequence("ads_to_hip")
-                ViewmodelAnimation_ResetAnimation()
-            end, "ViewmodelADStoHIPAnimation", 0.5)
-        else
-            ViewmodelAnimation_ResetAnimation()
-        end
 
+        -- ADS_TO_HIP
+        viewmodel:ResetSequence("ads_to_hip")
+        player:SetThink(function()
+            ViewmodelAnimation_ResetAnimation()
+        end, "ViewmodelADStoHIPAnimation", 0.4)
 	end
 end
 
