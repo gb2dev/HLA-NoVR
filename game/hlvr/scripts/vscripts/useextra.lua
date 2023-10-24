@@ -620,7 +620,7 @@ end
 if name == "glove_dispenser_brush" then
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
-    SendToConsole("hudhearts_show")
+    --SendToConsole("hudhearts_show")
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 end
 
@@ -686,7 +686,7 @@ if name == "l_candler" or name == "r_candler" then
         SendToConsole("hidehud 4")
     end
     -- Just to make sure the heart icons are gone, hidehud 4 seems fine
-    SendToConsole("hudhearts_hide")
+    --SendToConsole("hudhearts_hide")
 end
 
 if name == "combine_gun_mechanical" then
@@ -800,7 +800,7 @@ if class == "prop_dynamic" then
                 thisEntity:SetThink(function()
                     if player:GetHealth() < player:GetMaxHealth() then
                         player:SetHealth(player:GetHealth() + 1)
-                        HUDHearts_UpdateHealth()
+                        --HUDHearts_UpdateHealth()
                         return 0.1
                     else
                         if map == "a2_quarantine_entrance" then
@@ -1411,7 +1411,7 @@ elseif class == "item_healthvial" then
     --if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
-        HUDHearts_UpdateHealth()
+        --HUDHearts_UpdateHealth()
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("HealthPen.Stab", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())

@@ -8,7 +8,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     --DoIncludeScript("wristpockets.lua", nil)
     DoIncludeScript("viewmodels.lua", nil)
     DoIncludeScript("viewmodels_animation.lua", nil)
-    DoIncludeScript("hudhearts.lua", nil)
+    --DoIncludeScript("hudhearts.lua", nil)
 
     if player_hurt_ev ~= nil then
         StopListeningToGameEvent(player_hurt_ev)
@@ -27,9 +27,9 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
 
         -- Update hud hearts
-        if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
-            HUDHearts_UpdateHealth()
-        end
+        -- if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
+        --     HUDHearts_UpdateHealth()
+        -- end
 
     end, nil)
 
@@ -845,7 +845,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if not loading_save_file then
                 ViewmodelAnimation_LevelChange()
             end
-            HUDHearts_StartupPreparations()
+            --HUDHearts_StartupPreparations()
 
             if GetMapName() == "a1_intro_world" then
                 ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="test", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})
@@ -912,11 +912,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
 
                 -- Show hud hearts if player picked up the gravity gloves
-                if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
-                    ent:SetThink(function()
-                        HUDHearts_Show()
-                    end, "", 1.5)
-                end
+                -- if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
+                --     ent:SetThink(function()
+                --         HUDHearts_Show()
+                --     end, "", 1.5)
+                -- end
 
                 SendToConsole("combine_grenade_timer 7")
 
