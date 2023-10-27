@@ -21,4 +21,5 @@ MAIN_MENU         = "M"
 PAUSE             = "P"
 NOCLIP            = "V"
 CONSOLE           = "~"
+VIEWM_INSPECT     = "T"
 FOV               = 90.0
