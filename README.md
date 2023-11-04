@@ -61,6 +61,8 @@ V: Noclip (if you get stuck)
 
 C: Console
 
+T: Inspect Weapon
+
 ## Official Discord Server
 https://discord.gg/AyfBeuZXsR
 
@@ -69,7 +71,7 @@ If the launcher doesn't work, then you can try the old installation method:
 
 Copy the ``game`` folder into your main Half-Life: Alyx installation folder (e.g. ``C:\Program Files (x86)\Steam\steamapps\common\Half-Life Alyx``).
 
-Then start the game with the launch options ``-novr -vsync``.
+Then start the game with the launch options ``-novr -vsync +vr_enable_fake_vr 1``.
 
 ## Special Thanks
 - JJL772 for making the flashlight and jump scripts: https://github.com/JJL772/half-life-alyx-scripts
