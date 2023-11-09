@@ -807,7 +807,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     end
 
-                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 15)
+                    local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 30)
                     if shard then
                         DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
                     end
@@ -890,13 +890,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent = Entities:FindByName(nil, "51_ladder_hint_trigger")
                     ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
 
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="-541.6 1770.1 133.4", ["angles"]="0 0 0"})
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_2", ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="-903.2 1691.6 111", ["angles"]="0 0 0"})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="-541.6 1770.1 133.4", ["angles"]="0 0 0", ["modelscale"]=0.75})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_2", ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="-903.2 1691.6 111", ["angles"]="0 0 0", ["modelscale"]=0.75})
 
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1473.99 -853.165 -347.75", ["angles"]="0 0 0"})
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_2", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1393.17 -923.015 -347.75", ["angles"]="0 0 0"})
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_3", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1393.17 -952.015 -347.75", ["angles"]="0 0 0"})
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_4", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1396.98 -982.97 -347.75", ["angles"]="0 0 0"})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="1473.99 -853.165 -347.75", ["angles"]="0 0 0", ["modelscale"]=2})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_2", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="1393.17 -923.015 -347.75", ["angles"]="0 0 0", ["modelscale"]=2})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_3", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="1393.17 -952.015 -347.75", ["angles"]="0 0 0", ["modelscale"]=2})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_4", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="1396.98 -982.97 -347.75", ["angles"]="0 0 0", ["modelscale"]=2})
 
                     SendToConsole("ent_fire 563_vent_door DisablePickup")
                     SendToConsole("ent_fire 563_vent_phys_hinge SetOffset 0.1")
@@ -1031,6 +1031,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
                         ent = Entities:FindByName(nil, "2861_4065_hint_mantle_delay")
+                        ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
+
+                        ent = Entities:FindByName(nil, "13987_hint_mantle_delay")
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
                     end
                 else
@@ -1460,6 +1463,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function ShowCrouchJumpTutorial()
         SendToConsole("ent_fire 28677_hint_mantle_delay Disable")
         SendToConsole("ent_fire 15493_hint_mantle_delay Disable")
+        SendToConsole("ent_fire 13987_hint_mantle_delay Disable")
         SendToConsole("ent_fire 2861_4065_hint_mantle_delay Disable")
         SendToConsole("ent_fire text_crouchjump ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
