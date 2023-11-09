@@ -1161,6 +1161,10 @@ if class == "prop_hlvr_crafting_station_console" then
 end
 
 if class == "item_hlvr_combine_console_tank" then
+    if thisEntity:GetGraphParameter("bAwake") == true then
+        return
+    end
+
     if thisEntity:GetMoveParent() then
         DoEntFireByInstanceHandle(thisEntity, "ClearParent", "", 0, nil, nil)
     else
