@@ -537,7 +537,7 @@ if name == "205_2653_door" or name == "205_2653_door2" or name == "205_8018_butt
 end
 
 if name == "205_8032_button_pusher_prop" then
-    SendToConsole("ent_fire debug_elevator_relay trigger")
+    SendToConsole("ent_fire_output 205_8032_button_center_pusher OnIn")
 end
 
 if model == "models/props/eli_manor/antique_globe01a.vmdl" then
