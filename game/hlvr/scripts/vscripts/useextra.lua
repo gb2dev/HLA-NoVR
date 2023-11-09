@@ -572,6 +572,26 @@ if name == "979_518_button_pusher_prop" then
     SendToConsole("ent_fire debug_choreo_start_relay trigger")
 end
 
+if name == "light_switch_1" then
+    if thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        SendToConsole("ent_fire 205_6591_switch_off_relay trigger")
+        thisEntity:Attribute_SetIntValue("used", 1)
+    else
+        SendToConsole("ent_fire 205_6591_switch_on_relay trigger")
+        thisEntity:Attribute_SetIntValue("used", 0)
+    end
+end
+
+if name == "light_switch_2" then
+    if thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        SendToConsole("ent_fire 205_6594_switch_off_relay trigger")
+        thisEntity:Attribute_SetIntValue("used", 1)
+    else
+        SendToConsole("ent_fire 205_6594_switch_on_relay trigger")
+        thisEntity:Attribute_SetIntValue("used", 0)
+    end
+end
+
 
 ---------- a1_intro_world_2 ----------
 

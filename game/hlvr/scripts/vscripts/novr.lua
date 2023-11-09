@@ -115,8 +115,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if traceTable.hit then
             Entities:GetLocalPlayer():SetThink(function()
-                print(player:GetVelocity())
-                print(unstuck_table[1])
                 if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
                     player:SetOrigin(unstuck_table[1])
                     SendToConsole("fadein 0.2")
@@ -890,6 +888,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent = Entities:FindByName(nil, "51_ladder_hint_trigger")
                     ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
 
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="-541.6 1770.1 133.4", ["angles"]="0 0 0", ["modelscale"]=1})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_2", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="-903.2 1691.6 111", ["angles"]="0 0 0", ["modelscale"]=1})
+
                     -- TODO: Remove when Map Edits are done
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-233 1772 182", ["angles"]="90 0 0"})
@@ -1460,7 +1461,6 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function ShowCoverMouthTutorial()
-        print(cvar_getf("viewmodel_offset_y"))
         if cvar_getf("viewmodel_offset_y") ~= -20 then
             SendToConsole("ent_fire text_covermouth ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
