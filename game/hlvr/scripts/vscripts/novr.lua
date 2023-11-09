@@ -551,8 +551,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos_exact 574 -2328 -130")
-                    SendToConsole("ent_fire 563_vent_door DisablePickup")
-                    SendToConsole("-use")
                 end
             end
 
@@ -895,6 +893,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_2", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1393.17 -923.015 -347.75", ["angles"]="0 0 0"})
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_3", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1393.17 -952.015 -347.75", ["angles"]="0 0 0"})
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_4", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1396.98 -982.97 -347.75", ["angles"]="0 0 0"})
+
+                    SendToConsole("ent_fire 563_vent_door DisablePickup")
+                    SendToConsole("ent_fire 563_vent_phys_hinge SetOffset 0.1")
 
                     -- TODO: Remove when Map Edits are done
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})
