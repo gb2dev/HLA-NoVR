@@ -25,15 +25,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         if GetPhysVelocity(Entities:GetLocalPlayer()).z < -450 then
             SendToConsole("ent_fire !player SetHealth 0")
         end
-
-        -- Update hud hearts
-        if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
-            local player = Entities:GetLocalPlayer()
-            player:SetThink(function()
-                HUDHearts_UpdateHealth()
-                return 0.1
-            end, "HUDHearts_UpdateHealth", 0)
-        end
     end, nil)
 
     if entity_killed_ev ~= nil then
@@ -716,10 +707,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             if not loading_save_file then
                 if is_on_map_or_later("a2_quarantine_entrance") then
                     SendToConsole("give weapon_pistol")
-                
+
                     if is_on_map_or_later("a2_drainage") then
                         SendToConsole("give weapon_shotgun")
-                
+
                         if is_on_map_or_later("a3_hotel_street") then
                             if Entities:GetLocalPlayer():Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
                                 SendToConsole("give weapon_ar2")
@@ -758,6 +749,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                     ent = Entities:FindByClassname(ent, "prop_physics")
                 end
+            end
+
+            if is_on_map_or_later("a2_quarantine_entrance") then
+                HUDHearts_Show()
             end
 
             ent = Entities:FindByName(nil, "lefthand")

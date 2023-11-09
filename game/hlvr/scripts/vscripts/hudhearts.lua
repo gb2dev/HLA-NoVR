@@ -6,14 +6,12 @@ function HUDHearts_StartupPreparations()
 		SendToConsole("ent_create game_text { targetname text_hearts_background effect 0 spawnflags 1 color \"121 97 11\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 2 fxtime 0 holdtime 999999 x 0.0277 y -0.0357 }")	
 	end
 
-	if not Entities:FindByName(nil, "text_hearts") then
-		SendToConsole("ent_create game_text { targetname text_hearts effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 0.1 x 0.0277 y -0.0357 }")	
-	end
+	SendToConsole("ent_remove text_hearts")
+	SendToConsole("ent_create game_text { targetname text_hearts effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 0.1 x 0.0277 y -0.0357 }")	
 
 	-- Define heart icons if health is below 20
-	if not Entities:FindByName(nil, "text_hearts_red") then
-		SendToConsole("ent_create game_text { targetname text_hearts_red effect 0 spawnflags 1 color \"180 0 0\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 0.1 x 0.0277 y -0.0357 }")	
-	end
+	SendToConsole("ent_remove text_hearts_red")
+	SendToConsole("ent_create game_text { targetname text_hearts_red effect 0 spawnflags 1 color \"180 0 0\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 0.1 x 0.0277 y -0.0357 }")	
 
 	-- Trigger initial hearts update
 	if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
@@ -104,7 +102,12 @@ end
 
 function HUDHearts_Show()
 	HUDHearts_Background()
-	HUDHearts_UpdateHealth()
+	-- Update hud hearts
+	local player = Entities:GetLocalPlayer()
+	player:SetThink(function()
+		HUDHearts_UpdateHealth()
+		return 0.1
+	end, "HUDHearts_UpdateHealth", 0)
 	print("[HUDHearts] Show hud hearts")
 end
 
