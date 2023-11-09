@@ -28,9 +28,12 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         -- Update hud hearts
         if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
-            HUDHearts_UpdateHealth()
+            local player = Entities:GetLocalPlayer()
+            player:SetThink(function()
+                HUDHearts_UpdateHealth()
+                return 0.1
+            end, "HUDHearts_UpdateHealth", 0)
         end
-
     end, nil)
 
     if entity_killed_ev ~= nil then

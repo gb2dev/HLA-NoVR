@@ -853,7 +853,6 @@ if class == "prop_dynamic" then
                 thisEntity:SetThink(function()
                     if player:GetHealth() < player:GetMaxHealth() then
                         player:SetHealth(player:GetHealth() + 1)
-                        HUDHearts_UpdateHealth()
                         return 0.1
                     else
                         if map == "a2_quarantine_entrance" then
@@ -1465,7 +1464,6 @@ elseif class == "item_healthvial" then
     --if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
-        HUDHearts_UpdateHealth()
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("HealthPen.Stab", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
