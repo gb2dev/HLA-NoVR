@@ -591,10 +591,11 @@ if vlua.find(name, "mailbox") and vlua.find(model, "door") then
     end
 end
 
-if name == "russell_entry_window" then
+if name == "russell_entry_window" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     SendToConsole("fadein 0.2")
     SendToConsole("ent_fire russell_entry_window SetCompletionValue 1")
     SendToConsole("setpos -1728 275 100")
+    thisEntity:Attribute_SetIntValue("used", 1)
 end
 
 if vlua.find(model, "models/props/interior_furniture/interior_furniture_cabinet_002_door_") then
