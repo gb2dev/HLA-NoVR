@@ -235,7 +235,7 @@ if map == "a3_distillery" and vlua.find(name, "plug") then
     end
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "slide_train_door") and Entities:FindByClassnameNearest("phys_constraint", thisEntity:GetCenter(), 20) then
         return
     end
@@ -249,7 +249,7 @@ if not vlua.find(model, "doorhandle") and name ~= "larry_ladder" and name ~= "@p
             return
         end
     end
-    
+
     local count = 0
     if class == "prop_animinteractable" and model == "models/props_subway/scenes/desk_lever.vmdl" then
         thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
@@ -593,8 +593,8 @@ end
 
 if name == "russell_entry_window" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     SendToConsole("fadein 0.2")
-    SendToConsole("ent_fire russell_entry_window SetCompletionValue 1")
     SendToConsole("setpos -1728 275 100")
+    SendToConsole("ent_fire russell_entry_window SetCompletionValue 1")
     thisEntity:Attribute_SetIntValue("used", 1)
 end
 
