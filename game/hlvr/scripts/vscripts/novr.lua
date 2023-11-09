@@ -114,11 +114,15 @@ if GlobalSys:CommandLineCheck("-novr") then
         TraceHull(traceTable)
 
         if traceTable.hit then
-            Entities:GetLocalPlayer():SetThink(function()            
-                if player:GetVelocity() == Vector(0, 0, 0) and unstuck_table[1] then
+            Entities:GetLocalPlayer():SetThink(function()
+                print(player:GetVelocity())
+                print(unstuck_table[1])
+                if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
                     player:SetOrigin(unstuck_table[1])
+                    SendToConsole("fadein 0.2")
+                    SendToConsole("+iv_duck;-iv_duck")
                 end
-            end, "", 0.02)
+            end, "Unstuck", 0.02)
         end
     end, "", 0)
 
@@ -617,8 +621,14 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
         else
             SendToConsole("binddefaults")
+            SendToConsole("alias +forwardfixed \"+iv_forward;unstuck\"")
+            SendToConsole("alias -forwardfixed -iv_forward")
             SendToConsole("alias +backfixed \"+iv_back;unstuck\"")
             SendToConsole("alias -backfixed -iv_back")
+            SendToConsole("alias +leftfixed \"+iv_left;unstuck\"")
+            SendToConsole("alias -leftfixed -iv_left")
+            SendToConsole("alias +rightfixed \"+iv_right;unstuck\"")
+            SendToConsole("alias -rightfixed -iv_right")
             SendToConsole("bind " .. JUMP .. " jumpfixed")
             SendToConsole("bind " .. NOCLIP .. " noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
@@ -630,10 +640,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. RELOAD .. " +reload")
             SendToConsole("bind " .. QUICK_SWAP .. " \"lastinv;viewmodel_update\"")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
-            SendToConsole("bind " .. MOVE_FORWARD .. " +iv_forward")
+            SendToConsole("bind " .. MOVE_FORWARD .. " +forwardfixed")
             SendToConsole("bind " .. MOVE_BACK .. " +backfixed")
-            SendToConsole("bind " .. MOVE_LEFT .. " +iv_left")
-            SendToConsole("bind " .. MOVE_RIGHT .. " +iv_right")
+            SendToConsole("bind " .. MOVE_LEFT .. " +leftfixed")
+            SendToConsole("bind " .. MOVE_RIGHT .. " +rightfixed")
             SendToConsole("bind " .. CROUCH .. " +iv_duck")
             SendToConsole("bind " .. SPRINT .. " +iv_sprint")
             SendToConsole("bind " .. PAUSE .. " pause")
@@ -773,7 +783,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     if move_delta ~= Vector(0, 0, 0) then
                         table.insert(unstuck_table, player:GetOrigin())
-                        if #unstuck_table > 75 then
+                        if #unstuck_table > 100 then
                             table.remove(unstuck_table, 1)
                         end
                     end
