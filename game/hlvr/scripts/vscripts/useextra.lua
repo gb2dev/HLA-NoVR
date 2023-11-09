@@ -819,6 +819,11 @@ if class == "item_hlvr_weapon_rapidfire" then
     SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
 end
 
+if class == "item_healthcharger_reservoir" then
+    local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
+    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+end
+
 if class == "prop_dynamic" then
     if model == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
         local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
