@@ -527,6 +527,11 @@ if name == "microphone" or name == "call_button_prop" or model == "maps/a1_intro
     SendToConsole("ent_fire call_button_relay trigger")
 end
 
+if name == "greenhouse_door_lock" then
+    local ent = Entities:FindByName(nil, "greenhouse_door")
+    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+end
+
 if name == "205_2653_door" or name == "205_2653_door2" or name == "205_8018_button_pusher_prop" then
     SendToConsole("ent_fire debug_roof_elevator_call_relay trigger")
 end
