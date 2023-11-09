@@ -557,6 +557,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             if GetMapName() == "a1_intro_world_2" then
                 if vlua.find(Entities:FindAllInSphere(Vector(-1268, 576, -63), 10), player) and Entities:FindByName(nil, "balcony_ladder"):GetSequence() == "idle_open" then
                     ClimbLadder(80)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(-911, 922, -68), 10), player) then
+                    ClimbLadder(-22)
                 end
             end
 
