@@ -592,6 +592,22 @@ if name == "light_switch_2" then
     end
 end
 
+if name == "washing_machine_button_1" then
+    SendToConsole("ent_fire_output 273_3825_washing_machine_button_handpose onhandposed")
+end
+
+if name == "washing_machine_button_2" then
+    SendToConsole("ent_fire_output 273_3640_washing_machine_button_handpose onhandposed")
+end
+
+if name == "washing_machine_button_3" then
+    SendToConsole("ent_fire_output 273_3641_washing_machine_button_handpose onhandposed")
+end
+
+if name == "washing_machine_button_4" then
+    SendToConsole("ent_fire_output 273_3642_washing_machine_button_handpose onhandposed")
+end
+
 
 ---------- a1_intro_world_2 ----------
 

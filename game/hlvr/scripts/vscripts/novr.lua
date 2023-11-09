@@ -889,7 +889,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
 
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="-541.6 1770.1 133.4", ["angles"]="0 0 0"})
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_2", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="-903.2 1691.6 111", ["angles"]="0 0 0"})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_2", ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="-903.2 1691.6 111", ["angles"]="0 0 0"})
+
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1473.99 -853.165 -347.75", ["angles"]="0 0 0"})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_2", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1393.17 -923.015 -347.75", ["angles"]="0 0 0"})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_3", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1393.17 -952.015 -347.75", ["angles"]="0 0 0"})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_4", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_body.vmdl", ["origin"]="1396.98 -982.97 -347.75", ["angles"]="0 0 0"})
 
                     -- TODO: Remove when Map Edits are done
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})
