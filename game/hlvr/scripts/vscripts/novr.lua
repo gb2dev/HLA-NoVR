@@ -86,10 +86,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             if child and child:GetClassname() == "prop_dynamic" then
                 child:SetEntityName("held_prop_dynamic_override")
             end
+            print(ent:Attribute_GetIntValue("picked_up", 0))
             ent:Attribute_SetIntValue("picked_up", 1)
-            ent:SetThink(function()
-                ent:Attribute_SetIntValue("picked_up", 0)
-            end, "", 0.02)
+            DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0)>0.02>1", 0, nil, nil)
             DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
         end
     end, nil)
