@@ -103,8 +103,8 @@ if eyetrace.hit then
                 GravityGlovePull()
             end
         end, "GravityGlovePull", 0.02)
-    elseif useRoutine == 0 and IsValidEntity(thisEntity) then
-		DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
+    elseif useRoutine == 0 and eyetrace.enthit == thisEntity and IsValidEntity(thisEntity) then
+		--DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
     end
 else
     if thisEntity:GetName() == "ChoreoPhysProxy" then
