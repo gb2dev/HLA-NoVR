@@ -837,7 +837,13 @@ if class == "prop_dynamic" then
                     SendToConsole("ent_fire_output health_station OnHealingPlayerStart")
                 end
                 StartSoundEvent("HealthStation.Start", player)
-                SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+                player:SetThink(function()
+                    if player:GetVelocity().z == 0 then
+                        SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+                        return nil
+                    end
+                    return 0
+                end, "StopPlayerOnLand", 0)
                 thisEntity:Attribute_SetIntValue("used", 1)
                 thisEntity:SetThink(function()
                     if player:GetHealth() < player:GetMaxHealth() then

@@ -221,6 +221,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             cvar_setf("viewmodel_offset_x", 0)
             cvar_setf("viewmodel_offset_y", 0)
             cvar_setf("viewmodel_offset_z", 0)
+            SendToConsole("crosshair 1")
         end
 
         if viewmodel and not string.match(viewmodel:GetModelName(), "v_grenade") then
@@ -237,13 +238,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                         player:SetThink(function()
                             cvar_setf("fov_desired", 40)
                             cvar_setf("viewmodel_offset_x", -0.005)
-                        end, "ZoomActivate", 1)
+                        end, "ZoomActivate", 0.9)
+                        SendToConsole("crosshair 0")
                     else
                         cvar_setf("fov_desired", FOV)
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
+                        SendToConsole("crosshair 1")
                     end
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
