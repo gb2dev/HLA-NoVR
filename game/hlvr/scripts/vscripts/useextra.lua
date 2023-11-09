@@ -5,7 +5,7 @@ local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
 local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
-
+print(player:Attribute_GetIntValue("pistol_magazine_ammo", 0))
 if not (vlua.find(name, "elev_anim_door") and thisEntity:GetVelocity() ~= Vector(0, 0, 0)) then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:Attribute_SetIntValue("toggle", 1)
@@ -1381,6 +1381,7 @@ if vlua.find(class, "item_hlvr_crafting_currency_") then
 
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_energygun" or class == "item_hlvr_clip_generic_pistol" then
+    player:Attribute_SetIntValue("pistol_magazine_ammo", 10)
     FireGameEvent("item_pickup", item_pickup_params)
     if name == "pistol_clip_1" then
         SendToConsole("ent_remove weapon_bugbait")

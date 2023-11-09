@@ -1429,7 +1429,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function CheckTutorialPistolEmpty()
         local player = Entities:GetLocalPlayer()
         player:Attribute_SetIntValue("pistol_magazine_ammo", player:Attribute_GetIntValue("pistol_magazine_ammo", 0) - 1)
-        if player:Attribute_GetIntValue("pistol_magazine_ammo", 0) % 10 == 0 then
+        if player:Attribute_GetIntValue("pistol_magazine_ammo", 0) == 0 then
             SendToConsole("ent_fire_output pistol_chambered_listener OnEventFired")
         end
     end
@@ -1445,8 +1445,12 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function ShowGravityGlovesTutorial()
-        SendToConsole("ent_fire text_gg ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        local player = Entities:GetLocalPlayer()
+        player:SetThink(function ()
+            SendToConsole("ent_fire text_gg ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+            return 10
+        end, "GGTutorial", 0)
     end
 
     function ShowCrouchJumpTutorial()
