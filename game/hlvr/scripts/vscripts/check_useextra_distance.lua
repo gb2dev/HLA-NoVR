@@ -1,5 +1,5 @@
 function GravityGlovePull()
-    if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 then
+    if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 or Entities:GetLocalPlayer():Attribute_GetIntValue("picked_up", 0) == 1 then
         return
     end
 
