@@ -167,7 +167,9 @@ end
 -- Function to call after weapon switch
 Convars:RegisterCommand("viewmodel_update" , function()
     local player = Entities:GetLocalPlayer()
-    player:SetThink(function()
-        Viewmodels_UpgradeModel()
-    end, "ViewmodelUpdate", 0)
+    if player ~= nil then
+        player:SetThink(function()
+            Viewmodels_UpgradeModel()
+        end, "ViewmodelUpdate", 0)
+    end
 end, "function viewmodel_update", 0)

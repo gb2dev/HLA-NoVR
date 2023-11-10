@@ -1,5 +1,5 @@
 function GravityGlovePull()
-    if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 then
+    if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 or Entities:GetLocalPlayer():Attribute_GetIntValue("picked_up", 0) == 1 then
         return
     end
 
@@ -47,18 +47,18 @@ function GravityGlovePull()
     if class == "prop_reviver_heart" or vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery" or thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl") then
         local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
         FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
+        player:StopThink("GGTutorial")
         local direction = startVector - thisEntity:GetAbsOrigin()
         thisEntity:ApplyAbsVelocityImpulse(Vector(direction.x * 2, direction.y * 2, Clamp(direction.z * 3.8, -400, 400)))
         StartSoundEventFromPosition("Grabbity.HoverPing", startVector)
         StartSoundEventFromPosition("Grabbity.Grab", startVector)
         local count = 0
+
         thisEntity:SetThink(function()
             local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 60)
             if vlua.find(ents, thisEntity) then
-                if thisEntity:GetMass() ~= 1 then
                 --if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
-                    DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
-                end
+                DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
                 if class == "item_hlvr_grenade_frag" then
                     DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, player)
                 end
@@ -103,7 +103,7 @@ if eyetrace.hit then
                 GravityGlovePull()
             end
         end, "GravityGlovePull", 0.02)
-    elseif useRoutine == 0 and IsValidEntity(thisEntity) then
+    elseif useRoutine == 0 and (eyetrace.enthit == thisEntity or vlua.find(name, "door_hack")) and IsValidEntity(thisEntity) then
 		DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
     end
 else
