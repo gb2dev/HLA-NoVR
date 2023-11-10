@@ -82,8 +82,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
             ent:Attribute_SetIntValue("picked_up", 1)
             player:Attribute_SetIntValue("picked_up", 1)
+            player:SetThink(function ()
+                player:Attribute_SetIntValue("picked_up", 0)
+            end, "ResetPickedUp", 0.02)
             DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0)>0.02>1", 0, nil, nil)
-            DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>Entities:GetLocalPlayer():Attribute_SetIntValue(\"picked_up\", 0)>0.02>1", 0, nil, nil)
             DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
         end
     end, nil)
