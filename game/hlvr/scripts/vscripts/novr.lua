@@ -741,7 +741,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
                     local model = ent:GetModelName()
-                    if vlua.find(collidable_props, model) ~= nil and ent:GetName() ~= "6391_prop_physics_olidrum" then
+                    if vlua.find(collidable_props, model) ~= nil and ent:GetName() ~= "6391_prop_physics_oildrum" then
                         local angles = ent:GetAngles()
                         local pos = ent:GetAbsOrigin()
                         local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=0.98, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
