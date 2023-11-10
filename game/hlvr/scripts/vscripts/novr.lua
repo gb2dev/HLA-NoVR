@@ -736,7 +736,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     "models/industrial/industrial_chemical_barrel_02.vmdl",
                     "models/props/barrel_plastic_1.vmdl",
                     "models/props/barrel_plastic_1_open.vmdl",
-                    --"models/props_c17/oildrum001_explosive.vmdl",
+                    "models/props_c17/oildrum001_explosive.vmdl",
                 }
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
@@ -744,7 +744,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if vlua.find(collidable_props, model) ~= nil and ent:GetName() ~= "6391_prop_physics_olidrum" then
                         local angles = ent:GetAngles()
                         local pos = ent:GetAbsOrigin()
-                        local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
+                        local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=0.98, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
                         child:SetParent(ent, "")
                     end
                     ent = Entities:FindByClassname(ent, "prop_physics")
