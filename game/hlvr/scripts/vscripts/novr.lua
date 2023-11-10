@@ -80,7 +80,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             if child and child:GetClassname() == "prop_dynamic" then
                 child:SetEntityName("held_prop_dynamic_override")
             end
-            print(ent:Attribute_GetIntValue("picked_up", 0))
             ent:Attribute_SetIntValue("picked_up", 1)
             DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0)>0.02>1", 0, nil, nil)
             DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
@@ -93,27 +92,29 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("unstuck", function()
         local player = Entities:GetLocalPlayer()
-        local startVector = player:GetOrigin()
-        local traceTable =
-        {
-            startpos = startVector;
-            endpos = startVector;
-            ignore = player;
-            mask =  33636363;
-            min = player:GetBoundingMins();
-            max = player:GetBoundingMaxs()
-        }
+        if player ~= nil then
+            local startVector = player:GetOrigin()
+            local traceTable =
+            {
+                startpos = startVector;
+                endpos = startVector;
+                ignore = player;
+                mask =  33636363;
+                min = player:GetBoundingMins();
+                max = player:GetBoundingMaxs()
+            }
 
-        TraceHull(traceTable)
+            TraceHull(traceTable)
 
-        if traceTable.hit then
-            Entities:GetLocalPlayer():SetThink(function()
-                if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
-                    player:SetOrigin(unstuck_table[1])
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("+iv_duck;-iv_duck")
-                end
-            end, "Unstuck", 0.02)
+            if traceTable.hit then
+                Entities:GetLocalPlayer():SetThink(function()
+                    if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
+                        player:SetOrigin(unstuck_table[1])
+                        SendToConsole("fadein 0.2")
+                        SendToConsole("+iv_duck;-iv_duck")
+                    end
+                end, "Unstuck", 0.02)
+            end
         end
     end, "", 0)
 
@@ -721,35 +722,69 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                 end
 
-                SendToConsole("ent_fire npc_barnacle AddOutput \"OnGrab>held_prop_dynamic_override>DisableCollision>>0>-1\"")
-                SendToConsole("ent_fire npc_barnacle AddOutput \"OnRelease>held_prop_dynamic_override>EnableCollision>>0>-1\"")
-                local collidable_props = {
+
+                collidable_models = {
                     "models/props_c17/oildrum001.vmdl",
-                    "models/props/plastic_container_1.vmdl",
-                    "models/industrial/industrial_board_01.vmdl",
-                    "models/industrial/industrial_board_02.vmdl",
-                    "models/industrial/industrial_board_03.vmdl",
-                    "models/industrial/industrial_board_04.vmdl",
-                    "models/industrial/industrial_board_05.vmdl",
-                    "models/industrial/industrial_board_06.vmdl",
-                    "models/industrial/industrial_board_07.vmdl",
-                    "models/industrial/industrial_chemical_barrel_02.vmdl",
-                    "models/props/barrel_plastic_1.vmdl",
-                    "models/props/barrel_plastic_1_open.vmdl",
-                    --"models/props_c17/oildrum001_explosive.vmdl",
+                    "models/props_c17/oildrum001_explosive.vmdl",
                 }
+                spawners = {}
+
+                for i = 1, #collidable_models do
+                    -- prefix problematic
+                    local spawner_name = "template_" .. vlua.slice(vlua.split(collidable_models[i], "/")[3], 0, -5)
+
+                    local spawner = Entities:FindByClassname(nil, "point_template")
+                    while spawner do
+                        local name_sections = vlua.split(spawner:GetName(), "_")
+                        local name = remove_string_sections(name_sections, "_", 1)
+                        if name == spawner_name then
+                            break
+                        end
+                        spawner = Entities:FindByClassname(spawner, "point_template")
+                    end
+
+                    spawners[collidable_models[i]] = spawner
+
+                    if spawner ~= nil then
+                        spawner:SetThink(function()
+                            local brush = Entities:FindByClassname(nil, "func_brush")
+                            local i = 0
+                            while brush do
+                                local brush_name_sections = vlua.split(brush:GetName(), "_")
+                                local brush_name = remove_string_sections(brush_name_sections, "_", 2)
+
+                                local spawner_name_sections = vlua.split(spawner:GetName(), "_")
+                                local spawner_name = remove_string_sections(spawner_name_sections, "_", 2)
+
+                                if brush_name == spawner_name then
+                                    i = i + 1
+                                    local physics_prop = physics_props[i]
+                                    brush:SetAbsOrigin(physics_prop:GetCenter())
+                                    local angles = physics_prop:GetAngles()
+                                    brush:SetAbsAngles(angles.x, angles.y, angles.z)
+                                    brush:SetParent(physics_prop, "")
+                                end
+                                brush = Entities:FindByClassname(brush, "func_brush")
+                            end
+                        end, "SetBrushParent", 1)
+                    end
+                end
+
+                physics_props = {}
+
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
                     local model = ent:GetModelName()
-                    if vlua.find(collidable_props, model) ~= nil and ent:GetName() ~= "6391_prop_physics_olidrum" then
-                        local angles = ent:GetAngles()
-                        local pos = ent:GetAbsOrigin()
-                        local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
-                        child:SetParent(ent, "")
+                    if vlua.find(collidable_models, model) ~= nil then
+                        if spawners[model] ~= nil then
+                            spawners[model]:ForceSpawn()
+                            table.insert(physics_props, ent)
+                        end
                     end
                     ent = Entities:FindByClassname(ent, "prop_physics")
                 end
             end
+
 
             if is_on_map_or_later("a2_quarantine_entrance") then
                 HUDHearts_Show()
@@ -1640,6 +1675,19 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     
         return true
+    end
+
+    function remove_string_sections(t, separator, start_index)
+        local result = ""
+        for i = 1, #t do
+            if i > start_index + 1 then
+                result = result .. "_"
+            end
+            if i > start_index then
+                result = result .. t[i]
+            end
+        end
+        return result
     end
 
     function sin(x)
