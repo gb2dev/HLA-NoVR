@@ -1028,9 +1028,11 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("give weapon_smg1")
                 SendToConsole("viewmodel_update")
             end
+
             SendToConsole("ent_fire point_clientui_world_panel Enable")
             SendToConsole("ent_fire weapon_in_fabricator Kill")
             thisEntity:SetGraphParameterBool("bCrafting", false)
+            Convars:SetStr("chosen_upgrade", "")
         elseif sTagName == 'Trays Retracted' and nStatus == 2 then
             thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 1)
         end
