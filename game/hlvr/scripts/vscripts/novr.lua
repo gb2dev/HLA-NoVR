@@ -82,7 +82,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
             ent:Attribute_SetIntValue("picked_up", 1)
             player:Attribute_SetIntValue("picked_up", 1)
-            player:SetThink(function ()
+            player:SetThink(function()
                 player:Attribute_SetIntValue("picked_up", 0)
             end, "ResetPickedUp", 0.02)
             DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0)>0.02>1", 0, nil, nil)
@@ -780,7 +780,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent = Entities:GetLocalPlayer()
             if ent then
                 local angles = ent:GetAngles()
-                SendToConsole("setang " .. angles.x .. " " .. angles.y .. " 0")
+                ent:SetThink(function()
+                    ent:SetAbsOrigin(ent:GetAbsOrigin())
+                end, "FixTiltedView", 0.1)
                 local look_delta = QAngle(0, 0, 0)
                 local move_delta = Vector(0, 0, 0)
 
@@ -1465,7 +1467,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ShowGravityGlovesTutorial()
         local player = Entities:GetLocalPlayer()
-        player:SetThink(function ()
+        player:SetThink(function()
             SendToConsole("ent_fire text_gg ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
             return 10
