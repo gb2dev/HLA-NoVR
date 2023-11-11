@@ -285,6 +285,17 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     return 0
                 end
             end, "", 0)
+        elseif name == "12712_shotgun_wheel" then
+            count = 0
+            player:SetThink(function()
+                if player:Attribute_GetIntValue("use_released", 0) == 1 and count < 1 then
+                    DoEntFireByInstanceHandle(thisEntity, "EnableReturnToCompletion", "", 0, nil, nil)
+                else
+                    DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "", 0, nil, nil)
+                    SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count / 2)
+                    return 0
+                end
+            end, "", 0)
         elseif not vlua.find(name, "elev_anim_door") and not vlua.find(name, "tractor_beam_console_lever") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
@@ -316,8 +327,10 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         end
 
         if name == "12712_shotgun_wheel" then
-            DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "", 0, nil, nil)
-            SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count / 2)
+            if player:Attribute_GetIntValue("use_released", 0) == 1 then
+                thisEntity:Attribute_SetIntValue("used", 0)
+                return nil
+            end
         end
 
         if model == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
@@ -340,7 +353,6 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "", 0, nil, nil)
         end
 
-        
         if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
             thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
             if name == "barricade_door_hook" then
