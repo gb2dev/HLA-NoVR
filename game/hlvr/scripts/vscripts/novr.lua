@@ -661,6 +661,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_locker_door_* DisablePickup")
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
             SendToConsole("ent_fire *electrical_panel_*_door* DisablePickup")
+            SendToConsole("ent_fire *panel_door* DisablePickup")
             SendToConsole("ent_fire *_washing_machine_door DisablePickup")
             SendToConsole("ent_fire *_washing_machine_loader DisablePickup")
             SendToConsole("ent_fire *_fridge_door_* DisablePickup")
