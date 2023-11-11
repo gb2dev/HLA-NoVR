@@ -305,10 +305,16 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         DoEntFireByInstanceHandle(thisEntity, "EnableOnlyRunForward", "", 0, nil, nil)
     end
 
+    if name == "twohander" then
+        SendToConsole("snd_sos_start_soundevent RollUpDoor.MoveLinear_Start")
+    end
+
     local is_console = class == "prop_animinteractable" and model == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
+
     if name == "" then
         thisEntity:SetEntityName("" .. thisEntity:GetEntityIndex())
     end
+
     thisEntity:SetThink(function()
         if not is_console then
             DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
@@ -367,6 +373,8 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                 Entities:FindByName(nil, "console_selector_interact"):Attribute_SetIntValue("used", 0)
             elseif name == "console_selector_interact" then
                 SendToConsole("ent_fire_output console_opener_logic_isselected_* ontrue")
+            elseif name == "twohander" then
+                SendToConsole("snd_sos_start_soundevent RollUpDoor.FullOpen")
             end
             return nil
         else
@@ -1277,11 +1285,6 @@ if GetMapName() == "a3_distillery" then
 
     if name == "11478_6233_tutorial_wheel" then
         SendToConsole("ent_fire 11478_6233_verticaldoor_wheel_tutorial open")
-    end
-
-    if name == "verticaldoor_wheel" then
-        --SendToConsole("ent_fire @verticaldoor setspeed 10")
-        --SendToConsole("ent_fire @verticaldoor open")
     end
 
     if name == "11479_2385_button_pusher_prop" then
