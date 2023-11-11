@@ -90,7 +90,8 @@ TraceLine(eyetrace)
 
 if eyetrace.hit then
     local useRoutine = 0
-    if eyetrace.enthit == thisEntity or name == "russell_entry_window" or vlua.find(name, "socket") then
+    -- TODO: There's gotta be a better way than to exclude some things from here
+    if eyetrace.enthit == thisEntity or name == "russell_entry_window" or class == "item_combine_tank_locker" or vlua.find(name, "socket") then
         useRoutine = 1
         player:SetThink(function()
             if IsValidEntity(thisEntity) then
