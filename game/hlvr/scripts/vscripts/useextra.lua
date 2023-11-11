@@ -1466,6 +1466,7 @@ elseif class == "item_hlvr_grenade_frag" then
 elseif class == "item_healthvial" then
     if player:GetHealth() < (player:GetMaxHealth()) then
     --if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
+        player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         FireGameEvent("item_pickup", item_pickup_params)
@@ -1476,5 +1477,9 @@ elseif class == "item_healthvial" then
 	--else
 	--	WristPockets_PickUpHealthPen(player, thisEntity)
 	--	FireGameEvent("item_pickup", item_pickup_params)
+    elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
+        SendToConsole("ent_fire text_syringe ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+        player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
     end
 end
