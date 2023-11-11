@@ -1106,6 +1106,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = Entities:FindByName(nil, "mission_fail_relay")
                         ent:RedirectOutput("OnTrigger", "FailMission", ent)
 
+                        ent = Entities:FindByName(nil, "eli_rescue_3")
+                        ent:RedirectOutput("OnCompletion", "ReachForEli", ent)
+
                         if not loading_save_file then
                             -- TODO: Remove once toner puzzle is implemented
                             ent = Entities:FindByClassnameNearest("trigger_once", Vector(748, 589, 104), 10)
@@ -1431,6 +1434,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     function RemoveEliPreventFall(a, b)
         ent = Entities:FindByName(nil, "elipreventfall")
         ent:Kill()
+    end
+
+    function ReachForEli()
+        SendToConsole("ent_fire eli_fall_relay Trigger")
     end
 
     function EnableHotelLobbyPower(a, b)
