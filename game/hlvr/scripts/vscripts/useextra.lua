@@ -1464,6 +1464,10 @@ elseif class == "item_hlvr_clip_rapidfire" then
 elseif class == "item_hlvr_grenade_frag" then
     local goesInPocket = false -- keep the code to use it with proper tweaks
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
+        local ent = Entities:FindByName(nil, "player_radio_station")
+        if ent then
+            DoEntFireByInstanceHandle(ent, "SpeakConcept", "speech:open_grenades", 0, nil, nil)
+        end
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
         SendToConsole("give weapon_frag")
