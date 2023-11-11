@@ -275,7 +275,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
 
     -- Custom attack 3
-
     Convars:RegisterCommand("+customattack3", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
@@ -493,6 +492,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                         StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
                     end
                 end
+
+                if vlua.find(Entities:FindAllInSphere(Vector(-702, -1024, -238), 20), player) then
+                    local ent = Entities:FindByName(nil, "bell")
+                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+                end
             end
 
             if GetMapName() == "a3_c17_processing_plant" then
@@ -679,7 +683,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("headcrab_powered_ragdoll 0")
             SendToConsole("combine_grenade_timer 4")
-            SendToConsole("sk_max_grenade 3")
+            -- TODO: Limit grenades properly
+            SendToConsole("sk_max_grenade 9999")
             SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
