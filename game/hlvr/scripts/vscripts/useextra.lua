@@ -224,7 +224,6 @@ function is_combine_console_locked()
 end
 
 if map == "a3_distillery" and vlua.find(name, "plug") then
-    print ("TEST" .. tostring(player:Attribute_GetIntValue("plug_lever", 0)))
     if player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     elseif name == "11578_2420_181_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 2 then
@@ -262,6 +261,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     SendToConsole("ent_fire track_switch_lever SetCompletionValue 0.35 0")
                     SendToConsole("ent_fire train_switch_reset_relay Trigger 0 0")
                     if player:Attribute_GetIntValue("released_train_lever_once", 0) == 0 then
+                        SendToConsole("ent_fire speech_radio CancelSpeech")
                         SendToConsole("ent_fire train_switch_control_override_0 Cancel")
                         SendToConsole("ent_fire train_switch_control_override_10 Start")
                         player:Attribute_SetIntValue("released_train_lever_once", 1)

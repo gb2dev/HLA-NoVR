@@ -1103,12 +1103,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = Entities:FindByName(nil, "relay_train_will_crash")
                         ent:RedirectOutput("OnTrigger", "DisableTrainLever", ent)
 
+                        ent = Entities:FindByName(nil, "mission_fail_relay")
+                        ent:RedirectOutput("OnTrigger", "FailMission", ent)
+
                         if not loading_save_file then
                             -- TODO: Remove once toner puzzle is implemented
                             ent = Entities:FindByClassnameNearest("trigger_once", Vector(748, 589, 104), 10)
                             ent:Kill()
-
-                            -- mission_fail_relay
 
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1080 3200 -350", ["angles"]="0 12 0", ["modelscale"]=5, ["targetname"]="elipreventfall"})
                             ent = Entities:FindByName(nil, "eli_rescue_3_relay")
@@ -1415,6 +1416,16 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function DisableTrainLever(a, b)
         Entities:GetLocalPlayer():Attribute_SetIntValue("released_train_lever_once", 1)
+    end
+
+    function FailMission()
+        SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+        SendToConsole("mouse_disableinput 1")
+        SendToConsole("impulse 200")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
+        SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+        SendToConsole("disable_flashlight")
+        SendToConsole("hidehud 4")
     end
 
     function RemoveEliPreventFall(a, b)
