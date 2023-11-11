@@ -37,11 +37,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             function GibBecomeRagdoll(classname)
                 ent = Entities:FindByClassname(nil, classname)
                 while ent do
-                    if ent:GetModelName() == "models/creatures/headcrab_black/headcrab_black.vmdl" or vlua.find(ent:GetModelName(), "models/creatures/headcrab_classic/headcrab_classic_gib") or vlua.find(ent:GetModelName(), "models/creatures/headcrab_armored/armored_hc_gib") then
+                    if vlua.find(ent:GetModelName(), "models/creatures/headcrab_classic/headcrab_classic_gib") or vlua.find(ent:GetModelName(), "models/creatures/headcrab_armored/armored_hc_gib") then
                         DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 0.01, nil, nil)
-                    end
-                    if ent:GetModelName() == "models/creatures/headcrab_classic/headcrab_classic.vmdl" then
-                        DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 1, nil, nil)
                     end
                     ent = Entities:FindByClassname(ent, classname)
                 end
