@@ -37,8 +37,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             function GibBecomeRagdoll(classname)
                 ent = Entities:FindByClassname(nil, classname)
                 while ent do
-                    if vlua.find(ent:GetModelName(), "models/creatures/headcrab_classic/headcrab_classic_gib") or vlua.find(ent:GetModelName(), "models/creatures/headcrab_armored/armored_hc_gib") then
+                    if ent:GetModelName() == "models/creatures/headcrab_black/headcrab_black.vmdl" or vlua.find(ent:GetModelName(), "models/creatures/headcrab_classic/headcrab_classic_gib") or vlua.find(ent:GetModelName(), "models/creatures/headcrab_armored/armored_hc_gib") then
                         DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 0.01, nil, nil)
+                    end
+                    if ent:GetModelName() == "models/creatures/headcrab_classic/headcrab_classic.vmdl" then
+                        DoEntFireByInstanceHandle(ent, "BecomeRagdoll", "", 1, nil, nil)
                     end
                     ent = Entities:FindByClassname(ent, classname)
                 end
@@ -681,7 +684,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire firedoor DisablePickup")
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
-            SendToConsole("headcrab_powered_ragdoll 0")
             SendToConsole("combine_grenade_timer 4")
             -- TODO: Limit grenades properly
             SendToConsole("sk_max_grenade 9999")

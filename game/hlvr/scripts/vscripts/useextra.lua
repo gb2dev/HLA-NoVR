@@ -1221,11 +1221,18 @@ if map == "a2_train_yard" then
 end
 
 if map == "a2_headcrabs_tunnel" then
-    if name == "flashlight" then
+    if name == "flashlight" or name == "flashlight_guy" then
         SendToConsole("ent_fire_output flashlight OnAttachedToHand")
         SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
         player:Attribute_SetIntValue("has_flashlight", 1)
         SendToConsole("ent_remove flashlight")
+        SendToConsole("ent_remove fake_flashlight_for_room")
+
+        local ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="FLASHLIGHT"})
+        DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+
+        SendToConsole("inv_flashlight")
     end
 end
 
