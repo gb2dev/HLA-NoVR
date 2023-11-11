@@ -467,7 +467,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
-            if GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(348, -252, -62), 10), player) then
+            if GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(354, -251, -62), 18), player) then
                 ClimbLadder(22)
             end
 
