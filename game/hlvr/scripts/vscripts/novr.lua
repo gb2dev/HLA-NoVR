@@ -752,7 +752,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent = Entities:FindByClassname(nil, "prop_physics")
                 while ent do
                     local model = ent:GetModelName()
-                    if vlua.find(collidable_props, model) ~= nil and ent:GetName() ~= "6391_prop_physics_oildrum" then
+                    if vlua.find(collidable_props, model) ~= nil then
                         local angles = ent:GetAngles()
                         local pos = ent:GetAbsOrigin()
                         local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=ent:GetModelScale() - 0.02, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
@@ -1061,6 +1061,15 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         ent = Entities:FindByName(nil, "13987_hint_mantle_delay")
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
+
+                        ent = Entities:FindByName(nil, "relay_open_gate")
+                        ent:RedirectOutput("OnTrigger", "OpenHideoutGate", ent)
+
+                        ent = Entities:FindByName(nil, "exit_barrier")
+                        local angles = ent:GetAngles()
+                        local pos = ent:GetAbsOrigin()
+                        local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hideout_gate_prop", ["CollisionGroupOverride"]=5, ["solid"]=6, ["DefaultAnim"]="vort_barrier_start_idle", ["renderamt"]=0, ["model"]=ent:GetModelName(), ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z - 20})
+                        child:SetParent(ent, "")
                     end
                 else
                     SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
@@ -1514,6 +1523,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     function ShowQuickSaveTutorial()   
         SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    function OpenHideoutGate()   
+        SendToConsole("ent_fire hideout_gate_prop Kill")
     end
 
     function LarrySeesGun()   
