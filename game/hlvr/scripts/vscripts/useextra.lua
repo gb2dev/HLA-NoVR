@@ -1247,6 +1247,70 @@ if map == "a2_quarantine_entrance" then
 end
 
 if map == "a3_hotel_lobby_basement" then
+    if class == "hlvr_piano" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        thisEntity:Attribute_SetIntValue("used", 1)
+        SendToConsole("ent_fire piano_played_first_time trigger")
+
+        thisEntity:SetThink(function()
+            -- C
+            Entities:FindByName(nil, "piano_key_white_30"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note1", 6.0)
+
+        thisEntity:SetThink(function()
+            -- D
+            Entities:FindByName(nil, "piano_key_white_31"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note2", 6.5)
+
+        thisEntity:SetThink(function()
+            -- E
+            Entities:FindByName(nil, "piano_key_white_32"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note3", 7.0)
+
+        thisEntity:SetThink(function()
+            -- F
+            Entities:FindByName(nil, "piano_key_white_33"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note4", 7.5)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note5", 8.0)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note6", 9.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note7", 10.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note8", 10.5)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note9", 11.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note10", 11.5)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note11", 12.0)
+
+        thisEntity:SetThink(function()
+            SendToConsole("ent_fire piano_played_followup trigger")
+        end, "FinishPiano", 10)
+    end
+
     if name == "power_stake_1_start" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
         SendToConsole("ent_fire_output power_logic_enable_lights OnTrigger")
         SendToConsole("ent_fire_output toner_path_11 OnPowerOn")
