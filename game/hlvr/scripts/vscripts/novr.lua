@@ -1031,6 +1031,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
                         ent = Entities:FindByName(nil, "15493_hint_mantle_delay")
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
+
+                        ent = Entities:FindByClassnameNearest("trigger_once", Vector(-746, -943, -92), 10)
+                        ent:Kill()
                     end
 
                     ent = Entities:GetLocalPlayer()
