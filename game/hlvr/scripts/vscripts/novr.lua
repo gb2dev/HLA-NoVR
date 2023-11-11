@@ -796,7 +796,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if ent then
                 local angles = ent:GetAngles()
                 ent:SetThink(function()
-                    ent:SetAbsOrigin(ent:GetAbsOrigin())
+                    Entities:GetLocalPlayer():SetAbsOrigin(Entities:GetLocalPlayer():GetAbsOrigin())
                 end, "FixTiltedView", 0.1)
                 local look_delta = QAngle(0, 0, 0)
                 local move_delta = Vector(0, 0, 0)
@@ -1087,6 +1087,17 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire wheel_physics DisablePickup")
                             ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(941, -1666, 255), 10)
                             DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>wheel_physics>EnablePickup>>0>1", 0, nil, nil)
+
+                            -- Detect shooting so Russell warns you
+                            ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["targetname"]="bullet_trigger", ["StartDisabled"]=true, ["modelscale"]=1000, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl"})
+                            DoEntFireByInstanceHandle(ent, "AddOutput", "OnDetectedBulletFire>player_speak>SpeakConcept>speech:gunshot_warning>0>1", 0, nil, nil)
+                            DoEntFireByInstanceHandle(ent, "AddOutput", "OnDetectedBulletFire>!self>Kill>>0>1", 0, nil, nil)
+
+                            ent = Entities:FindByName(nil, "trigger_gunshot_listener")
+                            DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>bullet_trigger>Enable>>0>1", 0, nil, nil)
+
+                            ent = Entities:FindByName(nil, "trigger_disable_listener")
+                            DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>bullet_trigger>Kill>>0>1", 0, nil, nil)
                         end
                     elseif GetMapName() == "a2_train_yard" then
                         ent = Entities:FindByName(nil, "relay_train_will_crash")
