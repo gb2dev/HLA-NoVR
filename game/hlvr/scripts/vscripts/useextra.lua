@@ -189,8 +189,9 @@ function toggle_toner_junction()
     end
 end
 
-if class == "info_hlvr_toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    --thisEntity:Attribute_SetIntValue("used", 1)
+if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 1) then
+    thisEntity:Attribute_SetIntValue("used", 1)
+    thisEntity:Attribute_SetIntValue("redraw_toner", 0)
     DoEntFireByInstanceHandle(thisEntity, "OnPlugRotated", "", 0, nil, nil)
     DebugDrawClear()
     if toner_junctions then

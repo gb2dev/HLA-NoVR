@@ -762,6 +762,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                     ent = Entities:FindByClassname(ent, "prop_physics")
                 end
+            else
+                ent = Entities:FindByClassname(nil, "info_hlvr_toner_port")
+                while ent do
+                    if ent:Attribute_GetIntValue("used", 0) == 1 then
+                        ent:Attribute_SetIntValue("redraw_toner", 1)
+                        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+                    end
+                    ent = Entities:FindByClassname(ent, "info_hlvr_toner_port")
+                end
             end
 
             if is_on_map_or_later("a2_quarantine_entrance") then
