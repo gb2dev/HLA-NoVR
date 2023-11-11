@@ -97,19 +97,25 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("unstuck", function()
         local player = Entities:GetLocalPlayer()
         local startVector = player:GetOrigin()
+        local minVector = player:GetBoundingMins()
+        minVector.x = minVector.x + 0.01
+        minVector.y = minVector.y + 0.01
+        local maxVector = player:GetBoundingMaxs()
+        maxVector.x = maxVector.x - 0.01
+        maxVector.y = maxVector.y - 0.01
         local traceTable =
         {
             startpos = startVector;
             endpos = startVector;
             ignore = player;
             mask =  33636363;
-            min = player:GetBoundingMins() - 0.01;
-            max = player:GetBoundingMaxs() - 0.01
+            min = minVector;
+            max = maxVector
         }
 
         TraceHull(traceTable)
 
-        if traceTable.hit then
+        if traceTable.hit and traceTable.enthit:GetClassname() ~= "prop_physics" then
             Entities:GetLocalPlayer():SetThink(function()
                 if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
                     player:SetOrigin(unstuck_table[1])
