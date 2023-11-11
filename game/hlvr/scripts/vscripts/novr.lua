@@ -1102,7 +1102,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                     elseif GetMapName() == "a2_train_yard" then
                         ent = Entities:FindByName(nil, "relay_train_will_crash")
                         ent:RedirectOutput("OnTrigger", "DisableTrainLever", ent)
+
                         if not loading_save_file then
+                            -- TODO: Remove once toner puzzle is implemented
+                            ent = Entities:FindByClassnameNearest("trigger_once", Vector(748, 589, 104), 10)
+                            ent:Kill()
+
                             -- mission_fail_relay
 
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1080 3200 -350", ["angles"]="0 12 0", ["modelscale"]=5, ["targetname"]="elipreventfall"})
