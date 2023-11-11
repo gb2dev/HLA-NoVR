@@ -823,13 +823,13 @@ if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
 	thisEntity:Kill()
 end
 
-if class == "item_hlvr_weapon_shotgun" then
+if class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" then
     SendToConsole("give weapon_shotgun")
     SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
     SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
 end
 
-if class == "item_hlvr_weapon_rapidfire" then
+if class == "item_hlvr_weapon_rapidfire" and name ~= "weapon_in_fabricator" then
     SendToConsole("give weapon_ar2")
     if map == "a3_hotel_interior_rooftop" then
         local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
@@ -1095,7 +1095,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
-                    SendToConsole("impulse 200")
+                    --SendToConsole("impulse 200")
                     SendToConsole("lastinv") -- fix for impulse 200 not hiding the shotgun somehow
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
@@ -1134,7 +1134,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     else
                         SendToConsole("ent_fire weapon_smg1 kill 0.02")
                     end
-                    SendToConsole("impulse 200")
+                    --SendToConsole("impulse 200")
                     SendToConsole("lastinv") -- fix for impulse 200 not hiding the smg somehow
                     Convars:SetStr("weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
