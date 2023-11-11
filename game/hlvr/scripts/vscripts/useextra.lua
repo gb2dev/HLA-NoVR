@@ -358,9 +358,9 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             if name == "barricade_door_hook" then
                 SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
             elseif name == "12712_shotgun_wheel" then
-                local bar = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["model"]="models/props/misc_debris/vort_winch_pipe.vmdl", ["origin"]="711.395874 1319.248047 -168.302490", ["angles"]="0.087952 120.220528 90.588112"})
-                bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
+                local bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
                 bar:Kill()
+                bar = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="12712_shotgun_bar_for_wheel", ["model"]="models/props/misc_debris/vort_winch_pipe.vmdl", ["origin"]="711.395874 1319.248047 -168.302490", ["angles"]="0.087952 120.220528 90.588112"})
                 SendToConsole("ent_remove shotgun_pickup_blocker")
             elseif name == "console_opener_prop_handle_interact" then
                 SendToConsole("ent_fire_output console_opener_prop_handle_interact OnCompletionA")
