@@ -103,8 +103,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             endpos = startVector;
             ignore = player;
             mask =  33636363;
-            min = player:GetBoundingMins();
-            max = player:GetBoundingMaxs()
+            min = player:GetBoundingMins() - 0.01;
+            max = player:GetBoundingMaxs() - 0.01
         }
 
         TraceHull(traceTable)
