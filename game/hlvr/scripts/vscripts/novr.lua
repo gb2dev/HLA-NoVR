@@ -707,6 +707,12 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hlvr_physcannon_forward_offset -5")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
+            -- Add locked door handle animation
+            ent = Entities:FindByClassname(nil, "prop_door_rotating_physics")
+            while ent do
+                ent:RedirectOutput("OnLockedUse", "PlayLockedDoorHandleAnimation", ent)
+                ent = Entities:FindByClassname(ent, "prop_door_rotating_physics")
+            end
 
             if Entities:FindByClassname(nil, "prop_hmd_avatar") then
                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="VR_SAVE_NOT_SUPPORTED"})
@@ -1484,6 +1490,15 @@ if GlobalSys:CommandLineCheck("-novr") then
     function CrouchThroughZooHole(a, b)
         SendToConsole("fadein 0.2")
         SendToConsole("setpos 5393 -1960 -125")
+    end
+
+    function PlayLockedDoorHandleAnimation(a, b)
+        local ents = Entities:FindAllByClassnameWithin("prop_animinteractable", a:GetCenter(), 20)
+        for k, v in pairs(ents) do
+            if vlua.find(v:GetModelName(), "doorhandle") then
+                DoEntFireByInstanceHandle(v, "PlayAnimation", "doorhandle_locked_anim", 0, nil, nil)
+            end
+        end
     end
 
     function ClimbLadder(height, do_not_push_forward)
