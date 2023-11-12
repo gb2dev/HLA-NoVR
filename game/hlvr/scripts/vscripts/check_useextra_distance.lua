@@ -62,7 +62,10 @@ function GravityGlovePull()
                 --if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
                 if class == "item_hlvr_grenade_frag" then
-                    DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, player)
+                    SendToConsole("+use")
+                    thisEntity:SetThink(function()
+                        SendToConsole("-use")
+                    end, "", 0.02)
                 end
                 return nil
             end
