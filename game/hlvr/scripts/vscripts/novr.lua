@@ -1159,8 +1159,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent = Entities:FindByName(nil, "167_18945_hint_multitool_on_tripmine_trigger_1")
                             ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
 
-                            ent = Entities:FindByName(nil, "procedural_door_name_7")
+                            ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", Vector(780, 1614, 336), 10)
                             ent:RedirectOutput("OnOpen", "ExplodeFirstDoorMine", ent)
+
+                            ent = Entities:FindByName(nil, "167_18697_tripmine_trap_door_1")
+                            DoEntFireByInstanceHandle(ent, "SetOpenDirection", "" .. 2, 0, nil, nil)
                         end
 
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
@@ -1172,6 +1175,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(1440, 1306, 331), 10)
                         if ent then
                             ent:Kill()
+                        end
+                        ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(1657.083, 595.287, 426), 10)
+                        if ent then
+                            ent:SetOrigin(Vector(1657.083, 595.287, 400))
                         end
                     elseif GetMapName() == "a3_c17_processing_plant" then
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
