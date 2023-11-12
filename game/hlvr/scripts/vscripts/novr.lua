@@ -881,6 +881,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_remove text_syringe")
             SendToConsole("ent_create env_message { targetname text_syringe message SYRINGE }")
 
+            SendToConsole("ent_remove text_crouchjump")
+            SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
+
             --WristPockets_StartupPreparations()
             --WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
             Viewmodels_Init()
@@ -1017,7 +1020,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
-                        SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
                         ent = Entities:FindByName(nil, "28677_hint_mantle_delay")
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
 
@@ -1043,8 +1045,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         Entities:FindByName(nil, "12712_shotgun_wheel"):Attribute_SetIntValue("used", 1)
                         ent = Entities:FindByName(nil, "12712_293_relay_zombies_hitting_wall")
                         ent:RedirectOutput("OnTrigger", "EnableShotgunWheel", ent)
-                        
-                        SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
+
                         ent = Entities:FindByName(nil, "15493_hint_mantle_delay")
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
 
@@ -1064,7 +1065,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = Entities:FindByName(nil, "8271_relay_reset_buttons")
                         ent:RedirectOutput("OnTrigger", "ResetHideoutPuzzleButtons", ent)
 
-                        SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
                         ent = Entities:FindByName(nil, "2861_4065_hint_mantle_delay")
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
 
@@ -1155,6 +1155,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:Attribute_SetIntValue("used", 1)
                             ent = Entities:FindByName(nil, "ss_elevator_move")
                             ent:RedirectOutput("OnEndSequence", "EnableStreetElevatorDoor", ent)
+
+                            ent = Entities:FindByName(nil, "167_18945_hint_multitool_on_tripmine_trigger_1")
+                            ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
                         end
 
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
