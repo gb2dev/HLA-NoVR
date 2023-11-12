@@ -6,7 +6,7 @@ local name = thisEntity:GetName()
 local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
 
-if not (vlua.find(name, "elev_anim_door") and thisEntity:GetVelocity() ~= Vector(0, 0, 0)) then
+if not (vlua.find(name, "elev_anim_door") and (thisEntity:Attribute_GetIntValue("used", 0) == 1 or thisEntity:GetVelocity() ~= Vector(0, 0, 0))) then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:Attribute_SetIntValue("toggle", 1)
     else

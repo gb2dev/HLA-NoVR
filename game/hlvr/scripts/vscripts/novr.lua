@@ -1593,7 +1593,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function EnableStreetElevatorDoor()
-        Entities:FindByName(nil, "elev_anim_door"):Attribute_SetIntValue("used", 0)
+        local ent = Entities:FindByName(nil, "elev_anim_door")
+        ent:SetThink(function()
+            ent:Attribute_SetIntValue("used", 0)
+        end, "EnableStreetElevatorDoor", 10)
     end
 
     function LarrySeesGun()
