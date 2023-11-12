@@ -506,12 +506,15 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a3_c17_processing_plant" then
-                if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 10), player) and Entities:FindByName(nil, "factory_int_up_barnacle_npc_1"):GetHealth() <= 0 then
+                if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 15), player) and Entities:FindByName(nil, "factory_int_up_barnacle_npc_1"):GetHealth() <= 0 then
                     ClimbLadder(890)
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(-240,-2875,392), 20), player) then
-                    ClimbLadder(410)
+                if vlua.find(Entities:FindAllInSphere(Vector(-237,-2856,392), 15), player) then
+                    player:SetVelocity(Vector(player:GetForwardVector().x, player:GetForwardVector().y, 0):Normalized() * 150)
+                    player:SetThink(function()
+                        ClimbLadder(440)
+                    end, "ClimbLadder", 0.1)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(414,-2459,328), 20), player) then
