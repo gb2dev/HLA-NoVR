@@ -794,6 +794,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             ent = Entities:GetLocalPlayer()
             if ent then
+                ent:SetContextNum("headcrab_struggle_long", 1, 0)
+                ent:SetContextNum("headcrab_post_struggle_long", 1, 0)
+
                 local angles = ent:GetAngles()
                 ent:SetThink(function()
                     Entities:GetLocalPlayer():SetAbsOrigin(Entities:GetLocalPlayer():GetAbsOrigin())
