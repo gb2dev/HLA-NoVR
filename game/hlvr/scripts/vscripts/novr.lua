@@ -1188,6 +1188,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER6_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                            SendToConsole("ent_fire vent_door DisablePickup")
                         end
 
                         ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-896, -3768, 348), 10)
