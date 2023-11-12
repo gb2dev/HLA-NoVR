@@ -1126,10 +1126,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                             -- TODO: Remove when Map Edits are done
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["solid"]=6, ["renderamt"]=0, ["model"]="models/architecture/metal_siding/metal_siding_32_a.vmdl", ["origin"]="2320 -1854 834", ["angles"]="0 0 0", ["modelscale"]=0.5})
                         end
-                        --ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
-                        --if not ent then
-                        --    SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
-                        --end
+
+                        ent = SpawnEntityFromTableSynchronous("item_hlvr_prop_battery", {["origin"]="2045 -1717 886"})
                     elseif GetMapName() == "a3_station_street" then
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER4_TITLE"})
