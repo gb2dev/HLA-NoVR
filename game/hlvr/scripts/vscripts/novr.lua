@@ -1698,7 +1698,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function is_on_map_or_later(compare_map)
         local current_map = GetMapName()
-    
+
         local maps = {
             -- Official Campaign
             {
@@ -1725,17 +1725,17 @@ if GlobalSys:CommandLineCheck("-novr") then
                 "a5_ending",
             },
         }
-    
+
         -- Check each campaign
         for i = 1, #maps do
             local current_map_index = vlua.find(maps[i], current_map)
             local compare_map_index = vlua.find(maps[i], compare_map)
-    
+
             if current_map_index and current_map_index < compare_map_index then
                 return false
             end
         end
-    
+
         return true
     end
 
