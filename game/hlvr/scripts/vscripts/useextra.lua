@@ -207,7 +207,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
     end
 end
 
-if class == "info_hlvr_toner_junction" and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 0) == 0 then
+if class == "info_hlvr_toner_junction" and toner_start_path ~= nil and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 0) == 0 then
     toggle_toner_junction()
 end
 
@@ -466,10 +466,14 @@ elseif vlua.find(name, "_portaloo_door") then
 elseif vlua.find(name, "_hazmat_crate_lid") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-5000,0))
 elseif vlua.find(model, "electric_box_door") then
-    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
+    if vlua.find(name, "electrical_panel_1_door") and map == "a3_c17_processing_plant" then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,1000))
     else
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
+        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
+        else
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
+        end
     end
 elseif vlua.find(name, "_dumpster_lid") then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
