@@ -16,7 +16,7 @@ function HUDHearts_StartupPreparations()
 	if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
 		local player = Entities:GetLocalPlayer()
 		player:SetThink(function()
-			HUDHearts_Background()
+			--HUDHearts_Background()
 			HUDHearts_UpdateHealth()
 		end, "HUDHearts_MapChange", 1)
 	end
@@ -100,7 +100,8 @@ function HUDHearts_Hide()
 end
 
 function HUDHearts_Show()
-	HUDHearts_Background()
+	-- TODO: Fix buggy background
+	--HUDHearts_Background()
 	-- Update hud hearts
 	local player = Entities:GetLocalPlayer()
 	player:SetThink(function()
