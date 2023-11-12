@@ -1357,16 +1357,6 @@ if map == "a3_hotel_lobby_basement" then
     end
 end
 
-if map == "a3_hotel_street" then
-    if name == "procedural_door_name_7" then
-        local ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(606, 1640, 410), 10)
-        if ent then
-            print("njsanjosa")
-            ent:FireOutput("OnExplode", nil, nil, nil, 0)
-        end
-    end
-end
-
 if name == "plug_console_starter_lever" then
     if map == "a4_c17_tanker_yard" then
         if thisEntity:Attribute_GetIntValue("used", 0) == 1 then

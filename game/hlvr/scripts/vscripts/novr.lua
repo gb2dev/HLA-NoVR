@@ -1158,6 +1158,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = Entities:FindByName(nil, "167_18945_hint_multitool_on_tripmine_trigger_1")
                             ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
+
+                            ent = Entities:FindByName(nil, "procedural_door_name_7")
+                            ent:RedirectOutput("OnOpen", "ExplodeFirstDoorMine", ent)
                         end
 
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
@@ -1459,6 +1462,13 @@ if GlobalSys:CommandLineCheck("-novr") then
     function EnableHotelLobbyPower(a, b)
         ent = Entities:FindByName(nil, "power_stake_1_start")
         ent:Attribute_SetIntValue("used", 0)
+    end
+
+    function ExplodeFirstDoorMine()
+        local ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(606, 1640, 410), 10)
+        if ent then
+            ent:FireOutput("OnExplode", nil, nil, nil, 0)
+        end
     end
 
     function MakeLeverUsable(a, b)
