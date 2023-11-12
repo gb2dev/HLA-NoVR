@@ -300,8 +300,17 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         elseif name == "console_selector_interact" then
             local ent = Entities:FindByName(nil, "console_opener_prop_handle_interact")
             ent:Attribute_SetIntValue("used", 0)
-            DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
             SendToConsole("ent_fire_output console_opener_prop_handle_interact OnCompletionExitA")
+            local count2 = ent:GetCycle()
+            ent:SetThink(function()
+                if count2 > 0 then
+                    count2 = count2 - 0.015
+                    DoEntFireByInstanceHandle(ent, "SetCompletionValue", "" .. count2, 0, nil, nil)
+                    return 0
+                else
+                    return nil
+                end
+            end, "", 0)
             count = thisEntity:GetCycle()
             player:SetThink(function()
                 if player:Attribute_GetIntValue("use_released", 0) == 0 then
