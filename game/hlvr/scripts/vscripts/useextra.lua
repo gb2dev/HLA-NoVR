@@ -418,6 +418,8 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
 elseif name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
     if not vlua.find(name, "elev_anim_door") then
         thisEntity:Attribute_SetIntValue("used", 1)
+    elseif thisEntity:Attribute_GetIntValue("used", 0) == 1 then
+        return
     end
 
     local count = 0

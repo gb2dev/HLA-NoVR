@@ -1150,6 +1150,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                     elseif GetMapName() == "a3_hotel_street" then
                         if not loading_save_file then
                             Entities:FindByName(nil, "elev_anim_door"):Attribute_SetIntValue("toggle", 1)
+
+                            ent = Entities:FindByName(nil, "elev_anim_door")
+                            ent:Attribute_SetIntValue("used", 1)
+                            ent = Entities:FindByName(nil, "ss_elevator_move")
+                            ent:RedirectOutput("OnEndSequence", "EnableStreetElevatorDoor", ent)
                         end
 
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
@@ -1573,7 +1578,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
-    function OpenHideoutGate()   
+    function OpenHideoutGate()
         SendToConsole("ent_fire hideout_gate_prop Kill")
     end
 
@@ -1587,7 +1592,11 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire base_dropdown_barnacle_2_ammo DisablePickup")
     end
 
-    function LarrySeesGun()   
+    function EnableStreetElevatorDoor()
+        Entities:FindByName(nil, "elev_anim_door"):Attribute_SetIntValue("used", 0)
+    end
+
+    function LarrySeesGun()
         SendToConsole("ent_fire_output @player_proxy OnWeaponActive")
     end
 
