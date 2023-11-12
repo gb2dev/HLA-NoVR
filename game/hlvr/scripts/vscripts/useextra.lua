@@ -1240,7 +1240,7 @@ if map == "a2_quarantine_entrance" then
         local ent = Entities:FindByName(nil, "17670_combine_console")
         DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
     end
-    
+
     if name == "27788_combine_locker" then
         SendToConsole("ent_fire_output 27788_locker_hack_plug OnHackSuccess")
     end
@@ -1498,6 +1498,9 @@ elseif class == "item_hlvr_clip_energygun" or class == "item_hlvr_clip_generic_p
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_generic_pistol_multiple" then
+    if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
+        return
+    end
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 40 0 0 0")
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())

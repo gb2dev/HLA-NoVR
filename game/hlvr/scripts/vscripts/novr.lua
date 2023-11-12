@@ -1119,10 +1119,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:RedirectOutput("OnTrigger", "RemoveEliPreventFall", ent)
                         end
                     elseif GetMapName() == "a3_hotel_interior_rooftop" then
-                        ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
-                        if not ent then
-                            SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
-                        end
+                        --ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
+                        --if not ent then
+                        --    SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
+                        --end
                     elseif GetMapName() == "a3_station_street" then
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER4_TITLE"})
@@ -1138,6 +1138,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = Entities:FindByName(nil, "417_149_powerunit_relay_battery_inserted")
                             ent:RedirectOutput("OnTrigger", "EnableHotelLobbyPower", ent)
+
+                            ent = Entities:FindByName(nil, "base_dropdown_template_1")
+                            ent:RedirectOutput("OnEntitySpawned", "DisableBarnacleAmmoPickup", ent)
                         end
                     elseif GetMapName() == "a3_hotel_street" then
                         if not loading_save_file then
@@ -1567,6 +1570,16 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function OpenHideoutGate()   
         SendToConsole("ent_fire hideout_gate_prop Kill")
+    end
+
+    function DisableBarnacleAmmoPickup()
+        local ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(1349, -1748, 239), 10)
+        DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>base_dropdown_barnacle_2_ammo>EnablePickup>>0>1", 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>base_dropdown_barnacle_2_ammo>RunScriptCode>thisEntity:Attribute_SetIntValue(\"used\", 0)>0>1", 0, nil, nil)
+
+        ent = Entities:FindByName(nil, "base_dropdown_barnacle_2_ammo")
+        ent:Attribute_SetIntValue("used", 1)
+        SendToConsole("ent_fire base_dropdown_barnacle_2_ammo DisablePickup")
     end
 
     function LarrySeesGun()   
