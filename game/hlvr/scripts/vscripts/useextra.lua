@@ -931,6 +931,10 @@ if class == "prop_dynamic" then
             player:Attribute_SetIntValue("next_elevator_floor", 2)
         end
     elseif model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+        if thisEntity:GetSequence() == "open_idle" then
+            return
+        end
+
         local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
 
         if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
