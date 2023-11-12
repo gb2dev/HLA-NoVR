@@ -297,6 +297,18 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     return 0
                 end
             end, "", 0)
+        elseif name == "console_selector_interact" then
+            local ent = Entities:FindByName(nil, "console_opener_prop_handle_interact")
+            ent:Attribute_SetIntValue("used", 0)
+            DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
+            SendToConsole("ent_fire_output console_opener_prop_handle_interact OnCompletionExitA")
+            count = thisEntity:GetCycle()
+            player:SetThink(function()
+                if player:Attribute_GetIntValue("use_released", 0) == 0 then
+                    DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
+                    return 0
+                end
+            end, "", 0)
         elseif not vlua.find(name, "elev_anim_door") and not vlua.find(name, "tractor_beam_console_lever") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
@@ -324,7 +336,11 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         if name == "12712_shotgun_wheel" then
             count = count + 0.003
         elseif name == "console_selector_interact" then
-            count = count + 0.0005
+            if thisEntity:Attribute_GetIntValue("reverse", 0) == 1 then
+                count = count - 0.003
+            else
+                count = count + 0.003
+            end
         else
             count = count + 0.01
         end
@@ -334,6 +350,13 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         end
 
         if name == "12712_shotgun_wheel" then
+            if player:Attribute_GetIntValue("use_released", 0) == 1 then
+                thisEntity:Attribute_SetIntValue("used", 0)
+                return nil
+            end
+        end
+
+        if name == "console_selector_interact" then
             if player:Attribute_GetIntValue("use_released", 0) == 1 then
                 thisEntity:Attribute_SetIntValue("used", 0)
                 return nil
@@ -371,13 +394,14 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                 SendToConsole("ent_remove shotgun_pickup_blocker")
             elseif name == "console_opener_prop_handle_interact" then
                 SendToConsole("ent_fire_output console_opener_prop_handle_interact OnCompletionA")
-                Entities:FindByName(nil, "console_selector_interact"):Attribute_SetIntValue("used", 0)
             elseif name == "console_selector_interact" then
-                SendToConsole("ent_fire_output console_opener_logic_isselected_* ontrue")
+                thisEntity:Attribute_SetIntValue("reverse", 1)
             elseif name == "twohander" then
                 SendToConsole("snd_sos_start_soundevent RollUpDoor.FullOpen")
             end
             return nil
+        elseif name == "console_selector_interact" and count <= 0 then
+            thisEntity:Attribute_SetIntValue("reverse", 0)
         else
             return 0
         end
