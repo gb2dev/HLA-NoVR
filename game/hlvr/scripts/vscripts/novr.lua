@@ -396,9 +396,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ignore = player;
                 mask =  33636363
             }
-        
+
             TraceLine(traceTable)
-        
+
             if traceTable.hit 
             then
                 local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
@@ -456,7 +456,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if GetMapName() == "a3_hotel_interior_rooftop" then
                 if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
                     ClimbLadder(560)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2320, -1832, 757), 10), player) then
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2335, -1832, 757), 20), player) then
                     ClimbLadder(840, true)
                 end
             end
@@ -1122,6 +1122,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:RedirectOutput("OnTrigger", "RemoveEliPreventFall", ent)
                         end
                     elseif GetMapName() == "a3_hotel_interior_rooftop" then
+                        if not loading_save_file then
+                            -- TODO: Remove when Map Edits are done
+                            ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["solid"]=6, ["renderamt"]=0, ["model"]="models/architecture/metal_siding/metal_siding_32_a.vmdl", ["origin"]="2320 -1854 834", ["angles"]="0 0 0", ["modelscale"]=0.5})
+                        end
                         --ent = Entities:FindByClassname(nil, "npc_headcrab_runner")
                         --if not ent then
                         --    SendToConsole("ent_create npc_headcrab_runner { origin \"1657 -1949 710\" }")
