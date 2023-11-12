@@ -506,16 +506,12 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a3_c17_processing_plant" then
-                if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact -26 -2215 870")
+                if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 10), player) and Entities:FindByName(nil, "factory_int_up_barnacle_npc_1"):GetHealth() <= 0 then
+                    ClimbLadder(890)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(-240,-2875,392), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact -241 -2823 410")
+                    ClimbLadder(410)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(414,-2459,328), 20), player) then
