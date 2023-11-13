@@ -517,10 +517,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end, "ClimbLadder", 0.1)
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(414,-2459,328), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 365 -2465 410")
+                if vlua.find(Entities:FindAllInSphere(Vector(414,-2459,328), 15), player) then
+                    player:SetVelocity(Vector(player:GetForwardVector().x, player:GetForwardVector().y, 0):Normalized() * 150)
+                    player:SetThink(function()
+                        ClimbLadder(440)
+                    end, "ClimbLadder", 0.2)
+                end
+
+                if vlua.find(Entities:FindAllInSphere(Vector(326, -3491, 312), 20), player) then
+                    ClimbLadder(400)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(-1392,-2471,115), 20), player) then
