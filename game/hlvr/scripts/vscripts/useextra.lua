@@ -576,9 +576,9 @@ if vlua.find(model, "van_a0") then
         if thisEntity == ent then
             DoEntFireByInstanceHandle(ent, "Toggle", "", 0, nil, nil)
             if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-                thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 100)
+                thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 150)
             else
-                thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 100)
+                thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 300)
             end
         else
             DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
