@@ -1032,10 +1032,6 @@ if name == "5325_4704_toner_port_train_gate" then
     SendToConsole("ent_fire_output 5325_4704_train_gate_path_22_to_end OnPowerOn")
 end
 
-if name == "270_trip_mine_item_1" then
-    SendToConsole("ent_fire 270_trip_mine_item_1 deactivatemine")
-end
-
 if class == "prop_hlvr_crafting_station_console" then
     local function AnimTagListener(sTagName, nStatus)
         if sTagName == 'Bootup Done' and nStatus == 2 then

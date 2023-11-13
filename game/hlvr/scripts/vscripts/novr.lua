@@ -749,38 +749,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 SendToConsole("ent_fire npc_barnacle AddOutput \"OnGrab>held_prop_dynamic_override>DisableCollision>>0>-1\"")
                 SendToConsole("ent_fire npc_barnacle AddOutput \"OnRelease>held_prop_dynamic_override>EnableCollision>>0>-1\"")
-                function AddCollisionToPhysicsProps(class)
-                    local collidable_props = {
-                        "models/props_c17/oildrum001.vmdl",
-                        "models/props/plastic_container_1.vmdl",
-                        "models/industrial/industrial_board_01.vmdl",
-                        "models/industrial/industrial_board_02.vmdl",
-                        "models/industrial/industrial_board_03.vmdl",
-                        "models/industrial/industrial_board_04.vmdl",
-                        "models/industrial/industrial_board_05.vmdl",
-                        "models/industrial/industrial_board_06.vmdl",
-                        "models/industrial/industrial_board_07.vmdl",
-                        "models/industrial/industrial_chemical_barrel_02.vmdl",
-                        "models/props/barrel_plastic_1.vmdl",
-                        "models/props/barrel_plastic_1_open.vmdl",
-                        "models/props_c17/oildrum001_explosive.vmdl",
-                        "models/props_junk/wood_crate001a.vmdl",
-                        "models/props_junk/wood_crate002a.vmdl",
-                        "models/props_junk/wood_crate004.vmdl",
-                        "models/props/interior_furniture/interior_shelving_001_b.vmdl",
-                    }
-                    ent = Entities:FindByClassname(nil, class)
-                    while ent do
-                        local model = ent:GetModelName()
-                        if vlua.find(collidable_props, model) ~= nil then
-                            local angles = ent:GetAngles()
-                            local pos = ent:GetAbsOrigin()
-                            local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=ent:GetModelScale() - 0.02, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
-                            child:SetParent(ent, "")
-                        end
-                        ent = Entities:FindByClassname(ent, class)
-                    end
-                end
+
                 AddCollisionToPhysicsProps("prop_physics")
                 AddCollisionToPhysicsProps("prop_physics_override")
             else
@@ -816,8 +785,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 local angles = ent:GetAngles()
                 ent:SetThink(function()
-                    Entities:GetLocalPlayer():SetAbsOrigin(Entities:GetLocalPlayer():GetAbsOrigin())
-                end, "FixTiltedView", 0.1)
+                    Entities:GetLocalPlayer():SetOrigin(Entities:GetLocalPlayer():GetOrigin())
+                end, "FixTiltedView", 0.5)
                 local look_delta = QAngle(0, 0, 0)
                 local move_delta = Vector(0, 0, 0)
 
@@ -1209,19 +1178,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
                             SendToConsole("ent_fire vent_door DisablePickup")
-                        end
 
-                        ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-896, -3768, 348), 10)
-                        if ent then
-                            ent:Kill()
-                        end
-                        ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1165, -3770, 158), 10)
-                        if ent then
-                            ent:Kill()
-                        end
-                        ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1105, -4058, 163), 10)
-                        if ent then
-                            ent:Kill()
+                            ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-896, -3768, 348), 10)
+                            if ent then
+                                ent:Kill()
+                            end
+
+                            ent = Entities:FindByClassnameNearest("trigger_once", Vector(-1456, -3960, 224), 10)
+                            ent:RedirectOutput("OnTrigger", "SetupMineRoom", ent)
                         end
                     elseif GetMapName() == "a3_distillery" then
                         ent = Entities:FindByName(nil, "exit_counter")
@@ -1649,6 +1613,30 @@ if GlobalSys:CommandLineCheck("-novr") then
         end, "EnableStreetElevatorDoor", 10)
     end
 
+    function SetupMineRoom()
+        local ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1165, -3770, 158), 10)
+        if ent then
+            ent:Kill()
+        end
+
+        SendToConsole("ent_fire collidable_physics_prop Kill")
+
+        Entities:GetLocalPlayer():SetThink(function()
+            ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1165, -3770, 158), 10)
+            if ent then
+                ent:SetAbsAngles(90, -166, 0)
+                ent:SetAbsOrigin(Vector(-1175, -3770, 140))
+            end
+
+            ent = SpawnEntityFromTableSynchronous("prop_physics", {["model"]="models/props_c17/oildrum001_explosive.vmdl", ["origin"]="-1260 -3765 105"})
+
+            AddCollisionToPhysicsProps("prop_physics")
+            AddCollisionToPhysicsProps("prop_physics_override")
+
+            SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
+        end, "SetupMineRoom", 0.1)
+    end
+
     function LarrySeesGun()
         SendToConsole("ent_fire_output @player_proxy OnWeaponActive")
     end
@@ -1758,6 +1746,39 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function EndCredits(a, b)
         SendToConsole("mouse_disableinput 0")
+    end
+
+    function AddCollisionToPhysicsProps(class)
+        local collidable_props = {
+            "models/props_c17/oildrum001.vmdl",
+            "models/props/plastic_container_1.vmdl",
+            "models/industrial/industrial_board_01.vmdl",
+            "models/industrial/industrial_board_02.vmdl",
+            "models/industrial/industrial_board_03.vmdl",
+            "models/industrial/industrial_board_04.vmdl",
+            "models/industrial/industrial_board_05.vmdl",
+            "models/industrial/industrial_board_06.vmdl",
+            "models/industrial/industrial_board_07.vmdl",
+            "models/industrial/industrial_chemical_barrel_02.vmdl",
+            "models/props/barrel_plastic_1.vmdl",
+            "models/props/barrel_plastic_1_open.vmdl",
+            "models/props_c17/oildrum001_explosive.vmdl",
+            "models/props_junk/wood_crate001a.vmdl",
+            "models/props_junk/wood_crate002a.vmdl",
+            "models/props_junk/wood_crate004.vmdl",
+            "models/props/interior_furniture/interior_shelving_001_b.vmdl",
+        }
+        ent = Entities:FindByClassname(nil, class)
+        while ent do
+            local model = ent:GetModelName()
+            if vlua.find(collidable_props, model) ~= nil then
+                local angles = ent:GetAngles()
+                local pos = ent:GetAbsOrigin()
+                local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="collidable_physics_prop", ["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=ent:GetModelScale() - 0.02, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
+                child:SetParent(ent, "")
+            end
+            ent = Entities:FindByClassname(ent, class)
+        end
     end
 
     function is_on_map_or_later(compare_map)
