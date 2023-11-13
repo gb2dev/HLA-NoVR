@@ -327,7 +327,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         DoEntFireByInstanceHandle(thisEntity, "EnableOnlyRunForward", "", 0, nil, nil)
     end
 
-    if name == "twohander" then
+    if model == "models/interaction/anim_interact/twohandlift/twohandlift.vmdl" then
         SendToConsole("snd_sos_start_soundevent RollUpDoor.MoveLinear_Start")
     end
 
@@ -405,7 +405,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                 SendToConsole("ent_fire_output console_opener_prop_handle_interact OnCompletionA")
             elseif name == "console_selector_interact" then
                 thisEntity:Attribute_SetIntValue("reverse", 1)
-            elseif name == "twohander" then
+            elseif model == "models/interaction/anim_interact/twohandlift/twohandlift.vmdl" then
                 SendToConsole("snd_sos_start_soundevent RollUpDoor.FullOpen")
             end
             return nil
