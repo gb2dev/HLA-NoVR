@@ -553,7 +553,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(-24,-151,426), 5), player) then
-                    ClimbLadder(560)
+                    if player:Attribute_GetIntValue("pulled_larry_ladder", 0) == 0 then
+                        DoEntFireByInstanceHandle(Entities:FindByName(nil, "larry_ladder"), "RunScriptFile", "useextra", 0, nil, nil)
+                    else
+                        ClimbLadder(560)
+                    end
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(515,1595,578), 20), player) then

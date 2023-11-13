@@ -774,6 +774,7 @@ end
 if name == "larry_ladder" then
     SendToConsole("ent_fire_output larry_ladder OnCompletionA")
     SendToConsole("ent_fire_output larry_ladder OnCompletionC")
+    player:Attribute_SetIntValue("pulled_larry_ladder", 1)
 end
 
 if name == "cellar_ladder" then
