@@ -1171,10 +1171,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                     elseif GetMapName() == "a3_c17_processing_plant" then
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
 
-                        ent = Entities:FindByName(nil, "shack_path_6_port_1_enable")
-                        ent:RedirectOutput("OnTrigger", "EnableShackToner", ent)
-                        Entities:FindByName(nil, "shack_path_6_port_1"):Attribute_SetIntValue("used", 1)
-                        Entities:FindByName(nil, "shack_path_1_port_1"):Attribute_SetIntValue("used", 1)
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/construction/construction_yard_lift.vmdl", ["origin"]="-1984 -2456 154", ["angles"]="0 270 0", ["parentname"]="pallet_crane_platform"})
 
@@ -1190,6 +1186,13 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = Entities:FindByClassnameNearest("trigger_once", Vector(-1456, -3960, 224), 10)
                             ent:RedirectOutput("OnTrigger", "SetupMineRoom", ent)
+
+                            ent = Entities:FindByName(nil, "shack_path_6_port_1_enable")
+                            ent:RedirectOutput("OnTrigger", "EnableShackToner", ent)
+                            Entities:FindByName(nil, "shack_path_6_port_1"):Attribute_SetIntValue("used", 1)
+                            Entities:FindByName(nil, "shack_path_1_port_1"):Attribute_SetIntValue("used", 1)
+
+                            SendToConsole("ent_fire pallet_move_linear SetMoveDistanceFromStart 115")
                         end
                     elseif GetMapName() == "a3_distillery" then
                         ent = Entities:FindByName(nil, "exit_counter")
