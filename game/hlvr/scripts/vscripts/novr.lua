@@ -96,33 +96,35 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("unstuck", function()
         local player = Entities:GetLocalPlayer()
-        local startVector = player:GetOrigin()
-        local minVector = player:GetBoundingMins()
-        minVector.x = minVector.x + 0.01
-        minVector.y = minVector.y + 0.01
-        local maxVector = player:GetBoundingMaxs()
-        maxVector.x = maxVector.x - 0.01
-        maxVector.y = maxVector.y - 0.01
-        local traceTable =
-        {
-            startpos = startVector;
-            endpos = startVector;
-            ignore = player;
-            mask =  33636363;
-            min = minVector;
-            max = maxVector
-        }
+        if player ~= nil then
+            local startVector = player:GetOrigin()
+            local minVector = player:GetBoundingMins()
+            minVector.x = minVector.x + 0.01
+            minVector.y = minVector.y + 0.01
+            local maxVector = player:GetBoundingMaxs()
+            maxVector.x = maxVector.x - 0.01
+            maxVector.y = maxVector.y - 0.01
+            local traceTable =
+            {
+                startpos = startVector;
+                endpos = startVector;
+                ignore = player;
+                mask =  33636363;
+                min = minVector;
+                max = maxVector
+            }
 
-        TraceHull(traceTable)
+            TraceHull(traceTable)
 
-        if traceTable.hit then
-            Entities:GetLocalPlayer():SetThink(function()
-                if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
-                    player:SetOrigin(unstuck_table[1])
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("+iv_duck;-iv_duck")
-                end
-            end, "Unstuck", 0.02)
+            if traceTable.hit then
+                Entities:GetLocalPlayer():SetThink(function()
+                    if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
+                        player:SetOrigin(unstuck_table[1])
+                        SendToConsole("fadein 0.2")
+                        SendToConsole("+iv_duck;-iv_duck")
+                    end
+                end, "Unstuck", 0.02)
+            end
         end
     end, "", 0)
 
@@ -747,35 +749,40 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 SendToConsole("ent_fire npc_barnacle AddOutput \"OnGrab>held_prop_dynamic_override>DisableCollision>>0>-1\"")
                 SendToConsole("ent_fire npc_barnacle AddOutput \"OnRelease>held_prop_dynamic_override>EnableCollision>>0>-1\"")
-                local collidable_props = {
-                    "models/props_c17/oildrum001.vmdl",
-                    "models/props/plastic_container_1.vmdl",
-                    "models/industrial/industrial_board_01.vmdl",
-                    "models/industrial/industrial_board_02.vmdl",
-                    "models/industrial/industrial_board_03.vmdl",
-                    "models/industrial/industrial_board_04.vmdl",
-                    "models/industrial/industrial_board_05.vmdl",
-                    "models/industrial/industrial_board_06.vmdl",
-                    "models/industrial/industrial_board_07.vmdl",
-                    "models/industrial/industrial_chemical_barrel_02.vmdl",
-                    "models/props/barrel_plastic_1.vmdl",
-                    "models/props/barrel_plastic_1_open.vmdl",
-                    "models/props_c17/oildrum001_explosive.vmdl",
-                    "models/props_junk/wood_crate001a.vmdl",
-                    "models/props_junk/wood_crate002a.vmdl",
-                    "models/props_junk/wood_crate004.vmdl",
-                }
-                ent = Entities:FindByClassname(nil, "prop_physics")
-                while ent do
-                    local model = ent:GetModelName()
-                    if vlua.find(collidable_props, model) ~= nil then
-                        local angles = ent:GetAngles()
-                        local pos = ent:GetAbsOrigin()
-                        local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=ent:GetModelScale() - 0.02, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
-                        child:SetParent(ent, "")
+                function AddCollisionToPhysicsProps(class)
+                    local collidable_props = {
+                        "models/props_c17/oildrum001.vmdl",
+                        "models/props/plastic_container_1.vmdl",
+                        "models/industrial/industrial_board_01.vmdl",
+                        "models/industrial/industrial_board_02.vmdl",
+                        "models/industrial/industrial_board_03.vmdl",
+                        "models/industrial/industrial_board_04.vmdl",
+                        "models/industrial/industrial_board_05.vmdl",
+                        "models/industrial/industrial_board_06.vmdl",
+                        "models/industrial/industrial_board_07.vmdl",
+                        "models/industrial/industrial_chemical_barrel_02.vmdl",
+                        "models/props/barrel_plastic_1.vmdl",
+                        "models/props/barrel_plastic_1_open.vmdl",
+                        "models/props_c17/oildrum001_explosive.vmdl",
+                        "models/props_junk/wood_crate001a.vmdl",
+                        "models/props_junk/wood_crate002a.vmdl",
+                        "models/props_junk/wood_crate004.vmdl",
+                        "models/props/interior_furniture/interior_shelving_001_b.vmdl",
+                    }
+                    ent = Entities:FindByClassname(nil, class)
+                    while ent do
+                        local model = ent:GetModelName()
+                        if vlua.find(collidable_props, model) ~= nil then
+                            local angles = ent:GetAngles()
+                            local pos = ent:GetAbsOrigin()
+                            local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=ent:GetModelScale() - 0.02, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
+                            child:SetParent(ent, "")
+                        end
+                        ent = Entities:FindByClassname(ent, class)
                     end
-                    ent = Entities:FindByClassname(ent, "prop_physics")
                 end
+                AddCollisionToPhysicsProps("prop_physics")
+                AddCollisionToPhysicsProps("prop_physics_override")
             else
                 ent = Entities:FindByClassname(nil, "info_hlvr_toner_port")
                 while ent do
