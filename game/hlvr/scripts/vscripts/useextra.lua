@@ -1368,6 +1368,11 @@ if map == "a3_hotel_lobby_basement" then
         end, "FinishPiano", 10)
     end
 
+    if class == "hlvr_piano_key_model" then
+        thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        DoEntFireByInstanceHandle(Entities:FindByClassname(nil, "hlvr_piano"), "RunScriptFile", "useextra", 0, nil, nil)
+    end
+
     if name == "power_stake_1_start" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
         SendToConsole("ent_fire_output power_logic_enable_lights OnTrigger")
         SendToConsole("ent_fire_output toner_path_11 OnPowerOn")
