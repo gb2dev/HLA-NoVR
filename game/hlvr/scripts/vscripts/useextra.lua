@@ -205,6 +205,12 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             draw_toner_path(toner_path)
         end
     end
+
+    if name == "shack_path_6_port_1" and thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
+        DoEntFireByInstanceHandle(thisEntity, "Disable", "", 0, nil, nil)
+        -- TODO: Remove once puzzle implemented
+        SendToConsole("ent_fire_output shack_path_5 OnPowerOn")
+    end
 end
 
 if class == "info_hlvr_toner_junction" and toner_start_path ~= nil and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 0) == 0 then
@@ -1467,10 +1473,6 @@ end
 
 if name == "1517_3301_lift_prop_animated" then
     SendToConsole("ent_fire_output lift_button_down onin")
-end
-
-if name == "shack_path_6_port_1" then
-    SendToConsole("ent_fire_output pallet_panel_power_on ontrigger")
 end
 
 if name == "pallet_lever_vertical" then
