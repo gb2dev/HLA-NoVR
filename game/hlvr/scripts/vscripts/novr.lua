@@ -855,7 +855,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 30)
                     if shard then
-                        DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
+                        if not (GetMapName() == "a3_c17_processing_plant" and #Entities:FindAllByClassnameWithin("shatterglass_shard", player:GetCenter(), 100) == 1) then
+                            DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
+                        end
                     end
 
                     if Entities:FindByClassnameNearest("func_tracktrain", player:GetCenter(), 80) then
