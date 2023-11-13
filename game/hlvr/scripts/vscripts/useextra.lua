@@ -482,7 +482,7 @@ elseif vlua.find(name, "_dumpster_lid") then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-800,0))
     end
 elseif vlua.find(name, "_portaloo_seat") then
-    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 1 then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-3000,0))
     else
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
