@@ -331,6 +331,10 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         SendToConsole("snd_sos_start_soundevent RollUpDoor.MoveLinear_Start")
     end
 
+    if model == "models/interaction/anim_interact/rollingdoor/rollingdoor.vmdl" then
+        count = thisEntity:GetCycle()
+    end
+
     local is_console = class == "prop_animinteractable" and model == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
 
     if name == "" then
