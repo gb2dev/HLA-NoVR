@@ -233,6 +233,19 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
             SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
         end
+
+        if map == "a3_distillery" then
+            if name == "freezer_toner_outlet_1" then
+                SendToConsole("ent_fire_output freezer_toner_path_3 OnPowerOn")
+                SendToConsole("ent_fire_output freezer_toner_path_6 OnPowerOn")
+                SendToConsole("ent_remove debug_teleport_player_freezer_door")
+                SendToConsole("ent_fire relay_debug_freezer_breakout Trigger")
+            end
+
+            if name == "freezer_toner_outlet_2" then
+                SendToConsole("ent_fire_output freezer_toner_path_7 OnPowerOn")
+            end
+        end
     end
 end
 
@@ -794,17 +807,69 @@ end
 
 ---------- a3_distillery ----------
 
-if name == "larry_ladder" then
-    SendToConsole("ent_fire_output larry_ladder OnCompletionA")
-    SendToConsole("ent_fire_output larry_ladder OnCompletionC")
-    player:Attribute_SetIntValue("pulled_larry_ladder", 1)
-end
+if map == "a3_distillery" then
+    if name == "larry_ladder" then
+        SendToConsole("ent_fire_output larry_ladder OnCompletionA")
+        SendToConsole("ent_fire_output larry_ladder OnCompletionC")
+        player:Attribute_SetIntValue("pulled_larry_ladder", 1)
+    end
 
-if name == "cellar_ladder" then
-    ClimbLadderSound()
-    SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
-    SendToConsole("fadein 0.2")
-    SendToConsole("setpos_exact 1004 1775 546")
+    if name == "cellar_ladder" then
+        ClimbLadderSound()
+        SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
+        SendToConsole("fadein 0.2")
+        SendToConsole("setpos_exact 1004 1775 546")
+    end
+
+    if name == "11578_2635_380_button_center" then
+        SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher onin")
+    end
+
+    if name == "intro_rollup_door" then
+        SendToConsole("ent_fire_output intro_rollup_door OnCompletionA_Forward")
+        SendToConsole("ent_fire door_xen_crust Break")
+        SendToConsole("ent_fire relay_door_xen_crust_c Trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_d Trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_e Trigger")
+        SendToConsole("ent_fire @snd_music_bz_hello Kill")
+    end
+
+    if name == "barricade_door" then
+        SendToConsole("ent_fire barricade_door setreturntocompletionamount 1")
+    end
+
+    if name == "tc_door_control" then
+        SendToConsole("ent_fire tc_door_control setcompletionvalue 0")
+        SendToConsole("ent_fire relay_close_compactor_doors trigger")
+    end
+
+    if name == "11478_6233_tutorial_wheel" then
+        SendToConsole("ent_fire 11478_6233_verticaldoor_wheel_tutorial open")
+    end
+
+    if name == "11479_2385_button_pusher_prop" then
+        SendToConsole("ent_fire_output 11479_2385_button_center_pusher onin")
+    end
+
+    if name == "11479_2386_button_pusher_prop" then
+        SendToConsole("ent_fire_output 11479_2386_button_center_pusher onin")
+    end
+
+    if name == "freezer_port_b_2" then
+        SendToConsole("ent_fire_output freezer_toner_path_8 onpoweron")
+    end
+
+    if name == "11578_2420_181_antlion_plug_crank_a" then
+        SendToConsole("ent_fire_output 11578_2420_181_antlion_plug_crank_a oncompletionc_forward")
+    end
+
+    if name == "11578_2420_183_antlion_plug_crank_a" then
+        SendToConsole("ent_fire_output 11578_2420_183_antlion_plug_crank_a oncompletionc_forward")
+    end
+
+    if name == "antlion_plug_crank_c" then
+        SendToConsole("ent_fire_output antlion_plug_crank_c oncompletionc_forward")
+    end
 end
 
 
@@ -1397,69 +1462,6 @@ if name == "plug_console_starter_lever" then
     end
 
     SendToConsole("ent_fire_output plug_console_starter_lever OnCompletionB_Forward")
-end
-
-if GetMapName() == "a3_distillery" then
-    if name == "11578_2635_380_button_center" then
-        SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher onin")
-    end
-
-    if name == "intro_rollup_door" then
-        SendToConsole("ent_fire_output intro_rollup_door OnCompletionA_Forward")
-        SendToConsole("ent_fire door_xen_crust Break")
-        SendToConsole("ent_fire relay_door_xen_crust_c Trigger")
-        SendToConsole("ent_fire relay_door_xen_crust_d Trigger")
-        SendToConsole("ent_fire relay_door_xen_crust_e Trigger")
-        SendToConsole("ent_fire @snd_music_bz_hello Kill")
-    end
-
-    if name == "barricade_door" then
-        SendToConsole("ent_fire barricade_door setreturntocompletionamount 1")
-    end
-
-    if name == "tc_door_control" then
-        SendToConsole("ent_fire tc_door_control setcompletionvalue 0")
-        SendToConsole("ent_fire relay_close_compactor_doors trigger")
-    end
-
-    if name == "11478_6233_tutorial_wheel" then
-        SendToConsole("ent_fire 11478_6233_verticaldoor_wheel_tutorial open")
-    end
-
-    if name == "11479_2385_button_pusher_prop" then
-        SendToConsole("ent_fire_output 11479_2385_button_center_pusher onin")
-    end
-
-    if name == "11479_2386_button_pusher_prop" then
-        SendToConsole("ent_fire_output 11479_2386_button_center_pusher onin")
-    end
-
-    if name == "freezer_toner_outlet_1" then
-        SendToConsole("ent_fire_output freezer_toner_path_3 onpoweron")
-        SendToConsole("ent_fire_output freezer_toner_path_6 onpoweron")
-        SendToConsole("ent_remove debug_teleport_player_freezer_door")
-        SendToConsole("ent_fire relay_debug_freezer_breakout trigger")
-    end
-
-    if name == "freezer_toner_outlet_2" then
-        SendToConsole("ent_fire_output freezer_toner_path_7 onpoweron")
-    end
-
-    if name == "freezer_port_b_2" then
-        SendToConsole("ent_fire_output freezer_toner_path_8 onpoweron")
-    end
-
-    if name == "11578_2420_181_antlion_plug_crank_a" then
-        SendToConsole("ent_fire_output 11578_2420_181_antlion_plug_crank_a oncompletionc_forward")
-    end
-
-    if name == "11578_2420_183_antlion_plug_crank_a" then
-        SendToConsole("ent_fire_output 11578_2420_183_antlion_plug_crank_a oncompletionc_forward")
-    end
-
-    if name == "antlion_plug_crank_c" then
-        SendToConsole("ent_fire_output antlion_plug_crank_c oncompletionc_forward")
-    end
 end
 
 if name == "lift_button_box" then

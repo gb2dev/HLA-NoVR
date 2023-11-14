@@ -1234,6 +1234,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent = Entities:FindByName(nil, "vcd_larry_talk_01")
                             ent:RedirectOutput("OnCompletion", "LarrySeesGun", ent)
 
+                            ent = Entities:FindByName(nil, "freezer_toner_outlet_1")
+                            ent:Attribute_SetIntValue("used", 1)
+
+                            ent = Entities:FindByName(nil, "11479_elevator_busted_doors_relay")
+                            ent:RedirectOutput("OnTrigger", "EnableJeffElevatorDoorToner", ent)
+
                             ent = Entities:FindByClassnameNearest("prop_handpose", Vector(925, 1102, 578), 50)
                             if ent then
                                 DoEntFireByInstanceHandle(ent, "Kill", "", 0, nil, nil)
@@ -1658,6 +1664,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function LarrySeesGun()
         SendToConsole("ent_fire_output @player_proxy OnWeaponActive")
+    end
+
+    function EnableJeffElevatorDoorToner()
+        Entities:FindByName(nil, "freezer_toner_outlet_1"):Attribute_SetIntValue("used", 0)
     end
 
     function EnablePlugLever1()
