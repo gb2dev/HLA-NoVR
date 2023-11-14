@@ -206,10 +206,33 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
         end
     end
 
-    if name == "shack_path_6_port_1" and thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
-        DoEntFireByInstanceHandle(thisEntity, "Disable", "", 0, nil, nil)
-        -- TODO: Remove once puzzle implemented
-        SendToConsole("ent_fire_output shack_path_5 OnPowerOn")
+    if thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
+        if name == "5325_4704_toner_port_train_gate" then
+            SendToConsole("ent_fire_output 5325_4704_train_gate_path_20_to_end OnPowerOn")
+            SendToConsole("ent_fire_output 5325_4704_train_gate_path_22_to_end OnPowerOn")
+        end
+
+        if map == "a3_station_street" and name == "power_stake_1_start" then
+            SendToConsole("ent_fire_output toner_path_alarm_1 OnPowerOn")
+            SendToConsole("ent_fire toner_path_6_relay_debug Trigger")
+        end
+
+        if map == "a3_hotel_lobby_basement" and name == "power_stake_1_start" then
+            SendToConsole("ent_fire_output power_logic_enable_lights OnTrigger")
+            SendToConsole("ent_fire_output toner_path_11 OnPowerOn")
+            player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
+        end
+
+        if name == "shack_path_6_port_1" then
+            DoEntFireByInstanceHandle(thisEntity, "Disable", "", 0, nil, nil)
+            -- TODO: Remove once puzzle implemented
+            SendToConsole("ent_fire_output shack_path_5 OnPowerOn")
+        end
+
+        if map == "a4_c17_parking_garage" and name == "toner_port" then
+            SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
+            SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
+        end
     end
 end
 
@@ -990,12 +1013,7 @@ if name == "2860_window_sliding1" then
     SendToConsole("setpos_exact 1437 -1422 140")
 end
 
-if map == "a3_station_street" then
-    if name == "power_stake_1_start" then
-        SendToConsole("ent_fire_output toner_path_alarm_1 OnPowerOn")
-        SendToConsole("ent_fire toner_path_6_relay_debug Trigger")
-    end
-end
+
 
 if name == "2_11128_cshield_station_prop_button" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     thisEntity:Attribute_SetIntValue("used", 1)
@@ -1036,11 +1054,6 @@ end
 if name == "traincar_01_hatch" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output traincar_01_hackplug OnHackSuccess")
-end
-
-if name == "5325_4704_toner_port_train_gate" then
-    SendToConsole("ent_fire_output 5325_4704_train_gate_path_20_to_end OnPowerOn")
-    SendToConsole("ent_fire_output 5325_4704_train_gate_path_22_to_end OnPowerOn")
 end
 
 if class == "prop_hlvr_crafting_station_console" then
@@ -1269,13 +1282,6 @@ if name == "room1_lights_circuitbreaker_switch" then
     SendToConsole("ent_fire_output controlroom_circuitbreaker_relay ontrigger")
 end
 
-if map == "a4_c17_parking_garage" then
-    if name == "toner_port" then
-        SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
-        SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
-    end
-end
-
 if map == "a2_train_yard" then
     if is_combine_console_locked() == false then
         local ent = Entities:FindByName(nil, "5325_3947_combine_console")
@@ -1378,12 +1384,6 @@ if map == "a3_hotel_lobby_basement" then
     if class == "hlvr_piano_key_model" then
         thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
         DoEntFireByInstanceHandle(Entities:FindByClassname(nil, "hlvr_piano"), "RunScriptFile", "useextra", 0, nil, nil)
-    end
-
-    if name == "power_stake_1_start" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-        SendToConsole("ent_fire_output power_logic_enable_lights OnTrigger")
-        SendToConsole("ent_fire_output toner_path_11 OnPowerOn")
-        player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
     end
 end
 
