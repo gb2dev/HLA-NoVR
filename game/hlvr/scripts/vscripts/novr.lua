@@ -90,13 +90,30 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end, nil)
 
+    if player_barnacle_grab_ev ~= nil then
+        StopListeningToGameEvent(player_barnacle_grab_ev)
+    end
+
+    player_barnacle_grab_ev = ListenToGameEvent('player_grabbed_by_barnacle', function(info)
+        local player = Entities:GetLocalPlayer()
+        disable_unstuck = true
+    end, nil)
+
+    if player_barnacle_release_ev ~= nil then
+        StopListeningToGameEvent(player_barnacle_release_ev)
+    end
+
+    player_barnacle_release_ev = ListenToGameEvent('player_released_by_barnacle', function(info)
+        disable_unstuck = false
+    end, nil)
+
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
 
     Convars:RegisterConvar("weapon_in_crafting_station", "", "", 0)
 
     Convars:RegisterCommand("unstuck", function()
         local player = Entities:GetLocalPlayer()
-        if player ~= nil then
+        if player ~= nil and disable_unstuck == false then
             local startVector = player:GetOrigin()
             local minVector = player:GetBoundingMins()
             minVector.x = minVector.x + 0.01
@@ -1256,6 +1273,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             if not loading_save_file then
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER8_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                                ent = Entities:FindByClassnameNearest("npc_barnacle", Vector(5126, -1957, 64), 10)
+                                DoEntFireByInstanceHandle(ent, "AddOutput", "OnRelease>tiger_mask>EnablePickup>>0>1", 0, nil, nil)
                             end
 
                             ent = Entities:FindByName(nil, "relay_power_receive")
@@ -1494,6 +1514,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     function CrouchThroughZooHole(a, b)
         SendToConsole("fadein 0.2")
         SendToConsole("setpos 5393 -1960 -125")
+
+        local ent = Entities:FindByClassnameNearest("prop_physics", Vector(5126, -1957, -53), 10)
+        DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
+        ent:SetEntityName("tiger_mask")
     end
 
     function PlayLockedDoorHandleAnimation(a, b)
