@@ -1411,6 +1411,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             end, "", 0)
                             SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
 
+                            ent = Entities:FindByName(nil, "timer_briefcase")
+                            DoEntFireByInstanceHandle(ent, "RefireTime", "5", 0, nil, nil)
+
                             ent = Entities:FindByName(nil, "relay_advisor_void")
                             ent:RedirectOutput("OnTrigger", "GiveAdvisorVortEnergy", ent)
 
@@ -1853,6 +1856,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function EndCredits(a, b)
         SendToConsole("mouse_disableinput 0")
+        SendToConsole("use weapon_bugbait")
+        SendToConsole("hidehud 32")
     end
 
     function AddCollisionToPhysicsProps(class)

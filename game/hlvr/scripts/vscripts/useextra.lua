@@ -923,6 +923,7 @@ if name == "prop_crowbar" then
 end
 
 if name == "l_candler" or name == "r_candler" then
+    player:Attribute_SetIntValue("disable_unstuck", 1)
     SendToConsole("ent_fire innervault_energize_event_relay Kill")
     SendToConsole("ent_fire_output g_release_hand1 OnHandPosed")
     SendToConsole("ent_fire_output g_release_hand2 OnHandPosed")
