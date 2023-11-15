@@ -22,4 +22,5 @@ MAIN_MENU         = "M"
 PAUSE             = "P"
 NOCLIP            = "V"
 VIEWM_INSPECT     = "T"
+ZOOM              = "Z"
 FOV               = 80.0
