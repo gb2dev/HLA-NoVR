@@ -1288,6 +1288,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire health_trap_locked_door Unlock")
                             SendToConsole("ent_fire 589_toner_port_5 Disable")
                             SendToConsole("ent_fire @prop_phys_portaloo_door DisablePickup")
+
+                            SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
                         elseif GetMapName() == "a4_c17_tanker_yard" then
                             SendToConsole("ent_fire elev_hurt_player_* Kill")
 
