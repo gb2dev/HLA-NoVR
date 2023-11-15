@@ -1756,9 +1756,8 @@ if GlobalSys:CommandLineCheck("-novr") then
     function EquipCombineGunMechanical(player)
 		SendToConsole("ent_fire player_speedmod ModifySpeed 0")
 		SendToConsole("bind " .. PRIMARY_ATTACK .. " novr_shootcombinegun")
-		SendToConsole("ent_fire combine_gun_mechanical disablecollision")
 		SendToConsole("r_drawviewmodel 0")
-		
+
 		local ent = Entities:FindByName(nil, "combine_gun_interact") -- Take interaction gun entity instead of base model
 		ent:Attribute_SetIntValue("active", 1)
 		ent:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0) -- ammo charge sound
