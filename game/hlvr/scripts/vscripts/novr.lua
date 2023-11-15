@@ -96,7 +96,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     player_barnacle_grab_ev = ListenToGameEvent('player_grabbed_by_barnacle', function(info)
         local player = Entities:GetLocalPlayer()
-        disable_unstuck = true
+        player:Attribute_SetIntValue("disable_unstuck", 1)
     end, nil)
 
     if player_barnacle_release_ev ~= nil then
@@ -104,7 +104,8 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     player_barnacle_release_ev = ListenToGameEvent('player_released_by_barnacle', function(info)
-        disable_unstuck = false
+        local player = Entities:GetLocalPlayer()
+        player:Attribute_SetIntValue("disable_unstuck", 0)
     end, nil)
 
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
@@ -113,7 +114,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("unstuck", function()
         local player = Entities:GetLocalPlayer()
-        if player ~= nil and disable_unstuck == false then
+        if player ~= nil and player:Attribute_GetIntValue("disable_unstuck", 0) == 1 then
             local startVector = player:GetOrigin()
             local minVector = player:GetBoundingMins()
             minVector.x = minVector.x + 0.01
@@ -1358,8 +1359,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 							end, "", 0)
                         elseif GetMapName() == "a5_vault" then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
-                            SendToConsole("r_drawviewmodel 0")
+                            if Entities:FindByClassname(nil, "weapon_frag") == nil then
+                                SendToConsole("r_drawviewmodel 0")
+                            end
                             ent:SetThink(function()
                                 SendToConsole("hidehud 67")
                             end, "", 0)
@@ -1370,6 +1372,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 SendToConsole("ent_create env_message { targetname text_vortenergy message VORTENERGY }")
 
+                                SendToConsole("ent_fire upsidedownroom_closetdoor* DisablePickup")
+
+                                -- TODO: Do weapon strip instead
+                                SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
                                 SendToConsole("give weapon_bugbait")
 
                                 ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/architecture/doors_1/door_1b_40_92.vmdl", ["origin"]="-835 160 -539", ["angles"]="76 110 10"})
@@ -1377,20 +1383,28 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/props/oldstyle_table_2.vmdl", ["origin"]="-345 2881 -695", ["angles"]="45 0 -90"})
                                 ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/props/oldstyle_table_2.vmdl", ["origin"]="-260 2881 -640", ["angles"]="45 0 -90"})
+
+                                ent = Entities:FindByName(nil, "longcorridor_outerdoor1")
+                                ent:RedirectOutput("OnFullyClosed", "GiveVortEnergy", ent)
+                                ent:RedirectOutput("OnFullyClosed", "ShowVortEnergyTutorial", ent)
+
+                                ent = Entities:FindByName(nil, "longcorridor_innerdoor")
+                                ent:RedirectOutput("OnFullyClosed", "RemoveVortEnergy", ent)
+
+                                ent = Entities:FindByName(nil, "longcorridor_energysource_01_activate_relay")
+                                ent:RedirectOutput("OnTrigger", "GiveVortEnergy", ent)
+                            else
+                                if Entities:GetLocalPlayer():Attribute_GetIntValue("vort_energy", 0) == 1 then
+                                    GiveVortEnergy()
+                                end
                             end
-
-                            ent = Entities:FindByName(nil, "longcorridor_outerdoor1")
-                            ent:RedirectOutput("OnFullyClosed", "GiveVortEnergy", ent)
-                            ent:RedirectOutput("OnFullyClosed", "ShowVortEnergyTutorial", ent)
-
-                            ent = Entities:FindByName(nil, "longcorridor_innerdoor")
-                            ent:RedirectOutput("OnFullyClosed", "RemoveVortEnergy", ent)
-
-                            ent = Entities:FindByName(nil, "longcorridor_energysource_01_activate_relay")
-                            ent:RedirectOutput("OnTrigger", "GiveVortEnergy", ent)
                         elseif GetMapName() == "a5_ending" then
-                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
+                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
+                            SendToConsole("use weapon_bugbait")
                             SendToConsole("r_drawviewmodel 0")
+                            ent:SetThink(function()
+                                SendToConsole("hidehud 67")
+                            end, "", 0)
                             SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
 
                             ent = Entities:FindByName(nil, "relay_advisor_void")
@@ -1808,13 +1822,21 @@ if GlobalSys:CommandLineCheck("-novr") then
     function GiveVortEnergy(a, b)
         SendToConsole("bind " .. PRIMARY_ATTACK .. " shootvortenergy")
         SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
+        SendToConsole("use weapon_bugbait")
         SendToConsole("r_drawviewmodel 0")
+        local player = Entities:GetLocalPlayer()
+        player:SetThink(function()
+            SendToConsole("hidehud 67")
+        end, "", 0)
+        player:Attribute_SetIntValue("vort_energy", 1)
     end
 
     function RemoveVortEnergy(a, b)
         SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
         SendToConsole("r_drawviewmodel 1")
         SendToConsole("give weapon_frag")
+        SendToConsole("hidehud 64")
+        Entities:GetLocalPlayer():Attribute_SetIntValue("vort_energy", 0)
     end
 
     function GiveAdvisorVortEnergy(a, b)
@@ -1849,6 +1871,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             "models/props_junk/wood_crate004.vmdl",
             "models/props/interior_furniture/interior_shelving_001_b.vmdl",
             "models/props/interior_chairs/interior_chair_001.vmdl",
+            "models/props/debris/debris_plank_broken_medium_002a.vmdl",
+            "models/props/debris/debris_plank_broken_medium_002b.vmdl",
+            "models/props/debris/debris_plank_broken_long_002a.vmdl",
+            "models/props/debris/debris_plank_broken_long_002b.vmdl",
         }
         ent = Entities:FindByClassname(nil, class)
         while ent do
