@@ -380,7 +380,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local traceTable =
         {
             startpos = startVector;
-            endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(1000000, 0, 0));
+            endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(1000000, 0, 0));
             ignore = player;
             mask =  33636363
         }
@@ -411,7 +411,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             local traceTable =
             {
                 startpos = startVector;
-                endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(100, 0, 0));
+                endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(100, 0, 0));
                 ignore = player;
                 mask =  33636363
             }
@@ -461,8 +461,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(402)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 10), player) then
                     ClimbLadder(686)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(5456, 4876, 288), 10), player) then
+                    ClimbLadder(420)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(5434, 5755, 273), 10), player) then
-                    ClimbLadder(403)
+                    ClimbLadder(403, -player:GetRightVector())
                 end
             end
 
@@ -476,7 +478,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
                     ClimbLadder(560)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(2335, -1832, 757), 20), player) then
-                    ClimbLadder(840, true)
+                    ClimbLadder(840, Vector(0, 0, 0))
                 end
             end
 
@@ -501,7 +503,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local traceTable =
                 {
                     startpos = startVector;
-                    endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(100, 0, 0));
+                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(100, 0, 0));
                     ignore = player;
                     mask =  33636363
                 }
@@ -566,7 +568,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if GetMapName() == "a3_distillery" then
                 if vlua.find(Entities:FindAllInSphere(Vector(20, -496, 211), 10), player) then
-                    ClimbLadder(462, false)
+                    ClimbLadder(462)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(-24, -151, 426), 5), player) then
@@ -1532,13 +1534,15 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end
 
-    function ClimbLadder(height, do_not_push_forward)
+    function ClimbLadder(height, push_direction)
         local ent = Entities:GetLocalPlayer()
         local ticks = 0
         ent:SetThink(function()
             if ent:GetOrigin().z > height then
-                if not do_not_push_forward then
+                if push_direction == nil then
                     ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 150)
+                else
+                    ent:SetVelocity(Vector(push_direction.z, push_direction.y, 0):Normalized() * 150)
                 end
                 SendToConsole("+iv_duck;-iv_duck")
             else
