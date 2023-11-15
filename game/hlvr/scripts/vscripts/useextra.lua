@@ -248,9 +248,14 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             SendToConsole("ent_fire_output 589_path_11 OnPowerOn")
         end
 
-        if map == "a4_c17_parking_garage" and name == "toner_port" then
-            SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
-            SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
+        if map == "a4_c17_parking_garage" then
+            if name == "toner_port" then
+                SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
+            elseif name == "toner_port_2" then
+                SendToConsole("ent_fire_output toner_path_5 OnPowerOn")
+            elseif name == "toner_port_3" then
+                SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
+            end
         end
     end
 
@@ -907,10 +912,7 @@ end
 ---------- a4_c17_parking_garage ----------
 
 if name == "toner_sliding_ladder" then
-    ClimbLadderSound()
-    SendToConsole("ent_fire toner_sliding_ladder SetCompletionValue 1")
-    SendToConsole("fadein 0.2")
-    SendToConsole("setpos_exact -367 -416 150")
+    ClimbLadder(160)
 end
 
 
@@ -950,12 +952,13 @@ if name == "combine_gun_mechanical" then
     thisEntity:Attribute_SetIntValue("used", 1)
 end
 
-if name == "18918_5316_button_pusher_prop" then
-    SendToConsole("ent_fire_output 18918_5316_button_center_pusher OnIn")
-end
-
+-- Call elevator button
 if name == "18918_5275_button_pusher_prop" then
     SendToConsole("ent_fire_output 18918_5275_button_center_pusher OnIn")
+end
+
+if name == "18918_5316_button_pusher_prop" then
+    SendToConsole("ent_fire_output 18918_5316_button_center_pusher OnIn")
 end
 
 if name == "1489_4074_port_demux" then

@@ -696,6 +696,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_locker_door_* DisablePickup")
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
             SendToConsole("ent_fire *electrical_panel_*_door* DisablePickup")
+            SendToConsole("ent_fire *electrical_cabinet_door* DisablePickup")
             SendToConsole("ent_fire *panel_door* DisablePickup")
             SendToConsole("ent_fire *_washing_machine_door DisablePickup")
             SendToConsole("ent_fire *_washing_machine_loader DisablePickup")
@@ -1323,6 +1324,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             end
                         elseif GetMapName() == "a4_c17_parking_garage" then
                             SendToConsole("ent_fire falling_cabinet_door DisablePickup")
+                            SendToConsole("ent_fire func_physbox DisableMotion")
 
                             ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
                             ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
