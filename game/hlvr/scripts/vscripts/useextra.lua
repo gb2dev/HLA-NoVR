@@ -548,7 +548,7 @@ elseif vlua.find(name, "_portaloo_door") then
 elseif vlua.find(name, "_hazmat_crate_lid") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-5000,0))
 elseif vlua.find(model, "electric_box_door") then
-    if vlua.find(name, "electrical_panel_1_door") and map == "a3_c17_processing_plant" then
+    if vlua.find(name, "electrical_panel_1_door") and (map == "a3_c17_processing_plant" or map == "a4_c17_zoo") then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,1000))
     else
         if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
