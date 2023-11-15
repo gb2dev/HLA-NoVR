@@ -1769,20 +1769,19 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
 	function CombineGunHandleAnim(a, b)
-		-- todo: deal with handleState weird lua numeric error
 		local ent = Entities:FindByName(nil, "combine_gun_interact")
 		ent:FireOutput("OnCompletionD_Forward", nil, nil, nil, 0) -- charge sounds
-		local handleState = 0.0
+		local handleState = 0
 		ent:SetThink(function()
 			if handleState < 1 then
 				handleState = handleState + 0.05
-				DoEntFireByInstanceHandle(ent, "SetCompletionValue", tostring(handleState), 0, nil, nil)
+				DoEntFireByInstanceHandle(ent, "SetCompletionValue", "" .. handleState, 0, nil, nil)
+                return 0.05
 			else
 				ent:FireOutput("OnCompletionC_Forward", nil, nil, nil, 0) -- charge sounds
 				ent:Attribute_SetIntValue("ready", 1) -- ready to shoot
-				ent:StopThink("UsingCombineGunHandle")
+				return nil
 			end
-			return 0.05
 		end, "UsingCombineGunHandle", 0)
     end
 
