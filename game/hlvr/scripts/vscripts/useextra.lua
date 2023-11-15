@@ -190,8 +190,6 @@ function toggle_toner_junction()
 end
 
 if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 1) then
-    thisEntity:Attribute_SetIntValue("used", 1)
-    thisEntity:Attribute_SetIntValue("redraw_toner", 0)
     DoEntFireByInstanceHandle(thisEntity, "OnPlugRotated", "", 0, nil, nil)
     DebugDrawClear()
     if toner_junctions then
@@ -247,6 +245,9 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             end
         end
     end
+
+    thisEntity:Attribute_SetIntValue("used", 1)
+    thisEntity:Attribute_SetIntValue("redraw_toner", 0)
 end
 
 if class == "info_hlvr_toner_junction" and toner_start_path ~= nil and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 0) == 0 then
@@ -377,6 +378,17 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         count = thisEntity:GetCycle()
     end
 
+    if name == "barricade_door_hook" then
+        count = thisEntity:GetCycle()
+    end
+
+    if name == "barricade_door" then
+        local ent = Entities:FindByName(nil, "barricade_door_hook")
+        ent:Attribute_SetIntValue("used", 0)
+        DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0.1, nil, nil)
+    end
+
     local is_console = class == "prop_animinteractable" and model == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
 
     if name == "" then
@@ -426,11 +438,13 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             return nil
         end
 
-        if map == "a3_distillery" and name == "verticaldoor_wheel" then
-            local jeff = Entities:FindByClassname(ent, "npc_zombie_blind")
-            if player:Attribute_GetIntValue("use_released", 0) == 1 or vlua.find(Entities:FindAllInSphere(Vector(291, 291, 322), 10), jeff) then
-                thisEntity:Attribute_SetIntValue("used", 0)
-                return nil
+        if map == "a3_distillery" then
+            if name == "verticaldoor_wheel" then
+                local jeff = Entities:FindByClassname(ent, "npc_zombie_blind")
+                if player:Attribute_GetIntValue("use_released", 0) == 1 or vlua.find(Entities:FindAllInSphere(Vector(291, 291, 322), 10), jeff) then
+                    thisEntity:Attribute_SetIntValue("used", 0)
+                    return nil
+                end
             end
         end
 
@@ -439,9 +453,12 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         end
 
         if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
-            thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
-            if name == "barricade_door_hook" then
-                SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
+            if name ~= "barricade_door_hook" then
+                thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
+            end
+
+            if name == "barricade_door" then
+                DoEntFireByInstanceHandle(Entities:FindByName(nil, "barricade_lock_relay"), "Trigger", "", 0, nil, nil)
             elseif name == "12712_shotgun_wheel" then
                 local bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
                 bar:Kill()
@@ -461,14 +478,23 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             return 0
         end
     end, "AnimateCompletionValue", 0)
-elseif name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
-    if not vlua.find(name, "elev_anim_door") then
+elseif name == "barricade_door_hook" or name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
+    if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
+        if name == "barricade_door_hook" then
+            thisEntity:StopThink("AnimateCompletionValue")
+            thisEntity:Attribute_SetIntValue("used", 0)
+
+            local ent = Entities:FindByName(nil, "barricade_door")
+            ent:FireOutput("OnCompletionA_Backward", nil, nil, nil, 0)
+            ent:Attribute_SetIntValue("used", 0)
+        else
+            return
+        end
+    elseif not vlua.find(name, "elev_anim_door") then
         thisEntity:Attribute_SetIntValue("used", 1)
-    elseif thisEntity:Attribute_GetIntValue("used", 0) == 1 then
-        return
     end
 
-    local count = 0
+    local count = 1 - thisEntity:GetCycle()
     thisEntity:SetThink(function()
         DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. 1 - count, 0, nil, nil)
         count = count + 0.01
@@ -832,10 +858,6 @@ if map == "a3_distillery" then
         SendToConsole("ent_fire relay_door_xen_crust_d Trigger")
         SendToConsole("ent_fire relay_door_xen_crust_e Trigger")
         SendToConsole("ent_fire @snd_music_bz_hello Kill")
-    end
-
-    if name == "barricade_door" then
-        SendToConsole("ent_fire barricade_door setreturntocompletionamount 1")
     end
 
     if name == "tc_door_control" then
