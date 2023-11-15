@@ -583,9 +583,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a1_intro_world" then
-                if vlua.find(Entities:FindAllInSphere(Vector(648,-1757,-141), 10), player) then
+                if vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
                     ClimbLadder(-64)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(530,-2331,-84), 20), player) then
+                elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 20), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos_exact 574 -2328 -130")

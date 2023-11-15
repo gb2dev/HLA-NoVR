@@ -97,6 +97,11 @@ TraceLine(eyetrace)
 
 if eyetrace.hit then
     local useRoutine = 0
+    if eyetrace.enthit:GetClassname() == "worldent" then
+        GravityGlovePull()
+        return
+    end
+
     -- TODO: There's gotta be a better way than to exclude some things from here
     if eyetrace.enthit == thisEntity or vlua.find(class, "hlvr_piano") or name == "russell_entry_window" or class == "item_combine_tank_locker" or vlua.find(name, "socket") or vlua.find(name, "traincar_01") then
         useRoutine = 1
