@@ -1029,12 +1029,12 @@ if class == "prop_dynamic" then
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
         ent = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
         if ent:GetSequence() == "idle_deployed" and tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+            ent = Entities:FindByClassnameNearest("item_healthcharger", thisEntity:GetOrigin(), 20)
+            ent:FireOutput("OnHealingPlayerStart", nil, nil, nil, 0)
+
             if player:GetHealth() == player:GetMaxHealth() then
                 StartSoundEvent("HealthStation.Deny", player)
             else
-                if map == "a2_quarantine_entrance" then
-                    SendToConsole("ent_fire_output health_station OnHealingPlayerStart")
-                end
                 StartSoundEvent("HealthStation.Start", player)
                 player:SetThink(function()
                     if player:GetVelocity().z == 0 then
