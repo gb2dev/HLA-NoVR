@@ -69,13 +69,13 @@ elseif map == "a2_headcrabs_tunnel" then
     }
 end
 
-function draw_toner_path(toner_path)
+function DrawTonerPath(toner_path)
     for i = 3, #toner_path do
         DebugDrawLine(toner_path[i - 1], toner_path[i], 0, 0, 255, false, -1)
     end
 end
 
-function draw_toner_junction(junction, center, angles)
+function DrawTonerJunction(junction, center, angles)
     local type = junction[1]
 
     if type == 0 then
@@ -125,13 +125,13 @@ function draw_toner_junction(junction, center, angles)
     end
 end
 
-function toggle_toner_junction()
+function ToggleTonerJunction()
     local junction = toner_junctions[thisEntity:GetName()]
 
     if junction then
         DebugDrawClear()
         for toner_path_name, toner_path in pairs(toner_paths) do
-            draw_toner_path(toner_path)
+            DrawTonerPath(toner_path)
         end
 
         local angles = thisEntity:GetAngles()
@@ -143,7 +143,7 @@ function toggle_toner_junction()
             old_index = 4
         end
 
-        ent = Entities:FindByClassname(nil, "info_hlvr_toner_path")
+        local ent = Entities:FindByClassname(nil, "info_hlvr_toner_path")
         while ent do
             ent:FireOutput("OnPowerOff", nil, nil, nil, 0)
             ent = Entities:FindByClassname(ent, "info_hlvr_toner_path")
@@ -184,7 +184,7 @@ function toggle_toner_junction()
             local junction_entity = Entities:FindByName(nil, junction_name)
             local angles = junction_entity:GetAngles()
             angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
-            draw_toner_junction(junction, junction_entity:GetCenter(), angles)
+            DrawTonerJunction(junction, junction_entity:GetCenter(), angles)
         end
     end
 end
@@ -197,10 +197,10 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             local junction_entity = Entities:FindByName(nil, junction_name)
             local angles = junction_entity:GetAngles()
             angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
-            draw_toner_junction(junction, junction_entity:GetCenter(), angles)
+            DrawTonerJunction(junction, junction_entity:GetCenter(), angles)
         end
         for toner_path_name, toner_path in pairs(toner_paths) do
-            draw_toner_path(toner_path)
+            DrawTonerPath(toner_path)
         end
     end
 
@@ -254,11 +254,11 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
 end
 
 if class == "info_hlvr_toner_junction" and toner_start_path ~= nil and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 0) == 0 then
-    toggle_toner_junction()
+    ToggleTonerJunction()
 end
 
 
-function is_combine_console_locked()
+function IsCombineConsoleLocked()
     local ents = Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)
     for i = 1, #ents do
         local ent = ents[i]
@@ -281,7 +281,7 @@ if map == "a3_distillery" and vlua.find(name, "plug") then
     end
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and IsCombineConsoleLocked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "slide_train_door") and Entities:FindByClassnameNearest("phys_constraint", thisEntity:GetCenter(), 20) then
         return
     end
@@ -379,6 +379,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
 
     if model == "models/interaction/anim_interact/rollingdoor/rollingdoor.vmdl" then
         count = thisEntity:GetCycle()
+        thisEntity:FireOutput("OnCompletionB", nil, nil, "0.2", 0)
     end
 
     if name == "barricade_door_hook" then
@@ -932,7 +933,7 @@ end
 if name == "combine_gun_mechanical" then
     SendToConsole("bind J novr_leavecombinegun")
 	if thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-		ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+		local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
 		DoEntFireByInstanceHandle(ent, "SetText", "Press [J] to get out", 0, nil, nil)
 		DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
 		
@@ -984,7 +985,7 @@ if class == "item_combine_tank_locker" then
     if thisEntity:GetCycle() <= 0.5 then
         DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "combine_locker_standing", 0, nil, nil)
 
-        ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
+        local ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
         while ent do
             if ent:GetMoveParent() then
                 DoEntFireByInstanceHandle(ent, "EnablePickup", "", 0, nil, nil)
@@ -1373,7 +1374,7 @@ if name == "room1_lights_circuitbreaker_switch" then
 end
 
 if map == "a2_train_yard" then
-    if is_combine_console_locked() == false then
+    if IsCombineConsoleLocked() == false then
         local ent = Entities:FindByName(nil, "5325_3947_combine_console")
         DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
     end
@@ -1396,7 +1397,7 @@ if map == "a2_headcrabs_tunnel" then
 end
 
 if map == "a2_quarantine_entrance" then
-    if is_combine_console_locked() == false then
+    if IsCombineConsoleLocked() == false then
         local ent = Entities:FindByName(nil, "17670_combine_console")
         DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
     end
@@ -1517,7 +1518,7 @@ end
 
 if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if map == "a2_quarantine_entrance" then
-        ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
+        local ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
         while ent do
             ent:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", ent)
             ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_rack")

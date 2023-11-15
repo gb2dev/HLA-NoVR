@@ -1542,11 +1542,12 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"959 1970 427\" }")
         SendToConsole("ent_fire @crank_battery kill")
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
-        SendToConsole("ent_fire 11478_6233_math_count_wheel_installment SetHitMax 2")
+        SendToConsole("ent_fire @relay_installcrank Trigger")
+        SendToConsole("ent_remove @tutorial_wheel_physics")
     end
 
     function ShowInteractTutorial()
-        ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="INTERACT"})
+        local ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="INTERACT"})
         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
