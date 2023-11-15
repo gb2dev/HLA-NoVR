@@ -234,6 +234,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
 
         if map == "a3_distillery" then
             if name == "freezer_toner_outlet_1" then
+                SendToConsole("ent_fire_output barricade_door OnCompletionA_Backward")
                 SendToConsole("ent_fire_output freezer_toner_path_3 OnPowerOn")
                 SendToConsole("ent_fire_output freezer_toner_path_6 OnPowerOn")
                 SendToConsole("ent_remove debug_teleport_player_freezer_door")
