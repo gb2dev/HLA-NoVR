@@ -443,10 +443,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(-130)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(2432, 6662, 160), 10), player) then
                     ClimbLadder(330)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6130, 384), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos 2850 6186 550")
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6130, 384), 10), player) then
+                    ClimbLadder(575)
                 end
             end
 
