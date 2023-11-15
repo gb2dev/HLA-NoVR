@@ -737,7 +737,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_plr_dmg_pistol 7")
             SendToConsole("sk_plr_dmg_ar2 9")
             SendToConsole("sk_plr_dmg_smg1 5")
-            --SendToConsole("player_use_radius 60")
             SendToConsole("hlvr_physcannon_forward_offset -5")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
@@ -1363,12 +1362,20 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
                             SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
                             SendToConsole("r_drawviewmodel 0")
+                            SendToConsole("sv_jump_force 200")
+                            ent:SetThink(function()
+                                SendToConsole("hidehud 67")
+                            end, "", 0)
 
                             if not loading_save_file then
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER11_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
                                 SendToConsole("ent_create env_message { targetname text_vortenergy message VORTENERGY }")
+
+                                SendToConsole("give weapon_bugbait")
+
+                                ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="test", ["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/architecture/doors_1/door_2c_40_92.vmdl", ["origin"]="-835 160 -539", ["angles"]="76 110 10"})
                             end
 
                             ent = Entities:FindByName(nil, "longcorridor_outerdoor1")

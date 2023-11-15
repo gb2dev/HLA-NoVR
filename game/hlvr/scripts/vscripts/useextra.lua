@@ -1,5 +1,6 @@
 DoIncludeScript("bindings.lua", nil)
-
+print(thisEntity:GetAbsOrigin())
+print(thisEntity:GetAngles())
 local map = GetMapName()
 local class = thisEntity:GetClassname()
 local name = thisEntity:GetName()
