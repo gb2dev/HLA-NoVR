@@ -243,6 +243,8 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
 
             if name == "freezer_toner_outlet_2" then
                 SendToConsole("ent_fire_output freezer_toner_path_7 OnPowerOn")
+                -- TODO: Remove once puzzle implemented
+                SendToConsole("ent_fire_output freezer_toner_path_8 OnPowerOn 0 0 5")
             end
         end
     end
@@ -879,7 +881,7 @@ if map == "a3_distillery" then
     end
 
     if name == "freezer_port_b_2" then
-        SendToConsole("ent_fire_output freezer_toner_path_8 onpoweron")
+        --SendToConsole("ent_fire_output freezer_toner_path_8 OnPowerOn")
     end
 
     if name == "11578_2420_181_antlion_plug_crank_a" then
