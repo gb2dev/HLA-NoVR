@@ -427,10 +427,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a5_vault" then
-                if vlua.find(Entities:FindAllInSphere(Vector(-468, 2902, -519), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos -486 2908 -420")
+                if vlua.find(Entities:FindAllInSphere(Vector(-445, 2900, -515), 10), player) then
+                    ClimbLadder(-450, Vector(0, 0, 1))
                 end
             end
 
@@ -1362,7 +1360,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
                             SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
                             SendToConsole("r_drawviewmodel 0")
-                            SendToConsole("sv_jump_force 200")
                             ent:SetThink(function()
                                 SendToConsole("hidehud 67")
                             end, "", 0)
@@ -1375,7 +1372,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 SendToConsole("give weapon_bugbait")
 
-                                ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="test", ["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/architecture/doors_1/door_2c_40_92.vmdl", ["origin"]="-835 160 -539", ["angles"]="76 110 10"})
+                                ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/architecture/doors_1/door_1b_40_92.vmdl", ["origin"]="-835 160 -539", ["angles"]="76 110 10"})
+                                ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["renderamt"]=0, ["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/architecture/doors_1/door_1b_40_92.vmdl", ["origin"]="70 2881 -549", ["angles"]="90 90 0"})
+
+                                ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/props/oldstyle_table_2.vmdl", ["origin"]="-345 2881 -695", ["angles"]="45 0 -90"})
+                                ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/props/oldstyle_table_2.vmdl", ["origin"]="-260 2881 -640", ["angles"]="45 0 -90"})
                             end
 
                             ent = Entities:FindByName(nil, "longcorridor_outerdoor1")
@@ -1548,7 +1549,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if push_direction == nil then
                     ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 150)
                 else
-                    ent:SetVelocity(Vector(push_direction.z, push_direction.y, 0):Normalized() * 150)
+                    ent:SetVelocity(Vector(push_direction.z, push_direction.y, push_direction.z):Normalized() * 150)
                 end
                 SendToConsole("+iv_duck;-iv_duck")
             else
@@ -1847,6 +1848,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             "models/props_junk/wood_crate002a.vmdl",
             "models/props_junk/wood_crate004.vmdl",
             "models/props/interior_furniture/interior_shelving_001_b.vmdl",
+            "models/props/interior_chairs/interior_chair_001.vmdl",
         }
         ent = Entities:FindByClassname(nil, class)
         while ent do
