@@ -1790,6 +1790,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
         SendToConsole("r_drawviewmodel 0")
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+        SendToConsole("phys_pushscale 1")
     end
 
     function ShowVortEnergyTutorial()
