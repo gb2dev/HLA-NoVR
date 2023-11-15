@@ -221,15 +221,10 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
         end
 
-        if name == "shack_path_6_port_1" then
+        if map == "a3_c17_processing_plant" and name == "shack_path_6_port_1" then
             DoEntFireByInstanceHandle(thisEntity, "Disable", "", 0, nil, nil)
             -- TODO: Remove once puzzle implemented
             SendToConsole("ent_fire_output shack_path_5 OnPowerOn")
-        end
-
-        if map == "a4_c17_parking_garage" and name == "toner_port" then
-            SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
-            SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
         end
 
         if map == "a3_distillery" then
@@ -246,6 +241,16 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
                 -- TODO: Remove once puzzle implemented
                 SendToConsole("ent_fire_output freezer_toner_path_8 OnPowerOn 0 0 5")
             end
+        end
+
+        if map == "a4_c17_zoo" and name == "589_test_outlet" then
+            SendToConsole("ent_fire_output 589_path_unlock_door OnPowerOn")
+            SendToConsole("ent_fire_output 589_path_11 OnPowerOn")
+        end
+
+        if map == "a4_c17_parking_garage" and name == "toner_port" then
+            SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
+            SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
         end
     end
 
@@ -974,11 +979,6 @@ end
 if name == "3_8223_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output 3_8223_switch_box_hack_plug OnHackSuccess")
-end
-
-if name == "589_test_outlet" then
-    SendToConsole("ent_fire 589_vertical_door Open")
-    SendToConsole("ent_fire_output 589_path_11 OnPowerOn")
 end
 
 if class == "item_combine_tank_locker" then
