@@ -560,8 +560,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(515, 1595, 578), 15), player) then
-                    ClimbLadder(670)
+                if vlua.find(Entities:FindAllInSphere(Vector(515, 1595, 578), 10), player) then
+                    ClimbLadder(690)
                 end
 
                 if vlua.find(Entities:FindAllInSphere(Vector(925, 1102, 578), 10), player) then

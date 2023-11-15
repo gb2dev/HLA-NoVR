@@ -375,11 +375,12 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
 
     if model == "models/interaction/anim_interact/twohandlift/twohandlift.vmdl" then
         SendToConsole("snd_sos_start_soundevent RollUpDoor.MoveLinear_Start")
+        thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 1)
     end
 
     if model == "models/interaction/anim_interact/rollingdoor/rollingdoor.vmdl" then
         count = thisEntity:GetCycle()
-        thisEntity:FireOutput("OnCompletionB", nil, nil, "0.2", 0)
+        thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
     end
 
     if name == "barricade_door_hook" then
