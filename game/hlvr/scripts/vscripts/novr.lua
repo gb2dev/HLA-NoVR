@@ -1768,7 +1768,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 		end, "UsingCombineGun", 0)
     end
 
-	function CombineGunHandleAnim()
+	function CombineGunHandleAnim(a, b)
 		-- todo: deal with handleState weird lua numeric error
 		local ent = Entities:FindByName(nil, "combine_gun_interact")
 		ent:FireOutput("OnCompletionD_Forward", nil, nil, nil, 0) -- charge sounds
