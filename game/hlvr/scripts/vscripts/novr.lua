@@ -1305,8 +1305,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 ent = Entities:FindByClassnameNearest("trigger_once", Vector(6243, 4212, 612), 20)
                                 ent:RedirectOutput("OnTrigger", "StartRevealEavesdrop", ent)
 
-                                ent = Entities:FindByName(nil, "ss_scanner_enter")
-                                ent:RedirectOutput("OnEndSequence", "StopRevealEavesdrop", ent)
+                                ent = Entities:FindByName(nil, "eavesdrop_mystery")
+                                ent:RedirectOutput("OnTrigger2", "StopRevealEavesdrop", ent)
 
                                 ent = Entities:FindByName(nil, "elevator_path_1")
                                 ent:RedirectOutput("OnPass", "EnableToiletElevatorLever", ent)
@@ -1720,7 +1720,13 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
         SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
         SendToConsole("disable_flashlight")
-        Entities:GetLocalPlayer():Attribute_SetIntValue("eavesdropping", 1)
+        local player = Entities:GetLocalPlayer()
+        player:Attribute_SetIntValue("eavesdropping", 1)
+
+        -- Detect shooting so Combine hear it
+        local pos = player:GetAbsOrigin()
+        local ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["targetname"]="bullet_trigger", ["modelscale"]=100, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl", ["origin"]="" .. pos.x .. " " .. pos.y .. " " .. pos.z})
+        DoEntFireByInstanceHandle(ent, "AddOutput", "OnDetectedBulletFire>relay_start_combat_early>Trigger>>0>1", 0, nil, nil)
     end
 
     function StopRevealEavesdrop()
