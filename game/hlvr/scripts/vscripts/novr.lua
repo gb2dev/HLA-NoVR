@@ -1315,6 +1315,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 ent:RedirectOutput("OnEntitySpawned", "DisableBarnacleHealthVialPickup", ent)
 
                                 SendToConsole("ent_fire @prop_phys_portaloo_door DisablePickup")
+                                SendToConsole("ent_fire elev_exit_teleport_clip Kill")
                             end
                         elseif GetMapName() == "a4_c17_water_tower" then
                             if not loading_save_file then
