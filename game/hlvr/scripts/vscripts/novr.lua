@@ -438,15 +438,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if vlua.find(Entities:FindAllInSphere(Vector(3314, 6048, 64), 10), player) then
                     ClimbLadder(142)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(2981, 5879, -303), 10), player) then
-                    ClimbLadder(-57)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2374, 6207, -177), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos 2342 6257 -153")
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2432, 6662, 160), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos 2431 6715 310")
+                    ClimbLadder(-43)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2374, 6207, -177), 10), player) then
+                    ClimbLadder(-130)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2432, 6662, 160), 10), player) then
+                    ClimbLadder(330)
                 elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6130, 384), 20), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
