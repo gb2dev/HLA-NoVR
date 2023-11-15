@@ -534,13 +534,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(180)
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(-1392,-2471,115), 20), player) then
+                if vlua.find(Entities:FindAllInSphere(Vector(-1392, -2471, 115), 20), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos_exact -1415 -2485 410")
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(-1420,-2482,472), 20), player) then
+                if vlua.find(Entities:FindAllInSphere(Vector(-1420, -2482, 472), 20), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos_exact -1392 -2471 53")
@@ -548,11 +548,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
 
             if GetMapName() == "a3_distillery" then
-                if vlua.find(Entities:FindAllInSphere(Vector(20,-496,211), 10), player) then
+                if vlua.find(Entities:FindAllInSphere(Vector(20, -496, 211), 10), player) then
                     ClimbLadder(462, false)
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(-24,-151,426), 5), player) then
+                if vlua.find(Entities:FindAllInSphere(Vector(-24, -151, 426), 5), player) then
                     if player:Attribute_GetIntValue("pulled_larry_ladder", 0) == 0 then
                         DoEntFireByInstanceHandle(Entities:FindByName(nil, "larry_ladder"), "RunScriptFile", "useextra", 0, nil, nil)
                     else
@@ -560,10 +560,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(515,1595,578), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 577 1597 668")
+                if vlua.find(Entities:FindAllInSphere(Vector(515, 1595, 578), 15), player) then
+                    ClimbLadder(670)
+                end
+
+                if vlua.find(Entities:FindAllInSphere(Vector(925, 1102, 578), 10), player) then
+                    SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher OnIn")
                 end
             end
 
