@@ -1326,10 +1326,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
                             ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
-							
+
 							SendToConsole("ent_fire combine_gun_grab_handle ClearParent aim_gun")
 							SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical") -- attach one of gun handles to the main model
-							
+
 							ent = Entities:FindByName(nil, "relay_shoot_gun")
                             ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
 							Convars:RegisterCommand("novr_shootcombinegun", function()
@@ -1734,6 +1734,12 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
         SendToConsole("impulse 200")
         Entities:GetLocalPlayer():Attribute_SetIntValue("eavesdropping", 0)
+    end
+
+    function EnableToiletElevatorLever()
+        local ent = Entities:FindByName(nil, "plug_console_starter_lever")
+        ent:Attribute_SetIntValue("used", 0)
+        DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
     end
 
     function DisableBarnacleHealthVialPickup()
