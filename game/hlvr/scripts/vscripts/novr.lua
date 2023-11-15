@@ -1316,6 +1316,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 ent = Entities:FindByName(nil, "waste_vial_template_1")
                                 ent:RedirectOutput("OnEntitySpawned", "DisableBarnacleHealthVialPickup", ent)
 
+                                ent = Entities:FindByName(nil, "antlion_tanker_spitter_01")
+                                ent:SetAbsOrigin(Vector(3310.622, 6371.935, 100))
+
                                 SendToConsole("ent_fire @prop_phys_portaloo_door DisablePickup")
                                 SendToConsole("ent_fire elev_exit_teleport_clip Kill")
                             end
