@@ -628,9 +628,9 @@ if vlua.find(model, "models/props/interior_furniture/interior_kitchen_cabinet_")
             end
         else
             if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-2000,0))
             else
-                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
             end
         end
     elseif vlua.find(model, "door_a") then

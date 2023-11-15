@@ -114,7 +114,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("unstuck", function()
         local player = Entities:GetLocalPlayer()
-        if player ~= nil and player:Attribute_GetIntValue("disable_unstuck", 0) == 1 then
+        if player ~= nil and player:Attribute_GetIntValue("disable_unstuck", 0) == 0 then
             local startVector = player:GetOrigin()
             local minVector = player:GetBoundingMins()
             minVector.x = minVector.x + 0.01
@@ -1361,10 +1361,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
                             if Entities:FindByClassname(nil, "weapon_frag") == nil then
                                 SendToConsole("r_drawviewmodel 0")
+                                ent:SetThink(function()
+                                    SendToConsole("hidehud 67")
+                                end, "", 0)
+                            else
+                                ent:SetThink(function()
+                                    SendToConsole("hidehud 64")
+                                end, "", 0)
                             end
-                            ent:SetThink(function()
-                                SendToConsole("hidehud 67")
-                            end, "", 0)
 
                             if not loading_save_file then
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER11_TITLE"})
