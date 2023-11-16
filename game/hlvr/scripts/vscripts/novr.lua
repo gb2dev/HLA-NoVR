@@ -1152,6 +1152,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent = Entities:FindByName(nil, "base_dropdown_template_1")
                             ent:RedirectOutput("OnEntitySpawned", "DisableBarnacleAmmoPickup", ent)
                         end
+                    elseif GetMapName() == "a3_hotel_underground_pit" then
+                        ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", Vector(2012, -1571, 408), 10)
+                        DoEntFireByInstanceHandle(ent, "SetOpenDirection", "1", 0, nil, nil)
                     elseif GetMapName() == "a3_hotel_street" then
                         if not loading_save_file then
                             Entities:FindByName(nil, "elev_anim_door"):Attribute_SetIntValue("toggle", 1)
