@@ -94,7 +94,6 @@ local eyetrace =
     mask = -1
 }
 TraceLine(eyetrace)
-
 if eyetrace.hit then
     local useRoutine = 0
     if eyetrace.enthit and eyetrace.enthit:GetClassname() == "worldent" then
