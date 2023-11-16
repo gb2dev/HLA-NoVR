@@ -664,6 +664,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("alias -leftfixed -iv_left")
             SendToConsole("alias +rightfixed \"+iv_right;unstuck\"")
             SendToConsole("alias -rightfixed -iv_right")
+            SendToConsole("bind " .. INTERACT .. " \"+use;useextra\"")
             SendToConsole("bind " .. JUMP .. " jumpfixed")
             SendToConsole("bind " .. NOCLIP .. " noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
@@ -745,6 +746,17 @@ if GlobalSys:CommandLineCheck("-novr") then
             while ent do
                 ent:RedirectOutput("OnLockedUse", "PlayLockedDoorHandleAnimation", ent)
                 ent = Entities:FindByClassname(ent, "prop_door_rotating_physics")
+            end
+            -- Disable func_tracktrain user control
+            ent = Entities:FindByClassname(nil, "func_tracktrain")
+            while ent do
+                local name = ent:GetName()
+                if name == "" then
+                    name = "" .. thisEntity:GetEntityIndex()
+                    ent:SetEntityName(name)
+                end
+                local traincontrols = SpawnEntityFromTableSynchronous("func_traincontrols", {["target"]=name})
+                ent = Entities:FindByClassname(ent, "func_tracktrain")
             end
 
             if Entities:FindByClassname(nil, "prop_hmd_avatar") then
@@ -850,13 +862,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                         if not (GetMapName() == "a3_c17_processing_plant" and #Entities:FindAllByClassnameWithin("shatterglass_shard", player:GetCenter(), 100) == 1) then
                             DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
                         end
-                    end
-
-                    if Entities:FindByClassnameNearest("func_tracktrain", player:GetCenter(), 80) then
-                        SendToConsole("bind " .. INTERACT .. " \"useextra\"")
-                        SendToConsole("-use")
-                    else
-                        SendToConsole("bind " .. INTERACT .. " \"+use;useextra\"")
                     end
 
                     if Entities:GetLocalPlayer():GetBoundingMaxs().z == 36 then
