@@ -493,8 +493,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     else
                         SendToConsole("ent_fire elev_button_floor_1 Press")
                     end
-                elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 10), player) then
-                    ClimbLadder(280)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1487, 208), 15), player) then
+                    ClimbLadder(270, Vector(0, 0.7, 1))
                 end
             elseif GetMapName() == "a3_hotel_underground_pit" then
                 if vlua.find(Entities:FindAllInSphere(Vector(2239, -1017, 528), 15), player) then
@@ -1568,7 +1568,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if push_direction == nil then
                     ent:SetVelocity(Vector(ent:GetForwardVector().x, ent:GetForwardVector().y, 0):Normalized() * 150)
                 else
-                    ent:SetVelocity(Vector(push_direction.z, push_direction.y, push_direction.z):Normalized() * 150)
+                    ent:SetVelocity(Vector(push_direction.z, push_direction.y, push_direction.z) * 150)
                 end
                 SendToConsole("+iv_duck;-iv_duck")
             else
