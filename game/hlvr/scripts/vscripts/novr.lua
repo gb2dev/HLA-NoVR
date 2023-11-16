@@ -427,71 +427,26 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
-            if GetMapName() == "a5_vault" then
-                if vlua.find(Entities:FindAllInSphere(Vector(-445, 2900, -515), 10), player) then
-                    ClimbLadder(-450, Vector(0, 0, 1))
+            -- Ladders and position based interactions
+            if GetMapName() == "a1_intro_world" then
+                if vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
+                    ClimbLadder(-64)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 20), player) then
+                    ClimbLadderSound()
+                    SendToConsole("fadein 0.2")
+                    SendToConsole("setpos_exact 574 -2328 -130")
                 end
-            end
-
-            if GetMapName() == "a4_c17_water_tower" then
-                if vlua.find(Entities:FindAllInSphere(Vector(3314, 6048, 64), 10), player) then
-                    ClimbLadder(142)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2981, 5879, -303), 10), player) then
-                    ClimbLadder(-43)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2374, 6207, -177), 10), player) then
-                    ClimbLadder(-130)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2432, 6662, 160), 10), player) then
-                    ClimbLadder(330)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6130, 384), 10), player) then
-                    ClimbLadder(575)
+            elseif GetMapName() == "a1_intro_world_2" then
+                if vlua.find(Entities:FindAllInSphere(Vector(-1268, 576, -63), 10), player) and Entities:FindByName(nil, "balcony_ladder"):GetSequence() == "idle_open" then
+                    ClimbLadder(80)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(-911, 922, -68), 10), player) then
+                    ClimbLadder(-22)
                 end
-            end
-
-            if GetMapName() == "a4_c17_tanker_yard" then
-                if vlua.find(Entities:FindAllInSphere(Vector(6980, 2591, 13), 10), player) then
-                    ClimbLadder(260)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(6618, 2938, 334), 10), player) then
-                    ClimbLadder(402)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 10), player) then
-                    ClimbLadder(686)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(5456, 4876, 288), 10), player) then
-                    ClimbLadder(420)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(5434, 5755, 273), 10), player) then
-                    ClimbLadder(403, -player:GetRightVector())
+            elseif GetMapName() == "a2_pistol" then
+                if vlua.find(Entities:FindAllInSphere(Vector(439, 896, 454), 10), player) then
+                    ClimbLadder(540)
                 end
-            end
-
-            if GetMapName() == "a3_station_street" then
-                if vlua.find(Entities:FindAllInSphere(Vector(934, 1883, -135), 20), player) then
-                    SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
-                end
-            end
-
-            if GetMapName() == "a3_hotel_interior_rooftop" then
-                if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
-                    ClimbLadder(560)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2335, -1832, 757), 20), player) then
-                    ClimbLadder(840, Vector(0, 0, 0))
-                end
-            end
-
-            if GetMapName() == "a3_hotel_lobby_basement" then
-                if vlua.find(Entities:FindAllInSphere(Vector(1059, -1475, 200), 20), player) then
-                    if player:Attribute_GetIntValue("EnabledHotelLobbyPower", 0) == 1 then
-                        SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
-                    else
-                        SendToConsole("ent_fire elev_button_floor_1 Press")
-                    end
-                elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 10), player) then
-                    ClimbLadder(280)
-                end
-            end
-
-            if GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(354, -251, -62), 18), player) then
-                ClimbLadder(22)
-            end
-
-            if GetMapName() == "a2_hideout" then
+            elseif GetMapName() == "a2_hideout" then
                 local startVector = player:EyePosition()
                 local traceTable =
                 {
@@ -517,9 +472,33 @@ if GlobalSys:CommandLineCheck("-novr") then
                     local ent = Entities:FindByName(nil, "bell")
                     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
                 end
-            end
-
-            if GetMapName() == "a3_c17_processing_plant" then
+            elseif GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(354, -251, -62), 18), player) then
+                ClimbLadder(22)
+            elseif GetMapName() == "a3_station_street" then
+                if vlua.find(Entities:FindAllInSphere(Vector(934, 1883, -135), 20), player) then
+                    SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
+                end
+            elseif GetMapName() == "a3_hotel_lobby_basement" then
+                if vlua.find(Entities:FindAllInSphere(Vector(1059, -1475, 200), 20), player) then
+                    if player:Attribute_GetIntValue("EnabledHotelLobbyPower", 0) == 1 then
+                        SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
+                    else
+                        SendToConsole("ent_fire elev_button_floor_1 Press")
+                    end
+                elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1467, 208), 10), player) then
+                    ClimbLadder(280)
+                end
+            elseif GetMapName() == "a3_hotel_underground_pit" then
+                if vlua.find(Entities:FindAllInSphere(Vector(2239, -1017, 528), 15), player) then
+                    ClimbLadder(570)
+                end
+            elseif GetMapName() == "a3_hotel_interior_rooftop" then
+                if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
+                    ClimbLadder(560)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2335, -1832, 757), 20), player) then
+                    ClimbLadder(840, Vector(0, 0, 0))
+                end
+            elseif GetMapName() == "a3_c17_processing_plant" then
                 if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 15), player) and Entities:FindByName(nil, "factory_int_up_barnacle_npc_1"):GetHealth() <= 0 then
                     ClimbLadder(890)
                 end
@@ -557,9 +536,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos_exact -1392 -2471 53")
                 end
-            end
-
-            if GetMapName() == "a3_distillery" then
+            elseif GetMapName() == "a3_distillery" then
                 if vlua.find(Entities:FindAllInSphere(Vector(20, -496, 211), 10), player) then
                     ClimbLadder(462)
                 end
@@ -579,29 +556,33 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if vlua.find(Entities:FindAllInSphere(Vector(925, 1102, 578), 10), player) then
                     SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher OnIn")
                 end
-            end
-
-            if GetMapName() == "a1_intro_world" then
-                if vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
-                    ClimbLadder(-64)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 574 -2328 -130")
+            elseif GetMapName() == "a4_c17_tanker_yard" then
+                if vlua.find(Entities:FindAllInSphere(Vector(6980, 2591, 13), 10), player) then
+                    ClimbLadder(260)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(6618, 2938, 334), 10), player) then
+                    ClimbLadder(402)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 10), player) then
+                    ClimbLadder(686)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(5456, 4876, 288), 10), player) then
+                    ClimbLadder(420)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(5434, 5755, 273), 10), player) then
+                    ClimbLadder(403, -player:GetRightVector())
                 end
-            end
-
-            if GetMapName() == "a1_intro_world_2" then
-                if vlua.find(Entities:FindAllInSphere(Vector(-1268, 576, -63), 10), player) and Entities:FindByName(nil, "balcony_ladder"):GetSequence() == "idle_open" then
-                    ClimbLadder(80)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(-911, 922, -68), 10), player) then
-                    ClimbLadder(-22)
+            elseif GetMapName() == "a4_c17_water_tower" then
+                if vlua.find(Entities:FindAllInSphere(Vector(3314, 6048, 64), 10), player) then
+                    ClimbLadder(142)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2981, 5879, -303), 10), player) then
+                    ClimbLadder(-43)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2374, 6207, -177), 10), player) then
+                    ClimbLadder(-130)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2432, 6662, 160), 10), player) then
+                    ClimbLadder(330)
+                elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6130, 384), 10), player) then
+                    ClimbLadder(575)
                 end
-            end
-
-            if GetMapName() == "a2_pistol" then
-                if vlua.find(Entities:FindAllInSphere(Vector(439, 896, 454), 10), player) then
-                    ClimbLadder(540)
+            elseif GetMapName() == "a5_vault" then
+                if vlua.find(Entities:FindAllInSphere(Vector(-445, 2900, -515), 10), player) then
+                    ClimbLadder(-450, Vector(0, 0, 1))
                 end
             end
         else
