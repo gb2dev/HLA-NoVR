@@ -95,7 +95,7 @@ local eyetrace =
 }
 TraceLine(eyetrace)
 
-if eyetrace.hit or name ~= "peeled_corridor_objects" then
+if eyetrace.hit then
     local useRoutine = 0
     if eyetrace.enthit and eyetrace.enthit:GetClassname() == "worldent" then
         GravityGlovePull()
