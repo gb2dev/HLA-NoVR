@@ -771,10 +771,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
-            if is_on_map_or_later("a2_quarantine_entrance") then
-                HUDHearts_Show()
-            end
-
             ent = Entities:FindByName(nil, "lefthand")
             if not ent then
                 -- Hand for covering mouth animation
@@ -888,6 +884,13 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
             HUDHearts_StartupPreparations()
 
+            if is_on_map_or_later("a2_quarantine_entrance") then
+                ent = Entities:GetLocalPlayer()
+                ent:SetThink(function() 
+                    HUDHearts_StartUpdateLoop()
+                end, "", 1.5)
+            end
+
             if GetMapName() == "a1_intro_world" then
                 if not loading_save_file then
                     SendToConsole("ent_fire player_speedmod ModifySpeed 0")
@@ -968,8 +971,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
-                    ent:SetThink(function()
-                        HUDHearts_Show()
+                    HUDHearts_Show()
+                    ent:SetThink(function() 
+                        HUDHearts_StartUpdateLoop()
                     end, "", 1.5)
                 end
 

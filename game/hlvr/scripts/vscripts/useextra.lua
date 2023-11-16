@@ -747,6 +747,9 @@ if name == "glove_dispenser_brush" then
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
     SendToConsole("hudhearts_show")
+    player:SetThink(function() 
+        SendToConsole("hudhearts_startupdateloop")
+    end, "", 1.5)
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 end
 
