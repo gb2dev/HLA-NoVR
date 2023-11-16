@@ -419,11 +419,19 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             TraceLine(traceTable)
 
-            if traceTable.hit 
-            then
+            if traceTable.hit then
                 local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
                 if ent then
                     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+                end
+
+                ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 10)
+                if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
+                    ent:Attribute_SetIntValue("used", 1)
+                    DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+                    DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                    ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                    ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
                 end
             end
 
