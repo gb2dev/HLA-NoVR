@@ -17,8 +17,11 @@ if GlobalSys:CommandLineCheck("-novr") then
     player_hurt_ev = ListenToGameEvent('player_hurt', function(info)
         -- Hack to stop pausing the game on death
         if info.health == 0 then
-            SendToConsole("reload")
-            SendToConsole("r_drawvgui 0")
+            Entities:GetLocalPlayer():SetThink(function()
+                SendToServerConsole("unpause")
+            end, "test", 0)
+            --SendToConsole("reload")
+            --SendToConsole("r_drawvgui 0")
         end
 
         -- Kill on fall damage
