@@ -17,9 +17,14 @@ if GlobalSys:CommandLineCheck("-novr") then
     player_hurt_ev = ListenToGameEvent('player_hurt', function(info)
         -- Hack to stop pausing the game on death
         if info.health == 0 then
+            SendToConsole("bind " .. JUMP .. " unpause")
+            SendToServerConsole("unpause")
             Entities:GetLocalPlayer():SetThink(function()
                 SendToServerConsole("unpause")
-            end, "UnpauseOnDeath", 0)
+            end, "UnpauseOnDeath1", 0)
+            Entities:GetLocalPlayer():SetThink(function()
+                SendToServerConsole("unpause")
+            end, "UnpauseOnDeath2", 0.02)
         end
 
         -- Kill on fall damage
@@ -628,7 +633,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("snd_remove_soundevent HL2Player.UseDeny")
 
         -- Script update date and time
-        DebugDrawScreenTextLine(5, 10, 0, "Fri Nov 17 22:54:23 UTC 2023", 255, 255, 255, 255, 999999)
+        DebugDrawScreenTextLine(5, 10, 0, "Fri Nov 17 23:35:33 UTC 2023", 255, 255, 255, 255, 999999)
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
@@ -820,7 +825,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local angles = ent:GetAngles()
                 ent:SetThink(function()
                     Entities:GetLocalPlayer():SetOrigin(Entities:GetLocalPlayer():GetOrigin())
-                end, "FixTiltedView", 0.5)
+                end, "FixTiltedView", 1)
                 local look_delta = QAngle(0, 0, 0)
                 local move_delta = Vector(0, 0, 0)
 
@@ -1728,10 +1733,16 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1165, -3770, 158), 10)
             if ent then
                 ent:SetAbsAngles(90, -166, 0)
-                ent:SetAbsOrigin(Vector(-1175, -3770, 140))
+                ent:SetAbsOrigin(Vector(-1175, -3770, 135))
             end
 
-            ent = SpawnEntityFromTableSynchronous("prop_physics", {["model"]="models/props_c17/oildrum001_explosive.vmdl", ["origin"]="-1260 -3765 105"})
+            
+            ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1105.788, -4058.940, 164.177), 10)
+            if ent then
+                ent:SetAbsOrigin(Vector(-1105.788, -4058.940, 140))
+            end
+
+            ent = SpawnEntityFromTableSynchronous("prop_physics", {["model"]="models/props_c17/oildrum001_explosive.vmdl", ["origin"]="-1121 -3814 105"})
 
             AddCollisionToPhysicsProps("prop_physics")
             AddCollisionToPhysicsProps("prop_physics_override")
