@@ -19,9 +19,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         if info.health == 0 then
             Entities:GetLocalPlayer():SetThink(function()
                 SendToServerConsole("unpause")
-            end, "test", 0)
-            --SendToConsole("reload")
-            --SendToConsole("r_drawvgui 0")
+            end, "UnpauseOnDeath", 0)
         end
 
         -- Kill on fall damage
@@ -1155,6 +1153,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER4_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                            ent = Entities:FindByName(nil, "door")
+                            DoEntFireByInstanceHandle(ent, "SetOpenDirection", "" .. 2, 0, nil, nil)
                         end
                     elseif GetMapName() == "a3_hotel_lobby_basement" then
                         if not loading_save_file then
