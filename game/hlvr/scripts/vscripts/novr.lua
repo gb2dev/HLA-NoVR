@@ -234,6 +234,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         --end
     end, "", 0)
 
+    -- Register variable for ads zoom
+    FOV_ADS_ZOOM = 40
+    Convars:RegisterConvar("fov_ads_zoom", "", "", 0)
+    cvar_setf("fov_ads_zoom", FOV)
 
     -- Custom attack 2
     Convars:RegisterCommand("+customattack2", function()
@@ -241,9 +245,11 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
 
         -- Reset viewmodel after auto weapon switch
-        if viewmodel and cvar_getf("fov_desired") == 40 and not string.match(viewmodel:GetModelName(), "_ads.vmdl") then
+        if viewmodel and cvar_getf("fov_ads_zoom") == FOV_ADS_ZOOM and not string.match(viewmodel:GetModelName(), "_ads.vmdl") then
             ViewmodelAnimation_ResetAnimation()
-            cvar_setf("fov_desired", FOV)
+            --cvar_setf("fov_desired", FOV)
+            cvar_setf("fov_ads_zoom", FOV)
+            SendToConsole("ent_fire ads_zoom unzoom")
             cvar_setf("viewmodel_offset_x", 0)
             cvar_setf("viewmodel_offset_y", 0)
             cvar_setf("viewmodel_offset_z", 0)
@@ -257,17 +263,19 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
-                    if cvar_getf("fov_desired") > 40 then
+                    if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", -0.04)
+                        SendToConsole("ent_fire ads_zoom zoom")
                         ViewmodelAnimation_HIPtoADS()
                         player:SetThink(function()
-                            cvar_setf("fov_desired", 40)
+                            cvar_setf("fov_ads_zoom", FOV_ADS_ZOOM)
                             cvar_setf("viewmodel_offset_x", -0.005)
-                        end, "ZoomActivate", 0.9)
+                        end, "ZoomActivate", 0.5)
                         SendToConsole("crosshair 0")
                     else
-                        cvar_setf("fov_desired", FOV)
+                        cvar_setf("fov_ads_zoom", FOV)
+                        SendToConsole("ent_fire ads_zoom unzoom")
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
@@ -277,16 +285,18 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                 if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then                    
-                    if cvar_getf("fov_desired") > 40 then
+                    if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", -0.045)
+                        SendToConsole("ent_fire ads_zoom zoom")
                         ViewmodelAnimation_HIPtoADS()
                         player:SetThink(function()
-                            cvar_setf("fov_desired", 40)
+                            cvar_setf("fov_ads_zoom", FOV_ADS_ZOOM)
                             cvar_setf("viewmodel_offset_x", 0.025)
-                        end, "ZoomActivate", 1)
+                        end, "ZoomActivate", 0.5)
                     else
-                        cvar_setf("fov_desired", FOV)
+                        cvar_setf("fov_ads_zoom", FOV)
+                        SendToConsole("ent_fire ads_zoom unzoom")
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
@@ -790,10 +800,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
-            if is_on_map_or_later("a2_quarantine_entrance") then
-                HUDHearts_Show()
-            end
-
             ent = Entities:FindByName(nil, "lefthand")
             if not ent then
                 -- Hand for covering mouth animation
@@ -842,7 +848,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         look_delta = viewmodel:GetAngles()
 
                         -- Set weapon sway and view bob if zoom is not active
-                        if cvar_getf("fov_desired") > 40 then
+                        if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
                             cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
                             cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
                         end
@@ -899,6 +905,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ViewmodelAnimation_LevelChange()
             end
             HUDHearts_StartupPreparations()
+            ViewmodelAnimation_ADSZoom()
+
+            if is_on_map_or_later("a2_quarantine_entrance") then
+                ent = Entities:GetLocalPlayer()
+                ent:SetThink(function() 
+                    HUDHearts_StartUpdateLoop()
+                end, "", 1.5)
+            end
 
             if GetMapName() == "a1_intro_world" then
                 if not loading_save_file then
@@ -980,8 +994,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
-                    ent:SetThink(function()
-                        HUDHearts_Show()
+                    HUDHearts_Show()
+                    ent:SetThink(function() 
+                        HUDHearts_StartUpdateLoop()
                     end, "", 1.5)
                 end
 

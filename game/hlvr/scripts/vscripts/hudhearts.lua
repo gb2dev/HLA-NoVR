@@ -16,7 +16,7 @@ function HUDHearts_StartupPreparations()
 	if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
 		local player = Entities:GetLocalPlayer()
 		player:SetThink(function()
-			--HUDHearts_Background()
+			HUDHearts_Background()
 			HUDHearts_UpdateHealth()
 		end, "HUDHearts_MapChange", 1)
 	end
@@ -100,15 +100,27 @@ function HUDHearts_Hide()
 end
 
 function HUDHearts_Show()
-	-- TODO: Fix buggy background
-	--HUDHearts_Background()
+	HUDHearts_Background()
+	HUDHearts_UpdateHealth()
+
+	print("[HUDHearts] Show hud hearts")
+end
+
+function HUDHearts_StartUpdateLoop()
 	-- Update hud hearts
 	local player = Entities:GetLocalPlayer()
 	player:SetThink(function()
 		HUDHearts_UpdateHealth()
 		return 0.1
-	end, "HUDHearts_UpdateHealth", 0)
-	print("[HUDHearts] Show hud hearts")
+	end, "HUDHearts_UpdateLoop", 0)
+	print("[HUDHearts] Start hud hearts update loop")
+end
+
+function HUDHearts_StopUpdateLoop()
+	-- Stop hud hearts update
+	local player = Entities:GetLocalPlayer()
+	player:StopThink("HUDHearts_UpdateLoop")
+	print("[HUDHearts] Stop hud hearts update loop")
 end
 
 Convars:RegisterCommand("hudhearts_updatehealth" , function()
@@ -129,3 +141,11 @@ Convars:RegisterCommand("hudhearts_recreate" , function()
 	SendToConsole("ent_remove text_hearts")
 	HUDHearts_StartupPreparations()
 end, "Recreate hud heart icons", 0)
+
+Convars:RegisterCommand("hudhearts_startupdateloop" , function()
+	HUDHearts_StartUpdateLoop()
+end, "Start hud heart update loop", 0)
+
+Convars:RegisterCommand("hudhearts_stopupdateloop" , function()
+	HUDHearts_StopUpdateLoop()
+end, "Stop hud heart update loop", 0)
