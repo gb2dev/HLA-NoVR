@@ -118,7 +118,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
         if player:Attribute_GetIntValue("noclip_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("noclip_tutorial_shown", 1)
-            SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
+            SendToConsole("ent_fire text_noclip ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
         end
 
@@ -647,7 +647,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 12:30", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 12:31", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
