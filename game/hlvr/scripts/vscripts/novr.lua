@@ -114,6 +114,17 @@ if GlobalSys:CommandLineCheck("-novr") then
         player:Attribute_SetIntValue("disable_unstuck", 0)
     end, nil)
 
+    Convars:RegisterCommand("toggle_noclip", function()
+        local player = Entities:GetLocalPlayer()
+        if player:Attribute_GetIntValue("noclip_tutorial_shown", 0) == 0 then
+            player:Attribute_SetIntValue("noclip_tutorial_shown", 1)
+            SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+        end
+
+        SendToConsole("noclip")
+    end, "", 0)
+
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
 
     Convars:RegisterConvar("weapon_in_crafting_station", "", "", 0)
@@ -636,7 +647,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 12:16", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 12:30", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -678,7 +689,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("alias -rightfixed -iv_right")
             SendToConsole("bind " .. INTERACT .. " \"+use;useextra\"")
             SendToConsole("bind " .. JUMP .. " jumpfixed")
-            SendToConsole("bind " .. NOCLIP .. " noclip")
+            SendToConsole("bind " .. NOCLIP .. " toggle_noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
             SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
@@ -908,6 +919,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             SendToConsole("ent_remove text_crouchjump")
             SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
+
+            SendToConsole("ent_remove text_noclip")
+            SendToConsole("ent_create env_message { targetname text_noclip message NOCLIP }")
 
             --WristPockets_StartupPreparations()
             --WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
