@@ -1113,14 +1113,14 @@ if name == "2860_window_sliding1" then
     SendToConsole("setpos_exact 1437 -1422 140")
 end
 
-if name == "2_11128_cshield_station_prop_button" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    --thisEntity:Attribute_SetIntValue("used", 1)
-    --SendToConsole("ent_fire 2_11128_cshield_station_relay_button_pressed Trigger")
+if name == "2_11128_cshield_station_1" then
+    if thisEntity:GetCycle() == 1 then
+        Entities:FindByName(nil, "2_11128_cshield_station_handpose"):FireOutput("OnHandPosed", nil, nil, nil, 0)
+    end
 end
 
-if name == "2_11128_cshield_station_1" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    --thisEntity:Attribute_SetIntValue("used", 1)
-    --SendToConsole("ent_fire_output 2_11128_cshield_station_hack_plug OnHackSuccess")
+if name == "2_11128_cshield_station_prop_button" then
+    Entities:FindByName(nil, "2_11128_cshield_station_handpose"):FireOutput("OnHandPosed", nil, nil, nil, 0)
 end
 
 if name == "254_16189_combine_locker" then

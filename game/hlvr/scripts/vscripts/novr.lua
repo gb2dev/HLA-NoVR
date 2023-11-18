@@ -445,9 +445,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
                     ent:Attribute_SetIntValue("used", 1)
                     DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
-                    DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-                    ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-                    ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                    if not vlua.find(ent:GetName(), "cshield") then
+                        DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                        ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                        ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                    end
                 end
             end
 
@@ -634,7 +636,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 11:25", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 11:54", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
