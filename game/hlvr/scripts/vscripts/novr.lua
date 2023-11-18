@@ -828,7 +828,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 ent:SetThink(function()
                     -- Script update date and time
-        DebugDrawScreenTextLine(5, 10, 0, "Fri Nov 17 23:44:21 UTC 2023", 255, 255, 255, 255, 999999)
+        DebugDrawScreenTextLine(5, 10, 0, "Sat Nov 18 00:43:37 UTC 2023", 255, 255, 255, 255, 999999)
 
                     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                     local player = Entities:GetLocalPlayer()
@@ -843,20 +843,21 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
 
                     if cvar_getf("viewmodel_offset_y") ~= -20 then
-                        local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y / 4000
-                        local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x / 4000
+                        local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y * 0.002
+                        local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x * 0.002
                         local angle = player:GetAngles()
                         angle = QAngle(0, -angle.y, 0)
                         move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
 
-                        local weapon_sway_x = Lerp(0.01, cvar_getf("viewmodel_offset_x"), RotationDelta(look_delta, viewmodel:GetAngles()).y) * 0.70
-                        local weapon_sway_y = Lerp(0.01, cvar_getf("viewmodel_offset_y"), RotationDelta(look_delta, viewmodel:GetAngles()).x) * 0.65
+                        local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.03
+                        local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.03
+
                         look_delta = viewmodel:GetAngles()
 
                         -- Set weapon sway and view bob if zoom is not active
                         if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
-                            cvar_setf("viewmodel_offset_x", view_bob_x + weapon_sway_x)
-                            cvar_setf("viewmodel_offset_y", view_bob_y + weapon_sway_y)
+                            cvar_setf("viewmodel_offset_x", Lerp(0.06, cvar_getf("viewmodel_offset_x"), view_bob_x + weapon_sway_x))
+                            cvar_setf("viewmodel_offset_y", Lerp(0.06, cvar_getf("viewmodel_offset_y"), view_bob_y + weapon_sway_y))
                         end
 
                     end
