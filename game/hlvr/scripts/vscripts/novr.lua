@@ -85,7 +85,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             if child and child:GetClassname() == "prop_dynamic" then
                 child:SetEntityName("held_prop_dynamic_override")
             end
-            ent:Attribute_SetIntValue("picked_up", 1)
+            if ent:GetClassname() ~= "item_hlvr_grenade_frag" then
+                ent:Attribute_SetIntValue("picked_up", 1)
+            end
             player:Attribute_SetIntValue("picked_up", 1)
             player:SetThink(function()
                 player:Attribute_SetIntValue("picked_up", 0)
@@ -637,7 +639,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 20:28", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 23:16", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -904,6 +906,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             SendToConsole("ent_remove text_resin")
             SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.16 }")
+
+            SendToConsole("ent_remove text_grenade")
+            SendToConsole("ent_create env_message { targetname text_grenade message GRENADE }")
 
             SendToConsole("ent_remove text_syringe")
             SendToConsole("ent_create env_message { targetname text_syringe message SYRINGE }")

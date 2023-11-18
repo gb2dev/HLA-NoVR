@@ -1632,6 +1632,12 @@ elseif class == "item_hlvr_clip_rapidfire" then
 elseif class == "item_hlvr_grenade_frag" and player:Attribute_GetIntValue("grenade", 0) == 0 then
     local goesInPocket = false -- keep the code to use it with proper tweaks
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
+        if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
+            player:Attribute_SetIntValue("grenade_tutorial_shown", 1)
+            SendToConsole("ent_fire text_grenade ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+        end
+
         local ent = Entities:FindByName(nil, "player_radio_station")
         if ent then
             DoEntFireByInstanceHandle(ent, "SpeakConcept", "speech:open_grenades", 0, nil, nil)
@@ -1673,8 +1679,8 @@ elseif class == "item_healthvial" then
 	--	WristPockets_PickUpHealthPen(player, thisEntity)
 	--	FireGameEvent("item_pickup", item_pickup_params)
     elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
+        player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         SendToConsole("ent_fire text_syringe ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
-        player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
     end
 end
