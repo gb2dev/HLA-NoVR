@@ -632,6 +632,9 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("mouse_pitchyaw_sensitivity " .. MOUSE_SENSITIVITY)
         SendToConsole("snd_remove_soundevent HL2Player.UseDeny")
 
+        -- Script update date and time
+        DebugDrawScreenTextLine(5, 10, 0, "Fri Nov 17 23:35:33 UTC 2023", 255, 255, 255, 255, 999999)
+
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
             SendToConsole("hidehud 96")
@@ -827,9 +830,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local move_delta = Vector(0, 0, 0)
 
                 ent:SetThink(function()
-                    -- Script update date and time
-        DebugDrawScreenTextLine(5, 10, 0, "Sat Nov 18 00:43:37 UTC 2023", 255, 255, 255, 255, 999999)
-
                     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                     local player = Entities:GetLocalPlayer()
 
