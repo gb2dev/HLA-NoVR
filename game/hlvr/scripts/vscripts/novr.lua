@@ -17,13 +17,12 @@ if GlobalSys:CommandLineCheck("-novr") then
     player_hurt_ev = ListenToGameEvent('player_hurt', function(info)
         -- Hack to stop pausing the game on death
         if info.health == 0 then
-            SendToConsole("bind " .. JUMP .. " unpause")
-            SendToServerConsole("unpause")
+            PlayerDied()
             Entities:GetLocalPlayer():SetThink(function()
-                SendToServerConsole("unpause")
+                PlayerDied()
             end, "UnpauseOnDeath1", 0)
             Entities:GetLocalPlayer():SetThink(function()
-                SendToServerConsole("unpause")
+                PlayerDied()
             end, "UnpauseOnDeath2", 0.02)
         end
 
@@ -647,7 +646,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 12:31", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 12:42", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1478,6 +1477,14 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         SendToConsole("bind " .. CONSOLE .. " +toggleconsole")
     end, nil)
+
+    function PlayerDied()
+        SendToServerConsole("unpause")
+        HUDHearts_StopUpdateLoop()
+        HUDHearts_Hide()
+        SendToConsole("disable_flashlight")
+        SendToConsole("binddefaults")
+    end
 
     function GoToMainMenu(a, b)
         if Convars:GetBool("vr_enable_fake_vr") then
