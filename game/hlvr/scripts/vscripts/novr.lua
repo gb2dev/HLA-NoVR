@@ -235,26 +235,37 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
     end, "", 0)
 
-    Convars:RegisterCommand("slowgrenade", function()
+    Convars:RegisterCommand("throwgrenade", function(name, launcher)
         local player = Entities:GetLocalPlayer()
-        local count = 0
-        player:SetThink(function()
-            local grenade = Entities:FindByClassnameWithin(nil, "item_hlvr_grenade_frag", player:EyePosition(), 30)
-            if grenade then
-                player:Attribute_SetIntValue("grenades", player:Attribute_GetIntValue("grenades", 0) - 1)
-                if player:Attribute_GetIntValue("grenades", 0) == 0 then
-                    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-                    if string.match(viewmodel:GetModelName(), "v_grenade") then
-                        viewmodel:AddEffects(32)
-                    end
+        if player:Attribute_GetIntValue("grenade", 0) == 0 then
+            SendToConsole("play sounds/common/wpn_denyselect.vsnd")
+            return
+        end
+        player:Attribute_SetIntValue("grenade", 0)
+        DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
+        local pos = player:EyePosition()
+        local ent = SpawnEntityFromTableSynchronous("item_hlvr_grenade_frag", {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
+        ent:SetOwner(player)
+        if launcher then
+            ent:ApplyAbsVelocityImpulse(player:GetForwardVector() * 1000)
+            local velocity = GetPhysVelocity(ent)
+            ent:SetThink(function()
+                local new_velocity = GetPhysVelocity(ent)
+                if VectorDistanceSq(velocity, new_velocity) > 50000 then
+                    DoEntFireByInstanceHandle(ent, "SetTimer", "0", 0, nil, nil)
+                    return nil
                 end
-                return nil
-            end
-            if count < 10 then
-                count = count + 1
+                velocity = new_velocity
                 return 0
-            end
-        end, "CountGrenades", 1.9)
+            end, "ExplodeOnImpact", 0)
+        else
+            ent:ApplyAbsVelocityImpulse(player:GetForwardVector() * 500)
+            SendToConsole("impulse 200")
+            player:SetThink(function()
+                SendToConsole("impulse 200")
+            end, "FinishGrenadeThrow", 0.02)
+        end
+        DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
     end, "", 0)
 
     -- Register variable for ads zoom
@@ -343,36 +354,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         if viewmodel then
             if string.match(viewmodel:GetModelName(), "v_shotgun") then
                 if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 1 then
-                    SendToConsole("use weapon_frag")
-                    Entities:GetLocalPlayer():SetThink(function()
-                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
-                        -- Do not eqip grenade viewmodel if there is no weapon frag entity
-                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
-                            viewmodel:SetModel("models/weapons/v_grenade_novr.vmdl")
-                        end
-                    end, "SwitchViewmodel", 1)
-                    -- Hide grenade viewmodel
-                    SendToConsole("ent_fire weapon_frag hideweapon")
-                    -- Start attack
-                    Entities:GetLocalPlayer():SetThink(function()
-                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
-                        -- This will prevent shotgun attack if grenade amount is 0
-                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
-                            SendToConsole("+attack")
-                        end
-                    end, "StartAttack", 1.26)
-                    -- Stop attack
-                    Entities:GetLocalPlayer():SetThink(function()
-                        local grenade_viewmodel = Entities:FindByClassname(nil, "viewmodel")
-                        if grenade_viewmodel and string.match(viewmodel:GetModelName(), "v_grenade") then
-                            SendToConsole("-attack")
-                        end
-                    end, "StopAttack", 1.36)
-                    -- Equip shotgun
-                    Entities:GetLocalPlayer():SetThink(function()
-                        SendToConsole("use weapon_shotgun")
-                        SendToConsole("viewmodel_update")
-                    end, "BackToShotgun", 1.66)
+                    SendToConsole("throwgrenade true")
                 end
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 1 then
@@ -655,7 +637,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 13:40", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 20:23", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -704,6 +686,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
+            SendToConsole("bind " .. GRENADE .. " throwgrenade")
             SendToConsole("bind " .. RELOAD .. " +reload")
             SendToConsole("bind " .. QUICK_SWAP .. " \"lastinv;viewmodel_update\"")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
@@ -757,7 +740,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sv_gravity 500")
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
             SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand Enable;viewmodel_offset_y -20\"")
-            SendToConsole("alias -customattack \"-iv_attack;slowgrenade\"")
+            SendToConsole("alias -customattack -iv_attack")
             SendToConsole("alias +customattack +iv_attack")
             SendToConsole("mouse_disableinput 0")
             SendToConsole("-attack")

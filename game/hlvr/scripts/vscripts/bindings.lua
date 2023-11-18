@@ -3,6 +3,7 @@ INVERT_MOUSE_Y    = false
 PRIMARY_ATTACK    = "MOUSE1"
 SECONDARY_ATTACK  = "MOUSE2"
 TERTIARY_ATTACK   = "MOUSE3"
+GRENADE           = "G"
 RELOAD            = "R"
 QUICK_SWAP        = "Q"
 MOVE_FORWARD      = "W"

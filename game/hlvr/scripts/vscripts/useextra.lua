@@ -1629,7 +1629,7 @@ elseif class == "item_hlvr_clip_rapidfire" then
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
-elseif class == "item_hlvr_grenade_frag" then
+elseif class == "item_hlvr_grenade_frag" and player:Attribute_GetIntValue("grenade", 0) == 0 then
     local goesInPocket = false -- keep the code to use it with proper tweaks
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         local ent = Entities:FindByName(nil, "player_radio_station")
@@ -1638,11 +1638,11 @@ elseif class == "item_hlvr_grenade_frag" then
         end
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-        SendToConsole("give weapon_frag")
+        --SendToConsole("give weapon_frag")
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         viewmodel:RemoveEffects(32)
         thisEntity:Kill()
-        player:Attribute_SetIntValue("grenades", player:Attribute_GetIntValue("grenades", 0) + 1)
+        player:Attribute_SetIntValue("grenade", 1)
         --if goesInPocket then
 		--	-- player can hold 2 grenades on pockets, and one in hand
 		--	-- for now, all grenades will go straight into pockets
