@@ -981,13 +981,14 @@ if name == "bridge_crank" then
     ent:FireOutput("OnInteractStop", nil, nil, nil, 2.8)
 end
 
-if name == "3_8223_prop_button" then
-    SendToConsole("ent_fire_output 3_8223_handpose_combine_switchbox_button_press OnHandPosed")
+if name == "3_8223_mesh_combine_switch_box" then
+    if thisEntity:GetSequence() == "open_idle" then
+        Entities:FindByName(nil, "3_8223_handpose_combine_switchbox_button_press"):FireOutput("OnHandPosed", nil, nil, nil, 0)
+    end
 end
 
-if name == "3_8223_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    thisEntity:Attribute_SetIntValue("used", 1)
-    SendToConsole("ent_fire_output 3_8223_switch_box_hack_plug OnHackSuccess")
+if name == "3_8223_prop_button" then
+    Entities:FindByName(nil, "3_8223_handpose_combine_switchbox_button_press"):FireOutput("OnHandPosed", nil, nil, nil, 0)
 end
 
 if class == "item_combine_tank_locker" then
@@ -1129,7 +1130,7 @@ if name == "254_16189_combine_locker" then
     SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-1868 -1744 216", ["angles"]="0 180 0", ["parentname"]="scanner_return_clip", ["modelscale"]=10})
 end
 
-if name == "2_203_elev_button_floor_1" then
+if name == "2_203_elev_button_floor_1" or name == "2_203_elevator_switch_box" then
     SendToConsole("ent_fire_output 2_203_elev_button_floor_1_handpose OnHandPosed")
 end
 
