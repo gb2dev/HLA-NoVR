@@ -632,8 +632,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("mouse_pitchyaw_sensitivity " .. MOUSE_SENSITIVITY)
         SendToConsole("snd_remove_soundevent HL2Player.UseDeny")
 
-        -- Script update date and time
-        DebugDrawScreenTextLine(5, 10, 0, "Fri Nov 17 23:35:33 UTC 2023", 255, 255, 255, 255, 999999)
+        if GlobalSys:CommandLineCheck("-noversioninfo") == false then
+            -- Script update date and time
+            DebugDrawScreenTextLine(5, 10, 0, "NoVR Version: Nov 18 11:36", 255, 255, 255, 255, 999999)
+        end
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
