@@ -557,9 +557,9 @@ elseif vlua.find(model, "electric_box_door") then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,1000))
     else
         if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
         else
-            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
         end
     end
 elseif vlua.find(name, "_dumpster_lid") then
