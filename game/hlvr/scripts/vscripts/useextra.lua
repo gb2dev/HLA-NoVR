@@ -1642,6 +1642,7 @@ elseif class == "item_hlvr_grenade_frag" then
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         viewmodel:RemoveEffects(32)
         thisEntity:Kill()
+        player:Attribute_SetIntValue("grenades", player:Attribute_GetIntValue("grenades", 0) + 1)
         --if goesInPocket then
 		--	-- player can hold 2 grenades on pockets, and one in hand
 		--	-- for now, all grenades will go straight into pockets

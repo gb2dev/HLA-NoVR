@@ -236,15 +236,25 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, "", 0)
 
     Convars:RegisterCommand("slowgrenade", function()
-        --local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-        --if viewmodel and viewmodel:GetModelName() == "models/weapons/v_grenade.vmdl" then
-        --    Entities:GetLocalPlayer():SetThink(function()
-        --        local grenade = Entities:FindByClassname(nil, "item_hlvr_grenade_frag")
-        --        if grenade then
-        --            grenade:ApplyAbsVelocityImpulse(-GetPhysVelocity(grenade) * 0.7)
-        --        end
-        --    end, "SlowGrenade", 0.04)
-        --end
+        local player = Entities:GetLocalPlayer()
+        local count = 0
+        player:SetThink(function()
+            local grenade = Entities:FindByClassnameWithin(nil, "item_hlvr_grenade_frag", player:EyePosition(), 30)
+            if grenade then
+                player:Attribute_SetIntValue("grenades", player:Attribute_GetIntValue("grenades", 0) - 1)
+                if player:Attribute_GetIntValue("grenades", 0) == 0 then
+                    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                    if string.match(viewmodel:GetModelName(), "v_grenade") then
+                        viewmodel:AddEffects(32)
+                    end
+                end
+                return nil
+            end
+            if count < 10 then
+                count = count + 1
+                return 0
+            end
+        end, "CountGrenades", 1.9)
     end, "", 0)
 
     -- Register variable for ads zoom
@@ -491,11 +501,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ignore = player;
                     mask =  33636363
                 }
-            
+
                 TraceLine(traceTable)
-            
-                if traceTable.hit 
-                then
+
+                if traceTable.hit then
                     local ent = Entities:FindByClassnameNearest("func_physical_button", traceTable.pos, 10)
                     if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
                         ent:FireOutput("OnIn", nil, nil, nil, 0)
@@ -646,7 +655,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 12:42", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 18 13:40", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
