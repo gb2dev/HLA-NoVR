@@ -639,7 +639,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 19 13:55", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 19 19:39", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1936,15 +1936,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             "models/props_junk/wood_crate004.vmdl",
             "models/props/interior_furniture/interior_shelving_001_b.vmdl",
             "models/props/interior_chairs/interior_chair_001.vmdl",
-            "models/props/debris/debris_plank_broken_medium_002a.vmdl",
-            "models/props/debris/debris_plank_broken_medium_002b.vmdl",
-            "models/props/debris/debris_plank_broken_long_002a.vmdl",
-            "models/props/debris/debris_plank_broken_long_002b.vmdl",
         }
         ent = Entities:FindByClassname(nil, class)
         while ent do
             local model = ent:GetModelName()
-            if vlua.find(collidable_props, model) ~= nil then
+            if vlua.find(collidable_props, model) ~= nil and ent:GetName() ~= "6391_prop_physics_oildrum" then
                 local angles = ent:GetAngles()
                 local pos = ent:GetAbsOrigin()
                 local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="collidable_physics_prop", ["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=ent:GetModelScale() - 0.02, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
