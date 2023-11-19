@@ -820,7 +820,8 @@ if name == "621_6487_button_pusher_prop" then
     SendToConsole("ent_fire 621_6487_button_branch test")
 end
 
-if name == "glove_dispenser_brush" then
+if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
     SendToConsole("hudhearts_show")
