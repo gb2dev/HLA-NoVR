@@ -639,7 +639,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 19 12:51", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 19 13:55", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -995,6 +995,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("ent_create env_message { targetname text_shoot message SHOOT }")
 
                     SendToConsole("ent_fire russell_entry_window SetCompletionValue 0.4")
+
+                    SendToConsole("ent_fire car_door_rear DisablePickup")
                 end
 
                 ent = Entities:GetLocalPlayer()
