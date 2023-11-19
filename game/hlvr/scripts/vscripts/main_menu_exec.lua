@@ -1,0 +1,1 @@
+SendToConsole("quit")

@@ -189,6 +189,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end, "", 0)
 
+    Convars:RegisterCommand("main_menu_exec", function()
+        DoIncludeScript("main_menu_exec.lua", nil)
+    end, "", 0)
+
     Convars:RegisterCommand("toggle_noclip", function()
         local player = Entities:GetLocalPlayer()
         if player:Attribute_GetIntValue("noclip_tutorial_shown", 0) == 0 then
@@ -724,11 +728,13 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
 
         if GetMapName() == "startup" then
+            SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
             SendToConsole("sv_cheats 1")
             SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
             SendToConsole("bind " .. CROUCH .. " \"\"")
+            SendToConsole("bind F24 main_menu_exec")
             if not loading_save_file then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 SendToConsole("setpos 0 -6154 6.473839")
@@ -751,7 +757,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent = Entities:FindByName(nil, "startup_relay")
             ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
         else
+            print("[MainMenu] pause_menu_mode")
+            SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
             SendToConsole("binddefaults")
+            SendToConsole("bind F24 main_menu_exec")
             SendToConsole("alias +forwardfixed \"+iv_forward;unstuck\"")
             SendToConsole("alias -forwardfixed -iv_forward")
             SendToConsole("alias +backfixed \"+iv_back;unstuck\"")
@@ -1617,8 +1626,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("setpos_exact 817 -80 -26")
         end
         SendToConsole("setang_exact 0.4 0 0")
-        SendToConsole("mouse_disableinput 0")
+        SendToConsole("fov_desired 95")
         SendToConsole("hidehud 96")
+        Entities:GetLocalPlayer():SetThink(function()
+            print("[MainMenu] main_menu_mode")
+        end, "", 5)
     end
 
     function MoveFreely(a, b)

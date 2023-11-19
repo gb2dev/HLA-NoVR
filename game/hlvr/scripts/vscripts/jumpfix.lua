@@ -2,6 +2,7 @@
 Convars:RegisterConvar("sv_jump_force", "180", "The force applied to the player when jumping", 0)
 
 Convars:RegisterCommand("jumpfixed", function()
+	print("[MainMenu] test")
 	local player = Entities:GetLocalPlayer()
 	if player ~= nil and player:GetVelocity().z == 0 then
 		player:ApplyAbsVelocityImpulse(Vector(0,0,400))
