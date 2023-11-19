@@ -3,7 +3,7 @@
 
 function HUDHearts_StartupPreparations()
 	SendToConsole("ent_remove text_hearts_background")
-	SendToConsole("ent_create game_text { targetname text_hearts_background effect 0 spawnflags 1 color \"121 97 11\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 2 fxtime 0 holdtime 999999 x 0.0277 y -0.0357 }")	
+	--SendToConsole("ent_create game_text { targetname text_hearts_background effect 0 spawnflags 1 color \"121 97 11\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 2 fxtime 0 holdtime 999999 x 0.0277 y -0.0357 }")	
 
 	SendToConsole("ent_remove text_hearts")
 	SendToConsole("ent_create game_text { targetname text_hearts effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 0.11 x 0.0277 y -0.0357 }")	
@@ -16,7 +16,7 @@ function HUDHearts_StartupPreparations()
 	if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
 		local player = Entities:GetLocalPlayer()
 		player:SetThink(function()
-			HUDHearts_Background()
+			--HUDHearts_Background()
 			HUDHearts_UpdateHealth()
 		end, "HUDHearts_MapChange", 1)
 	end
@@ -24,15 +24,15 @@ function HUDHearts_StartupPreparations()
 	print("[HUDHearts] Start up done")
 end
 
-function HUDHearts_Background()
-	local textEntityBackground = Entities:FindByName(nil, "text_hearts_background")
+-- function HUDHearts_Background()
+-- 	local textEntityBackground = Entities:FindByName(nil, "text_hearts_background")
 
-	-- Show background hearts
-	local heart_icons_background = "{ { {"
-	DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0, nil, nil)
-	DoEntFireByInstanceHandle(textEntityBackground, "SetText", "" .. heart_icons_background ..  "", 0, nil, nil)
-	DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0.1, nil, nil)
-end
+-- 	-- Show background hearts
+-- 	local heart_icons_background = "{ { {"
+-- 	DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0, nil, nil)
+-- 	DoEntFireByInstanceHandle(textEntityBackground, "SetText", "" .. heart_icons_background ..  "", 0, nil, nil)
+-- 	DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0.1, nil, nil)
+-- end
 
 function HUDHearts_UpdateHealth()
 	local player = Entities:GetLocalPlayer()
@@ -85,12 +85,12 @@ function HUDHearts_UpdateHealth()
 end
 
 function HUDHearts_Hide()
-	local textEntityBackground = Entities:FindByName(nil, "text_hearts_background")
+	--local textEntityBackground = Entities:FindByName(nil, "text_hearts_background")
 	local textEntity = Entities:FindByName(nil, "text_hearts")
 	local textEntityRed = Entities:FindByName(nil, "text_hearts_red")
 
-	DoEntFireByInstanceHandle(textEntityBackground, "SetText", "", 0, nil, nil)
-	DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0, nil, nil)
+	--DoEntFireByInstanceHandle(textEntityBackground, "SetText", "", 0, nil, nil)
+	--DoEntFireByInstanceHandle(textEntityBackground, "Display", "", 0, nil, nil)
 	DoEntFireByInstanceHandle(textEntity, "SetText", "", 0, nil, nil)
 	DoEntFireByInstanceHandle(textEntity, "Display", "", 0, nil, nil)
 	DoEntFireByInstanceHandle(textEntityRed, "SetText", "", 0, nil, nil)
@@ -100,7 +100,7 @@ function HUDHearts_Hide()
 end
 
 function HUDHearts_Show()
-	HUDHearts_Background()
+	--HUDHearts_Background()
 	HUDHearts_UpdateHealth()
 
 	print("[HUDHearts] Show hud hearts")
