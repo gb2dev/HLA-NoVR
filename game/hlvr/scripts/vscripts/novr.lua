@@ -266,7 +266,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("impulse 200")
             player:SetThink(function()
                 SendToConsole("impulse 200")
-            end, "FinishGrenadeThrow", 0.02)
+            end, "FinishGrenadeThrow", 0.1)
         end
         DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
     end, "", 0)
@@ -640,7 +640,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 20 18:15", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 20 19:16", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1085,6 +1085,13 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER3_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                        ent = Entities:FindByName(nil, "13988_wooden_board")
+                        DoEntFireByInstanceHandle(ent, "Break", "", 0, nil, nil)
+                        ent = Entities:FindByName(nil, "13989_wooden_board")
+                        DoEntFireByInstanceHandle(ent, "Break", "", 0, nil, nil)
+                        ent = Entities:FindByName(nil, "13990_wooden_board")
+                        DoEntFireByInstanceHandle(ent, "Break", "", 0, nil, nil)
 
                         ent = SpawnEntityFromTableSynchronous("prop_physics_override", {["targetname"]="shotgun_pickup_blocker", ["CollisionGroupOverride"]=5, ["renderamt"]=0, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl", ["origin"]="605.122 1397.567 -32.079", ["modelscale"]=2})
                         ent:SetParent(Entities:FindByName(nil, "12712_hanging_shotgun_zombie"), "hand_r")
@@ -1943,7 +1950,8 @@ if GlobalSys:CommandLineCheck("-novr") then
         ent = Entities:FindByClassname(nil, class)
         while ent do
             local model = ent:GetModelName()
-            if vlua.find(collidable_props, model) ~= nil and ent:GetName() ~= "6391_prop_physics_oildrum" then
+            local name = ent:GetName()
+            if vlua.find(collidable_props, model) ~= nil and name ~= "6391_prop_physics_oildrum" and name ~= "6391_prop_physics_oildrum" then
                 local angles = ent:GetAngles()
                 local pos = ent:GetAbsOrigin()
                 local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="collidable_physics_prop", ["CollisionGroupOverride"]=5, ["solid"]=6, ["modelscale"]=ent:GetModelScale() - 0.02, ["renderamt"]=0, ["model"]=model, ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
