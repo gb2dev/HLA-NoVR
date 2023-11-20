@@ -244,7 +244,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             return
         end
         player:Attribute_SetIntValue("grenade", 0)
-        --DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
         local pos = player:EyePosition()
         local ent = SpawnEntityFromTableSynchronous("item_hlvr_grenade_frag", {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
         ent:SetOwner(player)
@@ -641,7 +640,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 20 14:54", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 20 18:15", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1616,6 +1615,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ClimbLadder(height, push_direction)
         local ent = Entities:GetLocalPlayer()
+        ent:Attribute_SetIntValue("disable_unstuck", 1)
         local ticks = 0
         ent:SetThink(function()
             if ent:GetOrigin().z > height then
@@ -1625,6 +1625,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent:SetVelocity(Vector(push_direction.z, push_direction.y, push_direction.z) * 150)
                 end
                 SendToConsole("+iv_duck;-iv_duck")
+                ent:Attribute_SetIntValue("disable_unstuck", 0)
             else
                 ent:SetVelocity(Vector(0, 0, 0))
                 ent:SetOrigin(ent:GetOrigin() + Vector(0, 0, 2.1))
