@@ -244,16 +244,18 @@ if GlobalSys:CommandLineCheck("-novr") then
             return
         end
         player:Attribute_SetIntValue("grenade", 0)
-        DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
+        --DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
         local pos = player:EyePosition()
         local ent = SpawnEntityFromTableSynchronous("item_hlvr_grenade_frag", {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
         ent:SetOwner(player)
+        local ent2 = Entities:FindByNameNearest("grenade_handle", ent:GetAbsOrigin(), 10)
+        ent2:Kill()
         if launcher then
             ent:ApplyAbsVelocityImpulse(player:GetForwardVector() * 1000)
             local velocity = GetPhysVelocity(ent)
             ent:SetThink(function()
                 local new_velocity = GetPhysVelocity(ent)
-                if VectorDistanceSq(velocity, new_velocity) > 50000 then
+                if (new_velocity:Length() - velocity:Length()) < -100 then
                     DoEntFireByInstanceHandle(ent, "SetTimer", "0", 0, nil, nil)
                     return nil
                 end
@@ -639,7 +641,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 19 19:39", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 20 14:54", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
