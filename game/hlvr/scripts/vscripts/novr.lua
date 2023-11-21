@@ -646,7 +646,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:04", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:06", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1625,6 +1625,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ClimbLadder(height, push_direction)
         local ent = Entities:GetLocalPlayer()
+        if ent:Attribute_GetIntValue("disable_unstuck", 0) == 1 then
+            return
+        end
         ent:Attribute_SetIntValue("disable_unstuck", 1)
         local ticks = 0
         ent:SetThink(function()
