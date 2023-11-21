@@ -453,14 +453,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
 
                 ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 10)
-                local parent = ent:GetMoveParent()
-                if ent and ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and vlua.find(parent:GetName(), "Console")) then
-                    ent:Attribute_SetIntValue("used", 1)
-                    DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
-                    if not vlua.find(ent:GetName(), "cshield") and not vlua.find(ent:GetName(), "switch_box") then
-                        DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-                        ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-                        ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                if ent then
+                    local parent = ent:GetMoveParent()
+                    if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and vlua.find(parent:GetName(), "Console")) then
+                        ent:Attribute_SetIntValue("used", 1)
+                        DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+                        if not vlua.find(ent:GetName(), "cshield") and not vlua.find(ent:GetName(), "switch_box") then
+                            DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                            ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                        end
                     end
                 end
             end
@@ -647,7 +649,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:23", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:24", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
