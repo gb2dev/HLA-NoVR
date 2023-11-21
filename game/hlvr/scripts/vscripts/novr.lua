@@ -85,7 +85,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if child and child:GetClassname() == "prop_dynamic" then
                 child:SetEntityName("held_prop_dynamic_override")
             end
-            if ent:GetClassname() ~= "item_hlvr_grenade_frag" then
+            if ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" then
                 ent:Attribute_SetIntValue("picked_up", 1)
             end
             player:Attribute_SetIntValue("picked_up", 1)
@@ -649,7 +649,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:24", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:34", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
