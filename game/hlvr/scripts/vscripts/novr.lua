@@ -646,7 +646,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:12", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:15", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1464,6 +1464,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 SendToConsole("hidehud 67")
                             end, "", 0)
                             SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+                            SendToConsole("bind " .. COVER_MOUTH .. " \"\"")
+                            Entities:GetLocalPlayer():Attribute_SetIntValue("grenade", 0)
 
                             ent = Entities:FindByName(nil, "timer_briefcase")
                             DoEntFireByInstanceHandle(ent, "RefireTime", "5", 0, nil, nil)
