@@ -456,7 +456,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if ent then
                     local name = ent:GetName()
                     local parent = ent:GetMoveParent()
-                    if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and vlua.find(parent:GetName(), "Console")) and name ~= "traincar_01_hackplug" and name ~= "254_16189_combine_locker" and ent:GetGraphParameter("b_PlugDisabled") == false then
+                    if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and vlua.find(parent:GetName(), "Console")) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
                         ent:Attribute_SetIntValue("used", 1)
                         DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                         if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
@@ -648,7 +648,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 14:02", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 14:03", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
