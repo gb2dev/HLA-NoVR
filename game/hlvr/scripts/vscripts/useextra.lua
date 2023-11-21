@@ -1500,6 +1500,9 @@ if name == "plug_console_starter_lever" then
 end
 
 if name == "lift_button_box" then
+    local ent = Entities:FindByName(nil, "1517_3301_lift_prop_animated")
+    DoEntFireByInstanceHandle(ent, "EnableCollision", "", 0, nil, nil)
+
     if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
         SendToConsole("ent_fire_output lift_button_down onin")
         thisEntity:Attribute_SetIntValue("used", 0)

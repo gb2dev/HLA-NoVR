@@ -650,7 +650,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:49", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:55", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1265,6 +1265,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             if ent then
                                 ent:Kill()
                             end
+
+                            ent = Entities:FindByName(nil, "1517_3301_lift_prop_animated")
+                            DoEntFireByInstanceHandle(ent, "DisableCollision", "", 0, nil, nil)
 
                             ent = Entities:FindByClassnameNearest("trigger_once", Vector(-1456, -3960, 224), 10)
                             ent:RedirectOutput("OnTrigger", "SetupMineRoom", ent)
