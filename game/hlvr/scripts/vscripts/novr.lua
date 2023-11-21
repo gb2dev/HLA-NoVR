@@ -648,7 +648,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 14:03", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 14:27", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1298,7 +1298,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
-                            ent = Entities:FindByName(nil, "11578_2547_relay_koolaid_setup")
+                            ent = Entities:FindByName(nil, "11478_6250_locked_door_relay_break_lock")
                             ent:RedirectOutput("OnTrigger", "FixJeffBatteryPuzzle", ent)
 
                             SendToConsole("ent_create env_message { targetname text_covermouth message COVERMOUTH }")
@@ -1679,7 +1679,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire @crank_battery kill")
         SendToConsole("ent_create item_hlvr_prop_battery { origin \"1325 2245 435\" }")
         SendToConsole("ent_fire @relay_installcrank Trigger")
-        SendToConsole("ent_remove @tutorial_wheel_physics")
     end
 
     function ShowInteractTutorial()
