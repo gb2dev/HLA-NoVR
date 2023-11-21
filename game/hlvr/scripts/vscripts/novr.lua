@@ -243,12 +243,18 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("play sounds/common/wpn_denyselect.vsnd")
             return
         end
-        player:Attribute_SetIntValue("grenade", 0)
         local pos = player:EyePosition()
-        local ent = SpawnEntityFromTableSynchronous("item_hlvr_grenade_frag", {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
+        local class = "item_hlvr_grenade_frag"
+        if player:Attribute_GetIntValue("grenade", 0) == 2 then
+            class = "item_hlvr_grenade_xen"
+        end
+        player:Attribute_SetIntValue("grenade", 0)
+        local ent = SpawnEntityFromTableSynchronous(class, {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
         ent:SetOwner(player)
-        local ent2 = Entities:FindByNameNearest("grenade_handle", ent:GetAbsOrigin(), 10)
-        ent2:Kill()
+        if class == "item_hlvr_grenade_frag" then
+            local ent2 = Entities:FindByNameNearest("grenade_handle", ent:GetAbsOrigin(), 10)
+            ent2:Kill()
+        end
         if launcher then
             ent:ApplyAbsVelocityImpulse(player:GetForwardVector() * 1000)
             local velocity = GetPhysVelocity(ent)
@@ -640,7 +646,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 20 19:16", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 11:52", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then

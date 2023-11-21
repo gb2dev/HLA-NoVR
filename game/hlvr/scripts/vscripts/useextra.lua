@@ -1542,16 +1542,6 @@ if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attrib
     SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
 end
 
-if class == "item_hlvr_grenade_xen" then
-    thisEntity:SetThink(function()
-        if GetPhysVelocity(thisEntity):Length() > 200 then
-            DoEntFireByInstanceHandle(thisEntity, "ArmGrenade", "", 0, nil, nil)
-        else
-            return 0
-        end
-    end, "ArmOnHighVelocity", 0.1)
-end
-
 if class == "prop_reviver_heart" then
     player:SetContextNum("player_picked_up_heart", 1, 10)
 end
@@ -1630,6 +1620,15 @@ elseif class == "item_hlvr_clip_rapidfire" then
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
+elseif class == "item_hlvr_grenade_xen" and player:Attribute_GetIntValue("grenade", 0) == 0 then
+    if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) <= 1 then
+        player:Attribute_SetIntValue("grenade_tutorial_shown", 2)
+        SendToConsole("ent_fire text_grenade ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+    StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    thisEntity:Kill()
+    player:Attribute_SetIntValue("grenade", 2)
 elseif class == "item_hlvr_grenade_frag" and player:Attribute_GetIntValue("grenade", 0) == 0 then
     local goesInPocket = false -- keep the code to use it with proper tweaks
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
