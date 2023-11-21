@@ -646,7 +646,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 11:52", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:04", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1415,18 +1415,15 @@ if GlobalSys:CommandLineCheck("-novr") then
 							end, "", 0)
                         elseif GetMapName() == "a5_vault" then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                            if Entities:FindByClassname(nil, "weapon_frag") == nil then
-                                SendToConsole("r_drawviewmodel 0")
-                                ent:SetThink(function()
-                                    SendToConsole("hidehud 67")
-                                end, "", 0)
-                            else
-                                ent:SetThink(function()
-                                    SendToConsole("hidehud 64")
-                                end, "", 0)
-                            end
+                            SendToConsole("use weapon_bugbait")
+                            SendToConsole("r_drawviewmodel 0")
+                            ent:SetThink(function()
+                                SendToConsole("hidehud 67")
+                            end, "", 0)
 
                             if not loading_save_file then
+                                Entities:GetLocalPlayer():Attribute_SetIntValue("grenade", 0)
+
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER11_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
@@ -1900,21 +1897,12 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function GiveVortEnergy(a, b)
         SendToConsole("bind " .. PRIMARY_ATTACK .. " shootvortenergy")
-        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
-        SendToConsole("use weapon_bugbait")
-        SendToConsole("r_drawviewmodel 0")
         local player = Entities:GetLocalPlayer()
-        player:SetThink(function()
-            SendToConsole("hidehud 67")
-        end, "", 0)
         player:Attribute_SetIntValue("vort_energy", 1)
     end
 
     function RemoveVortEnergy(a, b)
         SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
-        SendToConsole("r_drawviewmodel 1")
-        SendToConsole("give weapon_frag")
-        SendToConsole("hidehud 64")
         Entities:GetLocalPlayer():Attribute_SetIntValue("vort_energy", 0)
     end
 
