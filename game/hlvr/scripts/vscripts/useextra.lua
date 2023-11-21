@@ -860,10 +860,8 @@ if map == "a3_distillery" then
     end
 
     if name == "cellar_ladder" then
-        ClimbLadderSound()
+        ClimbLadder(560)
         SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
-        SendToConsole("fadein 0.2")
-        SendToConsole("setpos_exact 1004 1775 546")
     end
 
     if name == "11578_2635_380_button_center" then

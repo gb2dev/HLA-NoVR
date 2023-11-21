@@ -51,7 +51,7 @@ function GravityGlovePull()
         FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
         player:StopThink("GGTutorial")
         local direction = startVector - thisEntity:GetAbsOrigin()
-        thisEntity:ApplyAbsVelocityImpulse(Vector(direction.x * 2, direction.y * 2, Clamp(direction.z * 3.8, -400, 400)))
+        thisEntity:ApplyAbsVelocityImpulse(Vector(direction.x * 2, direction.y * 2, direction.z * (115 / direction.z + 1.9)))
         StartSoundEventFromPosition("Grabbity.HoverPing", startVector)
         StartSoundEventFromPosition("Grabbity.Grab", startVector)
         local count = 0
