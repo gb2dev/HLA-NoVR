@@ -648,7 +648,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 13:56", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 13:58", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -756,6 +756,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("mouse_disableinput 0")
             SendToConsole("-attack")
             SendToConsole("-attack2")
+            SendToConsole("-covermouth")
             SendToConsole("sk_headcrab_runner_health 69")
             SendToConsole("sk_antlion_worker_spit_interval_max 2")
             SendToConsole("sk_antlion_worker_spit_interval_min 1")
