@@ -565,13 +565,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(180)
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(-1392, -2471, 115), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact -1415 -2485 410")
+                if vlua.find(Entities:FindAllInSphere(Vector(-1393, -2493, 113), 10), player) then
+                    ClimbLadder(425, Vector(0, 0, -1))
                 end
 
-                if vlua.find(Entities:FindAllInSphere(Vector(-1420, -2482, 472), 20), player) then
+                if vlua.find(Entities:FindAllInSphere(Vector(-1420, -2482, 472), 30), player) then
                     ClimbLadderSound()
                     SendToConsole("fadein 0.2")
                     SendToConsole("setpos_exact -1392 -2471 53")
@@ -650,7 +648,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 12:55", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 13:56", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
