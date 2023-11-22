@@ -266,7 +266,8 @@ if model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model
     end
 end
 
-if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+local parent = ent:GetMoveParent()
+if parent and vlua.find(parent:GetName(), "Console") and parent:Attribute_GetIntValue("used", 0) == 0 then
     if map == "a2_quarantine_entrance" then
         local ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
         while ent do
@@ -274,9 +275,9 @@ if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attrib
             ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_rack")
         end
     end
-    thisEntity:Attribute_SetIntValue("used", 1)
+    parent:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
-    local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", thisEntity:GetCenter(), 20)
+    local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", parent:GetCenter(), 20)
     for k, v in pairs(ents) do
         DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
     end

@@ -143,7 +143,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if ent then
                         local name = ent:GetName()
                         local parent = ent:GetMoveParent()
-                        if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetName(), "Console") or vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
+                        if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
                             ent:Attribute_SetIntValue("used", 1)
                             DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                             if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
@@ -155,8 +155,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         return
                     end
 
-                    if traceTable.enthit:GetClassname() == "baseanimating" then
-                        DoEntFireByInstanceHandle(traceTable.enthit, "RunScriptFile", "multitool", 0, nil, nil)
+                    local ent = Entities:FindByClassnameNearest("info_hlvr_toner_port", traceTable.pos, 10)
+                    if ent then
+                        DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
+                        return
                     end
                 end
             end, "UseMultitool", 0.5)
@@ -667,7 +669,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 20:24", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 21:16", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1472,7 +1474,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 SendToConsole("ent_fire upsidedownroom_closetdoor* DisablePickup")
 
                                 -- TODO: Do weapon strip instead
-                                SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1")
+                                SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_physcannon")
                                 SendToConsole("give weapon_bugbait")
 
                                 ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["CollisionGroupOverride"]=5, ["solid"]=6, ["model"]="models/architecture/doors_1/door_1b_40_92.vmdl", ["origin"]="-835 160 -539", ["angles"]="76 110 10"})
@@ -1496,7 +1498,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 end
                             end
                         elseif GetMapName() == "a5_ending" then
-                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
+                            SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag;ent_remove weapon_physcannon")
                             SendToConsole("use weapon_bugbait")
                             SendToConsole("r_drawviewmodel 0")
                             ent:SetThink(function()
@@ -1942,7 +1944,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function EnterVaultBeam()
-        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag")
+        SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_frag;ent_remove weapon_physcannon")
         SendToConsole("r_drawviewmodel 0")
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
         SendToConsole("phys_pushscale 1")
