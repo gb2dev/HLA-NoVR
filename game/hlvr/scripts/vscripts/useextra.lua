@@ -29,7 +29,7 @@ local toner_start_path
 local toner_end_path
 -- example_toner_path = {"leads_to_this_junction", point1, point2, point3, ...}
 local toner_paths
--- example_toner_junction = {type (0=straight, 1=right angle, 2=two right angles, 3=static T), "activated_toner_path_1", "activated_toner_path_2", "activated_toner_path_3", "activated_toner_path_4"}
+-- example_toner_junction = {type (0=straight, 1=right angle, 2=two right angles, 3=static T), position, "activated_toner_path_1", "activated_toner_path_2", "activated_toner_path_3", "activated_toner_path_4"}
 local toner_junctions
 
 if map == "a2_quarantine_entrance" then
@@ -37,17 +37,17 @@ if map == "a2_quarantine_entrance" then
     toner_end_path = "toner_path_5"
 
     toner_paths = {
-        toner_path_1 = {"toner_junction_1", Vector(-912.1, 1150.47, 100), Vector(-912.1, 1112, 100)},
-        toner_path_2 = {"toner_junction_2", Vector(-912.1, 1112, 100), Vector(-912.1, 1099, 100), Vector(-912.1, 1099, 108.658), Vector(-912.1, 1088.1, 108.658), Vector(-929, 1088.1, 108.658)},
-        toner_path_3 = {"", Vector(-929, 1088.1, 108.658), Vector(-929, 1088.1, 144), Vector(-946, 1088.1, 144)},
-        toner_path_5 = {"", Vector(-970, 1088.1, 98.4348), Vector(-986, 1088.1, 98.4348)},
-        toner_path_7 = {"toner_junction_3", Vector(-929, 1088.1, 108.658), Vector(-929, 1088.1, 98.4348), Vector(-947, 1088.1, 98.4348), Vector(-947, 1088.1, 69.5763), Vector(-947, 1088.1, 98.4348), Vector(-970, 1088.1, 98.4348)},
+        toner_path_1 = {"toner_junction_1", Vector(-912.1, 1150.47, 100), Vector(-912.1, 1115, 100)},
+        toner_path_2 = {"toner_junction_2", Vector(-912.1, 1109, 100), Vector(-912.1, 1099, 100), Vector(-912.1, 1099, 108.658), Vector(-912.1, 1088.1, 108.658), Vector(-926, 1088.1, 108.658)},
+        toner_path_3 = {"", Vector(-929, 1088.1, 111.658), Vector(-929, 1088.1, 144), Vector(-946, 1088.1, 144)},
+        toner_path_5 = {"", Vector(-973, 1088.1, 98.4348), Vector(-986, 1088.1, 98.4348)},
+        toner_path_7 = {"toner_junction_3", Vector(-929, 1088.1, 105.658), Vector(-929, 1088.1, 98.4348), Vector(-947, 1088.1, 98.4348), Vector(-947, 1088.1, 69.5763), Vector(-947, 1088.1, 98.4348), Vector(-967, 1088.1, 98.4348)},
     }
-    
+
     toner_junctions = {
-        toner_junction_1 = {0, "toner_path_2", "", "toner_path_2", ""},
-        toner_junction_2 = {1, "toner_path_3", "toner_path_7", "", ""},
-        toner_junction_3 = {0, "toner_path_5", "", "toner_path_5", ""},
+        toner_junction_1 = {0, Vector(-912.1, 1112, 100), "toner_path_2", "", "toner_path_2", ""},
+        toner_junction_2 = {1, Vector(-929, 1088.1, 108.658), "toner_path_3", "toner_path_7", "", ""},
+        toner_junction_3 = {0, Vector(-970, 1088.1, 98.4348), "toner_path_5", "", "toner_path_5", ""},
     }
 elseif map == "a2_headcrabs_tunnel" then
     toner_start_path = "toner_path_1"
@@ -63,9 +63,9 @@ elseif map == "a2_headcrabs_tunnel" then
     }
 
     toner_junctions = {
-        toner_junction_1 = {2, "toner_path_3", "toner_path_2", "toner_path_3", "toner_path_2"},
-        toner_junction_2 = {2, "toner_path_6", "toner_path_5", "toner_path_6", "toner_path_5"},
-        --toner_junction_i = {0, "toner_path_8", "", "toner_path_8", ""},
+        toner_junction_1 = {2, Vector(), "toner_path_3", "toner_path_2", "toner_path_3", "toner_path_2"},
+        toner_junction_2 = {2, Vector(), "toner_path_6", "toner_path_5", "toner_path_6", "toner_path_5"},
+        --toner_junction_i = {0, Vector(), "toner_path_8", "", "toner_path_8", ""},
     }
 end
 
@@ -81,47 +81,47 @@ function DrawTonerJunction(junction, center, angles)
     if type == 0 then
         local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
         local max = RotatePosition(Vector(0,0,0), angles, Vector(0,3,0))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
     elseif type == 1 then
         local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
         local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
 
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,3))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
     elseif type == 2 then
         local min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
         local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,3))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
 
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,3,0))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
 
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-3))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
 
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
 
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
 
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
-        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
 
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
-        DebugDrawLine(center + min, center + max, 0, 0, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 0, 0, false, -1)
 
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
-        DebugDrawLine(center + min, center + max, 0, 0, 0, true, -1)
+        DebugDrawLine(center + min, center + max, 0, 0, 0, false, -1)
     end
 end
 
@@ -154,7 +154,7 @@ function ToggleTonerJunction()
             local junction_name = toner_paths[toner_path][1]
             local junction_entity = Entities:FindByName(nil, junction_name)
             if junction_entity then
-                local activated_path = junction_entity:Attribute_GetIntValue("junction_rotation", 0) + 2
+                local activated_path = junction_entity:Attribute_GetIntValue("junction_rotation", 0) + 3
                 local next_path = toner_junctions[junction_name][activated_path]
                 toner_path = next_path
                 if next_path ~= "" then
@@ -184,7 +184,7 @@ function ToggleTonerJunction()
             local junction_entity = Entities:FindByName(nil, junction_name)
             local angles = junction_entity:GetAngles()
             angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
-            DrawTonerJunction(junction, junction_entity:GetCenter(), angles)
+            DrawTonerJunction(junction, junction[2], angles)
         end
     end
 end
@@ -197,7 +197,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             local junction_entity = Entities:FindByName(nil, junction_name)
             local angles = junction_entity:GetAngles()
             angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
-            DrawTonerJunction(junction, junction_entity:GetCenter(), angles)
+            DrawTonerJunction(junction, junction[2], angles)
         end
         for toner_path_name, toner_path in pairs(toner_paths) do
             DrawTonerPath(toner_path)
