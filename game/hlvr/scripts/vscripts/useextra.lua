@@ -1259,23 +1259,6 @@ if class == "item_hlvr_headcrab_gland" then
     SendToConsole("ent_fire achievement_squeeze_heart FireEvent")
 end
 
-if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    if map == "a2_quarantine_entrance" then
-        local ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
-        while ent do
-            ent:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", ent)
-            ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_rack")
-        end
-    end
-    thisEntity:Attribute_SetIntValue("used", 1)
-    SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
-    local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", thisEntity:GetCenter(), 20)
-    for k, v in pairs(ents) do
-        DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
-    end
-    SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
-end
-
 if class == "prop_reviver_heart" then
     player:SetContextNum("player_picked_up_heart", 1, 10)
 end

@@ -155,9 +155,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                         return
                     end
 
-                    ent = Entities:FindByClassnameNearest("prop_dynamic", traceTable.pos, 10)
-                    if ent then
-                        return
+                    if traceTable.enthit:GetClassname() == "baseanimating" then
+                        DoEntFireByInstanceHandle(traceTable.enthit, "RunScriptFile", "multitool", 0, nil, nil)
                     end
                 end
             end, "UseMultitool", 0.5)
@@ -668,7 +667,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 20:08", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 20:13", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
