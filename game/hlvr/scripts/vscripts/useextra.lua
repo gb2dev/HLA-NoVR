@@ -1049,10 +1049,7 @@ if class == "prop_hlvr_crafting_station_console" then
 
     thisEntity:RegisterAnimTagListener(AnimTagListener)
 
-    if thisEntity:GetGraphParameter("bBootup") == false then
-        local ent = Entities:FindByClassnameNearest("prop_hlvr_crafting_station", thisEntity:GetOrigin(), 20)
-        DoEntFireByInstanceHandle(ent, "OpenStation", "", 0, nil, nil)
-    elseif thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
+    if thisEntity:GetGraphParameter("bBootup") == false and thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
         if thisEntity:GetGraphParameter("bCollectingResin") then
             if Convars:GetStr("chosen_upgrade") ~= "" then
                 if Convars:GetStr("chosen_upgrade") == "cancel" then
@@ -1277,7 +1274,7 @@ if vlua.find(class, "item_hlvr_crafting_currency_") then
         SendToConsole("hlvr_addresources 0 0 0 1")
     end
     StartSoundEventFromPosition("Inventory.BackpackGrabItemResin", player:EyePosition())
-    
+
     -- Show resin count
     player:SetThink(function()
         local t = {}
