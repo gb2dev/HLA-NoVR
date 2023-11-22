@@ -200,6 +200,10 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
         end
 
+        if map == "a3_hotel_street" and name == "power_stake_1_start" then
+            SendToConsole("ent_fire_output toner_path_11 onpoweron")
+        end
+
         if map == "a3_c17_processing_plant" and name == "shack_path_6_port_1" then
             DoEntFireByInstanceHandle(thisEntity, "Disable", "", 0, nil, nil)
             -- TODO: Remove once puzzle implemented

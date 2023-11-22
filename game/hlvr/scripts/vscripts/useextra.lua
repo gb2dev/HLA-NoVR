@@ -1049,7 +1049,8 @@ if class == "prop_hlvr_crafting_station_console" then
 
     thisEntity:RegisterAnimTagListener(AnimTagListener)
 
-    if thisEntity:GetGraphParameter("bBootup") == true and thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
+    if thisEntity:GetGraphParameter("bBootup") == false then
+    elseif thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
         if thisEntity:GetGraphParameter("bCollectingResin") then
             if Convars:GetStr("chosen_upgrade") ~= "" then
                 if Convars:GetStr("chosen_upgrade") == "cancel" then
