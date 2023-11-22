@@ -231,6 +231,12 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             SendToConsole("ent_fire_output 589_path_11 OnPowerOn")
         end
 
+        if map == "a4_c17_tanker_yard" and name == "1489_4074_port_demux" then
+            SendToConsole("ent_fire_output 1489_4074_path_demux_3_0 onpoweron")
+            SendToConsole("ent_fire_output 1489_4074_path_demux_3_3 onpoweron")
+            SendToConsole("ent_fire_output 1489_4074_path_demux_3_6 onpoweron")
+        end
+
         if map == "a4_c17_parking_garage" then
             if name == "toner_port" then
                 SendToConsole("ent_fire_output toner_path_2 OnPowerOn")

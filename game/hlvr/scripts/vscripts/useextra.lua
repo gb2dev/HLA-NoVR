@@ -813,12 +813,6 @@ if name == "18918_5316_button_pusher_prop" then
     SendToConsole("phys_pushscale 0")
 end
 
-if name == "1489_4074_port_demux" then
-    SendToConsole("ent_fire_output 1489_4074_path_demux_3_0 onpoweron")
-    SendToConsole("ent_fire_output 1489_4074_path_demux_3_3 onpoweron")
-    SendToConsole("ent_fire_output 1489_4074_path_demux_3_6 onpoweron")
-end
-
 if name == "bridge_crank" then
     SendToConsole("ent_fire driven_bridge SetPlaybackRate 1 1")
     SendToConsole("ent_fire drawbridge_brush Enable")

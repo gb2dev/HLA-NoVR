@@ -690,7 +690,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 22:39", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 22:54", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -764,7 +764,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire *_locker_door_* DisablePickup")
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
             SendToConsole("ent_fire *electrical_panel_*_door* DisablePickup")
-            SendToConsole("ent_fire *electrical_cabinet_door* DisablePickup")
+            SendToConsole("ent_fire *cabinet_door* DisablePickup")
             SendToConsole("ent_fire *panel_door* DisablePickup")
             SendToConsole("ent_fire *_washing_machine_door DisablePickup")
             SendToConsole("ent_fire *_washing_machine_loader DisablePickup")
