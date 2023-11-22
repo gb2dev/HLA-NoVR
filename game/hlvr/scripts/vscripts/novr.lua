@@ -120,7 +120,9 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
 
         if viewmodel and string.match(viewmodel:GetModelName(), "v_multitool") then
-            SendToConsole("useextra")
+            player:SetThink(function()
+                SendToConsole("useextra")
+            end, "UseMultitool", 0.5)
         end
     end, "", 0)
 
@@ -661,7 +663,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 10:25", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 10:45", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
