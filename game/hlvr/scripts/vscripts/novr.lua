@@ -456,7 +456,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if ent then
                     local name = ent:GetName()
                     local parent = ent:GetMoveParent()
-                    if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and vlua.find(parent:GetName(), "Console")) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
+                    if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetName(), "Console") or vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
                         ent:Attribute_SetIntValue("used", 1)
                         DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                         if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
@@ -652,7 +652,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 06:45", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 07:51", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1391,24 +1391,28 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                             end
                         elseif GetMapName() == "a4_c17_parking_garage" then
-                            SendToConsole("ent_fire falling_cabinet_door DisablePickup")
-                            SendToConsole("ent_fire func_physbox DisableMotion")
+                            if not loading_save_file then
+                                ent = Entities:FindByName(nil, "falling_cabinet_door")
+                                DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
 
-                            ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
-                            ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
+                                SendToConsole("ent_fire func_physbox DisableMotion")
 
-							SendToConsole("ent_fire combine_gun_grab_handle ClearParent aim_gun")
-							SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical") -- attach one of gun handles to the main model
+                                ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
+                                ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
 
-							ent = Entities:FindByName(nil, "relay_shoot_gun")
-                            ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
-							Convars:RegisterCommand("novr_shootcombinegun", function()
-								ent = Entities:FindByName(nil, "combine_gun_interact")
-								if ent:Attribute_GetIntValue("ready", 0) == 1 then
-									SendToConsole("ent_fire relay_shoot_gun trigger")
-									ent:Attribute_SetIntValue("ready", 0)
-								end
-							end, "", 0)
+                                SendToConsole("ent_fire combine_gun_grab_handle ClearParent aim_gun")
+                                SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical") -- attach one of gun handles to the main model
+
+                                ent = Entities:FindByName(nil, "relay_shoot_gun")
+                                ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
+                                Convars:RegisterCommand("novr_shootcombinegun", function()
+                                    ent = Entities:FindByName(nil, "combine_gun_interact")
+                                    if ent:Attribute_GetIntValue("ready", 0) == 1 then
+                                        SendToConsole("ent_fire relay_shoot_gun trigger")
+                                        ent:Attribute_SetIntValue("ready", 0)
+                                    end
+                                end, "", 0)
+                            end
 							if loading_save_file then
 								SendToConsole("novr_leavecombinegun") -- avoid softlock
 							end

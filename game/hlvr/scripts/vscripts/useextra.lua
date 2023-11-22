@@ -251,10 +251,14 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
         if map == "a4_c17_parking_garage" then
             if name == "toner_port" then
                 SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
+                Entities:FindByName(nil, "falling_cabinet_door"):ApplyLocalAngularVelocityImpulse(Vector(0, 1200, 0))
             elseif name == "toner_port_2" then
                 SendToConsole("ent_fire_output toner_path_5 OnPowerOn")
             elseif name == "toner_port_3" then
                 SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
+                if Entities:FindByName(nil, "door_reset"):GetCycle() >= 0.99 then
+                    SendToConsole("ent_fire_output door_reset OnCompletionA_Forward")
+                end
             end
         end
     end
@@ -536,14 +540,6 @@ if class == "prop_ragdoll" or class == "prop_ragdoll_attached" then
     for k, v in pairs(thisEntity:GetChildren()) do
         DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
     end
-end
-
-if name == "falling_cabinet_door" then
-    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1000,0))
-end
-
-if name == "falling_cabinet_door" then
-    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1000,0))
 end
 
 if vlua.find(name, "_locker_door_") then
