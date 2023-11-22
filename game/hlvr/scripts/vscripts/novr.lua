@@ -121,7 +121,38 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if viewmodel and string.match(viewmodel:GetModelName(), "v_multitool") then
             player:SetThink(function()
-                SendToConsole("useextra")
+                local startVector = player:EyePosition()
+                local traceTable =
+                {
+                    startpos = startVector;
+                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(100, 0, 0));
+                    ignore = player;
+                    mask =  33636363
+                }
+
+                TraceLine(traceTable)
+
+                if traceTable.hit then
+                    local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
+                    if ent then
+                        DoEntFireByInstanceHandle(ent, "RunScriptFile", "toner_puzzle", 0, nil, nil)
+                    end
+
+                    ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 10)
+                    if ent then
+                        local name = ent:GetName()
+                        local parent = ent:GetMoveParent()
+                        if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetName(), "Console") or vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
+                            ent:Attribute_SetIntValue("used", 1)
+                            DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+                            if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
+                                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                                ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                            end
+                        end
+                    end
+                end
             end, "UseMultitool", 0.5)
         end
     end, "", 0)
@@ -446,39 +477,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             player:Attribute_SetIntValue("use_released", 0)
             DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
 
-            local startVector = player:EyePosition()
-            local traceTable =
-            {
-                startpos = startVector;
-                endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(100, 0, 0));
-                ignore = player;
-                mask =  33636363
-            }
-
-            TraceLine(traceTable)
-
-            if traceTable.hit then
-                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
-                if ent then
-                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
-                end
-
-                ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 10)
-                if ent then
-                    local name = ent:GetName()
-                    local parent = ent:GetMoveParent()
-                    if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetName(), "Console") or vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
-                        ent:Attribute_SetIntValue("used", 1)
-                        DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
-                        if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
-                            DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-                            ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-                            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
-                        end
-                    end
-                end
-            end
-
             -- Ladders and position based interactions
             if GetMapName() == "a1_intro_world" then
                 if vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
@@ -663,7 +661,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 18:57", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 19:58", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -809,8 +807,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if not loading_save_file then
                 if is_on_map_or_later("a2_quarantine_entrance") then
-                    SendToConsole("give weapon_pistol")
                     SendToConsole("give weapon_physcannon")
+                    SendToConsole("give weapon_pistol")
 
                     if is_on_map_or_later("a2_drainage") then
                         SendToConsole("give weapon_shotgun")
@@ -878,14 +876,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
 
                     if cvar_getf("viewmodel_offset_y") ~= -20 then
-                        local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y * 0.002
-                        local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x * 0.002
+                        local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y * 0.0025
+                        local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x * 0.0025
                         local angle = player:GetAngles()
                         angle = QAngle(0, -angle.y, 0)
                         move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
 
-                        local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.03
-                        local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.03
+                        local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.055
+                        local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.055
 
                         look_delta = viewmodel:GetAngles()
 
@@ -1087,7 +1085,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if not loading_save_file then
                         -- Default Junction Rotations
                         Entities:FindByName(nil, "toner_junction_1"):Attribute_SetIntValue("junction_rotation", 1)
-                        Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 3)
+                        --Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 2)
                         Entities:FindByName(nil, "toner_junction_3"):Attribute_SetIntValue("junction_rotation", 1)
 
                         ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1298 2480 280", ["angles"]="0 22 0", ["modelscale"]=10})
@@ -1100,7 +1098,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = Entities:FindByName(nil, "28677_hint_mantle_delay")
                         ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
 
+                        ent = Entities:FindByName(nil, "toner_trigger")
+                        ent:RedirectOutput("OnTrigger", "ShowMultiToolTutorial", ent)
+
                         SendToConsole("ent_create env_message { targetname text_holdinteract message HOLD_INTERACT }")
+                        SendToConsole("ent_create env_message { targetname text_multitool_equip message MULTITOOL_EQUIP }")
+                        SendToConsole("ent_create env_message { targetname text_multitool_use message MULTITOOL_USE }")
 
                         SendToConsole("setpos 3215 2456 465")
                         SendToConsole("ent_fire traincar_border_trigger Disable")
@@ -1755,6 +1758,15 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire 2861_4065_hint_mantle_delay Disable")
         SendToConsole("ent_fire text_crouchjump ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    function ShowMultiToolTutorial()
+        SendToConsole("ent_fire text_multitool_equip ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("ent_fire text_multitool_use ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+        end, "MultiToolTutorial", 10)
     end
 
     function ShowHoldInteractTutorial()
