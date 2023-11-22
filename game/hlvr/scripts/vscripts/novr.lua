@@ -143,7 +143,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if ent then
                         local name = ent:GetName()
                         local parent = ent:GetMoveParent()
-                        if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
+                        if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and ent:GetGraphParameter("b_PlugDisabled") == false then
                             -- Combine Console
                             if parent and vlua.find(parent:GetName(), "Console") then
                                 if GetMapName() == "a2_quarantine_entrance" then
@@ -158,6 +158,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                                     DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
                                 end
                                 SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
+                            end
+
+                            if parent and parent:GetName() == "254_16189_combine_locker" then
+                                SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-2018 -1828 216", ["angles"]="0 270 0", ["parentname"]="scanner_return_clip_door"})
+                                SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-1868 -1744 216", ["angles"]="0 180 0", ["parentname"]="scanner_return_clip", ["modelscale"]=10})
                             end
 
                             ent:Attribute_SetIntValue("used", 1)
@@ -685,7 +690,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 22:04", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 22:16", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
