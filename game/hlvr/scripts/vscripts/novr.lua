@@ -167,8 +167,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
                                 ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
                             end
+                            return
                         end
-                        return
                     end
 
                     local ent = Entities:FindByClassnameNearest("info_hlvr_toner_port", traceTable.pos, 10)
@@ -685,7 +685,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 21:23", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 21:35", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
