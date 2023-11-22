@@ -65,11 +65,11 @@ function ViewmodelAnimation_PlayInspectAnimation()
         local viewmodel_name = viewmodel:GetModelName()
 		local viewmodel_sequence = viewmodel:GetSequence()
 
-        if string.match(viewmodel_name, "v_pistol") or string.match(viewmodel_name, "v_smg1") then
+        if true then--string.match(viewmodel_name, "v_pistol") or string.match(viewmodel_name, "v_smg1") then
             print(string.format("Play inspect for viewmodel %s on sequence %s", viewmodel_name, viewmodel_sequence))
             
             -- Set animation play length per model
-            animation_time = 2.3
+            animation_time = 1.0
             if string.match(viewmodel_name, "v_pistol") then 
                 animation_time = 3.6
             end
@@ -78,7 +78,7 @@ function ViewmodelAnimation_PlayInspectAnimation()
 
             -- Inspect animation
             player:SetThink(function()
-                viewmodel:ResetSequence("inspect")
+                viewmodel:ResetSequence("use")
             end, "ViewmodelInspectAnimation", 0.12)
 
             player:SetThink(function()

@@ -115,6 +115,15 @@ if GlobalSys:CommandLineCheck("-novr") then
         player:Attribute_SetIntValue("disable_unstuck", 0)
     end, nil)
 
+    Convars:RegisterCommand("usemultitool", function()
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        local player = Entities:GetLocalPlayer()
+
+        if viewmodel and string.match(viewmodel:GetModelName(), "v_multitool") then
+            SendToConsole("useextra")
+        end
+    end, "", 0)
+
     Convars:RegisterCommand("toggle_noclip", function()
         local player = Entities:GetLocalPlayer()
         if player:Attribute_GetIntValue("noclip_tutorial_shown", 0) == 0 then
@@ -652,7 +661,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 07:51", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 10:25", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -756,7 +765,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
             SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand Enable;viewmodel_offset_y -20\"")
             SendToConsole("alias -customattack -iv_attack")
-            SendToConsole("alias +customattack +iv_attack")
+            SendToConsole("alias +customattack \"+iv_attack;usemultitool\"")
             SendToConsole("mouse_disableinput 0")
             SendToConsole("-attack")
             SendToConsole("-attack2")
@@ -769,6 +778,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sk_plr_dmg_ar2 9")
             SendToConsole("sk_plr_dmg_smg1 5")
             SendToConsole("hlvr_physcannon_forward_offset -5")
+            SendToConsole("physcannon_tracelength 0")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
             -- Add locked door handle animation
@@ -798,6 +808,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if not loading_save_file then
                 if is_on_map_or_later("a2_quarantine_entrance") then
                     SendToConsole("give weapon_pistol")
+                    SendToConsole("give weapon_physcannon")
 
                     if is_on_map_or_later("a2_drainage") then
                         SendToConsole("give weapon_shotgun")
