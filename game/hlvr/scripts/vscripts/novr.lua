@@ -648,7 +648,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 21 15:51", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 06:41", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1001,6 +1001,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                     SendToConsole("ent_create env_message { targetname text_sprint message SPRINT }")
                     SendToConsole("ent_create env_message { targetname text_crouch message CROUCH }")
+                    SendToConsole("ent_create env_message { targetname text_pick_up message PICK_UP }")
                     SendToConsole("ent_create env_message { targetname text_gg message GRAVITYGLOVES }")
                     SendToConsole("ent_create env_message { targetname text_shoot message SHOOT }")
 
@@ -1041,6 +1042,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     ent = Entities:FindByName(nil, "@hint_crouch_locker_trigger")
                     ent:RedirectOutput("OnStartTouch", "ShowCrouchTutorial", ent)
+
+                    ent = Entities:FindByName(nil, "timer_figure_nag")
+                    ent:RedirectOutput("OnTimer", "ShowPickUpTutorial", ent)
 
                     ent = Entities:FindByName(nil, "gg_training_start_trigger")
                     ent:RedirectOutput("OnTrigger", "ShowGravityGlovesTutorial", ent)
@@ -1707,6 +1711,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ShowCrouchTutorial()
         SendToConsole("ent_fire text_crouch ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    function ShowPickUpTutorial()
+        SendToConsole("ent_fire text_pick_up ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
