@@ -136,7 +136,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                     local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
                     if ent then
                         DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
-                        return
                     end
 
                     ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 10)
@@ -690,7 +689,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 22:54", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 23:04", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
