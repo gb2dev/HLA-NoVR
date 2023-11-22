@@ -1394,19 +1394,19 @@ if GlobalSys:CommandLineCheck("-novr") then
 							if loading_save_file then
 								SendToConsole("novr_leavecombinegun") -- avoid softlock
 							else
-                                ent = Entities:FindByName(nil, "falling_cabinet_door")
-                                DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
-
-                                SendToConsole("ent_fire func_physbox DisableMotion")
-
-                                ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
-                                ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
-
-                                SendToConsole("ent_fire combine_gun_grab_handle ClearParent aim_gun")
-                                SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical") -- attach one of gun handles to the main model
-
-                                ent = Entities:FindByName(nil, "relay_shoot_gun")
-                                ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
+								ent = Entities:FindByName(nil, "falling_cabinet_door")
+								DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
+				
+								SendToConsole("ent_fire func_physbox DisableMotion")
+				
+								ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
+								ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
+				
+								SendToConsole("ent_fire combine_gun_grab_handle ClearParent aim_gun")
+								SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical") -- attach one of gun handles to the main model
+				
+								ent = Entities:FindByName(nil, "relay_shoot_gun")
+								ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
 							end
 							Convars:RegisterCommand("novr_shootcombinegun", function()
 								ent = Entities:FindByName(nil, "combine_gun_interact")
@@ -1414,7 +1414,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 									SendToConsole("ent_fire relay_shoot_gun trigger")
 									ent:Attribute_SetIntValue("ready", 0)
 								end
-                            end, "", 0)
+							end, "", 0)
 							Convars:RegisterCommand("novr_leavecombinegun", function()
 								ent = Entities:FindByName(nil, "combine_gun_interact")
 								if ent:Attribute_GetIntValue("active", 0) == 1 then 
