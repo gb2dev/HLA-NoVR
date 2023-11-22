@@ -570,10 +570,123 @@ if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 
 end
 
 
+---------- a2_quarantine_entrance ----------
+
+if map == "a2_quarantine_entrance" then
+    if IsCombineConsoleLocked() == false then
+        local ent = Entities:FindByName(nil, "17670_combine_console")
+        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+    end
+end
+
+
 ---------- a2_pistol ----------
 
 if model == "models/props/distillery/firebox_1_door_a.vmdl" then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+end
+
+
+---------- a2_headcrabs_tunnel ----------
+
+if map == "a2_headcrabs_tunnel" then
+    if name == "flashlight" or name == "flashlight_guy" then
+        SendToConsole("ent_fire_output flashlight OnAttachedToHand")
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+        player:Attribute_SetIntValue("has_flashlight", 1)
+        SendToConsole("ent_remove flashlight")
+        SendToConsole("ent_remove fake_flashlight_for_room")
+
+        local ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="FLASHLIGHT"})
+        DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+
+        SendToConsole("inv_flashlight")
+    end
+end
+
+
+---------- a2_train_yard ----------
+
+if map == "a2_train_yard" then
+    if IsCombineConsoleLocked() == false then
+        local ent = Entities:FindByName(nil, "5325_3947_combine_console")
+        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+    end
+end
+
+
+---------- a3_hotel_lobby_basement ----------
+
+if map == "a3_hotel_lobby_basement" then
+    if class == "hlvr_piano" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        thisEntity:Attribute_SetIntValue("used", 1)
+        SendToConsole("ent_fire piano_played_first_time trigger")
+
+        thisEntity:SetThink(function()
+            -- C
+            Entities:FindByName(nil, "piano_key_white_30"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note1", 6.0)
+
+        thisEntity:SetThink(function()
+            -- D
+            Entities:FindByName(nil, "piano_key_white_31"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note2", 6.5)
+
+        thisEntity:SetThink(function()
+            -- E
+            Entities:FindByName(nil, "piano_key_white_32"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note3", 7.0)
+
+        thisEntity:SetThink(function()
+            -- F
+            Entities:FindByName(nil, "piano_key_white_33"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note4", 7.5)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note5", 8.0)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note6", 9.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note7", 10.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note8", 10.5)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note9", 11.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note10", 11.5)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note11", 12.0)
+
+        thisEntity:SetThink(function()
+            SendToConsole("ent_fire piano_played_followup trigger")
+        end, "FinishPiano", 10)
+    end
+
+    if class == "hlvr_piano_key_model" then
+        thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        DoEntFireByInstanceHandle(Entities:FindByClassname(nil, "hlvr_piano"), "RunScriptFile", "useextra", 0, nil, nil)
+    end
 end
 
 
@@ -820,20 +933,6 @@ if class == "prop_dynamic" then
         else
             player:Attribute_SetIntValue("next_elevator_floor", 2)
         end
-    elseif model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
-        if thisEntity:GetSequence() == "open_idle" then
-            return
-        end
-
-        local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
-
-        if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
-			ent:Attribute_SetIntValue("used", 1)
-            DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
-            DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-            ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
-        end
     end
 end
 
@@ -892,6 +991,7 @@ if name == "traincar_01_hatch" and thisEntity:Attribute_GetIntValue("used", 0) =
     SendToConsole("ent_fire_output traincar_01_hackplug OnHackSuccess")
 end
 
+-- Combine fabricator
 if class == "prop_hlvr_crafting_station_console" then
     local function AnimTagListener(sTagName, nStatus)
         if sTagName == 'Bootup Done' and nStatus == 2 then
@@ -1116,111 +1216,6 @@ end
 
 if name == "room1_lights_circuitbreaker_switch" then
     SendToConsole("ent_fire_output controlroom_circuitbreaker_relay ontrigger")
-end
-
-if map == "a2_train_yard" then
-    if IsCombineConsoleLocked() == false then
-        local ent = Entities:FindByName(nil, "5325_3947_combine_console")
-        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
-    end
-end
-
-if map == "a2_headcrabs_tunnel" then
-    if name == "flashlight" or name == "flashlight_guy" then
-        SendToConsole("ent_fire_output flashlight OnAttachedToHand")
-        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
-        player:Attribute_SetIntValue("has_flashlight", 1)
-        SendToConsole("ent_remove flashlight")
-        SendToConsole("ent_remove fake_flashlight_for_room")
-
-        local ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="FLASHLIGHT"})
-        DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-        SendToConsole("play sounds/ui/beepclear.vsnd")
-
-        SendToConsole("inv_flashlight")
-    end
-end
-
-if map == "a2_quarantine_entrance" then
-    if IsCombineConsoleLocked() == false then
-        local ent = Entities:FindByName(nil, "17670_combine_console")
-        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
-    end
-
-    if name == "27788_combine_locker" then
-        SendToConsole("ent_fire_output 27788_locker_hack_plug OnHackSuccess")
-    end
-end
-
-if map == "a3_hotel_lobby_basement" then
-    if class == "hlvr_piano" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-        thisEntity:Attribute_SetIntValue("used", 1)
-        SendToConsole("ent_fire piano_played_first_time trigger")
-
-        thisEntity:SetThink(function()
-            -- C
-            Entities:FindByName(nil, "piano_key_white_30"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note1", 6.0)
-
-        thisEntity:SetThink(function()
-            -- D
-            Entities:FindByName(nil, "piano_key_white_31"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note2", 6.5)
-
-        thisEntity:SetThink(function()
-            -- E
-            Entities:FindByName(nil, "piano_key_white_32"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note3", 7.0)
-
-        thisEntity:SetThink(function()
-            -- F
-            Entities:FindByName(nil, "piano_key_white_33"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note4", 7.5)
-
-        thisEntity:SetThink(function()
-            -- G
-            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note5", 8.0)
-
-        thisEntity:SetThink(function()
-            -- G
-            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note6", 9.0)
-
-        thisEntity:SetThink(function()
-            -- A
-            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note7", 10.0)
-
-        thisEntity:SetThink(function()
-            -- A
-            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note8", 10.5)
-
-        thisEntity:SetThink(function()
-            -- A
-            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note9", 11.0)
-
-        thisEntity:SetThink(function()
-            -- A
-            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note10", 11.5)
-
-        thisEntity:SetThink(function()
-            -- G
-            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        end, "Note11", 12.0)
-
-        thisEntity:SetThink(function()
-            SendToConsole("ent_fire piano_played_followup trigger")
-        end, "FinishPiano", 10)
-    end
-
-    if class == "hlvr_piano_key_model" then
-        thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
-        DoEntFireByInstanceHandle(Entities:FindByClassname(nil, "hlvr_piano"), "RunScriptFile", "useextra", 0, nil, nil)
-    end
 end
 
 if name == "plug_console_starter_lever" then

@@ -1,6 +1,7 @@
 local map = GetMapName()
 local name = thisEntity:GetName()
 local class = thisEntity:GetClassname()
+local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
 
 if thisEntity:Attribute_GetIntValue("junction_rotation", 0) == 3 then
@@ -247,4 +248,20 @@ end
 
 if class == "info_hlvr_toner_junction" and toner_start_path ~= nil and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 0) == 0 then
     ToggleTonerJunction()
+end
+
+if model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+    if thisEntity:GetSequence() == "open_idle" then
+        return
+    end
+
+    local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
+
+    if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
+        ent:Attribute_SetIntValue("used", 1)
+        DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+        ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+        ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+    end
 end
