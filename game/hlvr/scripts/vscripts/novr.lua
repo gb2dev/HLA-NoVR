@@ -1391,7 +1391,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                             end
                         elseif GetMapName() == "a4_c17_parking_garage" then
-                            if not loading_save_file then
+							if loading_save_file then
+								SendToConsole("novr_leavecombinegun") -- avoid softlock
+							else
                                 ent = Entities:FindByName(nil, "falling_cabinet_door")
                                 DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
 
@@ -1405,17 +1407,14 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 ent = Entities:FindByName(nil, "relay_shoot_gun")
                                 ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
-                                Convars:RegisterCommand("novr_shootcombinegun", function()
-                                    ent = Entities:FindByName(nil, "combine_gun_interact")
-                                    if ent:Attribute_GetIntValue("ready", 0) == 1 then
-                                        SendToConsole("ent_fire relay_shoot_gun trigger")
-                                        ent:Attribute_SetIntValue("ready", 0)
-                                    end
-                                end, "", 0)
-                            end
-							if loading_save_file then
-								SendToConsole("novr_leavecombinegun") -- avoid softlock
 							end
+							Convars:RegisterCommand("novr_shootcombinegun", function()
+								ent = Entities:FindByName(nil, "combine_gun_interact")
+								if ent:Attribute_GetIntValue("ready", 0) == 1 then
+									SendToConsole("ent_fire relay_shoot_gun trigger")
+									ent:Attribute_SetIntValue("ready", 0)
+								end
+                            end, "", 0)
 							Convars:RegisterCommand("novr_leavecombinegun", function()
 								ent = Entities:FindByName(nil, "combine_gun_interact")
 								if ent:Attribute_GetIntValue("active", 0) == 1 then 
