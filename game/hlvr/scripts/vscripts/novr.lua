@@ -144,6 +144,22 @@ if GlobalSys:CommandLineCheck("-novr") then
                         local name = ent:GetName()
                         local parent = ent:GetMoveParent()
                         if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and name ~= "254_16189_locker_hack_plug" and ent:GetGraphParameter("b_PlugDisabled") == false then
+                            -- Combine Console
+                            if parent and vlua.find(parent:GetName(), "Console") then
+                                if GetMapName() == "a2_quarantine_entrance" then
+                                    local rack = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
+                                    while rack do
+                                        rack:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", rack)
+                                        rack = Entities:FindByClassname(rack, "item_hlvr_combine_console_rack")
+                                    end
+                                end
+                                local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", parent:GetCenter(), 20)
+                                for k, v in pairs(ents) do
+                                    DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
+                                end
+                                SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
+                            end
+
                             ent:Attribute_SetIntValue("used", 1)
                             DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                             if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
@@ -669,7 +685,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 21:16", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 21:23", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then

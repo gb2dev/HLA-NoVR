@@ -265,21 +265,3 @@ if model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model
         ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
     end
 end
-
-local parent = ent:GetMoveParent()
-if parent and vlua.find(parent:GetName(), "Console") and parent:Attribute_GetIntValue("used", 0) == 0 then
-    if map == "a2_quarantine_entrance" then
-        local ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
-        while ent do
-            ent:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", ent)
-            ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_rack")
-        end
-    end
-    parent:Attribute_SetIntValue("used", 1)
-    SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
-    local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", parent:GetCenter(), 20)
-    for k, v in pairs(ents) do
-        DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
-    end
-    SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
-end
