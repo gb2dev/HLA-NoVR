@@ -690,7 +690,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 22:16", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 22:39", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -862,7 +862,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 while ent do
                     if ent:Attribute_GetIntValue("used", 0) == 1 then
                         ent:Attribute_SetIntValue("redraw_toner", 1)
-                        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+                        DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
                     end
                     ent = Entities:FindByClassname(ent, "info_hlvr_toner_port")
                 end

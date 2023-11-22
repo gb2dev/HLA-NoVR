@@ -744,10 +744,6 @@ if map == "a3_distillery" then
         SendToConsole("ent_fire_output 11479_2386_button_center_pusher onin")
     end
 
-    if name == "freezer_port_b_2" then
-        --SendToConsole("ent_fire_output freezer_toner_path_8 OnPowerOn")
-    end
-
     if name == "11578_2420_181_antlion_plug_crank_a" then
         SendToConsole("ent_fire_output 11578_2420_181_antlion_plug_crank_a oncompletionc_forward")
     end
