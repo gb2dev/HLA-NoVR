@@ -96,7 +96,7 @@ local eyetrace =
 TraceLine(eyetrace)
 if eyetrace.hit then
     local useRoutine = 0
-    if eyetrace.enthit and eyetrace.enthit:GetClassname() == "worldent" and class ~= "item_combine_tank_locker" then
+    if eyetrace.enthit and eyetrace.enthit:GetClassname() == "worldent" and class ~= "item_combine_tank_locker" and not vlua.find(class, "hlvr_piano") then
         GravityGlovePull()
         return
     end
