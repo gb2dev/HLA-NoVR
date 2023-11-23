@@ -708,7 +708,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 23 10:51", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 23 11:06", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1451,6 +1451,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 ent = Entities:FindByName(nil, "elevator_path_1")
                                 ent:RedirectOutput("OnPass", "EnableToiletElevatorLever", ent)
+
+                                ent = Entities:FindByName(nil, "elev_trigger_player_inside")
+                                ent:SetOrigin(ent:GetOrigin() + Vector(0,0,50))
+                                ent = Entities:FindByName(nil, "elev_trigger_player_inside_outer_trigger")
+                                ent:SetOrigin(ent:GetOrigin() + Vector(0,0,50))
 
                                 ent = Entities:FindByName(nil, "waste_vial_template_1")
                                 ent:RedirectOutput("OnEntitySpawned", "DisableBarnacleHealthVialPickup", ent)
