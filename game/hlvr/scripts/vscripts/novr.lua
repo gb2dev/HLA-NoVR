@@ -529,9 +529,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local traceTable =
                 {
                     startpos = startVector;
-                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(100, 0, 0));
+                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(50, 0, 0));
                     ignore = player;
-                    mask =  33636363
+                    mask = 33636363
                 }
 
                 TraceLine(traceTable)
@@ -576,6 +576,25 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ClimbLadder(840, Vector(0, 0, 0))
                 end
             elseif GetMapName() == "a3_c17_processing_plant" then
+                local startVector = player:EyePosition()
+                local traceTable =
+                {
+                    startpos = startVector;
+                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(50, 0, 0));
+                    ignore = player;
+                    mask = -1
+                }
+
+                TraceLine(traceTable)
+
+                if traceTable.hit then
+                    local ent = Entities:FindByNameWithin(nil, "1517_3301_lift_button_attached_down_prop", traceTable.pos, 10)
+                    if ent then
+                        player:Attribute_SetIntValue("activated_processing_plant_lift", 1)
+                        SendToConsole("ent_fire_output lift_button_down onin")
+                    end
+                end
+
                 if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 15), player) and Entities:FindByName(nil, "factory_int_up_barnacle_npc_1"):GetHealth() <= 0 then
                     ClimbLadder(890)
                 end
@@ -689,7 +708,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 23 09:50", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 23 10:14", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -896,6 +915,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent:SetThink(function()
                     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                     local player = Entities:GetLocalPlayer()
+
+                    if GetMapName() == "a3_c17_processing_plant" and player:Attribute_GetIntValue("activated_processing_plant_lift", 0) == 0 and player:GetAbsOrigin().z < 600 then
+                        SendToConsole("snd_sos_start_soundevent Player.FallDamage")
+                        SendToConsole("ent_fire !player SetHealth 0")
+                        return nil
+                    end
 
                     cvar_setf("player_use_radius", min(2200/abs(player:GetAngles().x),60))
 
@@ -1319,9 +1344,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                             if ent then
                                 ent:Kill()
                             end
-
-                            ent = Entities:FindByName(nil, "1517_3301_lift_prop_animated")
-                            DoEntFireByInstanceHandle(ent, "DisableCollision", "", 0, nil, nil)
 
                             ent = Entities:FindByClassnameNearest("trigger_once", Vector(-1456, -3960, 224), 10)
                             ent:RedirectOutput("OnTrigger", "SetupMineRoom", ent)
