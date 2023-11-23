@@ -1,6 +1,6 @@
 if GlobalSys:CommandLineCheck("-novr") then
     require "storage"
-	unstuck_table = {}
+    unstuck_table = {}
 
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
@@ -397,7 +397,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
-                if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then                    
+                if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 1 then
                     if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", -0.045)
@@ -689,7 +689,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 22 23:04", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 23 09:50", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -835,17 +835,20 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if not loading_save_file then
                 if is_on_map_or_later("a2_quarantine_entrance") then
-                    SendToConsole("give weapon_physcannon")
                     SendToConsole("give weapon_pistol")
 
-                    if is_on_map_or_later("a2_drainage") then
-                        SendToConsole("give weapon_shotgun")
+                    if is_on_map_or_later("a2_pistol") then
+                        SendToConsole("give weapon_physcannon")
 
-                        if is_on_map_or_later("a3_hotel_street") then
-                            if Entities:GetLocalPlayer():Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                                SendToConsole("give weapon_ar2")
-                            else
-                                SendToConsole("give weapon_smg1")
+                        if is_on_map_or_later("a2_drainage") then
+                            SendToConsole("give weapon_shotgun")
+
+                            if is_on_map_or_later("a3_hotel_street") then
+                                if Entities:GetLocalPlayer():Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                                    SendToConsole("give weapon_ar2")
+                                else
+                                    SendToConsole("give weapon_smg1")
+                                end
                             end
                         end
                     end
@@ -983,7 +986,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if is_on_map_or_later("a2_quarantine_entrance") then
                 ent = Entities:GetLocalPlayer()
-                --ent:SetThink(function() 
+                --ent:SetThink(function()
                 HUDHearts_StartUpdateLoop()
                 --end, "", 1.5)
             end
@@ -1072,7 +1075,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
                     --HUDHearts_Show()
-                    --ent:SetThink(function() 
+                    --ent:SetThink(function()
                     HUDHearts_StartUpdateLoop()
                     --end, "", 1.5)
                 end
@@ -1435,45 +1438,45 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
                             end
                         elseif GetMapName() == "a4_c17_parking_garage" then
-							if loading_save_file then
-								SendToConsole("novr_leavecombinegun") -- avoid softlock
-							else
-								ent = Entities:FindByName(nil, "falling_cabinet_door")
-								DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
-				
-								SendToConsole("ent_fire func_physbox DisableMotion")
-				
-								ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
-								ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
-				
-								SendToConsole("ent_fire combine_gun_grab_handle ClearParent aim_gun")
-								SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical") -- attach one of gun handles to the main model
-				
-								ent = Entities:FindByName(nil, "relay_shoot_gun")
-								ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
-							end
-							Convars:RegisterCommand("novr_shootcombinegun", function()
-								ent = Entities:FindByName(nil, "combine_gun_interact")
-								if ent:Attribute_GetIntValue("ready", 0) == 1 then
-									SendToConsole("ent_fire relay_shoot_gun trigger")
-									ent:Attribute_SetIntValue("ready", 0)
-								end
-							end, "", 0)
-							Convars:RegisterCommand("novr_leavecombinegun", function()
-								ent = Entities:FindByName(nil, "combine_gun_interact")
-								if ent:Attribute_GetIntValue("active", 0) == 1 then 
-									ent:StopThink("UsingCombineGun") 
-									ent:FireOutput("OnInteractStop", nil, nil, nil, 0)
-									local gunAngle = ent:LoadQAngle("OrigAngle")
-									ent:SetAngles(gunAngle.x,gunAngle.y,gunAngle.z)
-									ent:Attribute_SetIntValue("active", 0)
-									SendToConsole("ent_fire combine_gun_mechanical enablecollision")
-									SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-									SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
-									SendToConsole("r_drawviewmodel 1")
-									SendToConsole("unbind J")
-								end
-							end, "", 0)
+                            if loading_save_file then
+                                SendToConsole("novr_leavecombinegun") -- avoid softlock
+                            else
+                                ent = Entities:FindByName(nil, "falling_cabinet_door")
+                                DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
+
+                                SendToConsole("ent_fire func_physbox DisableMotion")
+
+                                ent = Entities:FindByName(nil, "relay_enter_ufo_beam")
+                                ent:RedirectOutput("OnTrigger", "EnterVaultBeam", ent)
+
+                                SendToConsole("ent_fire combine_gun_grab_handle ClearParent aim_gun")
+                                SendToConsole("ent_fire combine_gun_grab_handle SetParent combine_gun_mechanical") -- attach one of gun handles to the main model
+
+                                ent = Entities:FindByName(nil, "relay_shoot_gun")
+                                ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
+                            end
+                            Convars:RegisterCommand("novr_shootcombinegun", function()
+                                ent = Entities:FindByName(nil, "combine_gun_interact")
+                                if ent:Attribute_GetIntValue("ready", 0) == 1 then
+                                    SendToConsole("ent_fire relay_shoot_gun trigger")
+                                    ent:Attribute_SetIntValue("ready", 0)
+                                end
+                            end, "", 0)
+                            Convars:RegisterCommand("novr_leavecombinegun", function()
+                                ent = Entities:FindByName(nil, "combine_gun_interact")
+                                if ent:Attribute_GetIntValue("active", 0) == 1 then
+                                    ent:StopThink("UsingCombineGun")
+                                    ent:FireOutput("OnInteractStop", nil, nil, nil, 0)
+                                    local gunAngle = ent:LoadQAngle("OrigAngle")
+                                    ent:SetAngles(gunAngle.x,gunAngle.y,gunAngle.z)
+                                    ent:Attribute_SetIntValue("active", 0)
+                                    SendToConsole("ent_fire combine_gun_mechanical enablecollision")
+                                    SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+                                    SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+                                    SendToConsole("r_drawviewmodel 1")
+                                    SendToConsole("unbind J")
+                                end
+                            end, "", 0)
                         elseif GetMapName() == "a5_vault" then
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
                             SendToConsole("use weapon_bugbait")
@@ -1570,7 +1573,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("mouse_disableinput 0")
         SendToConsole("hidehud 96")
-        
     end
 
     function MoveFreely(a, b)
@@ -1789,6 +1791,8 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function ShowMultiToolTutorial()
+        SendToConsole("give weapon_physcannon")
+        SendToConsole("use weapon_pistol")
         SendToConsole("ent_fire text_multitool_equip ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
         Entities:GetLocalPlayer():SetThink(function()
@@ -1813,7 +1817,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end
 
-    function ShowQuickSaveTutorial()   
+    function ShowQuickSaveTutorial()
         SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
@@ -1854,7 +1858,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent:SetAbsOrigin(Vector(-1175, -3770, 135))
             end
 
-            
+
             ent = Entities:FindByClassnameNearest("item_hlvr_weapon_tripmine", Vector(-1105.788, -4058.940, 164.177), 10)
             if ent then
                 ent:SetAbsOrigin(Vector(-1105.788, -4058.940, 140))
@@ -1932,35 +1936,35 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function EquipCombineGunMechanical(player)
-		SendToConsole("ent_fire player_speedmod ModifySpeed 0")
-		SendToConsole("bind " .. PRIMARY_ATTACK .. " novr_shootcombinegun")
-		SendToConsole("r_drawviewmodel 0")
+        SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " novr_shootcombinegun")
+        SendToConsole("r_drawviewmodel 0")
 
-		local ent = Entities:FindByName(nil, "combine_gun_interact") -- Take interaction gun entity instead of base model
-		ent:Attribute_SetIntValue("active", 1)
-		ent:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0) -- ammo charge sound
-		ent:FireOutput("OnInteractStart", nil, nil, nil, 0)
-		ent:SetThink(function()
-			ent:SetAngles(player:EyeAngles().x * -1,player:EyeAngles().y - 180,0)
-			return 0.05
-		end, "UsingCombineGun", 0)
+        local ent = Entities:FindByName(nil, "combine_gun_interact") -- Take interaction gun entity instead of base model
+        ent:Attribute_SetIntValue("active", 1)
+        ent:FireOutput("OnCompletionB_Forward", nil, nil, nil, 0) -- ammo charge sound
+        ent:FireOutput("OnInteractStart", nil, nil, nil, 0)
+        ent:SetThink(function()
+            ent:SetAngles(player:EyeAngles().x * -1,player:EyeAngles().y - 180,0)
+            return 0.05
+        end, "UsingCombineGun", 0)
     end
 
-	function CombineGunHandleAnim(a, b)
-		local ent = Entities:FindByName(nil, "combine_gun_interact")
-		ent:FireOutput("OnCompletionD_Forward", nil, nil, nil, 0) -- charge sounds
-		local handleState = 0
-		ent:SetThink(function()
-			if handleState < 1 then
-				handleState = handleState + 0.05
-				DoEntFireByInstanceHandle(ent, "SetCompletionValue", "" .. handleState, 0, nil, nil)
+    function CombineGunHandleAnim(a, b)
+        local ent = Entities:FindByName(nil, "combine_gun_interact")
+        ent:FireOutput("OnCompletionD_Forward", nil, nil, nil, 0) -- charge sounds
+        local handleState = 0
+        ent:SetThink(function()
+            if handleState < 1 then
+                handleState = handleState + 0.05
+                DoEntFireByInstanceHandle(ent, "SetCompletionValue", "" .. handleState, 0, nil, nil)
                 return 0.05
-			else
-				ent:FireOutput("OnCompletionC_Forward", nil, nil, nil, 0) -- charge sounds
-				ent:Attribute_SetIntValue("ready", 1) -- ready to shoot
-				return nil
-			end
-		end, "UsingCombineGunHandle", 0)
+            else
+                ent:FireOutput("OnCompletionC_Forward", nil, nil, nil, 0) -- charge sounds
+                ent:Attribute_SetIntValue("ready", 1) -- ready to shoot
+                return nil
+            end
+        end, "UsingCombineGunHandle", 0)
     end
 
     function EnterVaultBeam()
@@ -2082,13 +2086,13 @@ if GlobalSys:CommandLineCheck("-novr") then
         local result = 0
         local sign = 1
         local term = x
-      
+
         for i = 1, 10 do -- increase the number of iterations for more accuracy
           result = result + sign * term
           sign = -sign
           term = term * x * x / ((2 * i) * (2 * i + 1))
         end
-      
+
         return result
     end
 
