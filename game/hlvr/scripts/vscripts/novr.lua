@@ -708,7 +708,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 23 11:06", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 23 11:13", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1970,6 +1970,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function EquipCombineGunMechanical(player)
+        SendToConsole("setpos 1510.57 386.48 944;setang -11.64 177.98 0")
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
         SendToConsole("bind " .. PRIMARY_ATTACK .. " novr_shootcombinegun")
         SendToConsole("r_drawviewmodel 0")
