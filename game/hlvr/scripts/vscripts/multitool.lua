@@ -327,6 +327,7 @@ if class == "prop_hlvr_crafting_station_console" then
             SendToConsole("ent_fire weapon_in_fabricator Kill")
             thisEntity:SetGraphParameterBool("bCrafting", false)
             Convars:SetStr("chosen_upgrade", "")
+            Convars:SetStr("weapon_in_crafting_station", "")
         elseif sTagName == 'Trays Retracted' and nStatus == 2 then
             thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 1)
         end
