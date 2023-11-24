@@ -309,6 +309,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
         SendToConsole("viewmodel_update")
         SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+        Convars:SetStr("chosen_upgrade", "")
     end, "", 0)
 
     Convars:RegisterCommand("throwgrenade", function(name, launcher)
@@ -712,7 +713,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 24 14:20", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 24 14:31", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -883,6 +884,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                 AddCollisionToPhysicsProps("prop_physics")
                 AddCollisionToPhysicsProps("prop_physics_override")
             else
+                -- TODO: Remove this next month
+                if is_on_map_or_later("a2_pistol") then
+                    SendToConsole("give weapon_physcannon")
+                end
+
                 ent = Entities:FindByClassname(nil, "info_hlvr_toner_port")
                 while ent do
                     if ent:Attribute_GetIntValue("used", 0) == 1 then
