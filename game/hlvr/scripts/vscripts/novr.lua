@@ -159,6 +159,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
                             end
 
+                            if parent and parent:GetClassname() == "prop_hlvr_crafting_station_console" then
+                                DoEntFireByInstanceHandle(parent, "RunScriptFile", "multitool", 0, nil, nil)
+                            end
+
                             if parent and parent:GetName() == "254_16189_combine_locker" then
                                 SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-2018 -1828 216", ["angles"]="0 270 0", ["parentname"]="scanner_return_clip_door"})
                                 SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-1868 -1744 216", ["angles"]="0 180 0", ["parentname"]="scanner_return_clip", ["modelscale"]=10})
@@ -708,7 +712,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 23 18:24", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 24 14:20", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -913,7 +917,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local move_delta = Vector(0, 0, 0)
 
                 ent:SetThink(function()
-                    if Convars:GetStr("weapon_in_crafting_station") ~= "" and Entities:FindByClassnameNearest("prop_hlvr_crafting_station", Entities:GetLocalPlayer():GetAbsOrigin(), 200) == nil then
+                    if Convars:GetStr("weapon_in_crafting_station") ~= "" and Convars:GetStr("chosen_upgrade") == "" and Entities:FindByClassnameNearest("prop_hlvr_crafting_station", Entities:GetLocalPlayer():GetAbsOrigin(), 200) == nil then
                         SendToConsole("cancelupgrade")
                     end
                     return 1

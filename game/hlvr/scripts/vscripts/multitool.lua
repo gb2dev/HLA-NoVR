@@ -275,3 +275,62 @@ if model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model
         ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
     end
 end
+
+-- Combine Fabricator
+if class == "prop_hlvr_crafting_station_console" then
+    local function AnimTagListener(sTagName, nStatus)
+        if sTagName == 'Bootup Done' and nStatus == 2 then
+            thisEntity:Attribute_SetIntValue("crafting_station_ready", 1)
+        elseif sTagName == 'Crafting Done' and nStatus == 2 then
+            if Convars:GetStr("chosen_upgrade") == "pistol_upgrade_aimdownsights" then
+                player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
+                SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_pistol_upgrade_aimdownsights ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
+                player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
+                SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
+                player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
+                SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_shotgun_upgrade_grenadelauncher ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
+                player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
+                SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
+                player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
+                if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                    SendToConsole("give weapon_ar2")
+                else
+                    SendToConsole("give weapon_smg1")
+                end
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
+                player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
+                SendToConsole("ent_remove weapon_ar2")
+                SendToConsole("give weapon_smg1")
+                SendToConsole("viewmodel_update")
+            end
+
+            SendToConsole("ent_fire point_clientui_world_panel Enable")
+            SendToConsole("ent_fire weapon_in_fabricator Kill")
+            thisEntity:SetGraphParameterBool("bCrafting", false)
+            Convars:SetStr("chosen_upgrade", "")
+        elseif sTagName == 'Trays Retracted' and nStatus == 2 then
+            thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 1)
+        end
+    end
+
+    thisEntity:RegisterAnimTagListener(AnimTagListener)
+end
