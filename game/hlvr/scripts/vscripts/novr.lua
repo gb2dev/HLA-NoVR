@@ -30,6 +30,8 @@ if GlobalSys:CommandLineCheck("-novr") then
         if GetPhysVelocity(Entities:GetLocalPlayer()).z < -450 then
             SendToConsole("ent_fire !player SetHealth 0")
         end
+
+        print("[MainMenu] player_health " .. info.health)
     end, nil)
 
     if entity_killed_ev ~= nil then
@@ -728,7 +730,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
 
         if GetMapName() == "startup" then
-            SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
             SendToConsole("sv_cheats 1")
             SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
@@ -1628,9 +1629,8 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("fov_desired 95")
         SendToConsole("hidehud 96")
-        Entities:GetLocalPlayer():SetThink(function()
-            print("[MainMenu] main_menu_mode")
-        end, "", 5)
+        SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
+        print("[MainMenu] main_menu_mode")
     end
 
     function MoveFreely(a, b)
