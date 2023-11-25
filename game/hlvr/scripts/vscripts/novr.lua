@@ -758,10 +758,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent = Entities:FindByName(nil, "startup_relay")
             ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
         else
-            print("[MainMenu] pause_menu_mode")
-            SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
             SendToConsole("binddefaults")
             SendToConsole("bind F24 main_menu_exec")
+            print("[MainMenu] pause_menu_mode")
             SendToConsole("alias +forwardfixed \"+iv_forward;unstuck\"")
             SendToConsole("alias -forwardfixed -iv_forward")
             SendToConsole("alias +backfixed \"+iv_back;unstuck\"")
@@ -1629,7 +1628,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("fov_desired 95")
         SendToConsole("hidehud 96")
-        SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
         print("[MainMenu] main_menu_mode")
     end
 
