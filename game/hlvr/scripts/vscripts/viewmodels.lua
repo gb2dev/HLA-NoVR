@@ -27,6 +27,7 @@ function Viewmodels_UpgradeModel()
     -- Fetch pistol upgrades
     local pistol_aimdownsights = player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0)
     local pistol_burstfire = player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0)
+    local pistol_hopper = player:Attribute_GetIntValue("pistol_upgrade_hopper", 0)
 
     -- List of pistol viewmodels
     local pistol_search_str = "v_pistol"
@@ -35,22 +36,27 @@ function Viewmodels_UpgradeModel()
     local pistol_viewmodel_stock = "models/weapons/v_pistol_stock.vmdl"
     local pistol_viewmodel_shroud = "models/weapons/v_pistol_shroud.vmdl"
     local pistol_viewmodel_shroud_ads = "models/weapons/v_pistol_shroud_ads.vmdl"
+    local pistol_viewmodel_hopper = "models/weapons/v_pistol_hopper.vmdl"
+    local pistol_viewmodel_hopper_ads = "models/weapons/v_pistol_hopper_ads.vmdl"
     local pistol_viewmodel_base = "models/weapons/v_pistol.vmdl"
 
     -- Fetch shotgun upgrades
     local shotgun_doubleshot = player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0)
     local shotgun_grenadelauncher = player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0)
+    local shotgun_hopper = player:Attribute_GetIntValue("shotgun_upgrade_hopper", 0)
 
     -- List of shotgun viewmodels
     local shotgun_search_str = "v_shotgun"
     local shotgun_viewmodel_burst_grenade = "models/weapons/v_shotgun_burst_grenade.vmdl"
     local shotgun_viewmodel_burst = "models/weapons/v_shotgun_burst.vmdl"
     local shotgun_viewmodel_grenade = "models/weapons/v_shotgun_grenade.vmdl"
+    local shotgun_viewmodel_hopper = "models/weapons/v_shotgun_hopper.vmdl"
     local shotgun_viewmodel_base = "models/weapons/v_shotgun.vmdl"
 
     -- Fetch smg1 upgrades
     local smg_aimdownsights = player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0)
     local smg_fasterfirerate = player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0)
+    local smg_casing = player:Attribute_GetIntValue("smg_upgrade_casing", 0)
 
     -- List of smg1 viewmodels
     local smg_search_str = "v_smg1"
@@ -58,6 +64,8 @@ function Viewmodels_UpgradeModel()
     local smg_viewmodel_holo_ads = "models/weapons/v_smg1_holo_ads.vmdl"
     local smg_viewmodel_powerpack = "models/weapons/v_smg1_powerpack.vmdl"
     local smg_viewmodel_base = "models/weapons/v_smg1.vmdl"
+    local smg_viewmodel_casing = "models/weapons/v_smg1_casing.vmdl"
+    local smg_viewmodel_casing_ads = "models/weapons/v_smg1_casing_ads.vmdl"
 
     -- Update weapon viewmodel
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
@@ -67,6 +75,16 @@ function Viewmodels_UpgradeModel()
         
         -- Set upgraded pistol viewmodels
         if string.match(viewmodel_name, pistol_search_str) then
+            -- hopper (TESTING)
+            if pistol_hopper == 1 then
+                if string.match(viewmodel_name, pistol_viewmodel_hopper) or string.match(viewmodel_name, pistol_viewmodel_hopper_ads) then
+                    return
+                else
+                    viewmodel:SetModel(pistol_viewmodel_hopper)
+                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s)", pistol_viewmodel_hopper, pistol_aimdownsights, pistol_burstfire))
+                    return
+                end
+            end
             -- shroud and stock
             if pistol_aimdownsights == 1 and pistol_burstfire == 1 then
                 if string.match(viewmodel_name, pistol_viewmodel_shroud_stock) or string.match(viewmodel_name, pistol_viewmodel_shroud_stock_ads) then
@@ -99,6 +117,16 @@ function Viewmodels_UpgradeModel()
 
         -- Set upgraded shotgun viewmodels
         if string.match(viewmodel_name, shotgun_search_str) then
+            -- hopper (TESTING)
+            if shotgun_hopper == 1 then
+                if string.match(viewmodel_name, shotgun_viewmodel_hopper) then
+                    return
+                else
+                    viewmodel:SetModel(shotgun_viewmodel_hopper)
+                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_hopper, shotgun_doubleshot, shotgun_grenadelauncher))
+                    return
+                end
+            end
             -- burst and grenade
             if shotgun_doubleshot == 1 and shotgun_grenadelauncher == 1 then
                 if string.match(viewmodel_name, shotgun_viewmodel_burst_grenade) then
@@ -131,6 +159,16 @@ function Viewmodels_UpgradeModel()
 
         -- Set upgraded smg1 viewmodels
         if string.match(viewmodel_name, smg_search_str) then
+            -- casing (TESTING)
+            if smg_casing == 1 then
+                if string.match(viewmodel_name, smg_viewmodel_casing) or string.match(viewmodel_name, smg_viewmodel_casing_ads) then
+                    return
+                else
+                    viewmodel:SetModel(smg_viewmodel_casing)
+                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s)", smg_viewmodel_casing, smg_aimdownsights, smg_fasterfirerate))
+                    return
+                end
+            end
             -- holo and powerpack
             if smg_aimdownsights == 1 and smg_fasterfirerate == 1 then
                 if string.match(viewmodel_name, smg_viewmodel_holo) or string.match(viewmodel_name, smg_viewmodel_holo_ads) then
@@ -173,3 +211,17 @@ Convars:RegisterCommand("viewmodel_update" , function()
         end, "ViewmodelUpdate", 0)
     end
 end, "function viewmodel_update", 0)
+
+-- Assign upgraded viewmodels
+Convars:RegisterCommand("viewmodel_development_upgrades_toggle" , function()
+    local player = Entities:GetLocalPlayer()
+    if player:Attribute_GetIntValue("smg_upgrade_casing", 0) == 0 then
+        player:Attribute_SetIntValue("smg_upgrade_casing", 1)
+        player:Attribute_SetIntValue("shotgun_upgrade_hopper", 1)
+        player:Attribute_SetIntValue("pistol_upgrade_hopper", 1)
+    else
+        player:Attribute_SetIntValue("smg_upgrade_casing", 0)
+        player:Attribute_SetIntValue("shotgun_upgrade_hopper", 0)
+        player:Attribute_SetIntValue("pistol_upgrade_hopper", 0)
+    end
+end, "function viewmodel_development_upgrades_toggle", 0)
