@@ -392,12 +392,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("crosshair 0")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
-                        SendToConsole("ent_fire ads_zoom unzoom")
+                        SendToConsole("ent_fire ads_zoom_out zoom")
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
                         SendToConsole("crosshair 1")
+                        player:SetThink(function()
+                            SendToConsole("ent_fire ads_zoom unzoom")
+                            SendToConsole("ent_fire ads_zoom_out unzoom")
+                        end, "ZoomDeactivate", 0.5)
                     end
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
@@ -413,11 +417,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end, "ZoomActivate", 0.5)
                     else
                         cvar_setf("fov_ads_zoom", FOV)
-                        SendToConsole("ent_fire ads_zoom unzoom")
+                        SendToConsole("ent_fire ads_zoom_out zoom")
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
+                        player:SetThink(function()
+                            SendToConsole("ent_fire ads_zoom unzoom")
+                            SendToConsole("ent_fire ads_zoom_out unzoom")
+                        end, "ZoomDeactivate", 0.5)
                     end
                 end
             end
