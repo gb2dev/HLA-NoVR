@@ -1028,9 +1028,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if is_on_map_or_later("a2_quarantine_entrance") then
                 ent = Entities:GetLocalPlayer()
-                --ent:SetThink(function()
                 HUDHearts_StartUpdateLoop()
-                --end, "", 1.5)
             end
 
             if GetMapName() == "a1_intro_world" then
@@ -1116,10 +1114,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
-                    --HUDHearts_Show()
-                    --ent:SetThink(function()
                     HUDHearts_StartUpdateLoop()
-                    --end, "", 1.5)
                 end
 
                 SendToConsole("combine_grenade_timer 7")
@@ -1602,7 +1597,6 @@ if GlobalSys:CommandLineCheck("-novr") then
     function PlayerDied()
         SendToServerConsole("unpause")
         HUDHearts_StopUpdateLoop()
-        HUDHearts_Hide()
         SendToConsole("disable_flashlight")
         SendToConsole("binddefaults")
     end
