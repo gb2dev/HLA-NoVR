@@ -392,12 +392,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("crosshair 0")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
-                        SendToConsole("ent_fire ads_zoom unzoom")
+                        SendToConsole("ent_fire ads_zoom_out zoom")
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
                         SendToConsole("crosshair 1")
+                        player:SetThink(function()
+                            SendToConsole("ent_fire ads_zoom unzoom")
+                            SendToConsole("ent_fire ads_zoom_out unzoom")
+                        end, "ZoomDeactivate", 0.5)
                     end
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
@@ -413,11 +417,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end, "ZoomActivate", 0.5)
                     else
                         cvar_setf("fov_ads_zoom", FOV)
-                        SendToConsole("ent_fire ads_zoom unzoom")
+                        SendToConsole("ent_fire ads_zoom_out zoom")
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
+                        player:SetThink(function()
+                            SendToConsole("ent_fire ads_zoom unzoom")
+                            SendToConsole("ent_fire ads_zoom_out unzoom")
+                        end, "ZoomDeactivate", 0.5)
                     end
                 end
             end
@@ -712,7 +720,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 24 14:42", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 25 18:33", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1028,9 +1036,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if is_on_map_or_later("a2_quarantine_entrance") then
                 ent = Entities:GetLocalPlayer()
-                --ent:SetThink(function()
                 HUDHearts_StartUpdateLoop()
-                --end, "", 1.5)
             end
 
             if GetMapName() == "a1_intro_world" then
@@ -1116,10 +1122,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
-                    --HUDHearts_Show()
-                    --ent:SetThink(function()
                     HUDHearts_StartUpdateLoop()
-                    --end, "", 1.5)
                 end
 
                 SendToConsole("combine_grenade_timer 7")
@@ -1602,7 +1605,6 @@ if GlobalSys:CommandLineCheck("-novr") then
     function PlayerDied()
         SendToServerConsole("unpause")
         HUDHearts_StopUpdateLoop()
-        HUDHearts_Hide()
         SendToConsole("disable_flashlight")
         SendToConsole("binddefaults")
     end

@@ -3,10 +3,14 @@
 
 local smg_viewmodel_holo = "models/weapons/v_smg1_holo.vmdl"
 local smg_viewmodel_holo_ads = "models/weapons/v_smg1_holo_ads.vmdl"
+local smg_viewmodel_casing = "models/weapons/v_smg1_casing.vmdl"
+local smg_viewmodel_casing_ads = "models/weapons/v_smg1_casing_ads.vmdl"
 local pistol_viewmodel_shroud = "models/weapons/v_pistol_shroud.vmdl"
 local pistol_viewmodel_shroud_ads = "models/weapons/v_pistol_shroud_ads.vmdl"
 local pistol_viewmodel_shroud_stock = "models/weapons/v_pistol_shroud_stock.vmdl"
 local pistol_viewmodel_shroud_stock_ads = "models/weapons/v_pistol_shroud_stock_ads.vmdl"
+local pistol_viewmodel_hopper = "models/weapons/v_pistol_hopper.vmdl"
+local pistol_viewmodel_hopper_ads = "models/weapons/v_pistol_hopper_ads.vmdl"
 
 -- LevelChange is called in novr.lua
 function ViewmodelAnimation_LevelChange()
@@ -30,7 +34,9 @@ function ViewmodelAnimation_ADSZoom()
 
     player:SetThink(function()
         SendToConsole("ent_remove ads_zoom")
-        SendToConsole(string.format("ent_create env_zoom { targetname ads_zoom FOV %s rate 0.7 }", FOV_ADS_ZOOM))
+        SendToConsole(string.format("ent_create env_zoom { targetname ads_zoom FOV %s rate 0.5 }", FOV_ADS_ZOOM))
+        SendToConsole("ent_remove ads_zoom_out")
+        SendToConsole(string.format("ent_create env_zoom { targetname ads_zoom_out FOV %s rate 0.5 }", FOV))
     end, "ViewmodelAnimationADSZoom", 1)
 
     print("[ViewmodelAnimation] ads zoom preparation done")
@@ -100,13 +106,22 @@ function ViewmodelAnimation_HIPtoADS()
         if string.match(viewmodel_name, smg_viewmodel_holo) then
             viewmodel:SetModel(smg_viewmodel_holo_ads)
         end
+        -- smg1 casing
+        if string.match(viewmodel_name, smg_viewmodel_casing) then
+            viewmodel:SetModel(smg_viewmodel_casing_ads)
+        end
 
-        -- pistol
+        -- pistol shroud
         if string.match(viewmodel_name, pistol_viewmodel_shroud) then
             viewmodel:SetModel(pistol_viewmodel_shroud_ads)
         end
+        -- pistol shroud stock
         if string.match(viewmodel_name, pistol_viewmodel_shroud_stock) then
             viewmodel:SetModel(pistol_viewmodel_shroud_stock_ads)
+        end
+        -- pistol hopper
+        if string.match(viewmodel_name, pistol_viewmodel_hopper) then
+            viewmodel:SetModel(pistol_viewmodel_hopper_ads)
         end
         
         viewmodel_name = viewmodel:GetModelName()
@@ -134,13 +149,22 @@ function ViewmodelAnimation_ADStoHIP()
         if string.match(viewmodel_name, smg_viewmodel_holo_ads) then
             viewmodel:SetModel(smg_viewmodel_holo)
         end
+        -- smg1 casing
+        if string.match(viewmodel_name, smg_viewmodel_casing_ads) then
+            viewmodel:SetModel(smg_viewmodel_casing)
+        end
         
-        -- pistol
+        -- pistol shroud
         if string.match(viewmodel_name, pistol_viewmodel_shroud_ads) then
             viewmodel:SetModel(pistol_viewmodel_shroud)
         end
+        -- pistol shroud stock
         if string.match(viewmodel_name, pistol_viewmodel_shroud_stock_ads) then
             viewmodel:SetModel(pistol_viewmodel_shroud_stock)
+        end
+        -- pistol hopper
+        if string.match(viewmodel_name, pistol_viewmodel_hopper_ads) then
+            viewmodel:SetModel(pistol_viewmodel_hopper)
         end
         
         viewmodel_name = viewmodel:GetModelName()
