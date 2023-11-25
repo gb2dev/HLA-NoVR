@@ -761,6 +761,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("binddefaults")
             SendToConsole("bind F24 main_menu_exec")
             print("[MainMenu] pause_menu_mode")
+            Entities:GetLocalPlayer():SetThink(function()
+                SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
+            end, "SetGameUIState", 0.1)
             SendToConsole("alias +forwardfixed \"+iv_forward;unstuck\"")
             SendToConsole("alias -forwardfixed -iv_forward")
             SendToConsole("alias +backfixed \"+iv_back;unstuck\"")
@@ -1629,6 +1632,9 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("fov_desired 95")
         SendToConsole("hidehud 96")
         print("[MainMenu] main_menu_mode")
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
+        end, "SetGameUIState", 0.1)
     end
 
     function MoveFreely(a, b)
