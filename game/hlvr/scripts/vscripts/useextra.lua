@@ -9,7 +9,7 @@ local player = Entities:GetLocalPlayer()
 local isModActive = ModSupport_IsAddonMap(GetMapName())
 -- Mod support by Hypercycle
 
-if not (vlua.find(name, "elev_anim_door") and thisEntity:GetVelocity() ~= Vector(0, 0, 0)) then
+if not (vlua.find(name, "elev_anim_door") and (thisEntity:Attribute_GetIntValue("used", 0) == 1 or thisEntity:GetVelocity() ~= Vector(0, 0, 0))) then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:Attribute_SetIntValue("toggle", 1)
     else
@@ -242,8 +242,7 @@ if class == "info_hlvr_toner_junction" and player:Attribute_GetIntValue("circuit
     toggle_toner_junction()
 end
 
-
-function is_combine_console_locked()
+function IsCombineConsoleLocked()
     local ents = Entities:FindAllByClassnameWithin("baseanimating", thisEntity:GetCenter(), 3)
     for i = 1, #ents do
         local ent = ents[i]
@@ -255,7 +254,6 @@ function is_combine_console_locked()
 end
 
 if map == "a3_distillery" and vlua.find(name, "plug") then
-    print ("TEST" .. tostring(player:Attribute_GetIntValue("plug_lever", 0)))
     if player:Attribute_GetIntValue("plug_lever", 0) == 0 then
         return
     elseif name == "11578_2420_181_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 2 then
@@ -267,7 +265,7 @@ if map == "a3_distillery" and vlua.find(name, "plug") then
     end
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and is_combine_console_locked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and IsCombineConsoleLocked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "slide_train_door") and Entities:FindByClassnameNearest("phys_constraint", thisEntity:GetCenter(), 20) then
         return
     end
@@ -293,6 +291,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     SendToConsole("ent_fire track_switch_lever SetCompletionValue 0.35 0")
                     SendToConsole("ent_fire train_switch_reset_relay Trigger 0 0")
                     if player:Attribute_GetIntValue("released_train_lever_once", 0) == 0 then
+                        SendToConsole("ent_fire speech_radio CancelSpeech")
                         SendToConsole("ent_fire train_switch_control_override_0 Cancel")
                         SendToConsole("ent_fire train_switch_control_override_10 Start")
                         player:Attribute_SetIntValue("released_train_lever_once", 1)
@@ -317,6 +316,38 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     return 0
                 end
             end, "", 0)
+        elseif name == "12712_shotgun_wheel" then
+            count = 0
+            player:SetThink(function()
+                if player:Attribute_GetIntValue("use_released", 0) == 1 and count < 1 then
+                    DoEntFireByInstanceHandle(thisEntity, "EnableReturnToCompletion", "", 0, nil, nil)
+                else
+                    DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "", 0, nil, nil)
+                    SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count / 2)
+                    return 0
+                end
+            end, "", 0)
+        elseif name == "console_selector_interact" then
+            local ent = Entities:FindByName(nil, "console_opener_prop_handle_interact")
+            ent:Attribute_SetIntValue("used", 0)
+            SendToConsole("ent_fire_output console_opener_prop_handle_interact OnCompletionExitA")
+            local count2 = ent:GetCycle()
+            ent:SetThink(function()
+                if count2 > 0 then
+                    count2 = count2 - 0.015
+                    DoEntFireByInstanceHandle(ent, "SetCompletionValue", "" .. count2, 0, nil, nil)
+                    return 0
+                else
+                    return nil
+                end
+            end, "", 0)
+            count = thisEntity:GetCycle()
+            player:SetThink(function()
+                if player:Attribute_GetIntValue("use_released", 0) == 0 then
+                    DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
+                    return 0
+                end
+            end, "", 0)
         elseif not vlua.find(name, "elev_anim_door") and not vlua.find(name, "tractor_beam_console_lever") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
@@ -326,10 +357,33 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         DoEntFireByInstanceHandle(thisEntity, "EnableOnlyRunForward", "", 0, nil, nil)
     end
 
+    if model == "models/interaction/anim_interact/twohandlift/twohandlift.vmdl" then
+        SendToConsole("snd_sos_start_soundevent RollUpDoor.MoveLinear_Start")
+        thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 1)
+    end
+
+    if model == "models/interaction/anim_interact/rollingdoor/rollingdoor.vmdl" then
+        count = thisEntity:GetCycle()
+        thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
+    end
+
+    if name == "barricade_door_hook" then
+        count = thisEntity:GetCycle()
+    end
+
+    if name == "barricade_door" then
+        local ent = Entities:FindByName(nil, "barricade_door_hook")
+        ent:Attribute_SetIntValue("used", 0)
+        DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0.1, nil, nil)
+    end
+
     local is_console = class == "prop_animinteractable" and model == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
+
     if name == "" then
         thisEntity:SetEntityName("" .. thisEntity:GetEntityIndex())
     end
+
     thisEntity:SetThink(function()
         if not is_console then
             DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
@@ -338,7 +392,11 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         if name == "12712_shotgun_wheel" then
             count = count + 0.003
         elseif name == "console_selector_interact" then
-            count = count + 0.0005
+            if thisEntity:Attribute_GetIntValue("reverse", 0) == 1 then
+                count = count - 0.003
+            else
+                count = count + 0.003
+            end
         else
             count = count + 0.01
         end
@@ -348,8 +406,17 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         end
 
         if name == "12712_shotgun_wheel" then
-            DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "", 0, nil, nil)
-            SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count / 2)
+            if player:Attribute_GetIntValue("use_released", 0) == 1 then
+                thisEntity:Attribute_SetIntValue("used", 0)
+                return nil
+            end
+        end
+
+        if name == "console_selector_interact" then
+            if player:Attribute_GetIntValue("use_released", 0) == 1 then
+                thisEntity:Attribute_SetIntValue("used", 0)
+                return nil
+            end
         end
 
         if model == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
@@ -360,11 +427,13 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             return nil
         end
 
-        if map == "a3_distillery" and name == "verticaldoor_wheel" then
-            local jeff = Entities:FindByClassname(ent, "npc_zombie_blind")
-            if player:Attribute_GetIntValue("use_released", 0) == 1 or vlua.find(Entities:FindAllInSphere(Vector(291, 291, 322), 10), jeff) then
-                thisEntity:Attribute_SetIntValue("used", 0)
-                return nil
+        if map == "a3_distillery" then
+            if name == "verticaldoor_wheel" then
+                local jeff = Entities:FindByClassname(ent, "npc_zombie_blind")
+                if player:Attribute_GetIntValue("use_released", 0) == 1 or vlua.find(Entities:FindAllInSphere(Vector(291, 291, 322), 10), jeff) then
+                    thisEntity:Attribute_SetIntValue("used", 0)
+                    return nil
+                end
             end
         end
 
@@ -372,33 +441,49 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             DoEntFireByInstanceHandle(thisEntity, "DisableReturnToCompletion", "", 0, nil, nil)
         end
 
-        
         if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
-            thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
-            if name == "barricade_door_hook" then
-                SendToConsole("ent_fire barricade_door SetReturnToCompletionStyle 0")
+            if name ~= "barricade_door_hook" then
+                thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
+            end
+
+            if name == "barricade_door" then
+                DoEntFireByInstanceHandle(Entities:FindByName(nil, "barricade_lock_relay"), "Trigger", "", 0, nil, nil)
             elseif name == "12712_shotgun_wheel" then
-                local bar = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["model"]="models/props/misc_debris/vort_winch_pipe.vmdl", ["origin"]="711.395874 1319.248047 -168.302490", ["angles"]="0.087952 120.220528 90.588112"})
-                bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
+                local bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
                 bar:Kill()
+                bar = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="12712_shotgun_bar_for_wheel", ["model"]="models/props/misc_debris/vort_winch_pipe.vmdl", ["origin"]="711.395874 1319.248047 -168.302490", ["angles"]="0.087952 120.220528 90.588112"})
                 SendToConsole("ent_remove shotgun_pickup_blocker")
             elseif name == "console_opener_prop_handle_interact" then
                 SendToConsole("ent_fire_output console_opener_prop_handle_interact OnCompletionA")
-                Entities:FindByName(nil, "console_selector_interact"):Attribute_SetIntValue("used", 0)
             elseif name == "console_selector_interact" then
-                SendToConsole("ent_fire_output console_opener_logic_isselected_* ontrue")
+                thisEntity:Attribute_SetIntValue("reverse", 1)
+            elseif model == "models/interaction/anim_interact/twohandlift/twohandlift.vmdl" then
+                SendToConsole("snd_sos_start_soundevent RollUpDoor.FullOpen")
             end
             return nil
+        elseif name == "console_selector_interact" and count <= 0 then
+            thisEntity:Attribute_SetIntValue("reverse", 0)
         else
             return 0
         end
     end, "AnimateCompletionValue", 0)
-elseif name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
-    if not vlua.find(name, "elev_anim_door") then
+elseif name == "barricade_door_hook" or name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or name == "tc_door_control" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
+    if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
+        if name == "barricade_door_hook" then
+            thisEntity:StopThink("AnimateCompletionValue")
+            thisEntity:Attribute_SetIntValue("used", 0)
+
+            local ent = Entities:FindByName(nil, "barricade_door")
+            ent:FireOutput("OnCompletionA_Backward", nil, nil, nil, 0)
+            ent:Attribute_SetIntValue("used", 0)
+        else
+            return
+        end
+    elseif not vlua.find(name, "elev_anim_door") then
         thisEntity:Attribute_SetIntValue("used", 1)
     end
 
-    local count = 0
+    local count = 1 - thisEntity:GetCycle()
     thisEntity:SetThink(function()
         DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. 1 - count, 0, nil, nil)
         count = count + 0.01
@@ -427,14 +512,6 @@ if class == "prop_ragdoll" or class == "prop_ragdoll_attached" then
     end
 end
 
-if name == "falling_cabinet_door" then
-    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1000,0))
-end
-
-if name == "falling_cabinet_door" then
-    thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,1000,0))
-end
-
 if vlua.find(name, "_locker_door_") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
 elseif vlua.find(name, "_portaloo_door") then
@@ -442,10 +519,14 @@ elseif vlua.find(name, "_portaloo_door") then
 elseif vlua.find(name, "_hazmat_crate_lid") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-5000,0))
 elseif vlua.find(model, "electric_box_door") then
-    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,5000))
+    if vlua.find(name, "electrical_panel_1_door") and (map == "a3_c17_processing_plant" or map == "a4_c17_zoo") then
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,1000))
     else
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-5000))
+        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+        else
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+        end
     end
 elseif vlua.find(name, "_dumpster_lid") then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
@@ -454,7 +535,7 @@ elseif vlua.find(name, "_dumpster_lid") then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-800,0))
     end
 elseif vlua.find(name, "_portaloo_seat") then
-    if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+    if thisEntity:Attribute_GetIntValue("toggle", 0) == 1 then
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-3000,0))
     else
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
@@ -505,16 +586,30 @@ end
 
 if vlua.find(model, "models/props/interior_furniture/interior_kitchen_cabinet_") or vlua.find(model, "models/props/interior_furniture/interior_furniture_cabinet_") then
     if vlua.find(model, "002") then
-        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
+        if vlua.find(model, "door_a") then
+            if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+            else
+                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+            end
         else
-            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-2000,0))
+            if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,-2000,0))
+            else
+                thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,2000,0))
+            end
         end
-    else
+    elseif vlua.find(model, "door_a") then
         if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
             thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
         else
             thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+        end
+    else
+        if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
+        else
+            thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
         end
     end
 end
@@ -534,9 +629,9 @@ if vlua.find(model, "van_a0") then
         if thisEntity == ent then
             DoEntFireByInstanceHandle(ent, "Toggle", "", 0, nil, nil)
             if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-                thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 100)
+                thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetForwardVector() * 150)
             else
-                thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 100)
+                thisEntity:ApplyAbsVelocityImpulse(thisEntity:GetForwardVector() * 300)
             end
         else
             DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
@@ -673,9 +768,9 @@ end
 
 if vlua.find(model, "models/props/interior_furniture/interior_furniture_cabinet_002_door_") then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
-        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
-    else
         thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+    else
+        thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
     end
 end
 
@@ -691,11 +786,22 @@ if name == "621_6487_button_pusher_prop" then
     SendToConsole("ent_fire 621_6487_button_branch test")
 end
 
-if name == "glove_dispenser_brush" then
+if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
-    SendToConsole("hudhearts_show")
+    SendToConsole("hudhearts_startupdateloop")
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
+end
+
+
+---------- a2_quarantine_entrance ----------
+
+if map == "a2_quarantine_entrance" then
+    if IsCombineConsoleLocked() == false then
+        local ent = Entities:FindByName(nil, "17670_combine_console")
+        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+    end
 end
 
 
@@ -703,6 +809,109 @@ end
 
 if model == "models/props/distillery/firebox_1_door_a.vmdl" then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
+end
+
+
+---------- a2_headcrabs_tunnel ----------
+
+if map == "a2_headcrabs_tunnel" then
+    if name == "flashlight" or name == "flashlight_guy" then
+        SendToConsole("ent_fire_output flashlight OnAttachedToHand")
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+        player:Attribute_SetIntValue("has_flashlight", 1)
+        SendToConsole("ent_remove flashlight")
+        SendToConsole("ent_remove fake_flashlight_for_room")
+
+        local ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="FLASHLIGHT"})
+        DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+
+        SendToConsole("inv_flashlight")
+    end
+end
+
+
+---------- a2_train_yard ----------
+
+if map == "a2_train_yard" then
+    if IsCombineConsoleLocked() == false then
+        local ent = Entities:FindByName(nil, "5325_3947_combine_console")
+        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+    end
+end
+
+
+---------- a3_hotel_lobby_basement ----------
+
+if map == "a3_hotel_lobby_basement" then
+    if class == "hlvr_piano" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        thisEntity:Attribute_SetIntValue("used", 1)
+        SendToConsole("ent_fire piano_played_first_time trigger")
+
+        thisEntity:SetThink(function()
+            -- C
+            Entities:FindByName(nil, "piano_key_white_30"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note1", 6.0)
+
+        thisEntity:SetThink(function()
+            -- D
+            Entities:FindByName(nil, "piano_key_white_31"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note2", 6.5)
+
+        thisEntity:SetThink(function()
+            -- E
+            Entities:FindByName(nil, "piano_key_white_32"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note3", 7.0)
+
+        thisEntity:SetThink(function()
+            -- F
+            Entities:FindByName(nil, "piano_key_white_33"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note4", 7.5)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note5", 8.0)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note6", 9.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note7", 10.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note8", 10.5)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note9", 11.0)
+
+        thisEntity:SetThink(function()
+            -- A
+            Entities:FindByName(nil, "piano_key_white_35"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note10", 11.5)
+
+        thisEntity:SetThink(function()
+            -- G
+            Entities:FindByName(nil, "piano_key_white_34"):ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        end, "Note11", 12.0)
+
+        thisEntity:SetThink(function()
+            SendToConsole("ent_fire piano_played_followup trigger")
+        end, "FinishPiano", 10)
+    end
+
+    if class == "hlvr_piano_key_model" then
+        thisEntity:ApplyAbsVelocityImpulse(-thisEntity:GetUpVector() * 100)
+        DoEntFireByInstanceHandle(Entities:FindByClassname(nil, "hlvr_piano"), "RunScriptFile", "useextra", 0, nil, nil)
+    end
 end
 
 
@@ -719,26 +928,65 @@ end
 
 ---------- a3_distillery ----------
 
-if name == "larry_ladder" then
-    SendToConsole("ent_fire_output larry_ladder OnCompletionA")
-    SendToConsole("ent_fire_output larry_ladder OnCompletionC")
-end
+if map == "a3_distillery" then
+    if name == "larry_ladder" then
+        SendToConsole("ent_fire_output larry_ladder OnCompletionA")
+        SendToConsole("ent_fire_output larry_ladder OnCompletionC")
+        player:Attribute_SetIntValue("pulled_larry_ladder", 1)
+    end
 
-if name == "cellar_ladder" then
-    ClimbLadderSound()
-    SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
-    SendToConsole("fadein 0.2")
-    SendToConsole("setpos_exact 1004 1775 546")
+    if name == "cellar_ladder" then
+        ClimbLadder(560)
+        SendToConsole("ent_fire cellar_ladder SetCompletionValue 1")
+    end
+
+    if name == "11578_2635_380_button_center" then
+        SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher OnIn")
+    end
+
+    if name == "intro_rollup_door" then
+        SendToConsole("ent_fire_output intro_rollup_door OnCompletionA_Forward")
+        SendToConsole("ent_fire door_xen_crust Break")
+        SendToConsole("ent_fire relay_door_xen_crust_c Trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_d Trigger")
+        SendToConsole("ent_fire relay_door_xen_crust_e Trigger")
+        SendToConsole("ent_fire @snd_music_bz_hello Kill")
+    end
+
+    if name == "tc_door_control" then
+        SendToConsole("ent_fire relay_close_compactor_doors Trigger")
+    end
+
+    if name == "11478_6233_tutorial_wheel" then
+        SendToConsole("ent_fire 11478_6233_verticaldoor_wheel_tutorial open")
+    end
+
+    if name == "11479_2385_button_pusher_prop" then
+        SendToConsole("ent_fire_output 11479_2385_button_center_pusher onin")
+    end
+
+    if name == "11479_2386_button_pusher_prop" then
+        SendToConsole("ent_fire_output 11479_2386_button_center_pusher onin")
+    end
+
+    if name == "11578_2420_181_antlion_plug_crank_a" then
+        SendToConsole("ent_fire_output 11578_2420_181_antlion_plug_crank_a oncompletionc_forward")
+    end
+
+    if name == "11578_2420_183_antlion_plug_crank_a" then
+        SendToConsole("ent_fire_output 11578_2420_183_antlion_plug_crank_a oncompletionc_forward")
+    end
+
+    if name == "antlion_plug_crank_c" then
+        SendToConsole("ent_fire_output antlion_plug_crank_c oncompletionc_forward")
+    end
 end
 
 
 ---------- a4_c17_parking_garage ----------
 
 if name == "toner_sliding_ladder" then
-    ClimbLadderSound()
-    SendToConsole("ent_fire toner_sliding_ladder SetCompletionValue 1")
-    SendToConsole("fadein 0.2")
-    SendToConsole("setpos_exact -367 -416 150")
+    ClimbLadder(160)
 end
 
 
@@ -749,6 +997,7 @@ if name == "prop_crowbar" then
 end
 
 if name == "l_candler" or name == "r_candler" then
+    player:Attribute_SetIntValue("disable_unstuck", 1)
     SendToConsole("ent_fire innervault_energize_event_relay Kill")
     SendToConsole("ent_fire_output g_release_hand1 OnHandPosed")
     SendToConsole("ent_fire_output g_release_hand2 OnHandPosed")
@@ -760,16 +1009,16 @@ if name == "l_candler" or name == "r_candler" then
         SendToConsole("hidehud 4")
     end
     -- Just to make sure the heart icons are gone, hidehud 4 seems fine
-    SendToConsole("hudhearts_hide")
+    SendToConsole("hudhearts_stopupdateloop")
 end
 
 if name == "combine_gun_mechanical" then
     SendToConsole("bind J novr_leavecombinegun")
 	if thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-		ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+		local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
 		DoEntFireByInstanceHandle(ent, "SetText", "Press [J] to get out", 0, nil, nil)
 		DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
-		
+
 		ent = Entities:FindByName(nil, "combine_gun_interact") -- parent gun entity
 		ent:Attribute_SetIntValue("ready", 1)
 		ent:SaveQAngle("OrigAngle", ent:GetAngles())
@@ -778,18 +1027,15 @@ if name == "combine_gun_mechanical" then
     thisEntity:Attribute_SetIntValue("used", 1)
 end
 
-if name == "18918_5316_button_pusher_prop" then
-    SendToConsole("ent_fire_output 18918_5316_button_center_pusher OnIn")
-end
-
+-- Call elevator button
 if name == "18918_5275_button_pusher_prop" then
     SendToConsole("ent_fire_output 18918_5275_button_center_pusher OnIn")
 end
 
-if name == "1489_4074_port_demux" then
-    SendToConsole("ent_fire_output 1489_4074_path_demux_3_0 onpoweron")
-    SendToConsole("ent_fire_output 1489_4074_path_demux_3_3 onpoweron")
-    SendToConsole("ent_fire_output 1489_4074_path_demux_3_6 onpoweron")
+-- Elevator button
+if name == "18918_5316_button_pusher_prop" then
+    SendToConsole("ent_fire_output 18918_5316_button_center_pusher OnIn")
+    SendToConsole("phys_pushscale 0")
 end
 
 if name == "bridge_crank" then
@@ -800,25 +1046,21 @@ if name == "bridge_crank" then
     ent:FireOutput("OnInteractStop", nil, nil, nil, 2.8)
 end
 
+if name == "3_8223_mesh_combine_switch_box" then
+    if thisEntity:GetSequence() == "open_idle" then
+        Entities:FindByName(nil, "3_8223_handpose_combine_switchbox_button_press"):FireOutput("OnHandPosed", nil, nil, nil, 0)
+    end
+end
+
 if name == "3_8223_prop_button" then
-    SendToConsole("ent_fire_output 3_8223_handpose_combine_switchbox_button_press OnHandPosed")
-end
-
-if name == "3_8223_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    thisEntity:Attribute_SetIntValue("used", 1)
-    SendToConsole("ent_fire_output 3_8223_switch_box_hack_plug OnHackSuccess")
-end
-
-if name == "589_test_outlet" then
-    SendToConsole("ent_fire 589_vertical_door Open")
-    SendToConsole("ent_fire_output 589_path_11 OnPowerOn")
+    Entities:FindByName(nil, "3_8223_handpose_combine_switchbox_button_press"):FireOutput("OnHandPosed", nil, nil, nil, 0)
 end
 
 if class == "item_combine_tank_locker" then
     if thisEntity:GetCycle() <= 0.5 then
         DoEntFireByInstanceHandle(thisEntity, "PlayAnimation", "combine_locker_standing", 0, nil, nil)
 
-        ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
+        local ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_tank")
         while ent do
             if ent:GetMoveParent() then
                 DoEntFireByInstanceHandle(ent, "EnablePickup", "", 0, nil, nil)
@@ -834,13 +1076,13 @@ if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
 	thisEntity:Kill()
 end
 
-if class == "item_hlvr_weapon_shotgun" then
+if class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" then
     SendToConsole("give weapon_shotgun")
     SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
     SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
 end
 
-if class == "item_hlvr_weapon_rapidfire" then
+if class == "item_hlvr_weapon_rapidfire" and name ~= "weapon_in_fabricator" then
     SendToConsole("give weapon_ar2")
     if map == "a3_hotel_interior_rooftop" then
         local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
@@ -862,12 +1104,12 @@ if class == "prop_dynamic" then
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
         ent = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
         if ent:GetSequence() == "idle_deployed" and tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+            ent = Entities:FindByClassnameNearest("item_healthcharger", thisEntity:GetOrigin(), 20)
+            ent:FireOutput("OnHealingPlayerStart", nil, nil, nil, 0)
+
             if player:GetHealth() == player:GetMaxHealth() then
                 StartSoundEvent("HealthStation.Deny", player)
             else
-                if map == "a2_quarantine_entrance" then
-                    SendToConsole("ent_fire_output health_station OnHealingPlayerStart")
-                end
                 StartSoundEvent("HealthStation.Start", player)
                 player:SetThink(function()
                     if player:GetVelocity().z == 0 then
@@ -906,16 +1148,6 @@ if class == "prop_dynamic" then
         else
             player:Attribute_SetIntValue("next_elevator_floor", 2)
         end
-    elseif model == "models/props_combine/combine_doors/combine_door_sm01.vmdl" or model == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
-        local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
-
-        if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
-			ent:Attribute_SetIntValue("used", 1)
-            DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
-            DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-            ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
-        end
     end
 end
 
@@ -933,30 +1165,17 @@ if name == "2860_window_sliding1" then
     SendToConsole("setpos_exact 1437 -1422 140")
 end
 
-if map == "a3_station_street" then
-    if name == "power_stake_1_start" then
-        SendToConsole("ent_fire_output toner_path_alarm_1 OnPowerOn")
-        SendToConsole("ent_fire toner_path_6_relay_debug Trigger")
+if name == "2_11128_cshield_station_1" then
+    if thisEntity:GetCycle() == 1 then
+        Entities:FindByName(nil, "2_11128_cshield_station_handpose"):FireOutput("OnHandPosed", nil, nil, nil, 0)
     end
 end
 
-if name == "2_11128_cshield_station_prop_button" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    thisEntity:Attribute_SetIntValue("used", 1)
-    SendToConsole("ent_fire 2_11128_cshield_station_relay_button_pressed Trigger")
+if name == "2_11128_cshield_station_prop_button" then
+    Entities:FindByName(nil, "2_11128_cshield_station_handpose"):FireOutput("OnHandPosed", nil, nil, nil, 0)
 end
 
-if name == "2_11128_cshield_station_1" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    thisEntity:Attribute_SetIntValue("used", 1)
-    SendToConsole("ent_fire_output 2_11128_cshield_station_hack_plug OnHackSuccess")
-end
-
-if name == "254_16189_combine_locker" then
-    SendToConsole("ent_fire_output 254_16189_locker_hack_plug OnPuzzleSuccess")
-    SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-2018 -1828 216", ["angles"]="0 270 0", ["parentname"]="scanner_return_clip_door"})
-    SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-1888 -1744 216", ["angles"]="0 180 0", ["parentname"]="scanner_return_clip", ["modelscale"]=10})
-end
-
-if name == "2_203_elev_button_floor_1" then
+if name == "2_203_elev_button_floor_1" or name == "2_203_elevator_switch_box" then
     SendToConsole("ent_fire_output 2_203_elev_button_floor_1_handpose OnHandPosed")
 end
 
@@ -976,83 +1195,14 @@ if name == "@pod_shell" or name == "pod_insides" then
     end
 end
 
-if name == "ChoreoPhysProxy" then
-    SendToConsole("ent_fire eli_fall_relay Trigger")
-end
-
 if name == "traincar_01_hatch" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire_output traincar_01_hackplug OnHackSuccess")
 end
 
-if name == "5325_4704_toner_port_train_gate" then
-    SendToConsole("ent_fire_output 5325_4704_train_gate_path_20_to_end OnPowerOn")
-    SendToConsole("ent_fire_output 5325_4704_train_gate_path_22_to_end OnPowerOn")
-end
-
-if name == "270_trip_mine_item_1" then
-    SendToConsole("ent_fire 270_trip_mine_item_1 deactivatemine")
-end
-
+-- Combine fabricator
 if class == "prop_hlvr_crafting_station_console" then
-    local function AnimTagListener(sTagName, nStatus)
-        if sTagName == 'Bootup Done' and nStatus == 2 then
-            thisEntity:Attribute_SetIntValue("crafting_station_ready", 1)
-        elseif sTagName == 'Crafting Done' and nStatus == 2 then
-            if Convars:GetStr("chosen_upgrade") == "pistol_upgrade_aimdownsights" then
-                player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
-                SendToConsole("give weapon_pistol")
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_pistol_upgrade_aimdownsights ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
-                player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
-                SendToConsole("give weapon_pistol")
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
-                player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
-                SendToConsole("give weapon_shotgun")
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_shotgun_upgrade_grenadelauncher ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
-                player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
-                SendToConsole("give weapon_shotgun")
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
-                player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
-                if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                    SendToConsole("give weapon_ar2")
-                else
-                    SendToConsole("give weapon_smg1")
-                end
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
-                player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
-                SendToConsole("ent_remove weapon_ar2")
-                SendToConsole("give weapon_smg1")
-                SendToConsole("viewmodel_update")
-            end
-            SendToConsole("ent_fire point_clientui_world_panel Enable")
-            SendToConsole("ent_fire weapon_in_fabricator Kill")
-            thisEntity:SetGraphParameterBool("bCrafting", false)
-        elseif sTagName == 'Trays Retracted' and nStatus == 2 then
-            thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 1)
-        end
-    end
-
-    thisEntity:RegisterAnimTagListener(AnimTagListener)
-
-    if thisEntity:GetGraphParameter("bBootup") == false then
-        local ent = Entities:FindByClassnameNearest("prop_hlvr_crafting_station", thisEntity:GetOrigin(), 20)
-        DoEntFireByInstanceHandle(ent, "OpenStation", "", 0, nil, nil)
-    elseif thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
+    if thisEntity:GetGraphParameter("bBootup") == true and thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
         if thisEntity:GetGraphParameter("bCollectingResin") then
             if Convars:GetStr("chosen_upgrade") ~= "" then
                 if Convars:GetStr("chosen_upgrade") == "cancel" then
@@ -1106,7 +1256,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
-                    SendToConsole("impulse 200")
+                    --SendToConsole("impulse 200")
                     SendToConsole("lastinv") -- fix for impulse 200 not hiding the shotgun somehow
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
@@ -1145,7 +1295,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     else
                         SendToConsole("ent_fire weapon_smg1 kill 0.02")
                     end
-                    SendToConsole("impulse 200")
+                    --SendToConsole("impulse 200")
                     SendToConsole("lastinv") -- fix for impulse 200 not hiding the smg somehow
                     Convars:SetStr("weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
@@ -1218,48 +1368,6 @@ if name == "room1_lights_circuitbreaker_switch" then
     SendToConsole("ent_fire_output controlroom_circuitbreaker_relay ontrigger")
 end
 
-if map == "a4_c17_parking_garage" then
-    if name == "toner_port" then
-        SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
-        SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
-    end
-end
-
-if map == "a2_train_yard" then
-    if is_combine_console_locked() == false then
-        local ent = Entities:FindByName(nil, "5325_3947_combine_console")
-        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
-    end
-end
-
-if map == "a2_headcrabs_tunnel" then
-    if name == "flashlight" then
-        SendToConsole("ent_fire_output flashlight OnAttachedToHand")
-        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
-        player:Attribute_SetIntValue("has_flashlight", 1)
-        SendToConsole("ent_remove flashlight")
-    end
-end
-
-if map == "a2_quarantine_entrance" then
-    if is_combine_console_locked() == false then
-        local ent = Entities:FindByName(nil, "17670_combine_console")
-        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
-    end
-    
-    if name == "27788_combine_locker" then
-        SendToConsole("ent_fire_output 27788_locker_hack_plug OnHackSuccess")
-    end
-end
-
-if map == "a3_hotel_lobby_basement" then
-    if name == "power_stake_1_start" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-        SendToConsole("ent_fire_output power_logic_enable_lights OnTrigger")
-        SendToConsole("ent_fire_output toner_path_11 OnPowerOn")
-        player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
-    end
-end
-
 if name == "plug_console_starter_lever" then
     if map == "a4_c17_tanker_yard" then
         if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
@@ -1272,74 +1380,6 @@ if name == "plug_console_starter_lever" then
     SendToConsole("ent_fire_output plug_console_starter_lever OnCompletionB_Forward")
 end
 
-if GetMapName() == "a3_distillery" then
-    if name == "11578_2635_380_button_center" then
-        SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher onin")
-    end
-
-    if name == "intro_rollup_door" then
-        SendToConsole("ent_fire_output intro_rollup_door OnCompletionA_Forward")
-        SendToConsole("ent_fire door_xen_crust Break")
-        SendToConsole("ent_fire relay_door_xen_crust_c Trigger")
-        SendToConsole("ent_fire relay_door_xen_crust_d Trigger")
-        SendToConsole("ent_fire relay_door_xen_crust_e Trigger")
-        SendToConsole("ent_fire @snd_music_bz_hello Kill")
-    end
-
-    if name == "barricade_door" then
-        SendToConsole("ent_fire barricade_door setreturntocompletionamount 1")
-    end
-
-    if name == "tc_door_control" then
-        SendToConsole("ent_fire tc_door_control setcompletionvalue 0")
-        SendToConsole("ent_fire relay_close_compactor_doors trigger")
-    end
-
-    if name == "11478_6233_tutorial_wheel" then
-        SendToConsole("ent_fire 11478_6233_verticaldoor_wheel_tutorial open")
-    end
-
-    if name == "verticaldoor_wheel" then
-        --SendToConsole("ent_fire @verticaldoor setspeed 10")
-        --SendToConsole("ent_fire @verticaldoor open")
-    end
-
-    if name == "11479_2385_button_pusher_prop" then
-        SendToConsole("ent_fire_output 11479_2385_button_center_pusher onin")
-    end
-
-    if name == "11479_2386_button_pusher_prop" then
-        SendToConsole("ent_fire_output 11479_2386_button_center_pusher onin")
-    end
-
-    if name == "freezer_toner_outlet_1" then
-        SendToConsole("ent_fire_output freezer_toner_path_3 onpoweron")
-        SendToConsole("ent_fire_output freezer_toner_path_6 onpoweron")
-        SendToConsole("ent_remove debug_teleport_player_freezer_door")
-        SendToConsole("ent_fire relay_debug_freezer_breakout trigger")
-    end
-
-    if name == "freezer_toner_outlet_2" then
-        SendToConsole("ent_fire_output freezer_toner_path_7 onpoweron")
-    end
-
-    if name == "freezer_port_b_2" then
-        SendToConsole("ent_fire_output freezer_toner_path_8 onpoweron")
-    end
-
-    if name == "11578_2420_181_antlion_plug_crank_a" then
-        SendToConsole("ent_fire_output 11578_2420_181_antlion_plug_crank_a oncompletionc_forward")
-    end
-
-    if name == "11578_2420_183_antlion_plug_crank_a" then
-        SendToConsole("ent_fire_output 11578_2420_183_antlion_plug_crank_a oncompletionc_forward")
-    end
-
-    if name == "antlion_plug_crank_c" then
-        SendToConsole("ent_fire_output antlion_plug_crank_c oncompletionc_forward")
-    end
-end
-
 if name == "lift_button_box" then
     if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
         SendToConsole("ent_fire_output lift_button_down onin")
@@ -1348,14 +1388,6 @@ if name == "lift_button_box" then
         SendToConsole("ent_fire_output lift_button_up onin")
         thisEntity:Attribute_SetIntValue("used", 1)
     end
-end
-
-if name == "1517_3301_lift_prop_animated" then
-    SendToConsole("ent_fire_output lift_button_down onin")
-end
-
-if name == "shack_path_6_port_1" then
-    SendToConsole("ent_fire_output pallet_panel_power_on ontrigger")
 end
 
 if name == "pallet_lever_vertical" then
@@ -1418,7 +1450,7 @@ if vlua.find(class, "item_hlvr_crafting_currency_") then
         SendToConsole("hlvr_addresources 0 0 0 1")
     end
     StartSoundEventFromPosition("Inventory.BackpackGrabItemResin", player:EyePosition())
-    
+
     -- Show resin count
     player:SetThink(function()
         local t = {}
@@ -1448,6 +1480,9 @@ elseif class == "item_hlvr_clip_energygun" or class == "item_hlvr_clip_generic_p
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_generic_pistol_multiple" then
+    if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
+        return
+    end
     FireGameEvent("item_pickup", item_pickup_params)
     SendToConsole("hlvr_addresources 40 0 0 0")
     StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
@@ -1475,15 +1510,35 @@ elseif class == "item_hlvr_clip_rapidfire" then
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
-elseif class == "item_hlvr_grenade_frag" then
+elseif class == "item_hlvr_grenade_xen" and player:Attribute_GetIntValue("grenade", 0) == 0 then
+    if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) <= 1 then
+        player:Attribute_SetIntValue("grenade_tutorial_shown", 2)
+        SendToConsole("ent_fire text_grenade ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+    StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    thisEntity:Kill()
+    player:Attribute_SetIntValue("grenade", 2)
+elseif class == "item_hlvr_grenade_frag" and player:Attribute_GetIntValue("grenade", 0) == 0 then
     local goesInPocket = false -- keep the code to use it with proper tweaks
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
+        if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
+            player:Attribute_SetIntValue("grenade_tutorial_shown", 1)
+            SendToConsole("ent_fire text_grenade ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+        end
+
+        local ent = Entities:FindByName(nil, "player_radio_station")
+        if ent then
+            DoEntFireByInstanceHandle(ent, "SpeakConcept", "speech:open_grenades", 0, nil, nil)
+        end
         FireGameEvent("item_pickup", item_pickup_params)
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-        SendToConsole("give weapon_frag")
+        --SendToConsole("give weapon_frag")
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         viewmodel:RemoveEffects(32)
         thisEntity:Kill()
+        player:Attribute_SetIntValue("grenade", 1)
         --if goesInPocket then
 		--	-- player can hold 2 grenades on pockets, and one in hand
 		--	-- for now, all grenades will go straight into pockets
@@ -1499,8 +1554,10 @@ elseif class == "item_hlvr_grenade_frag" then
 		--end
     end
 elseif class == "item_healthvial" then
+    thisEntity:Attribute_SetIntValue("picked_up", 0)
     if player:GetHealth() < (player:GetMaxHealth()) then
     --if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
+        player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         FireGameEvent("item_pickup", item_pickup_params)
@@ -1511,5 +1568,9 @@ elseif class == "item_healthvial" then
 	--else
 	--	WristPockets_PickUpHealthPen(player, thisEntity)
 	--	FireGameEvent("item_pickup", item_pickup_params)
+    elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
+        player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
+        SendToConsole("ent_fire text_syringe ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 end

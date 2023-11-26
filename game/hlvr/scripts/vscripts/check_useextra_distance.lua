@@ -43,13 +43,15 @@ function GravityGlovePull()
         "models/props/interior_furniture/interior_locker_001_door_d.vmdl",
         "models/props/interior_furniture/interior_locker_001_door_e.vmdl",
         "models/props/construction/pallet_jack_1.vmdl",
+        "models/props_junk/wood_crate001a.vmdl",
+        "models/props/desk_1_drawer_middle.vmdl",
     }
-    if class == "prop_reviver_heart" or vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery" or thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl") then
+    if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery" or class == "item_hlvr_combine_console_tank") and (thisEntity:GetMass() <= 15 or class == "item_hlvr_prop_battery" or thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl") then
         local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
         FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
         player:StopThink("GGTutorial")
         local direction = startVector - thisEntity:GetAbsOrigin()
-        thisEntity:ApplyAbsVelocityImpulse(Vector(direction.x * 2, direction.y * 2, Clamp(direction.z * 3.8, -400, 400)))
+        thisEntity:ApplyAbsVelocityImpulse(Vector(direction.x * 2, direction.y * 2, direction.z * (115 / direction.z + 1.9)))
         StartSoundEventFromPosition("Grabbity.HoverPing", startVector)
         StartSoundEventFromPosition("Grabbity.Grab", startVector)
         local count = 0
@@ -60,7 +62,14 @@ function GravityGlovePull()
                 --if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
                 if class == "item_hlvr_grenade_frag" then
-                    DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, player)
+                    SendToConsole("+use")
+                    thisEntity:SetThink(function()
+                        SendToConsole("-use")
+                        DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, player)
+                    end, "", 0.02)
+                    if vlua.find(thisEntity:GetSequence(), "vr_grenade_arm_") then
+                        DoEntFireByInstanceHandle(thisEntity, "SetTimer", "3", 0, nil, nil)
+                    end
                 end
                 return nil
             end
@@ -85,10 +94,15 @@ local eyetrace =
     mask = -1
 }
 TraceLine(eyetrace)
-
 if eyetrace.hit then
     local useRoutine = 0
-    if eyetrace.enthit == thisEntity or name == "russell_entry_window" or vlua.find(name, "socket") then
+    if eyetrace.enthit and eyetrace.enthit:GetClassname() == "worldent" and class ~= "item_combine_tank_locker" and not vlua.find(class, "hlvr_piano") then
+        GravityGlovePull()
+        return
+    end
+
+    -- TODO: There's gotta be a better way than to exclude some things from here
+    if eyetrace.enthit == thisEntity or vlua.find(class, "hlvr_piano") or name == "russell_entry_window" or class == "item_combine_tank_locker" or vlua.find(name, "socket") or vlua.find(name, "traincar_01") then
         useRoutine = 1
         player:SetThink(function()
             if IsValidEntity(thisEntity) then
@@ -107,9 +121,5 @@ if eyetrace.hit then
 		DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
     end
 else
-    if thisEntity:GetName() == "ChoreoPhysProxy" then
-        DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
-    else
-        GravityGlovePull()
-    end
+    GravityGlovePull()
 end

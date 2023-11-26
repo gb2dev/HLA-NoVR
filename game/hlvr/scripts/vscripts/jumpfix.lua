@@ -3,7 +3,7 @@ Convars:RegisterConvar("sv_jump_force", "180", "The force applied to the player 
 
 Convars:RegisterCommand("jumpfixed", function()
 	local player = Entities:GetLocalPlayer()
-	if player:GetVelocity().z == 0 then
+	if player ~= nil and player:GetVelocity().z == 0 then
 		player:ApplyAbsVelocityImpulse(Vector(0,0,400))
 		player:SetThink(normalizeJump, self, 0.02)
 	end
