@@ -244,6 +244,14 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end, "", 0)
 
+    Convars:RegisterCommand("mouse_invert_y", function(name, value)
+        if value == "true" or value == "1" then
+            SendToConsole("bind MOUSE_Y !iv_pitch")
+        else
+            SendToConsole("bind MOUSE_Y iv_pitch")
+        end
+    end, "", 0)
+
     Convars:RegisterCommand("chooseupgrade1", function()
         local t = {}
         Entities:GetLocalPlayer():GatherCriteria(t)
@@ -370,7 +378,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         -- Reset viewmodel after auto weapon switch
         if viewmodel and cvar_getf("fov_ads_zoom") == FOV_ADS_ZOOM and not string.match(viewmodel:GetModelName(), "_ads.vmdl") then
             ViewmodelAnimation_ResetAnimation()
-            --cvar_setf("fov_desired", FOV)
             cvar_setf("fov_ads_zoom", FOV)
             SendToConsole("ent_fire ads_zoom unzoom")
             cvar_setf("viewmodel_offset_x", 0)
@@ -722,6 +729,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
 
         SendToConsole("mouse_pitchyaw_sensitivity " .. MOUSE_SENSITIVITY)
+        SendToConsole("fov_desired " .. FOV)
         SendToConsole("snd_remove_soundevent HL2Player.UseDeny")
 
         DoIncludeScript("version.lua", nil)
@@ -794,7 +802,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
             SendToConsole("r_drawviewmodel 0")
-            SendToConsole("fov_desired " .. FOV)
             SendToConsole("sv_infinite_aux_power 1")
             SendToConsole("cc_spectator_only 1")
             SendToConsole("sv_gameinstructor_disable 1")
@@ -1604,9 +1611,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
         end
 
-        if INVERT_MOUSE_Y then
-            SendToConsole("bind MOUSE_Y !iv_pitch")
-        end
+        SendToConsole("mouse_invert_y " .. tostring(INVERT_MOUSE_Y))
 
         SendToConsole("bind " .. CONSOLE .. " +toggleconsole")
     end, nil)
@@ -1621,12 +1626,11 @@ if GlobalSys:CommandLineCheck("-novr") then
     function GoToMainMenu(a, b)
         if Convars:GetBool("vr_enable_fake_vr") then
             SendToConsole("vr_enable_fake_vr 0")
-            SendToConsole("setpos_exact 817 -80 6")
+            SendToConsole("setpos_exact 757 -80 6")
         else
-            SendToConsole("setpos_exact 817 -80 -26")
+            SendToConsole("setpos_exact 757 -80 -26")
         end
         SendToConsole("setang_exact 0.4 0 0")
-        SendToConsole("fov_desired 95")
         SendToConsole("hidehud 96")
         print("[MainMenu] main_menu_mode")
         Entities:GetLocalPlayer():SetThink(function()
