@@ -739,7 +739,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
             -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 25 18:33", 255, 255, 255, 255, 999999)
+            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Nov 25 18:33 + mod support", 255, 255, 255, 255, 999999)
         end
 
         if GetMapName() == "startup" then
@@ -1054,7 +1054,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             HUDHearts_StartupPreparations()
             ViewmodelAnimation_ADSZoom()
 
-            if is_on_map_or_later("a2_quarantine_entrance") then
+            if is_on_map_or_later("a2_quarantine_entrance") and GetMapName() ~= "01_intro" and GetMapName() ~= "post-human_intro" then
                 ent = Entities:GetLocalPlayer()
                 HUDHearts_StartUpdateLoop()
             end

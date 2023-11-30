@@ -13,7 +13,7 @@ function HUDHearts_StartupPreparations()
 	SendToConsole("ent_create game_text { targetname text_hearts_red effect 0 spawnflags 1 color \"180 0 0\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 3 fxtime 0 holdtime 0.11 x 0.0277 y -0.0357 }")	
 
 	-- Trigger initial hearts update
-	if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" then
+	if GetMapName() ~= "a1_intro_world" and GetMapName() ~= "a1_intro_world_2" and GetMapName() ~= "01_intro" then
 		local player = Entities:GetLocalPlayer()
 		player:SetThink(function()
 			HUDHearts_UpdateHealth()

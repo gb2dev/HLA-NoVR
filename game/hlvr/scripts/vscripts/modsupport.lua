@@ -2,7 +2,7 @@
 -- Note: scripting style is copied from early NoVR script and based on millions of if-else
 
 -- specific mod bindings
-RTR1_USEVORTENERGY = "C"
+RTR1_USEVORTENERGY = "B"
 
 -- TODO implement addon list ids checking?
 local addonMaps = {
@@ -40,6 +40,11 @@ local addonMaps = {
 	"bioshock6small",
 	"bioshock7",
 	"bioshock8ending",
+    -- Post Human
+    "post-human_intro",
+    "post-human",
+    -- Buckshot Bugs
+    "buckshot_bugs",
 	-- Single good maps
 	"mc1_higgue",
 	"belomorskaya",
@@ -328,6 +333,58 @@ function ModSupport_CheckForLadderOrTeleport()
             ClimbLadderSound() 
             SendToConsole("fadein 0.2")
             SendToConsole("setpos_exact -557.674 -1286.535 752")
+        end
+    end
+    --
+    -- Addon: Post Human
+	--
+    if map == "post-human" then
+        -- Climb out of van
+        if vlua.find(Entities:FindAllInSphere(Vector(-1443,-1671,-90), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact -1389.905273 -1637.656372 -103.453552")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(241,-1488,29), 8), player) then -- cellar
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 299.780914 -1484.744385 -39.969727")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(440,1138,139), 8), player) then -- ladder #1
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 413.813507 1137.367432 264.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(556,1030,267), 8), player) then -- ladder #2
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 533.746765 1068.772339 392.030762")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(787,2150,904), 8), player) then -- ladder #3
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 781.770081 2087.229492 1024.031738")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(639,751,520), 8), player) then -- ladder #4
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 575.128479 744.786377 680.032227")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(300,582,400), 8), player) then -- ladder #5
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 340.818176 573.957397 520.031738")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(577,1718,821), 8), player) then -- jump plank
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 587.910156 1593.210693 779.679565")
+        end
+    end
+    --
+    -- Addon: Buckshot Bugs
+	--
+    if map == "buckshot_bugs" then
+        -- ladder #1
+        if vlua.find(Entities:FindAllInSphere(Vector(626,567,0), 8), player) then
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 573.040710 575.642700 132.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(1244,-985,104), 8), player) then -- ladder #2
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 1266.656372 -988.325012 214.821243")
         end
     end
 end
@@ -923,6 +980,32 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
 		if not isSaveLoaded then
 			ModReturnToRapture_ResetVortPlasmid(player)
 		end
+    --
+	-- Addon: Post Human
+	--
+	elseif map == "post-human_intro" then
+        SendToConsole("hidehud 4")
+        SendToConsole("ent_fire @startmap trigger")
+    elseif map == "post-human" then
+        if Entities:GetLocalPlayer():Attribute_GetIntValue("posthuman_intro_done", 0) == 0 then
+            SendToConsole("give weapon_physcannon")
+            SendToConsole("give weapon_pistol")
+            SendToConsole("hlvr_addresources 40 0 18 0")
+        end
+        -- Always bind flashlight
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+    --
+	-- Addon: Buckshot Bugs
+	--
+    elseif map == "buckshot_bugs" then
+        if Entities:GetLocalPlayer():Attribute_GetIntValue("buckshot_bugs_started", 0) == 0 then
+            SendToConsole("give weapon_physcannon")
+            SendToConsole("give weapon_shotgun")
+            SendToConsole("hlvr_addresources 0 0 24 0")
+            Entities:GetLocalPlayer():Attribute_SetIntValue("buckshot_bugs_started", 1)
+        end
+        -- Always bind flashlight
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
 	end
 end
 
@@ -1513,6 +1596,70 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
             StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
             SendToConsole("ent_fire_output 3980_button_center_pusher onin")
         end
+    end
+    --
+	-- Addon: Post Human
+	--
+    if map == "post-human" then
+        if name == "4523_3_toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 and MultitoolEquiped() then
+            thisEntity:Attribute_SetIntValue("used", 1)
+            SendToConsole("ent_fire 4523_3_toner_port onplugrotated")
+            SendToConsole("ent_fire_output 4523_3_relay_van_open ontrigger")
+            Entities:GetLocalPlayer():Attribute_SetIntValue("posthuman_intro_done", 1)
+        end
+        if name == "111_dr_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 and MultitoolEquiped() then
+            thisEntity:Attribute_SetIntValue("used", 1)
+            SendToConsole("ent_fire 111_dr_port onplugrotated")
+            SendToConsole("ent_fire 111_320_door disablelatch")
+        end
+        if name == "4878_fuel_lever" and Entities:GetLocalPlayer():Attribute_GetIntValue("posthuman_end_lever_unlocked", 0) == 0 then
+            SendToConsole("ent_fire 4878_door open")
+            SendToConsole("ent_fire 4878_door_clip disable")
+        end
+        if name == "4878_fuel_crank" and Entities:GetLocalPlayer():Attribute_GetIntValue("posthuman_end_lever_unlocked", 0) == 0 then
+            SendToConsole("ent_fire 4878_unlock_end_lever trigger")
+            Entities:GetLocalPlayer():Attribute_SetIntValue("posthuman_end_lever_unlocked", 1)
+            SendToConsole("ent_fire 4878_fuel_crank setcompletionvalueb")
+            SendToConsole("ent_fire_output 4878_fuel_crank oncompletionb")
+        end
+        if name == "4878_end_lever" and Entities:GetLocalPlayer():Attribute_GetIntValue("posthuman_end_lever_unlocked", 0) == 1 then
+            SendToConsole("ent_fire 4878_enddoor open")
+            SendToConsole("ent_fire 4878_enddoor_clip disable")
+        end
+        if name == "4878_1985_prop_button" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+            thisEntity:Attribute_SetIntValue("used", 1)
+            SendToConsole("ent_fire_output 4878_1985_handpose_combine_switchbox_button_press onhandposed")
+        end
+    end
+    --
+	-- Addon: Buckshot Bugs
+	--
+    if map == "buckshot_bugs" then
+        if name == "5091_cshield_station_prop_button" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+            thisEntity:Attribute_SetIntValue("used", 1)
+            SendToConsole("ent_fire_output 5091_cshield_station_handpose onhandposed")
+        end
+        -- second pulltwist
+        if class == "prop_animinteractable" and model == "models/interaction/anim_interact/combine_switch_pulltwist/combine_switch_pulltwist.vmdl" and Entities:GetLocalPlayer():Attribute_GetIntValue("buckshot_bugs_pulltwist1", 0) == 1 and Entities:GetLocalPlayer():Attribute_GetIntValue("buckshot_bugs_pulltwist2", 0) == 0 then
+            Entities:GetLocalPlayer():Attribute_SetIntValue("buckshot_bugs_pulltwist2", 1)
+            SendToConsole(string.format("ent_fire_output %s oncompletiona", name))
+            SendToConsole("ent_fire 19693_verticaldoor_movelinear open")
+            SendToConsole("ent_fire 19693_verticaldoor_prop disablecollision")
+        end
+        -- first pulltwist
+        if class == "prop_animinteractable" and model == "models/interaction/anim_interact/combine_switch_pulltwist/combine_switch_pulltwist.vmdl" and Entities:GetLocalPlayer():Attribute_GetIntValue("buckshot_bugs_pulltwist1", 0) == 0 then
+            Entities:GetLocalPlayer():Attribute_SetIntValue("buckshot_bugs_pulltwist1", 1)
+            SendToConsole(string.format("ent_fire_output %s oncompletiona", name))
+        end
+    end
+end
+
+function MultitoolEquiped()
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    if viewmodel and string.match(viewmodel:GetModelName(), "v_multitool") then
+        return true
+    else
+        return false
     end
 end
 

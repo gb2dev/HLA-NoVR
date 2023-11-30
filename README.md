@@ -1,3 +1,9 @@
+# Branch mod_support
+This branch is novr main merged with Hypercycle Mod support plus small patches for compatibility with newer commits
+I also added support for:
+- ``Post-Human`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))
+- ``Buckshot Bugs`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3086502947))
+
 # HLA-NoVR
 NoVR Script for Half-Life: Alyx
 
