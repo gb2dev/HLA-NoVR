@@ -2,9 +2,9 @@
 NoVR Script for Half-Life: Alyx
 
 ## Installation
-[Install the official launcher for easy updates](https://github.com/bfeber/HLA-NoVR-Launcher#installation-and-usage).
+[Install the official launcher.](https://github.com/bfeber/HLA-NoVR-Launcher#installation-and-usage)
 
-You can also get the [NoVR Map Edits addon](https://steamcommunity.com/sharedfiles/filedetails/?id=2956743603) for smoother traversal and less out of bounds glitches.
+If you use a Steam Deck/Linux, see the section at the bottom.
 
 ## Controls
 To change the controls/rebind buttons or change your FOV, edit ``game\hlvr\scripts\vscripts\bindings.lua`` in your main Half-Life: Alyx installation folder.
@@ -49,14 +49,14 @@ T: Inspect Weapon
 ## Official Discord Server
 https://discord.gg/AyfBeuZXsR
 
-## Old installation method
-If the launcher doesn't work, then you can try the old installation method:
-
-Copy the ``game`` folder into your main Half-Life: Alyx installation folder (e.g. ``C:\Program Files (x86)\Steam\steamapps\common\Half-Life Alyx``).
-
-Then start the game with the launch options ``-novr -vsync +vr_enable_fake_vr 1``.
-
 ## Special Thanks
 - JJL772 for making the flashlight and jump scripts: https://github.com/JJL772/half-life-alyx-scripts
 - Withoutaface for making the amazing HUD: https://github.com/withoutaface/HLA-NoVR-alyxhl2-ui-weapons
 - FrostElex for Storage script from his tools package: https://github.com/FrostSource/hla_extravaganza
+
+## Steam Deck/Linux
+The launcher is currently unsupported on Deck/Linux, so you must [download the branch here.](https://github.com/bfeber/HLA-NoVR/archive/refs/heads/steam_deck.zip)
+
+To install it, extract the files and copy the ``game`` folder into your main Half-Life: Alyx installation folder (e.g. ``C:\Program Files (x86)\Steam\steamapps\common\Half-Life Alyx``). Make sure to accept when it asks you to replace files.
+
+Then start the game with the launch options ``-novr -vsync +vr_enable_fake_vr 1``.
