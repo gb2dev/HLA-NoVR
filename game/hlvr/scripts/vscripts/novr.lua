@@ -244,6 +244,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end, "", 0)
 
+    Convars:RegisterCommand("save_manual", function()
+        SendToConsole("save manual;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage")
+    end, "", 0)
+
     Convars:RegisterCommand("mouse_invert_y", function(name, value)
         if value == "true" or value == "1" then
             SendToConsole("bind MOUSE_Y !iv_pitch")
