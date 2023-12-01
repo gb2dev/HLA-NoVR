@@ -7,7 +7,7 @@ NoVR Script for Half-Life: Alyx
 If you use a Steam Deck/Linux, see the [FAQ](https://docs.google.com/document/d/1mlDz24iE1r4Lf16y5N9I37ZIvm4V0ie2Sxg1GBlcs10) for installation instructions.
 
 ## Controls
-Check the ingame options menu the [FAQ](https://docs.google.com/document/d/1mlDz24iE1r4Lf16y5N9I37ZIvm4V0ie2Sxg1GBlcs10) for details.
+Check the ingame options menu or the [FAQ](https://docs.google.com/document/d/1mlDz24iE1r4Lf16y5N9I37ZIvm4V0ie2Sxg1GBlcs10) for details.
 
 ## Official Discord Server
 https://discord.gg/AyfBeuZXsR
