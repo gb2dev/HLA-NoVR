@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sed -i "s/\"NoVR Version: .*\"/\"NoVR Version: $(date "+%b %d %H:%M")\"/" game/hlvr/scripts/vscripts/version.lua
+git add game/hlvr/scripts/vscripts/version.lua
