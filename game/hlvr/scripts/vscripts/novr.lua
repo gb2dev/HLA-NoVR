@@ -5,7 +5,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
     DoIncludeScript("jumpfix.lua", nil)
-    --DoIncludeScript("wristpockets.lua", nil)
+    DoIncludeScript("wristpockets.lua", nil)
     DoIncludeScript("viewmodels.lua", nil)
     DoIncludeScript("viewmodels_animation.lua", nil)
     DoIncludeScript("hudhearts.lua", nil)
@@ -313,7 +313,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("throwgrenade", function(name, launcher)
         local player = Entities:GetLocalPlayer()
-        if player:Attribute_GetIntValue("grenade", 0) == 0 then
+        if not WristPockets_PlayerHasGrenade() then --if player:Attribute_GetIntValue("grenade", 0) == 0 then
             SendToConsole("play sounds/common/wpn_denyselect.vsnd")
             return
         end
@@ -1025,8 +1025,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_remove text_noclip")
             SendToConsole("ent_create env_message { targetname text_noclip message NOCLIP }")
 
-            --WristPockets_StartupPreparations()
-            --WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
+            WristPockets_StartupPreparations()
+            WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
             Viewmodels_Init()
             if not loading_save_file then
                 ViewmodelAnimation_LevelChange()
@@ -1037,6 +1037,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if is_on_map_or_later("a2_quarantine_entrance") then
                 ent = Entities:GetLocalPlayer()
                 HUDHearts_StartUpdateLoop()
+                WristPockets_StartUpdateLoop()
             end
 
             if GetMapName() == "a1_intro_world" then
