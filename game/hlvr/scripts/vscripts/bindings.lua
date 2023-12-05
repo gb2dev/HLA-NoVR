@@ -24,7 +24,6 @@ PAUSE             = "P"
 NOCLIP            = "V"
 VIEWM_INSPECT     = "T"
 WPOCKETS_USE_HEALTHPEN = "H"
-WPOCKETS_USE_GRENADE   = "J"
 WPOCKETS_DROPITEM      = "X"
 ZOOM              = "Z"
 FOV               = 80.0

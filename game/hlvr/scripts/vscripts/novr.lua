@@ -313,16 +313,17 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("throwgrenade", function(name, launcher)
         local player = Entities:GetLocalPlayer()
-        if not WristPockets_PlayerHasGrenade() then --if player:Attribute_GetIntValue("grenade", 0) == 0 then
+        local playerhasxengrenade = WristPockets_PlayerHasXenGrenade()
+        if not WristPockets_PlayerHasGrenade() and not playerhasxengrenade then
             SendToConsole("play sounds/common/wpn_denyselect.vsnd")
             return
         end
         local pos = player:EyePosition()
         local class = "item_hlvr_grenade_frag"
-        if player:Attribute_GetIntValue("grenade", 0) == 2 then
+        if playerhasxengrenade then
             class = "item_hlvr_grenade_xen"
         end
-        player:Attribute_SetIntValue("grenade", 0)
+        
         local ent = SpawnEntityFromTableSynchronous(class, {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
         ent:SetOwner(player)
         if class == "item_hlvr_grenade_frag" then

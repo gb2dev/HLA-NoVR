@@ -1252,15 +1252,30 @@ elseif class == "item_hlvr_clip_rapidfire" then
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
-elseif class == "item_hlvr_grenade_xen" and player:Attribute_GetIntValue("grenade", 0) == 0 then
+elseif class == "item_hlvr_grenade_xen" then --and player:Attribute_GetIntValue("grenade", 0) == 0 then
     if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) <= 1 then
         player:Attribute_SetIntValue("grenade_tutorial_shown", 2)
         SendToConsole("ent_fire text_grenade ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
-    StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-    thisEntity:Kill()
-    player:Attribute_SetIntValue("grenade", 2)
+
+    -- StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+    -- thisEntity:Kill()
+    -- player:Attribute_SetIntValue("grenade", 2)
+
+    if WristPockets_PlayerHasFreePocketSlot(player) then
+        -- player can store max 2 grenades in pockets
+        -- all grenades will go straight into pockets if there is capacity
+        WristPockets_PickUpXenGrenade(player, thisEntity)
+        FireGameEvent("item_pickup", item_pickup_params)
+        print("xen grenade wristpockets")
+        
+        StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+        
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        viewmodel:RemoveEffects(32)
+        thisEntity:Kill()
+    end
 elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue("grenade", 0) == 0 then
     thisEntity:Attribute_SetIntValue("picked_up", 0)
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
@@ -1276,8 +1291,8 @@ elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue
         end
         
         if WristPockets_PlayerHasFreePocketSlot(player) then --and player:Attribute_GetIntValue("grenade", 0) >= 1 then
-			-- player can hold 2 grenades on pockets, and one in hand
-			-- for now, all grenades will go straight into pockets
+			-- player can store max 2 grenades in pockets
+			-- all grenades will go straight into pockets if there is capacity
 			WristPockets_PickUpGrenade(player, thisEntity)
 			FireGameEvent("item_pickup", item_pickup_params)
             print("grenade wristpockets")
@@ -1300,7 +1315,6 @@ elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue
     end
 elseif class == "item_healthvial" then
     thisEntity:Attribute_SetIntValue("picked_up", 0)
-    --if player:GetHealth() < (player:GetMaxHealth()) then
     if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         player:SetContextNum("used_health_pen", 1, 10)
