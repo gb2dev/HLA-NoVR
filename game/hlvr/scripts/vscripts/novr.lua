@@ -320,8 +320,12 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
         local pos = player:EyePosition()
         local class = "item_hlvr_grenade_frag"
+        -- Remove xen grenade or frag grenade from wristpocket slots
         if playerhasxengrenade then
             class = "item_hlvr_grenade_xen"
+            WristPockets_UseXenGrenade()
+        else
+            WristPockets_UseGrenade()
         end
         
         local ent = SpawnEntityFromTableSynchronous(class, {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})

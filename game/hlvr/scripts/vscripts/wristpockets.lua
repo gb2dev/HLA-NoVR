@@ -134,6 +134,7 @@ local function ErasePocketSlot(playerEnt, itemSlot)
 		Storage:SaveString("pocketslots_slot" .. itemSlot .. "_objname", "")
 		Storage:SaveString("pocketslots_slot" .. itemSlot .. "_objmodel", "")
 		Storage:SaveBoolean("pocketslots_slot" .. itemSlot .. "_keepacrossmaps", false)
+		Storage:SaveBoolean("pocketslots_slot" .. itemSlot .. "_keepiteminstance", false)
 		print("[WristPockets] Item in slot #" .. itemSlot .. " cannot be carried across maps, removed.")
 	end 
 end
@@ -241,10 +242,10 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 				keepItemInstance = false
 				keepAcrossMaps = true
 			end
-			-- health station vials
-			if itemId == 5 then
+			-- set new instance for health station vials, reviver hearts and batteries
+			if itemId == 5 or itemId == 3 or itemId == 6 then
 				keepItemInstance = false
-				keepAcrossMaps = true
+				keepAcrossMaps = false
 			end
 			
 			-- Debug
@@ -263,6 +264,7 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 			else
 				itemEnt:Kill() -- destroy original instance
 			end
+			Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance", keepItemInstance)
 			Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", keepAcrossMaps)
 			
 			StartSoundEventFromPosition("Inventory.WristPocketGrabItem", playerEnt:EyePosition())
@@ -308,6 +310,28 @@ function WristPockets_PlayerHasGrenade()
 	else 
 		local pocketSlotId = GetPocketSlotToUse(slot1ItemId, slot2ItemId, 2)
 		if pocketSlotId ~= 0 then
+			--player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
+			--local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+			--viewmodel:RemoveEffects(32)
+			--StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+			print("[WristPockets] Player has grenade in inventory slot #" .. pocketSlotId .. ".")
+			return true
+		else
+			return false
+		end
+	end
+end
+
+function WristPockets_UseGrenade()
+	local player = Entities:GetLocalPlayer()
+	local slot1ItemId = player:Attribute_GetIntValue("pocketslots_slot1", 0)
+	local slot2ItemId = player:Attribute_GetIntValue("pocketslots_slot2", 0)
+	if slot1ItemId == 0 and slot2ItemId == 0 then
+		print("[WristPockets] Player don't have any grenades on inventory.")
+		return false
+	else 
+		local pocketSlotId = GetPocketSlotToUse(slot1ItemId, slot2ItemId, 2)
+		if pocketSlotId ~= 0 then
 			player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
 			--local viewmodel = Entities:FindByClassname(nil, "viewmodel")
 			--viewmodel:RemoveEffects(32)
@@ -321,6 +345,26 @@ function WristPockets_PlayerHasGrenade()
 end
 
 function WristPockets_PlayerHasXenGrenade()
+	local player = Entities:GetLocalPlayer()
+	local slot1ItemId = player:Attribute_GetIntValue("pocketslots_slot1", 0)
+	local slot2ItemId = player:Attribute_GetIntValue("pocketslots_slot2", 0)
+	if slot1ItemId == 0 and slot2ItemId == 0 then
+		print("[WristPockets] Player don't have any grenades on inventory.")
+		return false
+	else 
+		local pocketSlotId = GetPocketSlotToUse(slot1ItemId, slot2ItemId, 7)
+		if pocketSlotId ~= 0 then
+			-- player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
+			-- StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+			print("[WristPockets] Player has xen grenade in inventory slot #" .. pocketSlotId .. ".")
+			return true
+		else
+			return false
+		end
+	end
+end	
+
+function WristPockets_UseXenGrenade()
 	local player = Entities:GetLocalPlayer()
 	local slot1ItemId = player:Attribute_GetIntValue("pocketslots_slot1", 0)
 	local slot2ItemId = player:Attribute_GetIntValue("pocketslots_slot2", 0)
@@ -367,7 +411,9 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 			else
 				if itemTypeId == 3 or itemTypeId == 4 or itemTypeId == 5 or itemTypeId == 6 then
 					local entName = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
-					if entName ~= "" and not Storage:LoadBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps") then
+					local keepItemInstance = Storage:LoadBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance")
+					-- if entName ~= "" and not Storage:LoadBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps") then
+					if entName ~= "" and keepItemInstance then
 						ent = Entities:FindByName(nil, entName)
 						ent:EnableMotion() -- put item back from void, solution by FrostEpex
 						ent:SetOrigin(traceTable.pos)
@@ -387,6 +433,7 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 					Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objname", "")
 					Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objmodel", "")
 					Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", false)
+					Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance", false)
 					--Storage:SaveVector("pocketslots_slot" .. pocketSlotId .. "_objrendercolor", Vector(0,0,0))
 					DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player) -- pickup quest item
 				else -- generic object
