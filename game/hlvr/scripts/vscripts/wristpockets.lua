@@ -242,11 +242,11 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 			end
 
 			-- Debug
-			print("-- Valuable item pickup --")
-			print("Item id: " .. itemId)
-			print("Item name: " .. itemEnt:GetName())
-			print("Item model: " .. itemModel)
-			print("Item class: " .. itemClass)
+			-- print("-- Valuable item pickup --")
+			-- print("Item id: " .. itemId)
+			-- print("Item name: " .. itemEnt:GetName())
+			-- print("Item model: " .. itemModel)
+			-- print("Item class: " .. itemClass)
 
 			playerEnt:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "", itemId)
 			Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objname", itemEnt:GetName())
@@ -410,12 +410,12 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 						ent = SpawnEntityFromTableSynchronous(itemsClasses[itemTypeId], { ["origin"]= traceTable.pos.x .. " " .. traceTable.pos.y .. " " .. traceTable.pos.z, ["angles"]= player_ang, ["targetname"]= Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname"), ["model"]= Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objmodel") })
 					end
 					-- Debug
-					local debug_objname = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
-					local debug_objmodel = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objmodel")
-					print("Drop item name: " .. debug_objname )
-					print("Drop item model: " .. debug_objmodel )
-					local debug_entname = ent:GetName()
-					print("Drop ent name: " .. debug_entname )
+					-- local debug_objname = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
+					-- local debug_objmodel = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objmodel")
+					-- print("Drop item name: " .. debug_objname )
+					-- print("Drop item model: " .. debug_objmodel )
+					-- local debug_entname = ent:GetName()
+					-- print("Drop ent name: " .. debug_entname )
 
 					StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
 
