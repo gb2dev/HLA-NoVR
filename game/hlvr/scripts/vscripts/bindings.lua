@@ -23,5 +23,7 @@ MAIN_MENU         = "M"
 PAUSE             = "P"
 NOCLIP            = "V"
 VIEWM_INSPECT     = "T"
+USE_HEALTHPEN     = "B"
+DROP_ITEM         = "X"
 ZOOM              = "Z"
 FOV               = 75

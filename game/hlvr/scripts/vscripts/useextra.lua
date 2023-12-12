@@ -563,6 +563,7 @@ if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
     SendToConsole("hudhearts_startupdateloop")
+    SendToConsole("wristpockets_startupdateloop")
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 end
 
@@ -782,6 +783,7 @@ if name == "l_candler" or name == "r_candler" then
     end
     -- Just to make sure the heart icons are gone, hidehud 4 seems fine
     SendToConsole("hudhearts_stopupdateloop")
+    SendToConsole("wristpockets_stopupdateloop")
 end
 
 if name == "combine_gun_mechanical" then
@@ -1252,17 +1254,27 @@ elseif class == "item_hlvr_clip_rapidfire" then
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
-elseif class == "item_hlvr_grenade_xen" and player:Attribute_GetIntValue("grenade", 0) == 0 then
+elseif class == "item_hlvr_grenade_xen" then --and player:Attribute_GetIntValue("grenade", 0) == 0 then
     if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) <= 1 then
         player:Attribute_SetIntValue("grenade_tutorial_shown", 2)
         SendToConsole("ent_fire text_grenade ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
-    StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-    thisEntity:Kill()
-    player:Attribute_SetIntValue("grenade", 2)
-elseif class == "item_hlvr_grenade_frag" and player:Attribute_GetIntValue("grenade", 0) == 0 then
-    local goesInPocket = false -- keep the code to use it with proper tweaks
+
+    if WristPockets_PlayerHasFreePocketSlot(player) then
+        -- player can store max 2 grenades in pockets
+        -- all grenades will go straight into pockets if there is capacity
+        WristPockets_PickUpXenGrenade(player, thisEntity)
+        FireGameEvent("item_pickup", item_pickup_params)
+        
+        StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+        
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        viewmodel:RemoveEffects(32)
+        thisEntity:Kill()
+    end
+elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue("grenade", 0) == 0 then
+    thisEntity:Attribute_SetIntValue("picked_up", 0)
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("grenade_tutorial_shown", 1)
@@ -1274,31 +1286,23 @@ elseif class == "item_hlvr_grenade_frag" and player:Attribute_GetIntValue("grena
         if ent then
             DoEntFireByInstanceHandle(ent, "SpeakConcept", "speech:open_grenades", 0, nil, nil)
         end
-        FireGameEvent("item_pickup", item_pickup_params)
-        StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-        --SendToConsole("give weapon_frag")
-        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-        viewmodel:RemoveEffects(32)
-        thisEntity:Kill()
-        player:Attribute_SetIntValue("grenade", 1)
-        --if goesInPocket then
-		--	-- player can hold 2 grenades on pockets, and one in hand
-		--	-- for now, all grenades will go straight into pockets
-		--	WristPockets_PickUpGrenade(player, thisEntity)
-		--	FireGameEvent("item_pickup", item_pickup_params)
-		--else
-		--	FireGameEvent("item_pickup", item_pickup_params)
-		--	StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-		--	SendToConsole("give weapon_frag")
-		--	local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-		--	viewmodel:RemoveEffects(32)
-		--	thisEntity:Kill()
-		--end
+        
+        if WristPockets_PlayerHasFreePocketSlot(player) then
+			-- player can store max 2 grenades in pockets
+			-- all grenades will go straight into pockets if there is capacity
+			WristPockets_PickUpGrenade(player, thisEntity)
+			FireGameEvent("item_pickup", item_pickup_params)
+		    
+            StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+            --SendToConsole("give weapon_frag")
+            local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+            viewmodel:RemoveEffects(32)
+            thisEntity:Kill()
+		end
     end
 elseif class == "item_healthvial" then
     thisEntity:Attribute_SetIntValue("picked_up", 0)
-    if player:GetHealth() < (player:GetMaxHealth()) then
-    --if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
+    if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
@@ -1307,12 +1311,18 @@ elseif class == "item_healthvial" then
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success02", player:EyePosition())
         thisEntity:Kill()
-	--else
-	--	WristPockets_PickUpHealthPen(player, thisEntity)
-	--	FireGameEvent("item_pickup", item_pickup_params)
     elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
         player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         SendToConsole("ent_fire text_syringe ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
+    else
+		WristPockets_PickUpHealthPen(player, thisEntity)
+		FireGameEvent("item_pickup", item_pickup_params)
+    end
+elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_vial" or class == "prop_reviver_heart" then
+    if thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 0 then
+        WristPockets_PickUpValuableItem(player, thisEntity)
+    elseif thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 1 then
+        thisEntity:Attribute_SetIntValue("no_pick_up", 0)
     end
 end

@@ -5,7 +5,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
     DoIncludeScript("jumpfix.lua", nil)
-    --DoIncludeScript("wristpockets.lua", nil)
+    DoIncludeScript("wristpockets.lua", nil)
     DoIncludeScript("viewmodels.lua", nil)
     DoIncludeScript("viewmodels_animation.lua", nil)
     DoIncludeScript("hudhearts.lua", nil)
@@ -331,16 +331,21 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("throwgrenade", function(name, launcher)
         local player = Entities:GetLocalPlayer()
-        if player:Attribute_GetIntValue("grenade", 0) == 0 then
+        local playerhasxengrenade = WristPockets_PlayerHasXenGrenade()
+        if not WristPockets_PlayerHasGrenade() and not playerhasxengrenade then
             SendToConsole("play sounds/common/wpn_denyselect.vsnd")
             return
         end
         local pos = player:EyePosition()
         local class = "item_hlvr_grenade_frag"
-        if player:Attribute_GetIntValue("grenade", 0) == 2 then
+        -- Remove xen grenade or frag grenade from wristpocket slots
+        if playerhasxengrenade then
             class = "item_hlvr_grenade_xen"
+            WristPockets_UseXenGrenade()
+        else
+            WristPockets_UseGrenade()
         end
-        player:Attribute_SetIntValue("grenade", 0)
+        
         local ent = SpawnEntityFromTableSynchronous(class, {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
         ent:SetOwner(player)
         if class == "item_hlvr_grenade_frag" then
@@ -1039,14 +1044,17 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_remove text_syringe")
             SendToConsole("ent_create env_message { targetname text_syringe message SYRINGE }")
 
+            SendToConsole("ent_remove text_wristpockets")
+            SendToConsole("ent_create env_message { targetname text_wristpockets message WRISTPOCKETS }")
+
             SendToConsole("ent_remove text_crouchjump")
             SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
 
             SendToConsole("ent_remove text_noclip")
             SendToConsole("ent_create env_message { targetname text_noclip message NOCLIP }")
 
-            --WristPockets_StartupPreparations()
-            --WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
+            WristPockets_StartupPreparations()
+            WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
             Viewmodels_Init()
             if not loading_save_file then
                 ViewmodelAnimation_LevelChange()
@@ -1057,6 +1065,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if is_on_map_or_later("a2_quarantine_entrance") then
                 ent = Entities:GetLocalPlayer()
                 HUDHearts_StartUpdateLoop()
+                WristPockets_StartUpdateLoop()
             end
 
             if GetMapName() == "a1_intro_world" then
@@ -1143,6 +1152,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
                     HUDHearts_StartUpdateLoop()
+                    WristPockets_StartUpdateLoop()
                 end
 
                 SendToConsole("combine_grenade_timer 7")
@@ -1623,6 +1633,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function PlayerDied()
         SendToServerConsole("unpause")
         HUDHearts_StopUpdateLoop()
+        WristPockets_StopUpdateLoop()
         SendToConsole("disable_flashlight")
         SendToConsole("binddefaults")
     end
