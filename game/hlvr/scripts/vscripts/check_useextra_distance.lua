@@ -66,7 +66,7 @@ function GravityGlovePull()
                     SendToConsole("+use")
                     thisEntity:SetThink(function()
                         SendToConsole("-use")
-                        DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, player)
+                        --DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, player)
                     end, "", 0.02)
                     if vlua.find(thisEntity:GetSequence(), "vr_grenade_arm_") then
                         DoEntFireByInstanceHandle(thisEntity, "SetTimer", "3", 0, nil, nil)

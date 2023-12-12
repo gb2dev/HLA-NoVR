@@ -1024,6 +1024,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_remove text_syringe")
             SendToConsole("ent_create env_message { targetname text_syringe message SYRINGE }")
 
+            SendToConsole("ent_remove text_wristpockets")
+            SendToConsole("ent_create env_message { targetname text_wristpockets message WRISTPOCKETS }")
+
             SendToConsole("ent_remove text_crouchjump")
             SendToConsole("ent_create env_message { targetname text_crouchjump message CROUCHJUMP }")
 
@@ -1129,6 +1132,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
                     HUDHearts_StartUpdateLoop()
+                    WristPockets_StartUpdateLoop()
                 end
 
                 SendToConsole("combine_grenade_timer 7")
@@ -1611,6 +1615,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function PlayerDied()
         SendToServerConsole("unpause")
         HUDHearts_StopUpdateLoop()
+        WristPockets_StopUpdateLoop()
         SendToConsole("disable_flashlight")
         SendToConsole("binddefaults")
     end

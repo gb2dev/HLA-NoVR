@@ -1,5 +1,5 @@
 require "storage"
-require "bindings" -- Moved to bindings file: WPOCKETS_USE_HEALTHPEN, WPOCKETS_DROPITEM
+require "bindings" -- Moved to bindings file: USE_HEALTHPEN, DROP_ITEM
 
 -- Fake Wrist Pockets, by Hypercycle
 
@@ -25,36 +25,19 @@ local itemsUniqueStrings = { "<", ">"  }
 -- > - Keycard
 
 -- pocketslots_slot1-2 values: 
--- 0 - Empty, 1 - Health Pen, 2 - Grenade, 3 - Battery, 4 - Item (prop_physics), 5 - Health Station Vial, 6 - Reviver's Heart
+-- 0 - Empty, 1 - Health Pen, 2 - Grenade, 3 - Battery, 4 - Item (prop_physics), 5 - Health Station Vial, 6 - Reviver's Heart, 7 - Xen Grenade
 
 function WristPockets_StartupPreparations()
 	SendToConsole("ent_remove text_pocketslots")
-	-- local text = Entities:FindByName(nil, "text_pocketslots")
-	-- if not text then
 	SendToConsole("ent_create game_text { targetname text_pocketslots effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 4 fxtime 0 holdtime 0.11 x 0.162 y -0.030 }")
-	-- end
 
 	-- This is for old savegames and can be removed in future
 	SendToConsole("ent_remove text_pocketslots_empty")
-	--local textEmpty = Entities:FindByName(nil, "text_pocketslots_empty")
-	-- if not textEmpty then
-	-- 	SendToConsole("ent_create game_text { targetname text_pocketslots_empty effect 0 spawnflags 1 color \"236 193 39\" color2 \"92 107 192\" fadein 0 fadeout 0 channel 4 fxtime 0 holdtime 0 x 0.162 y -0.030 }")
-	-- end -- game cannot display newly recreated game_text on map bootup, so keep it
-	-- and fade-in fx stops working, so disable it too
 
 	--SendToConsole("sk_max_grenade 1") -- force only 1 grenade on hands
-	SendToConsole("bind " .. WPOCKETS_USE_HEALTHPEN .. " wristpockets_healthpen") -- use health pen
-	--SendToConsole("bind " .. WPOCKETS_USE_GRENADE .. " wristpockets_grenade") -- add HL2 grenade as a weapon
-	SendToConsole("bind " .. WPOCKETS_DROPITEM .. " wristpockets_dropitem") -- drop item from one of slots
+	SendToConsole("bind " .. USE_HEALTHPEN .. " wristpockets_healthpen") -- use health pen
+	SendToConsole("bind " .. DROP_ITEM .. " wristpockets_dropitem") -- drop item from one of slots
 end
-
--- TODO remove?
--- show empty fake slots
--- local function ShowEmptyText()
--- 	local ent = Entities:FindByName(nil, "text_pocketslots_empty")
--- 	DoEntFireByInstanceHandle(ent, "SetText", " ", 0, nil, nil)
--- 	DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
--- end
 
 -- set item message for each slot
 local function SetSlotItemMsg(slotItemId, slotId)
@@ -73,16 +56,13 @@ local function SetSlotItemMsg(slotItemId, slotId)
 end
 
 -- update wrist pockets slots on HUD
--- 1st slot is displayed as bottom one
 function WristPockets_UpdateHUD()
 	local player = Entities:GetLocalPlayer()
 	local textEntity = Entities:FindByName(nil, "text_pocketslots")
 	local pocketSlot1Msg = SetSlotItemMsg(player:Attribute_GetIntValue("pocketslots_slot1", 0), 1)
 	local pocketSlot2Msg = SetSlotItemMsg(player:Attribute_GetIntValue("pocketslots_slot2", 0), 2)
 	
-	--DoEntFireByInstanceHandle(textEntity, "SetText", "" .. pocketSlot2Msg .. "\n" .. pocketSlot1Msg .. "", 0, nil, nil)
 	DoEntFireByInstanceHandle(textEntity, "SetText", "" .. pocketSlot1Msg .. pocketSlot2Msg .. "", 0, nil, nil)
-	--ShowEmptyText() -- avoid text antialiasing bug, display empty message and normal one after
 	DoEntFireByInstanceHandle(textEntity, "Display", "", 0.1, nil, nil)
 end
 
@@ -152,14 +132,8 @@ function WristPockets_CheckPocketItemsOnLoading(playerEnt, saveLoading)
 		if not saveLoading then -- erase teleported items on level change
 			ErasePocketSlot(playerEnt, 1)
 			ErasePocketSlot(playerEnt, 2)
-			-- This delay of calling update hud function will show wrist pocket icons on map change
-		-- 	playerEnt:SetThink(function()
-		-- 		WristPockets_UpdateHUD()
-		-- 	end, "WristPockets_MapChange", 1)
-		-- else
-		-- 	WristPockets_UpdateHUD()
 		end
-	end -- on first appear, icons can be too bold because of antialiasing bug
+	end
 	PrecacheModels()
 end
 
@@ -182,9 +156,21 @@ local function GetNonEmptyPocketSlotToUse(slot1ItemId, slot2ItemId)
 	return 0
 end
 
+local function GetValuableFirstPocketSlotToUse(slot1ItemId, slot2ItemId)
+	if slot2ItemId == 3 or slot2ItemId == 4 or slot2ItemId == 5 or slot2ItemId == 6 then
+		return 2 
+	elseif slot1ItemId == 3 or slot1ItemId == 4 or slot1ItemId == 5 or slot1ItemId == 6 then
+		return 1
+	elseif slot2ItemId ~= 0 then
+		return 2 
+	elseif slot1ItemId ~= 0 then
+		return 1
+	end
+	return 0
+end
+
 -- item actions
 function WristPockets_PickUpHealthPen(playerEnt, itemEnt)
-	print("Hello from wristpockets.lua health pen")
 	local pocketSlotId = GetFreePocketSlot(playerEnt)
 	if pocketSlotId ~= 0 then
 		StartSoundEventFromPosition("Inventory.WristPocketGrabItem", playerEnt:EyePosition())
@@ -247,7 +233,14 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 				keepItemInstance = false
 				keepAcrossMaps = false
 			end
-			
+
+			-- Tutorial
+			if playerEnt:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) == 0 then
+				playerEnt:Attribute_SetIntValue("wristpockets_tutorial_shown", 1)
+				SendToConsole("ent_fire text_wristpockets ShowMessage")
+				SendToConsole("play sounds/ui/beepclear.vsnd")
+			end
+
 			-- Debug
 			print("-- Valuable item pickup --")
 			print("Item id: " .. itemId)
@@ -310,10 +303,6 @@ function WristPockets_PlayerHasGrenade()
 	else 
 		local pocketSlotId = GetPocketSlotToUse(slot1ItemId, slot2ItemId, 2)
 		if pocketSlotId ~= 0 then
-			--player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
-			--local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-			--viewmodel:RemoveEffects(32)
-			--StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
 			print("[WristPockets] Player has grenade in inventory slot #" .. pocketSlotId .. ".")
 			return true
 		else
@@ -335,7 +324,7 @@ function WristPockets_UseGrenade()
 			player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
 			--local viewmodel = Entities:FindByClassname(nil, "viewmodel")
 			--viewmodel:RemoveEffects(32)
-			StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+			--StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
 			print("[WristPockets] Grenade has been used from slot #" .. pocketSlotId .. ".")
 			return true
 		else
@@ -349,13 +338,11 @@ function WristPockets_PlayerHasXenGrenade()
 	local slot1ItemId = player:Attribute_GetIntValue("pocketslots_slot1", 0)
 	local slot2ItemId = player:Attribute_GetIntValue("pocketslots_slot2", 0)
 	if slot1ItemId == 0 and slot2ItemId == 0 then
-		print("[WristPockets] Player don't have any grenades on inventory.")
+		print("[WristPockets] Player don't have any xen grenades on inventory.")
 		return false
 	else 
 		local pocketSlotId = GetPocketSlotToUse(slot1ItemId, slot2ItemId, 7)
 		if pocketSlotId ~= 0 then
-			-- player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
-			-- StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
 			print("[WristPockets] Player has xen grenade in inventory slot #" .. pocketSlotId .. ".")
 			return true
 		else
@@ -369,13 +356,13 @@ function WristPockets_UseXenGrenade()
 	local slot1ItemId = player:Attribute_GetIntValue("pocketslots_slot1", 0)
 	local slot2ItemId = player:Attribute_GetIntValue("pocketslots_slot2", 0)
 	if slot1ItemId == 0 and slot2ItemId == 0 then
-		print("[WristPockets] Player don't have any grenades on inventory.")
+		print("[WristPockets] Player don't have any xen grenades on inventory.")
 		return false
 	else 
 		local pocketSlotId = GetPocketSlotToUse(slot1ItemId, slot2ItemId, 7)
 		if pocketSlotId ~= 0 then
 			player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
-			StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+			-- StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
 			print("[WristPockets] Xen grenade has been used from slot #" .. pocketSlotId .. ".")
 			return true
 		else
@@ -391,7 +378,7 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 	if slot1ItemId == 0 and slot2ItemId == 0 then
 		print("[WristPockets] Player don't have any items to drop.")
 	else 
-		local pocketSlotId = GetNonEmptyPocketSlotToUse(slot1ItemId, slot2ItemId)
+		local pocketSlotId = GetValuableFirstPocketSlotToUse(slot1ItemId, slot2ItemId) --GetNonEmptyPocketSlotToUse(slot1ItemId, slot2ItemId)
 		if pocketSlotId ~= 0 then
 			local itemTypeId = player:Attribute_GetIntValue("pocketslots_slot" .. pocketSlotId .. "", 0)
 			local player_ang = player:EyeAngles()
@@ -430,11 +417,14 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 					local debug_entname = ent:GetName()
 					print("Drop ent name: " .. debug_entname )
 
+					StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+
 					Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objname", "")
 					Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objmodel", "")
 					Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", false)
 					Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance", false)
 					--Storage:SaveVector("pocketslots_slot" .. pocketSlotId .. "_objrendercolor", Vector(0,0,0))
+					ent:Attribute_SetIntValue("no_pick_up", 1)
 					DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player) -- pickup quest item
 				else -- generic object
 					ent = SpawnEntityFromTableSynchronous(itemsClasses[itemTypeId], {["origin"]= traceTable.pos.x .. " " .. traceTable.pos.y .. " " .. traceTable.pos.z, ["angles"]= player_ang })

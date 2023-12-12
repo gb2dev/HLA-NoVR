@@ -563,6 +563,7 @@ if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
     SendToConsole("hudhearts_startupdateloop")
+    SendToConsole("wristpockets_startupdateloop")
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 end
 
@@ -782,6 +783,7 @@ if name == "l_candler" or name == "r_candler" then
     end
     -- Just to make sure the heart icons are gone, hidehud 4 seems fine
     SendToConsole("hudhearts_stopupdateloop")
+    SendToConsole("wristpockets_stopupdateloop")
 end
 
 if name == "combine_gun_mechanical" then
@@ -1259,16 +1261,11 @@ elseif class == "item_hlvr_grenade_xen" then --and player:Attribute_GetIntValue(
         SendToConsole("play sounds/ui/beepclear.vsnd")
     end
 
-    -- StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-    -- thisEntity:Kill()
-    -- player:Attribute_SetIntValue("grenade", 2)
-
     if WristPockets_PlayerHasFreePocketSlot(player) then
         -- player can store max 2 grenades in pockets
         -- all grenades will go straight into pockets if there is capacity
         WristPockets_PickUpXenGrenade(player, thisEntity)
         FireGameEvent("item_pickup", item_pickup_params)
-        print("xen grenade wristpockets")
         
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
         
@@ -1290,27 +1287,17 @@ elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue
             DoEntFireByInstanceHandle(ent, "SpeakConcept", "speech:open_grenades", 0, nil, nil)
         end
         
-        if WristPockets_PlayerHasFreePocketSlot(player) then --and player:Attribute_GetIntValue("grenade", 0) >= 1 then
+        if WristPockets_PlayerHasFreePocketSlot(player) then
 			-- player can store max 2 grenades in pockets
 			-- all grenades will go straight into pockets if there is capacity
 			WristPockets_PickUpGrenade(player, thisEntity)
 			FireGameEvent("item_pickup", item_pickup_params)
-            print("grenade wristpockets")
-		    --elseif player:Attribute_GetIntValue("grenade", 0) == 0 then
-			-- FireGameEvent("item_pickup", item_pickup_params)
-			-- StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-			-- SendToConsole("give weapon_frag")
-			-- local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-			-- viewmodel:RemoveEffects(32)
-			-- thisEntity:Kill()
-            
-            --FireGameEvent("item_pickup", item_pickup_params)
+		    
             StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
             --SendToConsole("give weapon_frag")
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             viewmodel:RemoveEffects(32)
             thisEntity:Kill()
-            --player:Attribute_SetIntValue("grenade", 1)
 		end
     end
 elseif class == "item_healthvial" then
@@ -1324,15 +1311,18 @@ elseif class == "item_healthvial" then
         StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
         StartSoundEventFromPosition("HealthPen.Success02", player:EyePosition())
         thisEntity:Kill()
-        print("health pen used")
     elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
         player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         SendToConsole("ent_fire text_syringe ShowMessage")
         SendToConsole("play sounds/ui/beepclear.vsnd")
-        print("health pen tutorial")
     else
 		WristPockets_PickUpHealthPen(player, thisEntity)
 		FireGameEvent("item_pickup", item_pickup_params)
-        print("health pen wristpockets")
+    end
+elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_vial" or class == "prop_reviver_heart" then
+    if thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 0 then
+        WristPockets_PickUpValuableItem(player, thisEntity)
+    elseif thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 1 then
+        thisEntity:Attribute_SetIntValue("no_pick_up", 0)
     end
 end
