@@ -1,4 +1,4 @@
-MOUSE_SENSITIVITY = 50.0
+MOUSE_SENSITIVITY = 50
 INVERT_MOUSE_Y    = false
 PRIMARY_ATTACK    = "MOUSE1"
 SECONDARY_ATTACK  = "MOUSE2"
@@ -26,4 +26,4 @@ VIEWM_INSPECT     = "T"
 USE_HEALTHPEN     = "B"
 DROP_ITEM         = "X"
 ZOOM              = "Z"
-FOV               = 80.0
+FOV               = 75

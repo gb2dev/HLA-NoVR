@@ -30,6 +30,8 @@ if GlobalSys:CommandLineCheck("-novr") then
         if GetPhysVelocity(Entities:GetLocalPlayer()).z < -450 then
             SendToConsole("ent_fire !player SetHealth 0")
         end
+
+        print("[MainMenu] player_health " .. info.health)
     end, nil)
 
     if entity_killed_ev ~= nil then
@@ -189,6 +191,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end, "", 0)
 
+    Convars:RegisterCommand("main_menu_exec", function()
+        DoIncludeScript("main_menu_exec.lua", nil)
+    end, "", 0)
+
     Convars:RegisterCommand("toggle_noclip", function()
         local player = Entities:GetLocalPlayer()
         if player:Attribute_GetIntValue("noclip_tutorial_shown", 0) == 0 then
@@ -235,6 +241,18 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                 end, "Unstuck", 0.02)
             end
+        end
+    end, "", 0)
+
+    Convars:RegisterCommand("save_manual", function()
+        SendToConsole("save manual;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage")
+    end, "", 0)
+
+    Convars:RegisterCommand("mouse_invert_y", function(name, value)
+        if value == "true" or value == "1" then
+            SendToConsole("bind MOUSE_Y !iv_pitch")
+        else
+            SendToConsole("bind MOUSE_Y iv_pitch")
         end
     end, "", 0)
 
@@ -369,7 +387,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         -- Reset viewmodel after auto weapon switch
         if viewmodel and cvar_getf("fov_ads_zoom") == FOV_ADS_ZOOM and not string.match(viewmodel:GetModelName(), "_ads.vmdl") then
             ViewmodelAnimation_ResetAnimation()
-            --cvar_setf("fov_desired", FOV)
             cvar_setf("fov_ads_zoom", FOV)
             SendToConsole("ent_fire ads_zoom unzoom")
             cvar_setf("viewmodel_offset_x", 0)
@@ -721,12 +738,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
 
         SendToConsole("mouse_pitchyaw_sensitivity " .. MOUSE_SENSITIVITY)
+        SendToConsole("fov_desired " .. FOV)
         SendToConsole("snd_remove_soundevent HL2Player.UseDeny")
 
-        if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
-            -- Script update date and time
-            DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Dec 12 23:31", 255, 255, 255, 255, 999999)
-        end
+        DoIncludeScript("version.lua", nil)
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
@@ -734,6 +749,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
             SendToConsole("bind " .. CROUCH .. " \"\"")
+            SendToConsole("bind F24 main_menu_exec")
             if not loading_save_file then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 SendToConsole("setpos 0 -6154 6.473839")
@@ -757,6 +773,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
         else
             SendToConsole("binddefaults")
+            SendToConsole("bind F24 main_menu_exec")
+            print("[MainMenu] pause_menu_mode")
+            Entities:GetLocalPlayer():SetThink(function()
+                SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
+            end, "SetGameUIState", 0.1)
             SendToConsole("alias +forwardfixed \"+iv_forward;unstuck\"")
             SendToConsole("alias -forwardfixed -iv_forward")
             SendToConsole("alias +backfixed \"+iv_back;unstuck\"")
@@ -790,7 +811,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
             SendToConsole("r_drawviewmodel 0")
-            SendToConsole("fov_desired " .. FOV)
             SendToConsole("sv_infinite_aux_power 1")
             SendToConsole("cc_spectator_only 1")
             SendToConsole("sv_gameinstructor_disable 1")
@@ -1605,9 +1625,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
         end
 
-        if INVERT_MOUSE_Y then
-            SendToConsole("bind MOUSE_Y !iv_pitch")
-        end
+        SendToConsole("mouse_invert_y " .. tostring(INVERT_MOUSE_Y))
 
         SendToConsole("bind " .. CONSOLE .. " +toggleconsole")
     end, nil)
@@ -1622,14 +1640,17 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function GoToMainMenu(a, b)
         if Convars:GetBool("vr_enable_fake_vr") then
-            SendToConsole("vr_enable_fake_vr 0")
-            SendToConsole("setpos_exact 817 -80 6")
+            SendToConsole("vr_enable_fake_vr 0;vr_enable_fake_vr 0")
+            SendToConsole("setpos_exact 757 -80 6")
         else
-            SendToConsole("setpos_exact 817 -80 -26")
+            SendToConsole("setpos_exact 757 -80 -26")
         end
         SendToConsole("setang_exact 0.4 0 0")
-        SendToConsole("mouse_disableinput 0")
         SendToConsole("hidehud 96")
+        print("[MainMenu] main_menu_mode")
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
+        end, "SetGameUIState", 0.1)
     end
 
     function MoveFreely(a, b)
