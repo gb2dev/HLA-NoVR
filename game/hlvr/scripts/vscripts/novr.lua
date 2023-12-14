@@ -749,13 +749,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
             SendToConsole("bind " .. CROUCH .. " \"\"")
-            SendToConsole("bind F24 main_menu_exec")
+            SendToConsole("bind PAUSE main_menu_exec")
             if not loading_save_file then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
                 SendToConsole("setpos 0 -6154 6.473839")
-                ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="140 140 140", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=2})
-                DoEntFireByInstanceHandle(ent, "SetText", "NoVR by GB_2 Development Team", 0, nil, nil)
-                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
 
                 if Convars:GetBool("vr_enable_fake_vr") then
                     SendToConsole("vr_fakemove_mlook_speed 0")
@@ -773,7 +770,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
         else
             SendToConsole("binddefaults")
-            SendToConsole("bind F24 main_menu_exec")
+            SendToConsole("bind PAUSE main_menu_exec")
             print("[MainMenu] pause_menu_mode")
             Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
