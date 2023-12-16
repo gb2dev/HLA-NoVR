@@ -757,11 +757,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if Convars:GetBool("vr_enable_fake_vr") then
                     SendToConsole("vr_fakemove_mlook_speed 0")
                     SendToConsole("vr_fakemove_speed 0")
-                    Entities:GetLocalPlayer():SetThink(function()
-                        SendToConsole("ent_setpos 79 0 -6154 36.473839")
-                    end, "", 0)
                     ent = SpawnEntityFromTableSynchronous("info_hlvr_equip_player", {["energygun"]=true, ["pistol_upgrade_reflexsight"]=true})
                     DoEntFireByInstanceHandle(ent, "EquipNow", "", 0, nil, nil)
+                    Entities:GetLocalPlayer():SetThink(function()
+                        ent = Entities:FindByClassname(nil, "point_hmd_anchor")
+                        ent:SetOrigin(Vector(0, -6154, 36.473839))
+                    end, "", 0)
                 end
             else
                 GoToMainMenu()
