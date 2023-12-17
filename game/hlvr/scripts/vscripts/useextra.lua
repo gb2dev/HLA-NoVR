@@ -1013,20 +1013,32 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_pistol.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent.upgrade1 = function()
                         if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 0 then
-                            SendToConsole("chooseupgrade1")
+                            SendToConsole("novr_crafting_station_choose_upgrade 0")
                         end
                     end
                     ent.upgrade2 = function()
                         if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 0 then
-                            SendToConsole("chooseupgrade2")
+                            SendToConsole("novr_crafting_station_choose_upgrade 1")
+                        end
+                    end
+                    ent.upgrade3 = function()
+                        if player:Attribute_GetIntValue("pistol_upgrade_hopper", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 2")
+                        end
+                    end
+                    ent.upgrade4 = function()
+                        if player:Attribute_GetIntValue("pistol_upgrade_lasersight", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 3")
                         end
                     end
                     ent.cancelupgrade = function()
-                        SendToConsole("cancelupgrade")
+                        SendToConsole("novr_crafting_station_cancel_upgrade")
                     end
-                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
-                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
-                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput0", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput2", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput3", "upgrade3", ent)
+                    ent:RedirectOutput("CustomOutput4", "upgrade4", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
                     SendToConsole("ent_fire weapon_shotgun kill 0.02")
@@ -1047,21 +1059,33 @@ if class == "prop_hlvr_crafting_station_console" then
                     local origin = ents[2]:GetOrigin() + Vector(0,0,0.04)
                     ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_shotgun.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent.upgrade1 = function()
-                        if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 0 then
-                            SendToConsole("chooseupgrade1")
+                        if player:Attribute_GetIntValue("shotgun_upgrade_lasersight", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 0")
                         end
                     end
                     ent.upgrade2 = function()
+                        if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 1")
+                        end
+                    end
+                    ent.upgrade3 = function()
+                        if player:Attribute_GetIntValue("shotgun_upgrade_hopper", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 2")
+                        end
+                    end
+                    ent.upgrade4 = function()
                         if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 0 then
-                            SendToConsole("chooseupgrade2")
+                            SendToConsole("novr_crafting_station_choose_upgrade 3")
                         end
                     end
                     ent.cancelupgrade = function()
-                        SendToConsole("cancelupgrade")
+                        SendToConsole("novr_crafting_station_cancel_upgrade")
                     end
-                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
-                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
-                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput0", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput2", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput3", "upgrade3", ent)
+                    ent:RedirectOutput("CustomOutput4", "upgrade4", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                     if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
@@ -1087,20 +1111,26 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_smg.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent.upgrade1 = function()
                         if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 0 then
-                            SendToConsole("chooseupgrade1")
+                            SendToConsole("novr_crafting_station_choose_upgrade 1")
                         end
                     end
                     ent.upgrade2 = function()
-                        if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                            SendToConsole("chooseupgrade2")
+                        if player:Attribute_GetIntValue("smg_upgrade_lasersight", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 2")
+                        end
+                    end
+                    ent.upgrade3 = function()
+                        if player:Attribute_GetIntValue("smg_upgrade_casing", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 3")
                         end
                     end
                     ent.cancelupgrade = function()
-                        SendToConsole("cancelupgrade")
+                        SendToConsole("novr_crafting_station_cancel_upgrade")
                     end
-                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
-                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
-                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput0", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput2", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput3", "upgrade3", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 else
                     return
