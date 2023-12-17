@@ -1254,7 +1254,7 @@ elseif class == "item_hlvr_clip_rapidfire" then
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
-elseif class == "item_hlvr_grenade_xen" then --and player:Attribute_GetIntValue("grenade", 0) == 0 then
+elseif class == "item_hlvr_grenade_xen" then
     if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) <= 1 then
         player:Attribute_SetIntValue("grenade_tutorial_shown", 2)
         SendToConsole("ent_fire text_grenade ShowMessage")
@@ -1273,7 +1273,7 @@ elseif class == "item_hlvr_grenade_xen" then --and player:Attribute_GetIntValue(
         viewmodel:RemoveEffects(32)
         thisEntity:Kill()
     end
-elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue("grenade", 0) == 0 then
+elseif class == "item_hlvr_grenade_frag" then
     thisEntity:Attribute_SetIntValue("picked_up", 0)
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
@@ -1292,6 +1292,7 @@ elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue
 			-- all grenades will go straight into pockets if there is capacity
 			WristPockets_PickUpGrenade(player, thisEntity)
 			FireGameEvent("item_pickup", item_pickup_params)
+            SendToConsole("viewmodel_update")
 		    
             StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
             --SendToConsole("give weapon_frag")
