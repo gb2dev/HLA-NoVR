@@ -197,7 +197,7 @@ function WristPockets_PickUpXenGrenade(playerEnt, itemEnt)
 	local pocketSlotId = GetFreePocketSlot(playerEnt)
 	if pocketSlotId ~= 0 then
 		playerEnt:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "", 7)
-		Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", false) -- TODO keep xen grenades after map change?
+		Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", false) -- TODO: keep xen grenades after map change?
 		print("[WristPockets] XenGrenade acquired on slot #" .. pocketSlotId .. ".")
 	end
 end
@@ -392,7 +392,7 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 			}
 			TraceLine(traceTable)
 
-			if traceTable.hit then -- TODO under certain angle you still can drop item into wall
+			if traceTable.hit then -- TODO: under certain angle you still can drop item into wall
 				StartSoundEventFromPosition("HealthStation.Deny", player:EyePosition())
 				print("[WristPockets] Cannot drop item - too close to obstacle.")
 			else

@@ -65,7 +65,6 @@ local function create_flashlight()
 		if flashlight_ent == nil then return end 
 		local player = Entities:GetLocalPlayer() 
 		local ang = player:EyeAngles()
-		-- TODO: Why does EyePosition break things sometimes?
 		local flPos = player:EyePosition()
 		flPos.x = flPos.x + 1 -- near or far of player
 		flPos.y = flPos.y + 3.5 -- left or right 

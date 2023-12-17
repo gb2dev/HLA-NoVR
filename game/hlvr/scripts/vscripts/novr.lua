@@ -839,8 +839,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_remove player_flashlight")
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("combine_grenade_timer 4")
-            -- TODO: Limit grenades properly
-            SendToConsole("sk_max_grenade 9999")
             SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
             SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
@@ -913,7 +911,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                 AddCollisionToPhysicsProps("prop_physics")
                 AddCollisionToPhysicsProps("prop_physics_override")
             else
-                -- TODO: Remove this next month
                 if is_on_map_or_later("a2_pistol") then
                     SendToConsole("give weapon_physcannon")
                 end
@@ -963,10 +960,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                     local player = Entities:GetLocalPlayer()
 
                     if GetMapName() == "a3_c17_processing_plant" and player:Attribute_GetIntValue("activated_processing_plant_lift", 0) == 0 and player:GetAbsOrigin().z < 600 then
-                        -- TODO: Enable this next month
-                        --SendToConsole("snd_sos_start_soundevent Player.FallDamage")
-                        --SendToConsole("ent_fire !player SetHealth 0")
-                        --return nil
+                        SendToConsole("snd_sos_start_soundevent Player.FallDamage")
+                        SendToConsole("ent_fire !player SetHealth 0")
+                        return nil
                     end
 
                     cvar_setf("player_use_radius", min(2200/abs(player:GetAngles().x),60))
@@ -1570,7 +1566,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 SendToConsole("ent_fire upsidedownroom_closetdoor* DisablePickup")
 
-                                -- TODO: Do weapon strip instead
                                 SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_ar2;ent_remove weapon_smg1;ent_remove weapon_physcannon")
                                 SendToConsole("give weapon_bugbait")
 
