@@ -805,6 +805,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. PAUSE .. " pause")
             SendToConsole("bind " .. VIEWM_INSPECT .. " viewmodel_inspect_animation")
             SendToConsole("bind " .. ZOOM .. " +zoom")
+            -- NOTE: Put additional custom bindings under here. Example:
+            -- SendToConsole("bind X quit")
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
             SendToConsole("r_drawviewmodel 0")
