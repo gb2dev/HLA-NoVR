@@ -237,7 +237,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
                         player:SetOrigin(unstuck_table[1])
                         SendToConsole("fadein 0.2")
-                        SendToConsole("+iv_duck;-iv_duck")
                     end
                 end, "Unstuck", 0.02)
             end
