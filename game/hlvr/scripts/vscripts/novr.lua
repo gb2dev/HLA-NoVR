@@ -346,6 +346,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 velocity = new_velocity
                 return 0
             end, "ExplodeOnImpact", 0)
+            SendToConsole("viewmodel_update") -- update of attached grenade
         else
             ent:ApplyAbsVelocityImpulse(player:GetForwardVector() * 500)
             SendToConsole("impulse 200")
