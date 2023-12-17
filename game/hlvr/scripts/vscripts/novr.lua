@@ -787,7 +787,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. JUMP .. " jumpfixed")
             SendToConsole("bind " .. NOCLIP .. " toggle_noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
-            SendToConsole("bind " .. QUICK_LOAD .. " \"load quick\"")
+            SendToConsole("bind " .. QUICK_LOAD .. " \"vr_enable_fake_vr 0;vr_enable_fake_vr 0;load quick\"")
             SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
