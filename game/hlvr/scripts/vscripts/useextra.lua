@@ -1206,12 +1206,15 @@ if class == "prop_reviver_heart" then
     player:SetContextNum("player_picked_up_heart", 1, 10)
 end
 
-if model == "models/props/construction/hat_construction.vmdl" then
+if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_construction" then
     thisEntity:SetEntityName("hat_construction")
+    DoEntFireByInstanceHandle(thisEntity, "DisableMotion", "", 0, nil, nil)
+    thisEntity:SetAbsOrigin(Vector(0, 0, 0))
+    local ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hat_construction_viewmodel", ["model"]="models/props/construction/hat_construction.vmdl", ["disableshadows"]=true, ["solid"]=0})
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-    thisEntity:SetParent(viewmodel, "")
-    thisEntity:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(0, 0, 4)))
-    thisEntity:SetLocalAngles(0, 0, 0)
+    ent:SetParent(viewmodel, "")
+    ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(0, 0, 4)))
+    ent:SetLocalAngles(0, 0, 0)
     SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_NU 99\"")
 end
 
