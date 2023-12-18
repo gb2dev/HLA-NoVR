@@ -274,7 +274,7 @@ if vlua.find(model, "doorhandle") then
 end
 
 if vlua.find(name, "socket") then
-    local ent = Entities:FindByClassname(thisEntity, "prop_physics") 
+    local ent = Entities:FindByClassname(thisEntity, "prop_physics")
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "check_useextra_distance", 0, player, player)
 end
 
@@ -1206,6 +1206,15 @@ if class == "prop_reviver_heart" then
     player:SetContextNum("player_picked_up_heart", 1, 10)
 end
 
+if model == "models/props/construction/hat_construction.vmdl" then
+    thisEntity:SetEntityName("hat_construction")
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    thisEntity:SetParent(viewmodel, "")
+    thisEntity:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(0, 0, 4)))
+    thisEntity:SetLocalAngles(0, 0, 0)
+    SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_NU 99\"")
+end
+
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
 
 if vlua.find(class, "item_hlvr_crafting_currency_") then
@@ -1292,9 +1301,9 @@ elseif class == "item_hlvr_grenade_xen" then
         -- all grenades will go straight into pockets if there is capacity
         WristPockets_PickUpXenGrenade(player, thisEntity)
         FireGameEvent("item_pickup", item_pickup_params)
-        
+
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-        
+
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         viewmodel:RemoveEffects(32)
         thisEntity:Kill()
@@ -1312,14 +1321,14 @@ elseif class == "item_hlvr_grenade_frag" then
         if ent then
             DoEntFireByInstanceHandle(ent, "SpeakConcept", "speech:open_grenades", 0, nil, nil)
         end
-        
+
         if WristPockets_PlayerHasFreePocketSlot(player) then
 			-- player can store max 2 grenades in pockets
 			-- all grenades will go straight into pockets if there is capacity
 			WristPockets_PickUpGrenade(player, thisEntity)
 			FireGameEvent("item_pickup", item_pickup_params)
             SendToConsole("viewmodel_update")
-		    
+
             StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
             --SendToConsole("give weapon_frag")
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")

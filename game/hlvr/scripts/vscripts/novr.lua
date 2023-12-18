@@ -206,6 +206,18 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("noclip")
     end, "", 0)
 
+    Convars:RegisterCommand("novr_unequip_wearable", function()
+        local ent = Entities:FindByName(nil, "hat_construction")
+        if ent then
+            ent:SetParent(nil, "")
+            ent:SetOrigin(Entities:GetLocalPlayer():EyePosition())
+            ent:SetThink(function()
+                SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_HT 99\"")
+            end, "", 0.1)
+            ent:SetEntityName("")
+        end
+    end, "", 0)
+
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
 
     Convars:RegisterConvar("weapon_in_crafting_station", "", "", 0)
@@ -880,6 +892,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. PAUSE .. " pause")
             SendToConsole("bind " .. VIEWM_INSPECT .. " viewmodel_inspect_animation")
             SendToConsole("bind " .. ZOOM .. " +zoom")
+            SendToConsole("bind " .. UNEQUIP_WEARABLE .. " novr_unequip_wearable")
             -- NOTE: Put additional custom bindings under here. Example:
             -- SendToConsole("bind X quit")
             SendToConsole("hl2_sprintspeed 140")
@@ -1036,6 +1049,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("snd_sos_start_soundevent Player.FallDamage")
                         SendToConsole("ent_fire !player SetHealth 0")
                         return nil
+                    end
+
+                    local barnacle_tounge = Entities:FindByClassnameNearest("npc_barnacle_tongue_tip", player:GetOrigin(), 28)
+                    if barnacle_tounge then
+                        SendToConsole("novr_unequip_wearable")
                     end
 
                     cvar_setf("player_use_radius", min(2200/abs(player:GetAngles().x),60))

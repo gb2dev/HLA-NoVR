@@ -25,5 +25,6 @@ NOCLIP            = "V"
 VIEWM_INSPECT     = "T"
 USE_HEALTHPEN     = "B"
 DROP_ITEM         = "X"
+UNEQUIP_WEARABLE  = "U"
 ZOOM              = "Z"
 FOV               = 75
