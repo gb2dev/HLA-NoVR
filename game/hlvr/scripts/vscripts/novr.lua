@@ -318,61 +318,61 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
             -- Reflex Sight
-            if value == "0" and t.current_crafting_currency >= 10 then
+            if value == "1" and t.current_crafting_currency >= 10 then
                 SendToConsole("novr_energygun_grant_upgrade 0")
                 SendToConsole("hlvr_addresources 0 0 0 -10")
                 return
             -- Burst Fire
-            elseif value == "1" and t.current_crafting_currency >= 20 then
+            elseif value == "2" and t.current_crafting_currency >= 20 then
                 SendToConsole("novr_energygun_grant_upgrade 1")
                 SendToConsole("hlvr_addresources 0 0 0 -20")
                 return
             -- Bullet Reservoir
-            elseif value == "2" and t.current_crafting_currency >= 30 then
+            elseif value == "3" and t.current_crafting_currency >= 30 then
                 SendToConsole("novr_energygun_grant_upgrade 2")
                 SendToConsole("hlvr_addresources 0 0 0 -30")
                 return
             -- Laser Sight
-            elseif value == "3" and t.current_crafting_currency >= 35 then
+            elseif value == "4" and t.current_crafting_currency >= 35 then
                 SendToConsole("novr_energygun_grant_upgrade 3")
                 SendToConsole("hlvr_addresources 0 0 0 -35")
                 return
             end
         elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
             -- Laser Sight
-            if value == "0" and t.current_crafting_currency >= 10 then
+            if value == "1" and t.current_crafting_currency >= 10 then
                 SendToConsole("novr_shotgun_grant_upgrade 0")
                 SendToConsole("hlvr_addresources 0 0 0 -10")
                 return
             -- Double Shot
-            elseif value == "1" and t.current_crafting_currency >= 25 then
+            elseif value == "2" and t.current_crafting_currency >= 25 then
                 SendToConsole("novr_shotgun_grant_upgrade 1")
                 SendToConsole("hlvr_addresources 0 0 0 -25")
                 return
             -- Autoloader
-            elseif value == "2" and t.current_crafting_currency >= 30 then
+            elseif value == "3" and t.current_crafting_currency >= 30 then
                 SendToConsole("novr_shotgun_grant_upgrade 2")
                 SendToConsole("hlvr_addresources 0 0 0 -30")
                 return
             -- Grenade Launcher
-            elseif value == "3" and t.current_crafting_currency >= 40 then
+            elseif value == "4" and t.current_crafting_currency >= 40 then
                 SendToConsole("novr_shotgun_grant_upgrade 3")
                 SendToConsole("hlvr_addresources 0 0 0 -40")
                 return
             end
         elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
             -- Reflex Sight
-            if value == "0" and t.current_crafting_currency >= 15 then
+            if value == "1" and t.current_crafting_currency >= 15 then
                 SendToConsole("novr_rapidfire_grant_upgrade 0")
                 SendToConsole("hlvr_addresources 0 0 0 -15")
                 return
             -- Extended Magazine
-            elseif value == "1" and t.current_crafting_currency >= 25 then
+            elseif value == "2" and t.current_crafting_currency >= 25 then
                 SendToConsole("novr_rapidfire_grant_upgrade 1")
                 SendToConsole("hlvr_addresources 0 0 0 -25")
                 return
             -- Laser Sight
-            elseif value == "2" and t.current_crafting_currency >= 30 then
+            elseif value == "3" and t.current_crafting_currency >= 30 then
                 SendToConsole("novr_rapidfire_grant_upgrade 2")
                 SendToConsole("hlvr_addresources 0 0 0 -30")
                 return

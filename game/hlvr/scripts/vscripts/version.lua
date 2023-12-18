@@ -1,4 +1,4 @@
 if not loading_save_file and GlobalSys:CommandLineCheck("-noversioninfo") == false then
     -- Script update date and time
-    DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Dec 18 17:55", 255, 255, 255, 255, 999999)
+    DebugDrawScreenTextLine(5, GlobalSys:CommandLineInt("-h", 15) - 10, 0, "NoVR Version: Dec 18 17:59", 255, 255, 255, 255, 999999)
 end
