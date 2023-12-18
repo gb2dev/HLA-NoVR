@@ -295,7 +295,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
     end, "", 0)
 
-    Convars:RegisterCommand("novr_rapidfire_grant_upgrade ", function(name, value)
+    Convars:RegisterCommand("novr_rapidfire_grant_upgrade", function(name, value)
         -- Reflex Sight
         if value == "0" then
             Convars:SetStr("chosen_upgrade", "smg_upgrade_aimdownsights")
