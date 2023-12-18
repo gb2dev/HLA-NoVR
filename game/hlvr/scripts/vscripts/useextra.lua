@@ -1088,11 +1088,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput4", "upgrade4", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_smg1") then
-                    if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                        SendToConsole("ent_fire weapon_ar2 kill 0.02")
-                    else
-                        SendToConsole("ent_fire weapon_smg1 kill 0.02")
-                    end
+                    SendToConsole("ent_fire weapon_ar2 kill 0.02")
                     --SendToConsole("impulse 200")
                     SendToConsole("lastinv") -- fix for impulse 200 not hiding the smg somehow
                     Convars:SetStr("weapon_in_crafting_station", "smg")

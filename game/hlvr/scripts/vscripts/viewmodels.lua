@@ -230,17 +230,3 @@ Convars:RegisterCommand("viewmodel_update" , function()
         end, "ViewmodelUpdate", 0)
     end
 end, "function viewmodel_update", 0)
-
--- Assign upgraded viewmodels
-Convars:RegisterCommand("viewmodel_development_upgrades_toggle" , function()
-    local player = Entities:GetLocalPlayer()
-    if player:Attribute_GetIntValue("smg_upgrade_casing", 0) == 0 then
-        player:Attribute_SetIntValue("smg_upgrade_casing", 1)
-        player:Attribute_SetIntValue("shotgun_upgrade_hopper", 1)
-        player:Attribute_SetIntValue("pistol_upgrade_hopper", 1)
-    else
-        player:Attribute_SetIntValue("smg_upgrade_casing", 0)
-        player:Attribute_SetIntValue("shotgun_upgrade_hopper", 0)
-        player:Attribute_SetIntValue("pistol_upgrade_hopper", 0)
-    end
-end, "function viewmodel_development_upgrades_toggle", 0)

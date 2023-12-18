@@ -395,11 +395,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
             SendToConsole("give weapon_shotgun")
         elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
-            if Entities:GetLocalPlayer():Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                SendToConsole("give weapon_ar2")
-            else
-                SendToConsole("give weapon_smg1")
-            end
+            SendToConsole("give weapon_ar2")
         end
         Convars:SetStr("weapon_in_crafting_station", "")
         SendToConsole("viewmodel_update")
@@ -976,11 +972,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("give weapon_shotgun")
 
                             if is_on_map_or_later("a3_hotel_street") then
-                                if Entities:GetLocalPlayer():Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                                    SendToConsole("give weapon_ar2")
-                                else
-                                    SendToConsole("give weapon_smg1")
-                                end
+                                SendToConsole("give weapon_ar2")
                             end
                         end
                     end
