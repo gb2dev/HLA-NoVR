@@ -59,6 +59,15 @@ function GravityGlovePull()
         thisEntity:SetThink(function()
             local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 60)
             if vlua.find(ents, thisEntity) then
+                -- prevent wristpocket pickup if health station vial is already mounted in charger
+                if class == "item_hlvr_health_station_vial" then
+                    local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
+                    if entcharger ~= nil then
+                        if entcharger:GetSequence() == "idle_deployed" or entcharger:GetSequence() == "idle_retracted" then
+                            return nil
+                        end
+                    end
+                end
                 if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
                     DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
                 end
