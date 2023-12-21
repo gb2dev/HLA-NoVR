@@ -1360,7 +1360,19 @@ elseif class == "item_healthvial" then
     end
 elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_vial" or class == "prop_reviver_heart" then
     if thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 0 then
-        WristPockets_PickUpValuableItem(player, thisEntity)
+        -- prevent wristpocket pickup if health station vial is already mounted in charger
+        if class == "item_hlvr_health_station_vial" then
+            local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
+            if entcharger ~= nil then
+                if not entcharger:GetSequence() == "idle_deployed" and not entcharger:GetSequence() == "idle_retracted" then
+                    WristPockets_PickUpValuableItem(player, thisEntity)
+                end
+            else
+                WristPockets_PickUpValuableItem(player, thisEntity)
+            end
+        else
+            WristPockets_PickUpValuableItem(player, thisEntity)
+        end
     elseif thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 1 then
         thisEntity:Attribute_SetIntValue("no_pick_up", 0)
     end
