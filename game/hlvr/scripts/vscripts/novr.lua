@@ -773,7 +773,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind PAUSE main_menu_exec")
             print("[MainMenu] pause_menu_mode")
             Entities:GetLocalPlayer():SetThink(function()
-                SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
+                SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
             end, "SetGameUIState", 0.1)
             SendToConsole("alias +forwardfixed \"+iv_forward;unstuck\"")
             SendToConsole("alias -forwardfixed -iv_forward")
