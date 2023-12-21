@@ -1623,9 +1623,9 @@ if GlobalSys:CommandLineCheck("-novr") then
     function GoToMainMenu(a, b)
         if Convars:GetBool("vr_enable_fake_vr") then
             SendToConsole("vr_enable_fake_vr 0;vr_enable_fake_vr 0")
-            SendToConsole("setpos_exact 757 -80 6")
+            SendToConsole("setpos_exact 817 -80 6")
         else
-            SendToConsole("setpos_exact 757 -80 -26")
+            SendToConsole("setpos_exact 817 -80 -26")
         end
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("mouse_disableinput 0")
