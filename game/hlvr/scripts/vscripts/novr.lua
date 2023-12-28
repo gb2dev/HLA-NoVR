@@ -483,7 +483,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             cvar_setf("viewmodel_offset_x", 0)
             cvar_setf("viewmodel_offset_y", 0)
             cvar_setf("viewmodel_offset_z", 0)
-            SendToConsole("crosshair 1")
+            SendToConsole("hud_draw_fixed_reticle 1")
         end
 
         if viewmodel and not string.match(viewmodel:GetModelName(), "v_grenade") then
@@ -502,7 +502,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             cvar_setf("fov_ads_zoom", FOV_ADS_ZOOM)
                             cvar_setf("viewmodel_offset_x", -0.005)
                         end, "ZoomActivate", 0.5)
-                        SendToConsole("crosshair 0")
+                        SendToConsole("hud_draw_fixed_reticle 0")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
                         SendToConsole("ent_fire ads_zoom_out zoom")
@@ -510,7 +510,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
-                        SendToConsole("crosshair 1")
+                        SendToConsole("hud_draw_fixed_reticle 1")
                         player:SetThink(function()
                             SendToConsole("ent_fire ads_zoom unzoom")
                             SendToConsole("ent_fire ads_zoom_out unzoom")
@@ -971,6 +971,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
                 local traincontrols = SpawnEntityFromTableSynchronous("func_traincontrols", {["target"]=name})
                 ent = Entities:FindByClassname(ent, "func_tracktrain")
+            end
+            -- Set crosshair
+            SendToConsole("hud_draw_fixed_reticle 1")
+            SendToConsole("crosshair 0")
+            -- More pistol accuracy with laser sight
+            if Entities:GetLocalPlayer():Attribute_GetIntValue("pistol_upgrade_lasersight", 0) == 1 then
+                SendToConsole("pistol_use_new_accuracy 1")
+            else
+                SendToConsole("pistol_use_new_accuracy 0")
             end
 
             if Entities:FindByClassname(nil, "prop_hmd_avatar") then
