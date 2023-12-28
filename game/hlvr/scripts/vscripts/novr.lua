@@ -1571,7 +1571,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             if Entities:GetLocalPlayer():Attribute_GetIntValue("eavesdropping", 0) == 1 then
                                 SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
+                                SendToConsole("bind " .. SECONDARY_ATTACK .. " \"\"")
+                                SendToConsole("bind " .. TERTIARY_ATTACK .. " \"\"")
                                 SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+                                SendToConsole("hidehud 4")
                             end
 
                             if not loading_save_file then
@@ -1641,7 +1644,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                                     ent:Attribute_SetIntValue("active", 0)
                                     SendToConsole("ent_fire combine_gun_mechanical enablecollision")
                                     SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                                    SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+                                    SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
                                     SendToConsole("r_drawviewmodel 1")
                                     SendToConsole("unbind J")
                                 end
@@ -2073,7 +2076,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     function StartRevealEavesdrop()
         SendToConsole("impulse 200")
         SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
+        SendToConsole("bind " .. SECONDARY_ATTACK .. " \"\"")
+        SendToConsole("bind " .. TERTIARY_ATTACK .. " \"\"")
         SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+        SendToConsole("hidehud 4")
         SendToConsole("disable_flashlight")
         local player = Entities:GetLocalPlayer()
         player:Attribute_SetIntValue("eavesdropping", 1)
@@ -2085,9 +2091,12 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function StopRevealEavesdrop()
-        SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
+        SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
+        SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
         SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
         SendToConsole("impulse 200")
+        SendToConsole("hidehud 64")
         Entities:GetLocalPlayer():Attribute_SetIntValue("eavesdropping", 0)
     end
 
@@ -2156,7 +2165,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function RemoveVortEnergy(a, b)
-        SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
         Entities:GetLocalPlayer():Attribute_SetIntValue("vort_energy", 0)
     end
 
