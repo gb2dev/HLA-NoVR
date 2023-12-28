@@ -970,8 +970,8 @@ if class == "prop_hlvr_crafting_station_console" then
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if viewmodel then
                 if string.match(viewmodel:GetModelName(), "v_pistol") then
-                    SendToConsole("ent_fire weapon_pistol kill 0.02")
-                    SendToConsole("impulse 200")
+                    SendToConsole("ent_fire weapon_pistol Kill")
+                    SendToConsole("use weapon_physcannon")
                     Convars:SetStr("weapon_in_crafting_station", "pistol")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -1018,9 +1018,8 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput4", "upgrade4", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
-                    SendToConsole("ent_fire weapon_shotgun kill 0.02")
-                    --SendToConsole("impulse 200")
-                    SendToConsole("lastinv") -- fix for impulse 200 not hiding the shotgun somehow
+                    SendToConsole("ent_fire weapon_shotgun Kill")
+                    SendToConsole("use weapon_physcannon")
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -1065,9 +1064,8 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent:RedirectOutput("CustomOutput4", "upgrade4", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_smg1") then
-                    SendToConsole("ent_fire weapon_ar2 kill 0.02")
-                    --SendToConsole("impulse 200")
-                    SendToConsole("lastinv") -- fix for impulse 200 not hiding the smg somehow
+                    SendToConsole("ent_fire weapon_ar2 Kill")
+                    SendToConsole("use weapon_physcannon")
                     Convars:SetStr("weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
