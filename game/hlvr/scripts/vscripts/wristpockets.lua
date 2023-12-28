@@ -295,13 +295,14 @@ Convars:RegisterCommand("wristpockets_healthpen", function()
 	local slot2ItemId = player:Attribute_GetIntValue("pocketslots_slot2", 0)
 	if slot1ItemId == 0 and slot2ItemId == 0 then
 		print("[WristPockets] Player don't have any health pens on inventory.")
-	else 
+	else
 		local pocketSlotId = GetPocketSlotToUse(slot1ItemId, slot2ItemId, 1)
 		if pocketSlotId ~= 0 then
 			if player:GetHealth() ~= player:GetMaxHealth() then
 				player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
 				StartSoundEventFromPosition("HealthPen.Stab", player:EyePosition())
 				StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
+				StartSoundEventFromPosition("HealthPen.Success02", player:EyePosition())
 				player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
 				print("[WristPockets] Health pen has been used from slot #" .. pocketSlotId .. ".")
 			else
