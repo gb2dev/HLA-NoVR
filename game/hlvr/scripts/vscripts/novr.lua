@@ -2151,6 +2151,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("r_drawviewmodel 0")
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
         SendToConsole("phys_pushscale 1")
+        SendToConsole("ent_remove hat_construction_viewmodel")
     end
 
     function ShowVortEnergyTutorial()
