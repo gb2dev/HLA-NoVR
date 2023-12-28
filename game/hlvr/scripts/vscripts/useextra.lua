@@ -844,29 +844,6 @@ if class == "item_combine_tank_locker" then
     end
 end
 
-if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
-	SendToConsole("give weapon_pistol")
-	SendToConsole("ent_remove weapon_bugbait")
-	thisEntity:Kill()
-end
-
-if class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" then
-    SendToConsole("give weapon_shotgun")
-    SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
-    SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
-end
-
-if class == "item_hlvr_weapon_rapidfire" and name ~= "weapon_in_fabricator" then
-    SendToConsole("give weapon_ar2")
-    if map == "a3_hotel_interior_rooftop" then
-        local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
-        for k, v in pairs(ents) do
-            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
-        end
-    end
-    SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
-end
-
 if class == "item_healthcharger_reservoir" then
     local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
@@ -1224,7 +1201,34 @@ end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
 
-if vlua.find(class, "item_hlvr_crafting_currency_") then
+-- Weapons
+if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
+	SendToConsole("give weapon_pistol")
+	SendToConsole("ent_remove weapon_bugbait")
+	thisEntity:Kill()
+elseif class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" then
+    item_pickup_params.item = "hlvr_weapon_shotgun"
+    FireGameEvent("item_pickup", item_pickup_params)
+
+    SendToConsole("give weapon_shotgun")
+    SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
+    SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
+
+    player:SetThink(function()
+        SendToConsole("ent_fire 12712_shotgun_zombie_speak CancelSpeech")
+    end, "RemoveRusselReloadingHint", 0.5)
+elseif class == "item_hlvr_weapon_rapidfire" and name ~= "weapon_in_fabricator" then
+    SendToConsole("give weapon_ar2")
+    if map == "a3_hotel_interior_rooftop" then
+        local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
+        for k, v in pairs(ents) do
+            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
+        end
+    end
+    SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
+
+-- Other Items
+elseif vlua.find(class, "item_hlvr_crafting_currency_") then
     if name == "currency_booby_trap" then
         thisEntity:FireOutput("OnPlayerPickup", nil, nil, nil, 0)
     end
