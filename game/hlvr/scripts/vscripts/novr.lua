@@ -206,6 +206,22 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("noclip")
     end, "", 0)
 
+    Convars:RegisterCommand("novr_unequip_wearable", function()
+        local ent = Entities:FindByName(nil, "hat_construction_viewmodel")
+        if ent then
+            local hat = SpawnEntityFromTableSynchronous("prop_physics", {["model"]="models/props/construction/hat_construction.vmdl"})
+            hat:SetOrigin(Entities:GetLocalPlayer():EyePosition())
+            local angles = Entities:GetLocalPlayer():EyeAngles()
+            hat:SetAngles(angles.x, angles.y, angles.z)
+
+            ent:Kill()
+
+            Entities:GetLocalPlayer():SetThink(function()
+                SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_HT 99\"")
+            end, "HostileBarnacles", 0.2)
+        end
+    end, "", 0)
+
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
 
     Convars:RegisterConvar("weapon_in_crafting_station", "", "", 0)
@@ -255,59 +271,137 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end, "", 0)
 
-    Convars:RegisterCommand("chooseupgrade1", function()
+    Convars:RegisterCommand("novr_energygun_grant_upgrade", function(name, value)
+        -- Reflex Sight
+        if value == "0" then
+            Convars:SetStr("chosen_upgrade", "pistol_upgrade_aimdownsights")
+        -- Burst Fire
+        elseif value == "1" then
+            Convars:SetStr("chosen_upgrade", "pistol_upgrade_burstfire")
+        -- Bullet Reservoir
+        elseif value == "2" then
+            Convars:SetStr("chosen_upgrade", "pistol_upgrade_hopper")
+        -- Laser Sight
+        elseif value == "3" then
+            Convars:SetStr("chosen_upgrade", "pistol_upgrade_lasersight")
+        else
+            return
+        end
+
+        SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_shotgun_grant_upgrade", function(name, value)
+        -- Laser Sight
+        if value == "0" then
+            Convars:SetStr("chosen_upgrade", "shotgun_upgrade_lasersight")
+        -- Double Shot
+        elseif value == "1" then
+            Convars:SetStr("chosen_upgrade", "shotgun_upgrade_doubleshot")
+        -- Autoloader
+        elseif value == "2" then
+            Convars:SetStr("chosen_upgrade", "shotgun_upgrade_hopper")
+        -- Grenade Launcher
+        elseif value == "3" then
+            Convars:SetStr("chosen_upgrade", "shotgun_upgrade_grenadelauncher")
+        else
+            return
+        end
+
+        SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_rapidfire_grant_upgrade", function(name, value)
+        -- Reflex Sight
+        if value == "0" then
+            Convars:SetStr("chosen_upgrade", "smg_upgrade_aimdownsights")
+        -- Laser Sight
+        elseif value == "1" then
+            Convars:SetStr("chosen_upgrade", "smg_upgrade_lasersight")
+        -- Extended Magazine
+        elseif value == "2" then
+            Convars:SetStr("chosen_upgrade", "smg_upgrade_casing")
+        else
+            return
+        end
+
+        SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_crafting_station_choose_upgrade", function(name, value)
         local t = {}
         Entities:GetLocalPlayer():GatherCriteria(t)
 
-        if t.current_crafting_currency >= 10 then
-            if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
-                Convars:SetStr("chosen_upgrade", "pistol_upgrade_aimdownsights")
-                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
+        if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
+            -- Reflex Sight
+            if value == "1" and t.current_crafting_currency >= 10 then
+                SendToConsole("novr_energygun_grant_upgrade 0")
                 SendToConsole("hlvr_addresources 0 0 0 -10")
-            elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
-                Convars:SetStr("chosen_upgrade", "shotgun_upgrade_doubleshot")
-                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
-                SendToConsole("hlvr_addresources 0 0 0 -10")
-            elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
-                Convars:SetStr("chosen_upgrade", "smg_upgrade_aimdownsights")
-                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
-                SendToConsole("hlvr_addresources 0 0 0 -10")
+                return
+            -- Burst Fire
+            elseif value == "2" and t.current_crafting_currency >= 20 then
+                SendToConsole("novr_energygun_grant_upgrade 1")
+                SendToConsole("hlvr_addresources 0 0 0 -20")
+                return
+            -- Bullet Reservoir
+            elseif value == "3" and t.current_crafting_currency >= 30 then
+                SendToConsole("novr_energygun_grant_upgrade 2")
+                SendToConsole("hlvr_addresources 0 0 0 -30")
+                return
+            -- Laser Sight
+            elseif value == "4" and t.current_crafting_currency >= 35 then
+                SendToConsole("novr_energygun_grant_upgrade 3")
+                SendToConsole("hlvr_addresources 0 0 0 -35")
+                return
             end
-        else
-            SendToConsole("ent_fire text_resin SetText #HLVR_CraftingStation_NotEnoughResin")
-            SendToConsole("ent_fire text_resin Display")
-            SendToConsole("play sounds/common/wpn_denyselect.vsnd")
-            SendToConsole("cancelupgrade")
+        elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
+            -- Laser Sight
+            if value == "1" and t.current_crafting_currency >= 10 then
+                SendToConsole("novr_shotgun_grant_upgrade 0")
+                SendToConsole("hlvr_addresources 0 0 0 -10")
+                return
+            -- Double Shot
+            elseif value == "2" and t.current_crafting_currency >= 25 then
+                SendToConsole("novr_shotgun_grant_upgrade 1")
+                SendToConsole("hlvr_addresources 0 0 0 -25")
+                return
+            -- Autoloader
+            elseif value == "3" and t.current_crafting_currency >= 30 then
+                SendToConsole("novr_shotgun_grant_upgrade 2")
+                SendToConsole("hlvr_addresources 0 0 0 -30")
+                return
+            -- Grenade Launcher
+            elseif value == "4" and t.current_crafting_currency >= 40 then
+                SendToConsole("novr_shotgun_grant_upgrade 3")
+                SendToConsole("hlvr_addresources 0 0 0 -40")
+                return
+            end
+        elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
+            -- Reflex Sight
+            if value == "1" and t.current_crafting_currency >= 15 then
+                SendToConsole("novr_rapidfire_grant_upgrade 0")
+                SendToConsole("hlvr_addresources 0 0 0 -15")
+                return
+            -- Extended Magazine
+            elseif value == "2" and t.current_crafting_currency >= 25 then
+                SendToConsole("novr_rapidfire_grant_upgrade 1")
+                SendToConsole("hlvr_addresources 0 0 0 -25")
+                return
+            -- Laser Sight
+            elseif value == "3" and t.current_crafting_currency >= 30 then
+                SendToConsole("novr_rapidfire_grant_upgrade 2")
+                SendToConsole("hlvr_addresources 0 0 0 -30")
+                return
+            end
         end
+
+        SendToConsole("ent_fire text_resin SetText #HLVR_CraftingStation_NotEnoughResin")
+        SendToConsole("ent_fire text_resin Display")
+        SendToConsole("play sounds/common/wpn_denyselect.vsnd")
+        SendToConsole("novr_crafting_station_cancel_upgrade")
     end, "", 0)
 
-    Convars:RegisterCommand("chooseupgrade2", function()
-        local t = {}
-        Entities:GetLocalPlayer():GatherCriteria(t)
-
-        if t.current_crafting_currency >= 20 then
-            if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
-                Convars:SetStr("chosen_upgrade", "pistol_upgrade_burstfire")
-                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
-                SendToConsole("hlvr_addresources 0 0 0 -20")
-            elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
-                Convars:SetStr("chosen_upgrade", "shotgun_upgrade_grenadelauncher")
-                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
-                SendToConsole("hlvr_addresources 0 0 0 -20")
-            elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
-                Convars:SetStr("chosen_upgrade", "smg_upgrade_fasterfirerate")
-                SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
-                SendToConsole("hlvr_addresources 0 0 0 -20")
-            end
-        else
-            SendToConsole("ent_fire text_resin SetText #HLVR_CraftingStation_NotEnoughResin")
-            SendToConsole("ent_fire text_resin Display")
-            SendToConsole("play sounds/common/wpn_denyselect.vsnd")
-            SendToConsole("cancelupgrade")
-        end
-    end, "", 0)
-
-    Convars:RegisterCommand("cancelupgrade", function()
+    Convars:RegisterCommand("novr_crafting_station_cancel_upgrade", function()
         Convars:SetStr("chosen_upgrade", "cancel")
         SendToConsole("ent_fire weapon_in_fabricator Kill")
         SendToConsole("ent_fire upgrade_ui kill")
@@ -317,11 +411,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
             SendToConsole("give weapon_shotgun")
         elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
-            if Entities:GetLocalPlayer():Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                SendToConsole("give weapon_ar2")
-            else
-                SendToConsole("give weapon_smg1")
-            end
+            SendToConsole("give weapon_ar2")
         end
         Convars:SetStr("weapon_in_crafting_station", "")
         SendToConsole("viewmodel_update")
@@ -363,6 +453,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                 velocity = new_velocity
                 return 0
             end, "ExplodeOnImpact", 0)
+            StartSoundEventFromPosition("Shotgun.UpgradeLaunchGrenade", player:EyePosition()) -- play sound of shotgun launch upgrade
+            SendToConsole("viewmodel_update") -- update of attached grenade
         else
             ent:ApplyAbsVelocityImpulse(player:GetForwardVector() * 500)
             SendToConsole("impulse 200")
@@ -805,6 +897,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. PAUSE .. " pause")
             SendToConsole("bind " .. VIEWM_INSPECT .. " viewmodel_inspect_animation")
             SendToConsole("bind " .. ZOOM .. " +zoom")
+            SendToConsole("bind " .. UNEQUIP_WEARABLE .. " novr_unequip_wearable")
             -- NOTE: Put additional custom bindings under here. Example:
             -- SendToConsole("bind X quit")
             SendToConsole("hl2_sprintspeed 140")
@@ -897,11 +990,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("give weapon_shotgun")
 
                             if is_on_map_or_later("a3_hotel_street") then
-                                if Entities:GetLocalPlayer():Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                                    SendToConsole("give weapon_ar2")
-                                else
-                                    SendToConsole("give weapon_smg1")
-                                end
+                                SendToConsole("give weapon_ar2")
                             end
                         end
                     end
@@ -952,7 +1041,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 ent:SetThink(function()
                     if Convars:GetStr("weapon_in_crafting_station") ~= "" and Convars:GetStr("chosen_upgrade") == "" and Entities:FindByClassnameNearest("prop_hlvr_crafting_station", Entities:GetLocalPlayer():GetAbsOrigin(), 200) == nil then
-                        SendToConsole("cancelupgrade")
+                        SendToConsole("novr_crafting_station_cancel_upgrade")
                     end
                     return 1
                 end, "ReturnFabricatorWeapon", 0)
@@ -965,6 +1054,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("snd_sos_start_soundevent Player.FallDamage")
                         SendToConsole("ent_fire !player SetHealth 0")
                         return nil
+                    end
+
+                    local barnacle_tounge = Entities:FindByClassnameNearest("npc_barnacle_tongue_tip", player:GetOrigin(), 28)
+                    if barnacle_tounge then
+                        SendToConsole("novr_unequip_wearable")
                     end
 
                     cvar_setf("player_use_radius", min(2200/abs(player:GetAngles().x),60))
@@ -1047,6 +1141,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             SendToConsole("ent_remove text_noclip")
             SendToConsole("ent_create env_message { targetname text_noclip message NOCLIP }")
+
+            SendToConsole("ent_remove text_wearable")
+            SendToConsole("ent_create env_message { targetname text_wearable message WEARABLE }")
 
             WristPockets_StartupPreparations()
             WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
@@ -1474,7 +1571,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             if Entities:GetLocalPlayer():Attribute_GetIntValue("eavesdropping", 0) == 1 then
                                 SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
+                                SendToConsole("bind " .. SECONDARY_ATTACK .. " \"\"")
+                                SendToConsole("bind " .. TERTIARY_ATTACK .. " \"\"")
                                 SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+                                SendToConsole("hidehud 4")
                             end
 
                             if not loading_save_file then
@@ -1544,7 +1644,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                                     ent:Attribute_SetIntValue("active", 0)
                                     SendToConsole("ent_fire combine_gun_mechanical enablecollision")
                                     SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                                    SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+                                    SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
                                     SendToConsole("r_drawviewmodel 1")
                                     SendToConsole("unbind J")
                                 end
@@ -1976,7 +2076,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     function StartRevealEavesdrop()
         SendToConsole("impulse 200")
         SendToConsole("bind " .. PRIMARY_ATTACK .. " \"\"")
+        SendToConsole("bind " .. SECONDARY_ATTACK .. " \"\"")
+        SendToConsole("bind " .. TERTIARY_ATTACK .. " \"\"")
         SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+        SendToConsole("hidehud 4")
         SendToConsole("disable_flashlight")
         local player = Entities:GetLocalPlayer()
         player:Attribute_SetIntValue("eavesdropping", 1)
@@ -1988,9 +2091,12 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function StopRevealEavesdrop()
-        SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
+        SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
+        SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
         SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
         SendToConsole("impulse 200")
+        SendToConsole("hidehud 64")
         Entities:GetLocalPlayer():Attribute_SetIntValue("eavesdropping", 0)
     end
 
@@ -2045,6 +2151,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("r_drawviewmodel 0")
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
         SendToConsole("phys_pushscale 1")
+        SendToConsole("ent_remove hat_construction_viewmodel")
     end
 
     function ShowVortEnergyTutorial()
@@ -2059,7 +2166,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function RemoveVortEnergy(a, b)
-        SendToConsole("bind " .. PRIMARY_ATTACK .. " +customattack")
+        SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
         Entities:GetLocalPlayer():Attribute_SetIntValue("vort_energy", 0)
     end
 

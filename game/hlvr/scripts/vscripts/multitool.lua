@@ -294,6 +294,24 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_hopper" then
+                player:Attribute_SetIntValue("pistol_upgrade_hopper", 1)
+                SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
+
+                -- TODO: Implement weapon upgrade and remove message
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade animation is not implemented", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+            elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_lasersight" then
+                player:Attribute_SetIntValue("pistol_upgrade_lasersight", 1)
+                SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
+
+                -- TODO: Implement weapon upgrade and remove message
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade does not work yet", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
                 player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
                 SendToConsole("give weapon_shotgun")
@@ -306,21 +324,48 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_lasersight" then
+                player:Attribute_SetIntValue("shotgun_upgrade_lasersight", 1)
+                SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
+
+                -- TODO: Implement weapon upgrade and remove message
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade does not work yet", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_hopper" then
+                player:Attribute_SetIntValue("shotgun_upgrade_hopper", 1)
+                SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
+
+                -- TODO: Implement weapon upgrade and remove message
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade animation is not implemented", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
                 player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
-                if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                    SendToConsole("give weapon_ar2")
-                else
-                    SendToConsole("give weapon_smg1")
-                end
+                SendToConsole("give weapon_ar2")
                 SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
                 SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
-                player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
-                SendToConsole("ent_remove weapon_ar2")
-                SendToConsole("give weapon_smg1")
+            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_lasersight" then
+                player:Attribute_SetIntValue("smg_upgrade_lasersight", 1)
+                SendToConsole("give weapon_ar2")
                 SendToConsole("viewmodel_update")
+
+                -- TODO: Implement weapon upgrade and remove message
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade does not work yet", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_casing" then
+                player:Attribute_SetIntValue("smg_upgrade_casing", 1)
+                SendToConsole("give weapon_ar2")
+                SendToConsole("viewmodel_update")
+
+                -- TODO: Implement weapon upgrade and remove message
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade animation is not implemented", 0, nil, nil)
+                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             end
 
             SendToConsole("ent_fire point_clientui_world_panel Enable")

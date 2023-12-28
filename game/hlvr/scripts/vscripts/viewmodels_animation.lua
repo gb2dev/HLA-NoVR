@@ -36,7 +36,7 @@ function ViewmodelAnimation_ADSZoom()
         SendToConsole("ent_remove ads_zoom")
         SendToConsole(string.format("ent_create env_zoom { targetname ads_zoom FOV %s rate 0.5 }", FOV_ADS_ZOOM))
         SendToConsole("ent_remove ads_zoom_out")
-        SendToConsole(string.format("ent_create env_zoom { targetname ads_zoom_out FOV %s rate 0.5 }", FOV))
+        SendToConsole(string.format("ent_create env_zoom { targetname ads_zoom_out FOV %s rate 0.2 }", FOV))
     end, "ViewmodelAnimationADSZoom", 1)
 
     print("[ViewmodelAnimation] ads zoom preparation done")
