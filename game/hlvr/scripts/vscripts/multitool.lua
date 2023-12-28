@@ -300,7 +300,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("viewmodel_update")
 
                 -- TODO: Implement weapon upgrade and remove message
-                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=0.6})
                 DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade animation is not implemented", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_lasersight" then
@@ -309,7 +309,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("viewmodel_update")
 
                 -- TODO: Implement weapon upgrade and remove message
-                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=0.6})
                 DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade does not work yet", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
@@ -330,7 +330,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("viewmodel_update")
 
                 -- TODO: Implement weapon upgrade and remove message
-                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=0.6})
                 DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade does not work yet", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_hopper" then
@@ -339,7 +339,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("viewmodel_update")
 
                 -- TODO: Implement weapon upgrade and remove message
-                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=0.6})
                 DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade animation is not implemented", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
@@ -354,7 +354,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("viewmodel_update")
 
                 -- TODO: Implement weapon upgrade and remove message
-                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=0.6})
                 DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade does not work yet", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_casing" then
@@ -363,7 +363,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("viewmodel_update")
 
                 -- TODO: Implement weapon upgrade and remove message
-                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=10, ["x"]=-1, ["y"]=0.6})
                 DoEntFireByInstanceHandle(ent, "SetText", "This weapon upgrade animation is not implemented", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
             end
