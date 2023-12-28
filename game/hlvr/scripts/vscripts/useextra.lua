@@ -1207,6 +1207,10 @@ if class == "prop_reviver_heart" then
 end
 
 if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_construction" then
+    if Entities:FindByName(nil, "hat_construction") then
+        return
+    end
+
     thisEntity:SetEntityName("hat_construction")
     DoEntFireByInstanceHandle(thisEntity, "DisableMotion", "", 0, nil, nil)
     thisEntity:SetAbsOrigin(Vector(0, 0, 0))
