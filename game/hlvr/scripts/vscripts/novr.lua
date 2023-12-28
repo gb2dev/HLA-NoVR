@@ -207,19 +207,18 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, "", 0)
 
     Convars:RegisterCommand("novr_unequip_wearable", function()
-        local ent = Entities:FindByName(nil, "hat_construction")
+        local ent = Entities:FindByName(nil, "hat_construction_viewmodel")
         if ent then
-            ent:SetEntityName("")
-            ent:SetThink(function()
-                ent:SetOrigin(Entities:GetLocalPlayer():EyePosition())
-                local angles = Entities:GetLocalPlayer():EyeAngles()
-                ent:SetAngles(angles.x, angles.y, angles.z)
-                Entities:FindByName(nil, "hat_construction_viewmodel"):Kill()
-            end, "RetrieveHat", 0.02)
-            ent:SetThink(function()
+            local hat = SpawnEntityFromTableSynchronous("prop_physics", {["model"]="models/props/construction/hat_construction.vmdl"})
+            hat:SetOrigin(Entities:GetLocalPlayer():EyePosition())
+            local angles = Entities:GetLocalPlayer():EyeAngles()
+            hat:SetAngles(angles.x, angles.y, angles.z)
+
+            ent:Kill()
+
+            Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_HT 99\"")
             end, "HostileBarnacles", 0.2)
-            DoEntFireByInstanceHandle(ent, "EnableMotion", "", 0, nil, nil)
         end
     end, "", 0)
 
