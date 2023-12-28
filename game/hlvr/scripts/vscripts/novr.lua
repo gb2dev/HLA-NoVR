@@ -1142,6 +1142,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_remove text_noclip")
             SendToConsole("ent_create env_message { targetname text_noclip message NOCLIP }")
 
+            SendToConsole("ent_remove text_wearable")
+            SendToConsole("ent_create env_message { targetname text_wearable message WEARABLE }")
+
             WristPockets_StartupPreparations()
             WristPockets_CheckPocketItemsOnLoading(Entities:GetLocalPlayer(), loading_save_file)
             Viewmodels_Init()

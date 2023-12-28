@@ -1186,6 +1186,12 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
         return
     end
 
+    if player:Attribute_GetIntValue("wearable_tutorial_shown", 0) == 0 then
+        player:Attribute_SetIntValue("wearable_tutorial_shown", 1)
+        SendToConsole("ent_fire text_wearable ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
     local ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hat_construction_viewmodel", ["model"]="models/props/construction/hat_construction.vmdl", ["disableshadows"]=true, ["solid"]=0})
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     ent:SetParent(viewmodel, "")
