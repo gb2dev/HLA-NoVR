@@ -1,10 +1,12 @@
-if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 or Entities:GetLocalPlayer():Attribute_GetIntValue("picked_up", 0) == 1 then
+local player = Entities:GetLocalPlayer()
+
+if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 or player:Attribute_GetIntValue("picked_up", 0) == 1 then
+    player:Attribute_SetIntValue("used_gravity_gloves", 1)
     return
 end
 
 local class = thisEntity:GetClassname()
-local player = Entities:GetLocalPlayer()
-local startVector = player:EyePosition()
+local eyePos = player:EyePosition()
 
 local ignore_props = {
     "models/props/hazmat/hazmat_crate_lid.vmdl",
@@ -38,14 +40,30 @@ if player:Attribute_GetIntValue("used_gravity_gloves", 0) == 1 then
     return
 end
 
+local class = thisEntity:GetClassname()
+local player = Entities:GetLocalPlayer()
+local startVector = thisEntity:GetCenter()
+local traceTable =
+{
+    startpos = startVector;
+    endpos = player:EyePosition();
+    ignore = thisEntity;
+    mask =  33636363
+}
+TraceLine(traceTable)
+
+if traceTable.enthit ~= player then
+    return
+end
+
 if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery" or class == "item_hlvr_combine_console_tank" or class == "item_hlvr_weapon_energygun") and (thisEntity:GetMass() <= 15 or vlua.find(thisEntity:GetModelName(), "bottle") or class == "item_hlvr_prop_battery" or thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl") then
     local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
     FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
     player:StopThink("GGTutorial")
-    local direction = startVector - thisEntity:GetAbsOrigin()
+    local direction = eyePos - thisEntity:GetAbsOrigin()
     thisEntity:ApplyAbsVelocityImpulse(Vector(direction.x * 2, direction.y * 2, direction.z * (115 / direction.z + 1.9)))
-    StartSoundEventFromPosition("Grabbity.HoverPing", startVector)
-    StartSoundEventFromPosition("Grabbity.Grab", startVector)
+    StartSoundEventFromPosition("Grabbity.HoverPing", eyePos)
+    StartSoundEventFromPosition("Grabbity.Grab", eyePos)
     player:Attribute_SetIntValue("used_gravity_gloves", 1)
     local count = 0
     thisEntity:SetThink(function()

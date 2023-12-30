@@ -658,7 +658,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             }
             TraceLine(eyetrace)
             if eyetrace.hit then
-                for k, v in pairs(Entities:FindAllInSphere(eyetrace.pos, 20)) do
+                for k, v in pairs(Entities:FindAllInSphere(eyetrace.pos, 10)) do
                     DoEntFireByInstanceHandle(v, "RunScriptFile", "gravity_gloves", 0, nil, nil)
                 end
             end
