@@ -228,6 +228,18 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
     end, "", 0)
 
+    Convars:RegisterCommand("novr_cover_mouth", function()
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        viewmodel:SetRenderAlpha(0)
+        Entities:GetLocalPlayer():Attribute_SetIntValue("covering_mouth", 1)
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_uncover_mouth", function()
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        viewmodel:SetRenderAlpha(255)
+        Entities:GetLocalPlayer():Attribute_SetIntValue("covering_mouth", 0)
+    end, "", 0)
+
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
 
     Convars:RegisterConvar("weapon_in_crafting_station", "", "", 0)
@@ -942,8 +954,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("combine_grenade_timer 4")
             SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
-            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
-            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand Enable;viewmodel_offset_y -20\"")
+            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy OnPlayerUncoverMouth;ent_fire lefthand Disable;novr_uncover_mouth\"")
+            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy OnPlayerCoverMouth;ent_fire lefthand Enable;novr_cover_mouth\"")
             SendToConsole("alias -customattack -iv_attack")
             SendToConsole("alias +customattack \"+iv_attack;usemultitool\"")
             SendToConsole("mouse_disableinput 0")
@@ -1031,16 +1043,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
+            -- Hand for covering mouth animation
             ent = Entities:FindByName(nil, "lefthand")
+            local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if not ent then
-                -- Hand for covering mouth animation
-                local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-                local viewmodel_ang = viewmodel:GetAngles()
-                local viewmodel_pos = viewmodel:GetAbsOrigin() + viewmodel_ang:Forward() * 24 - viewmodel_ang:Up() * 4
-                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["disableshadows"]=true, ["origin"]= viewmodel_pos.x .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
-                DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
-                DoEntFire("lefthand", "Disable", "", 0, nil, nil)
+                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["disableshadows"]=true })
+                ent:SetParent(viewmodel, "")
+                DoEntFireByInstanceHandle(ent, "Disable", "", 0, nil, nil)
             end
+            ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), Entities:GetLocalPlayer():GetAngles(), Vector(4, 0, -3.5)))
+            ent:SetLocalAngles(0, -90, 0)
 
             ent = Entities:GetLocalPlayer()
             if ent then
@@ -1085,24 +1097,21 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end
                     end
 
-                    if cvar_getf("viewmodel_offset_y") ~= -20 then
-                        local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y * 0.0025
-                        local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x * 0.0025
-                        local angle = player:GetAngles()
-                        angle = QAngle(0, -angle.y, 0)
-                        move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
+                    local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y * 0.0025
+                    local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x * 0.0025
+                    local angle = player:GetAngles()
+                    angle = QAngle(0, -angle.y, 0)
+                    move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
 
-                        local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.055
-                        local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.055
+                    local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.07
+                    local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.07
 
-                        look_delta = viewmodel:GetAngles()
+                    look_delta = viewmodel:GetAngles()
 
-                        -- Set weapon sway and view bob if zoom is not active
-                        if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
-                            cvar_setf("viewmodel_offset_x", Lerp(0.06, cvar_getf("viewmodel_offset_x"), view_bob_x + weapon_sway_x))
-                            cvar_setf("viewmodel_offset_y", Lerp(0.06, cvar_getf("viewmodel_offset_y"), view_bob_y + weapon_sway_y))
-                        end
-
+                    -- Set weapon sway and view bob if zoom is not active
+                    if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
+                        cvar_setf("viewmodel_offset_x", Lerp(0.06, cvar_getf("viewmodel_offset_x"), view_bob_x + weapon_sway_x))
+                        cvar_setf("viewmodel_offset_y", Lerp(0.06, cvar_getf("viewmodel_offset_y"), view_bob_y + weapon_sway_y))
                     end
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 30)
@@ -1550,6 +1559,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire timer_gun_equipped_b Kill")
                             ent = Entities:FindByName(nil, "vcd_larry_talk_01")
                             ent:RedirectOutput("OnCompletion", "LarrySeesGun", ent)
+
+                            ent = Entities:FindByName(nil, "spawner_larry_hat_sound_target")
+                            ent:RedirectOutput("OnEntitySpawned", "LarrySeesWearable", ent)
 
                             ent = Entities:FindByName(nil, "freezer_toner_outlet_1")
                             ent:Attribute_SetIntValue("used", 1)
@@ -2013,7 +2025,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function ShowCoverMouthTutorial()
-        if cvar_getf("viewmodel_offset_y") ~= -20 then
+        if Entities:GetLocalPlayer():Attribute_GetIntValue("covering_mouth", 0) == 0 then
             SendToConsole("ent_fire text_covermouth ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
         end
@@ -2081,6 +2093,18 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function LarrySeesGun()
         SendToConsole("ent_fire_output @player_proxy OnWeaponActive")
+    end
+
+    function LarrySeesWearable()
+        local ent = Entities:FindByName(nil, "hat_construction_viewmodel")
+        if ent then
+            SendToConsole("ent_fire_output @player_proxy OutPlayerIsWearingHat " .. ent:GetModelName())
+        end
+
+        ent = Entities:FindByName(nil, "respirator_viewmodel")
+        if ent then
+            SendToConsole("ent_fire_output @player_proxy OutPlayerIsWearingHat " .. ent:GetModelName())
+        end
     end
 
     function EnableJeffElevatorDoorToner()
