@@ -85,7 +85,7 @@ if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_h
                 SendToConsole("+use")
                 thisEntity:SetThink(function()
                     SendToConsole("-use")
-                    --DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, player, player)
+                    DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0.02, player, player)
                 end, "", 0.02)
                 if vlua.find(thisEntity:GetSequence(), "vr_grenade_arm_") then
                     DoEntFireByInstanceHandle(thisEntity, "SetTimer", "3", 0, nil, nil)
