@@ -1198,6 +1198,13 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
     ent:SetParent(viewmodel, "")
     ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(0, 0, 4)))
     ent:SetLocalAngles(0, 0, 0)
+
+    if thisEntity:GetMaterialGroupHash() ~= 0 then
+        ent:SetSkin(1)
+        local color = thisEntity:GetRenderColor()
+        ent:SetRenderColor(color.x, color.y, color.z)
+    end
+
     SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_NU 99\"")
 
     thisEntity:Kill()

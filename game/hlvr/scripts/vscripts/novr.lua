@@ -214,6 +214,12 @@ if GlobalSys:CommandLineCheck("-novr") then
             local angles = Entities:GetLocalPlayer():EyeAngles()
             hat:SetAngles(angles.x, angles.y, angles.z)
 
+            if ent:GetMaterialGroupHash() ~= 0 then
+                hat:SetSkin(1)
+                local color = ent:GetRenderColor()
+                hat:SetRenderColor(color.x, color.y, color.z)
+            end
+
             ent:Kill()
 
             Entities:GetLocalPlayer():SetThink(function()
