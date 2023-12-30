@@ -644,8 +644,25 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("useextra", function()
         local player = Entities:GetLocalPlayer()
 
+        player:Attribute_SetIntValue("used_gravity_gloves", 0)
         if not player:IsUsePressed() then
             player:Attribute_SetIntValue("use_released", 0)
+
+            local startVector = player:EyePosition()
+            local eyetrace =
+            {
+                startpos = startVector;
+                endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(1000,0,0));
+                ignore = player;
+                mask =  33636363
+            }
+            TraceLine(eyetrace)
+            if eyetrace.hit then
+                for k, v in pairs(Entities:FindAllInSphere(eyetrace.pos, 20)) do
+                    DoEntFireByInstanceHandle(v, "RunScriptFile", "gravity_gloves", 0, nil, nil)
+                end
+            end
+
             DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
 
             -- Ladders and position based interactions
@@ -663,6 +680,24 @@ if GlobalSys:CommandLineCheck("-novr") then
                 elseif vlua.find(Entities:FindAllInSphere(Vector(-911, 922, -68), 10), player) then
                     ClimbLadder(-22)
                 end
+
+                local startVector = player:EyePosition()
+                local traceTable =
+                {
+                    startpos = startVector;
+                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(80, 0, 0));
+                    ignore = player;
+                    mask = 33636363
+                }
+
+                TraceLine(traceTable)
+
+                if traceTable.hit then
+                    local ent = Entities:FindByNameNearest("621_6487_button_pusher_prop", traceTable.pos, 10)
+                    if ent then
+                        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+                    end
+                end
             elseif GetMapName() == "a2_pistol" then
                 if vlua.find(Entities:FindAllInSphere(Vector(439, 896, 454), 10), player) then
                     ClimbLadder(540)
@@ -672,7 +707,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local traceTable =
                 {
                     startpos = startVector;
-                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(50, 0, 0));
+                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(60, 0, 0));
                     ignore = player;
                     mask = 33636363
                 }
@@ -723,7 +758,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local traceTable =
                 {
                     startpos = startVector;
-                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(50, 0, 0));
+                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(60, 0, 0));
                     ignore = player;
                     mask = -1
                 }
