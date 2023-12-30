@@ -1316,7 +1316,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_fire traincar_border_trigger Disable")
                     end
                 elseif GetMapName() == "a2_pistol" then
-                    SendToConsole("ent_fire *_rebar EnablePickup")
+                    if not loading_save_file then
+                        ent = Entities:FindByName(nil, "trigger_if_player_navs_over_boards")
+                        ent:RedirectOutput("OnTrigger", "ShowBreakBoardsTutorial", ent)
+
+                        SendToConsole("ent_create env_message { targetname text_break_boards message BREAK_BOARDS }")
+
+                        SendToConsole("ent_fire *_rebar EnablePickup")
+                    end
                 elseif GetMapName() == "a2_headcrabs_tunnel" then
                     if not loading_save_file then
                         -- Default Junction Rotations
@@ -1980,6 +1987,14 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire text_multitool_use ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
         end, "MultiToolTutorial", 10)
+    end
+
+    function ShowBreakBoardsTutorial()
+        local player = Entities:GetLocalPlayer()
+        if player:Attribute_GetIntValue("break_boards_tutorial_shown", 0) == 0 then
+            SendToConsole("ent_fire text_break_boards ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+        end
     end
 
     function ShowHoldInteractTutorial()
