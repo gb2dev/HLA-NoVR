@@ -864,7 +864,10 @@ if GlobalSys:CommandLineCheck("-novr") then
             if not GlobalSys:CommandLineCheck("-condebug") then
                 local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=20, ["x"]=-1, ["y"]=0.6})
                 DoEntFireByInstanceHandle(ent, "SetText", "The game needs to be started from the launcher!", 0, nil, nil)
-                DoEntFireByInstanceHandle(ent, "Display", "", 1, nil, nil)
+                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+                ent:SetThink(function()
+                    SendToConsole("host_timescale 0")
+                end, "", 0.02)
             end
         else
             SendToConsole("binddefaults")
