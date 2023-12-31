@@ -1212,6 +1212,10 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
     thisEntity:Kill()
 end
 
+if class == "item_item_crate" then
+    DoEntFireByInstanceHandle(thisEntity, "SetHealth", "0", 0, nil, nil)
+end
+
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
 
 -- Weapons
