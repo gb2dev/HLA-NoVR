@@ -31,7 +31,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire !player SetHealth 0")
         end
 
-        print("[MainMenu] player_health " .. info.health)
+        print("[GameMenu] player_health " .. info.health)
     end, nil)
 
     if entity_killed_ev ~= nil then
@@ -872,7 +872,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         else
             SendToConsole("binddefaults")
             SendToConsole("bind PAUSE main_menu_exec")
-            print("[MainMenu] pause_menu_mode")
+            print("[GameMenu] pause_menu_mode")
             Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
             end, "SetGameUIState", 0.1)
@@ -1750,7 +1750,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("hidehud 96")
-        print("[MainMenu] main_menu_mode")
+        print("[GameMenu] main_menu_mode")
         Entities:GetLocalPlayer():SetThink(function()
             SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
         end, "SetGameUIState", 0.1)
