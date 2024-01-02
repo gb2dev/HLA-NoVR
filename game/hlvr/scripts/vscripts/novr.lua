@@ -31,7 +31,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_fire !player SetHealth 0")
         end
 
-        print("[MainMenu] player_health " .. info.health)
+        print("[GameMenu] player_health " .. info.health)
     end, nil)
 
     if entity_killed_ev ~= nil then
@@ -173,9 +173,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:Attribute_SetIntValue("used", 1)
                             DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                             if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
-                                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-                                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-                                ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                                print("[GameMenu] hacking_puzzle_trace")
                             end
                             return
                         end
@@ -238,6 +236,21 @@ if GlobalSys:CommandLineCheck("-novr") then
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         viewmodel:SetRenderAlpha(255)
         Entities:GetLocalPlayer():Attribute_SetIntValue("covering_mouth", 0)
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_hacking_puzzle_failed", function()
+        local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", Entities:GetLocalPlayer():GetCenter(), 100)
+        DoEntFireByInstanceHandle(ent, "EndHack", "", 0, nil, nil)
+        ent:FireOutput("OnHackFailed", nil, nil, nil, 0)
+        ent:FireOutput("OnPuzzleFailed", nil, nil, nil, 0)
+        ent:Attribute_SetIntValue("used", 0)
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_hacking_puzzle_success", function()
+        local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", Entities:GetLocalPlayer():GetCenter(), 100)
+        DoEntFireByInstanceHandle(ent, "EndHack", "", 0, nil, nil)
+        ent:FireOutput("OnHackSuccess", nil, nil, nil, 0)
+        ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 0)
     end, "", 0)
 
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
@@ -927,7 +940,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         else
             SendToConsole("binddefaults")
             SendToConsole("bind PAUSE main_menu_exec")
-            print("[MainMenu] pause_menu_mode")
+            print("[GameMenu] pause_menu_mode")
             Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
             end, "SetGameUIState", 0.1)
@@ -1823,7 +1836,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("hidehud 96")
-        print("[MainMenu] main_menu_mode")
+        print("[GameMenu] main_menu_mode")
         Entities:GetLocalPlayer():SetThink(function()
             SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
         end, "SetGameUIState", 0.1)
