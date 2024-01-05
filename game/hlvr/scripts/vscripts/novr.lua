@@ -173,7 +173,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:Attribute_SetIntValue("used", 1)
                             DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                             if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
-                                print("[GameMenu] hacking_puzzle_trace")
+                                if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+                                    print("[GameMenu] hacking_puzzle_trace")
+                                else
+                                    DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                                    ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                                    ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                                end
                             end
                             return
                         end
