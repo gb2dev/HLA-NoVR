@@ -173,9 +173,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:Attribute_SetIntValue("used", 1)
                             DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                             if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
-                                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-                                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-                                ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                                if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+                                    print("[GameMenu] hacking_puzzle_trace")
+                                else
+                                    DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                                    ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                                    ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                                end
                             end
                             return
                         end
@@ -214,12 +218,45 @@ if GlobalSys:CommandLineCheck("-novr") then
             local angles = Entities:GetLocalPlayer():EyeAngles()
             hat:SetAngles(angles.x, angles.y, angles.z)
 
+            if ent:GetMaterialGroupHash() < 0 then
+                hat:SetSkin(1)
+                local color = ent:GetRenderColor()
+                hat:SetRenderColor(color.x, color.y, color.z)
+            end
+
             ent:Kill()
 
             Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_HT 99\"")
             end, "HostileBarnacles", 0.2)
         end
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_cover_mouth", function()
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        viewmodel:SetRenderAlpha(0)
+        Entities:GetLocalPlayer():Attribute_SetIntValue("covering_mouth", 1)
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_uncover_mouth", function()
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        viewmodel:SetRenderAlpha(255)
+        Entities:GetLocalPlayer():Attribute_SetIntValue("covering_mouth", 0)
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_hacking_puzzle_failed", function()
+        local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", Entities:GetLocalPlayer():GetCenter(), 100)
+        DoEntFireByInstanceHandle(ent, "EndHack", "", 0, nil, nil)
+        ent:FireOutput("OnHackFailed", nil, nil, nil, 0)
+        ent:FireOutput("OnPuzzleFailed", nil, nil, nil, 0)
+        ent:Attribute_SetIntValue("used", 0)
+    end, "", 0)
+
+    Convars:RegisterCommand("novr_hacking_puzzle_success", function()
+        local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", Entities:GetLocalPlayer():GetCenter(), 100)
+        DoEntFireByInstanceHandle(ent, "EndHack", "", 0, nil, nil)
+        ent:FireOutput("OnHackSuccess", nil, nil, nil, 0)
+        ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 0)
     end, "", 0)
 
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
@@ -483,7 +520,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             cvar_setf("viewmodel_offset_x", 0)
             cvar_setf("viewmodel_offset_y", 0)
             cvar_setf("viewmodel_offset_z", 0)
-            SendToConsole("crosshair 1")
+            SendToConsole("hud_draw_fixed_reticle 1")
         end
 
         if viewmodel and not string.match(viewmodel:GetModelName(), "v_grenade") then
@@ -502,7 +539,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             cvar_setf("fov_ads_zoom", FOV_ADS_ZOOM)
                             cvar_setf("viewmodel_offset_x", -0.005)
                         end, "ZoomActivate", 0.5)
-                        SendToConsole("crosshair 0")
+                        SendToConsole("hud_draw_fixed_reticle 0")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
                         SendToConsole("ent_fire ads_zoom_out zoom")
@@ -510,7 +547,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
-                        SendToConsole("crosshair 1")
+                        SendToConsole("hud_draw_fixed_reticle 1")
                         player:SetThink(function()
                             SendToConsole("ent_fire ads_zoom unzoom")
                             SendToConsole("ent_fire ads_zoom_out unzoom")
@@ -626,191 +663,237 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("useextra", function()
         local player = Entities:GetLocalPlayer()
 
-        if not player:IsUsePressed() then
-            player:Attribute_SetIntValue("use_released", 0)
-            DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
+        player:Attribute_SetIntValue("used_gravity_gloves", 0)
+        player:Attribute_SetIntValue("use_released", 0)
 
-            -- Ladders and position based interactions
-            if GetMapName() == "a1_intro_world" then
-                if vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
-                    ClimbLadder(-64)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 20), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 574 -2328 -130")
-                end
-            elseif GetMapName() == "a1_intro_world_2" then
-                if vlua.find(Entities:FindAllInSphere(Vector(-1268, 576, -63), 10), player) and Entities:FindByName(nil, "balcony_ladder"):GetSequence() == "idle_open" then
-                    ClimbLadder(80)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(-911, 922, -68), 10), player) then
-                    ClimbLadder(-22)
-                end
-            elseif GetMapName() == "a2_pistol" then
-                if vlua.find(Entities:FindAllInSphere(Vector(439, 896, 454), 10), player) then
-                    ClimbLadder(540)
-                end
-            elseif GetMapName() == "a2_hideout" then
-                local startVector = player:EyePosition()
-                local traceTable =
-                {
-                    startpos = startVector;
-                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(50, 0, 0));
-                    ignore = player;
-                    mask = 33636363
-                }
-
-                TraceLine(traceTable)
-
-                if traceTable.hit then
-                    local ent = Entities:FindByClassnameNearest("func_physical_button", traceTable.pos, 10)
-                    if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
-                        ent:FireOutput("OnIn", nil, nil, nil, 0)
-                        ent:Attribute_SetIntValue("used", 1)
-                        StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
-                    end
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(-702, -1024, -238), 20), player) then
-                    local ent = Entities:FindByName(nil, "bell")
-                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
-                end
-            elseif GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(354, -251, -62), 18), player) then
-                ClimbLadder(22)
-            elseif GetMapName() == "a3_station_street" then
-                if vlua.find(Entities:FindAllInSphere(Vector(934, 1883, -135), 20), player) then
-                    SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
-                end
-            elseif GetMapName() == "a3_hotel_lobby_basement" then
-                if vlua.find(Entities:FindAllInSphere(Vector(1059, -1475, 200), 20), player) then
-                    if player:Attribute_GetIntValue("EnabledHotelLobbyPower", 0) == 1 then
-                        SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
-                    else
-                        SendToConsole("ent_fire elev_button_floor_1 Press")
-                    end
-                elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1487, 208), 15), player) then
-                    ClimbLadder(272, Vector(0, 0.8, 0.8))
-                end
-            elseif GetMapName() == "a3_hotel_underground_pit" then
-                if vlua.find(Entities:FindAllInSphere(Vector(2239, -1017, 528), 15), player) then
-                    ClimbLadder(570)
-                end
-            elseif GetMapName() == "a3_hotel_interior_rooftop" then
-                if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
-                    ClimbLadder(560)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2335, -1832, 757), 20), player) then
-                    ClimbLadder(840, Vector(0, 0, 0))
-                end
-            elseif GetMapName() == "a3_c17_processing_plant" then
-                local startVector = player:EyePosition()
-                local traceTable =
-                {
-                    startpos = startVector;
-                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(50, 0, 0));
-                    ignore = player;
-                    mask = -1
-                }
-
-                TraceLine(traceTable)
-
-                if traceTable.hit then
-                    local ent = Entities:FindByNameWithin(nil, "1517_3301_lift_button_attached_down_prop", traceTable.pos, 10)
-                    if ent then
-                        player:Attribute_SetIntValue("activated_processing_plant_lift", 1)
-                        SendToConsole("ent_fire_output lift_button_down onin")
-                    end
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 15), player) and Entities:FindByName(nil, "factory_int_up_barnacle_npc_1"):GetHealth() <= 0 then
-                    ClimbLadder(890)
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(-237,-2856,392), 15), player) then
-                    player:SetVelocity(Vector(player:GetForwardVector().x, player:GetForwardVector().y, 0):Normalized() * 150)
-                    player:SetThink(function()
-                        ClimbLadder(440)
-                    end, "ClimbLadder", 0.1)
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(414,-2459,328), 15), player) then
-                    player:SetVelocity(Vector(player:GetForwardVector().x, player:GetForwardVector().y, 0):Normalized() * 150)
-                    player:SetThink(function()
-                        ClimbLadder(440)
-                    end, "ClimbLadder", 0.2)
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(326, -3491, 312), 20), player) then
-                    ClimbLadder(400)
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(-1630, -2045, 111), 15), player) then
-                    ClimbLadder(180)
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(-1393, -2493, 113), 10), player) then
-                    ClimbLadder(425, Vector(0, 0, -1))
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(-1420, -2482, 472), 30), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact -1392 -2471 53")
-                end
-            elseif GetMapName() == "a3_distillery" then
-                if vlua.find(Entities:FindAllInSphere(Vector(20, -496, 211), 10), player) then
-                    ClimbLadder(462)
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(-24, -151, 426), 5), player) then
-                    if player:Attribute_GetIntValue("pulled_larry_ladder", 0) == 0 then
-                        DoEntFireByInstanceHandle(Entities:FindByName(nil, "larry_ladder"), "RunScriptFile", "useextra", 0, nil, nil)
-                    else
-                        ClimbLadder(560)
-                    end
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(515, 1595, 578), 10), player) then
-                    ClimbLadder(690)
-                end
-
-                if vlua.find(Entities:FindAllInSphere(Vector(925, 1102, 578), 10), player) then
-                    SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher OnIn")
-                end
-            elseif GetMapName() == "a4_c17_tanker_yard" then
-                if vlua.find(Entities:FindAllInSphere(Vector(6980, 2591, 13), 10), player) then
-                    ClimbLadder(260)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(6618, 2938, 334), 10), player) then
-                    ClimbLadder(402)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 10), player) then
-                    ClimbLadder(686)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(5456, 4876, 288), 10), player) then
-                    ClimbLadder(420)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(5434, 5755, 273), 10), player) then
-                    ClimbLadder(403, -player:GetRightVector())
-                end
-            elseif GetMapName() == "a4_c17_water_tower" then
-                if vlua.find(Entities:FindAllInSphere(Vector(3314, 6048, 64), 10), player) then
-                    ClimbLadder(142)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2981, 5879, -303), 10), player) then
-                    ClimbLadder(-43)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2374, 6207, -177), 10), player) then
-                    ClimbLadder(-130)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2432, 6662, 160), 10), player) then
-                    ClimbLadder(330)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6130, 384), 10), player) then
-                    ClimbLadder(575)
-                elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6162, 602), 10), player) then
-                    ClimbLadderSound()
-                    SendToConsole("fadein 0.2")
-                    SendToConsole("setpos_exact 2848 6130 360")
-                end
-            elseif GetMapName() == "a5_vault" then
-                if vlua.find(Entities:FindAllInSphere(Vector(-445, 2900, -515), 10), player) then
-                    ClimbLadder(-450, Vector(0, 0, 1))
+        local startVector = player:EyePosition()
+        local eyetrace =
+        {
+            startpos = startVector;
+            endpos = startVector + RotatePosition(Vector(0,0,0), player:GetAngles(), Vector(1000,0,0));
+            ignore = player;
+            mask =  33636363
+        }
+        TraceLine(eyetrace)
+        if eyetrace.hit then
+            local minDistanceEnt
+            local minDistance
+            for k, v in pairs(Entities:FindAllInSphere(eyetrace.pos, 10)) do
+                local distance = VectorDistanceSq(eyetrace.pos, v:GetCenter())
+                if minDistanceEnt == nil or distance < minDistance then
+                    minDistance = distance
+                    minDistanceEnt = v
                 end
             end
-        else
-            player:Attribute_SetIntValue("use_released", 1)
+
+            if minDistanceEnt then
+                DoEntFireByInstanceHandle(minDistanceEnt, "RunScriptFile", "gravity_gloves", 0, nil, nil)
+            end
         end
+
+        DoEntFire("!picker", "RunScriptFile", "check_useextra_distance", 0, nil, nil)
+
+        -- Ladders and position based interactions
+        if GetMapName() == "a1_intro_world" then
+            if vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
+                ClimbLadder(-64)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 20), player) then
+                ClimbLadderSound()
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact 574 -2328 -130")
+            end
+        elseif GetMapName() == "a1_intro_world_2" then
+            if vlua.find(Entities:FindAllInSphere(Vector(-1268, 576, -63), 10), player) and Entities:FindByName(nil, "balcony_ladder"):GetSequence() == "idle_open" then
+                ClimbLadder(80)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(-911, 922, -68), 10), player) then
+                ClimbLadder(-22)
+            end
+
+            local startVector = player:EyePosition()
+            local traceTable =
+            {
+                startpos = startVector;
+                endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(80, 0, 0));
+                ignore = player;
+                mask = 33636363
+            }
+
+            TraceLine(traceTable)
+
+            if traceTable.hit then
+                local ent = Entities:FindByNameNearest("621_6487_button_pusher_prop", traceTable.pos, 10)
+                if ent then
+                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+                end
+            end
+        elseif GetMapName() == "a2_pistol" then
+            if vlua.find(Entities:FindAllInSphere(Vector(439, 896, 454), 10), player) then
+                ClimbLadder(540)
+            end
+        elseif GetMapName() == "a2_hideout" then
+            local startVector = player:EyePosition()
+            local traceTable =
+            {
+                startpos = startVector;
+                endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(60, 0, 0));
+                ignore = player;
+                mask = 33636363
+            }
+
+            TraceLine(traceTable)
+
+            if traceTable.hit then
+                local ent = Entities:FindByClassnameNearest("func_physical_button", traceTable.pos, 10)
+                if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
+                    ent:FireOutput("OnIn", nil, nil, nil, 0)
+                    ent:Attribute_SetIntValue("used", 1)
+                    StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
+                end
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-702, -1024, -238), 20), player) then
+                local ent = Entities:FindByName(nil, "bell")
+                DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+            end
+        elseif GetMapName() == "a2_headcrabs_tunnel" and vlua.find(Entities:FindAllInSphere(Vector(354, -251, -62), 18), player) then
+            ClimbLadder(22)
+        elseif GetMapName() == "a3_station_street" then
+            if vlua.find(Entities:FindAllInSphere(Vector(934, 1883, -135), 20), player) then
+                SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
+            end
+        elseif GetMapName() == "a3_hotel_lobby_basement" then
+            if vlua.find(Entities:FindAllInSphere(Vector(1059, -1475, 200), 20), player) then
+                if player:Attribute_GetIntValue("EnabledHotelLobbyPower", 0) == 1 then
+                    SendToConsole("ent_fire_output elev_button_floor_1 OnIn")
+                else
+                    SendToConsole("ent_fire elev_button_floor_1 Press")
+                end
+            elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1487, 208), 15), player) then
+                ClimbLadder(272, Vector(0, 0.8, 0.8))
+            end
+        elseif GetMapName() == "a3_hotel_underground_pit" then
+            if vlua.find(Entities:FindAllInSphere(Vector(2239, -1017, 528), 15), player) then
+                ClimbLadder(570)
+            end
+        elseif GetMapName() == "a3_hotel_interior_rooftop" then
+            if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
+                ClimbLadder(560)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(2335, -1832, 757), 20), player) then
+                ClimbLadder(840, Vector(0, 0, 0))
+            end
+        elseif GetMapName() == "a3_c17_processing_plant" then
+            local startVector = player:EyePosition()
+            local traceTable =
+            {
+                startpos = startVector;
+                endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(60, 0, 0));
+                ignore = player;
+                mask = -1
+            }
+
+            TraceLine(traceTable)
+
+            if traceTable.hit then
+                local ent = Entities:FindByNameWithin(nil, "1517_3301_lift_button_attached_down_prop", traceTable.pos, 10)
+                if ent then
+                    player:Attribute_SetIntValue("activated_processing_plant_lift", 1)
+                    SendToConsole("ent_fire_output lift_button_down onin")
+                end
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-80, -2215, 760), 15), player) and Entities:FindByName(nil, "factory_int_up_barnacle_npc_1"):GetHealth() <= 0 then
+                ClimbLadder(890)
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-237,-2856,392), 15), player) then
+                player:SetVelocity(Vector(player:GetForwardVector().x, player:GetForwardVector().y, 0):Normalized() * 150)
+                player:SetThink(function()
+                    ClimbLadder(440)
+                end, "ClimbLadder", 0.1)
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(414,-2459,328), 15), player) then
+                player:SetVelocity(Vector(player:GetForwardVector().x, player:GetForwardVector().y, 0):Normalized() * 150)
+                player:SetThink(function()
+                    ClimbLadder(440)
+                end, "ClimbLadder", 0.2)
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(326, -3491, 312), 20), player) then
+                ClimbLadder(400)
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-1630, -2045, 111), 15), player) then
+                ClimbLadder(180)
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-1393, -2493, 113), 10), player) then
+                ClimbLadder(425, Vector(0, 0, -1))
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-1420, -2482, 472), 30), player) then
+                ClimbLadderSound()
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact -1392 -2471 53")
+            end
+        elseif GetMapName() == "a3_distillery" then
+            if vlua.find(Entities:FindAllInSphere(Vector(20, -496, 211), 10), player) then
+                ClimbLadder(462)
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(-24, -151, 426), 5), player) then
+                if player:Attribute_GetIntValue("pulled_larry_ladder", 0) == 0 then
+                    DoEntFireByInstanceHandle(Entities:FindByName(nil, "larry_ladder"), "RunScriptFile", "useextra", 0, nil, nil)
+                else
+                    ClimbLadder(560)
+                end
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(515, 1595, 578), 10), player) then
+                ClimbLadder(690)
+            end
+
+            if vlua.find(Entities:FindAllInSphere(Vector(925, 1102, 578), 10), player) then
+                SendToConsole("ent_fire_output 11578_2635_380_button_center_pusher OnIn")
+            end
+        elseif GetMapName() == "a4_c17_tanker_yard" then
+            if vlua.find(Entities:FindAllInSphere(Vector(6980, 2591, 13), 10), player) then
+                ClimbLadder(260)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(6618, 2938, 334), 10), player) then
+                ClimbLadder(402)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 10), player) then
+                ClimbLadder(686)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(5456, 4876, 288), 10), player) then
+                ClimbLadder(420)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(5434, 5755, 273), 10), player) then
+                ClimbLadder(403, -player:GetRightVector())
+            end
+        elseif GetMapName() == "a4_c17_water_tower" then
+            if vlua.find(Entities:FindAllInSphere(Vector(3314, 6048, 64), 10), player) then
+                ClimbLadder(142)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(2981, 5879, -303), 10), player) then
+                ClimbLadder(-43)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(2374, 6207, -177), 10), player) then
+                ClimbLadder(-130)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(2432, 6662, 160), 10), player) then
+                ClimbLadder(330)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6130, 384), 10), player) then
+                ClimbLadder(575)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(2848, 6162, 602), 10), player) then
+                ClimbLadderSound()
+                SendToConsole("fadein 0.2")
+                SendToConsole("setpos_exact 2848 6130 360")
+            end
+        elseif GetMapName() == "a5_vault" then
+            if vlua.find(Entities:FindAllInSphere(Vector(-445, 2900, -515), 10), player) then
+                ClimbLadder(-450, Vector(0, 0, 1))
+            end
+        end
+    end, "", 0)
+
+    Convars:RegisterCommand("useextra_release", function()
+        local player = Entities:GetLocalPlayer()
+        player:Attribute_SetIntValue("use_released", 1)
     end, "", 0)
 
     if player_spawn_ev ~= nil then
@@ -884,7 +967,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("alias -leftfixed -iv_left")
             SendToConsole("alias +rightfixed \"+iv_right;unstuck\"")
             SendToConsole("alias -rightfixed -iv_right")
-            SendToConsole("bind " .. INTERACT .. " \"+use;useextra\"")
+            SendToConsole("alias +useextra \"+use;useextra\"")
+            SendToConsole("alias -useextra \"-use;useextra_release\"")
+            SendToConsole("bind " .. INTERACT .. " +useextra")
             SendToConsole("bind " .. JUMP .. " jumpfixed")
             SendToConsole("bind " .. NOCLIP .. " toggle_noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
@@ -945,8 +1030,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("combine_grenade_timer 4")
             SendToConsole("sk_auto_reload_time 9999")
             SendToConsole("sv_gravity 500")
-            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy onplayeruncovermouth;ent_fire lefthand Disable;viewmodel_offset_y 0\"")
-            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy onplayercovermouth;ent_fire lefthand Enable;viewmodel_offset_y -20\"")
+            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy OnPlayerUncoverMouth;ent_fire lefthand Disable;novr_uncover_mouth\"")
+            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy OnPlayerCoverMouth;ent_fire lefthand Enable;novr_cover_mouth\"")
             SendToConsole("alias -customattack -iv_attack")
             SendToConsole("alias +customattack \"+iv_attack;usemultitool\"")
             SendToConsole("mouse_disableinput 0")
@@ -980,6 +1065,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
                 local traincontrols = SpawnEntityFromTableSynchronous("func_traincontrols", {["target"]=name})
                 ent = Entities:FindByClassname(ent, "func_tracktrain")
+            end
+            -- Set crosshair
+            SendToConsole("hud_draw_fixed_reticle 1")
+            SendToConsole("crosshair 0")
+            -- More pistol accuracy with laser sight
+            if Entities:GetLocalPlayer():Attribute_GetIntValue("pistol_upgrade_lasersight", 0) == 1 then
+                SendToConsole("pistol_use_new_accuracy 1")
+            else
+                SendToConsole("pistol_use_new_accuracy 0")
             end
 
             if Entities:FindByClassname(nil, "prop_hmd_avatar") then
@@ -1025,16 +1119,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                 end
             end
 
+            -- Hand for covering mouth animation
             ent = Entities:FindByName(nil, "lefthand")
+            local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if not ent then
-                -- Hand for covering mouth animation
-                local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-                local viewmodel_ang = viewmodel:GetAngles()
-                local viewmodel_pos = viewmodel:GetAbsOrigin() + viewmodel_ang:Forward() * 24 - viewmodel_ang:Up() * 4
-                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["disableshadows"]=true, ["origin"]= viewmodel_pos.x .. " " .. viewmodel_pos.y .. " " .. viewmodel_pos.z, ["angles"]= viewmodel_ang.x .. " " .. viewmodel_ang.y - 90 .. " " .. viewmodel_ang.z })
-                DoEntFire("lefthand", "SetParent", "!activator", 0, viewmodel, nil)
-                DoEntFire("lefthand", "Disable", "", 0, nil, nil)
+                ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="lefthand", ["model"]="models/hands/alyx_glove_left.vmdl", ["disableshadows"]=true })
+                ent:SetParent(viewmodel, "")
+                DoEntFireByInstanceHandle(ent, "Disable", "", 0, nil, nil)
             end
+            ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), Entities:GetLocalPlayer():GetAngles(), Vector(4, 0, -3.5)))
+            ent:SetLocalAngles(0, -90, 0)
 
             ent = Entities:GetLocalPlayer()
             if ent then
@@ -1079,24 +1173,21 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end
                     end
 
-                    if cvar_getf("viewmodel_offset_y") ~= -20 then
-                        local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y * 0.0025
-                        local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x * 0.0025
-                        local angle = player:GetAngles()
-                        angle = QAngle(0, -angle.y, 0)
-                        move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
+                    local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y * 0.0025
+                    local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x * 0.0025
+                    local angle = player:GetAngles()
+                    angle = QAngle(0, -angle.y, 0)
+                    move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
 
-                        local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.055
-                        local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.055
+                    local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.07
+                    local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.07
 
-                        look_delta = viewmodel:GetAngles()
+                    look_delta = viewmodel:GetAngles()
 
-                        -- Set weapon sway and view bob if zoom is not active
-                        if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
-                            cvar_setf("viewmodel_offset_x", Lerp(0.06, cvar_getf("viewmodel_offset_x"), view_bob_x + weapon_sway_x))
-                            cvar_setf("viewmodel_offset_y", Lerp(0.06, cvar_getf("viewmodel_offset_y"), view_bob_y + weapon_sway_y))
-                        end
-
+                    -- Set weapon sway and view bob if zoom is not active
+                    if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
+                        cvar_setf("viewmodel_offset_x", Lerp(0.06, cvar_getf("viewmodel_offset_x"), view_bob_x + weapon_sway_x))
+                        cvar_setf("viewmodel_offset_y", Lerp(0.06, cvar_getf("viewmodel_offset_y"), view_bob_y + weapon_sway_y))
                     end
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 30)
@@ -1316,7 +1407,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_fire traincar_border_trigger Disable")
                     end
                 elseif GetMapName() == "a2_pistol" then
-                    SendToConsole("ent_fire *_rebar EnablePickup")
+                    if not loading_save_file then
+                        ent = Entities:FindByName(nil, "trigger_if_player_navs_over_boards")
+                        ent:RedirectOutput("OnTrigger", "ShowBreakBoardsTutorial", ent)
+
+                        SendToConsole("ent_create env_message { targetname text_break_boards message BREAK_BOARDS }")
+
+                        SendToConsole("ent_fire *_rebar EnablePickup")
+                    end
                 elseif GetMapName() == "a2_headcrabs_tunnel" then
                     if not loading_save_file then
                         -- Default Junction Rotations
@@ -1537,6 +1635,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire timer_gun_equipped_b Kill")
                             ent = Entities:FindByName(nil, "vcd_larry_talk_01")
                             ent:RedirectOutput("OnCompletion", "LarrySeesGun", ent)
+
+                            ent = Entities:FindByName(nil, "spawner_larry_hat_sound_target")
+                            ent:RedirectOutput("OnEntitySpawned", "LarrySeesWearable", ent)
 
                             ent = Entities:FindByName(nil, "freezer_toner_outlet_1")
                             ent:Attribute_SetIntValue("used", 1)
@@ -1982,6 +2083,14 @@ if GlobalSys:CommandLineCheck("-novr") then
         end, "MultiToolTutorial", 10)
     end
 
+    function ShowBreakBoardsTutorial()
+        local player = Entities:GetLocalPlayer()
+        if player:Attribute_GetIntValue("break_boards_tutorial_shown", 0) == 0 then
+            SendToConsole("ent_fire text_break_boards ShowMessage")
+            SendToConsole("play sounds/ui/beepclear.vsnd")
+        end
+    end
+
     function ShowHoldInteractTutorial()
         local player = Entities:GetLocalPlayer()
         if player:Attribute_GetIntValue("hold_interact_tutorial_shown", 0) == 0 then
@@ -1992,7 +2101,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function ShowCoverMouthTutorial()
-        if cvar_getf("viewmodel_offset_y") ~= -20 then
+        if Entities:GetLocalPlayer():Attribute_GetIntValue("covering_mouth", 0) == 0 then
             SendToConsole("ent_fire text_covermouth ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
         end
@@ -2060,6 +2169,18 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function LarrySeesGun()
         SendToConsole("ent_fire_output @player_proxy OnWeaponActive")
+    end
+
+    function LarrySeesWearable()
+        local ent = Entities:FindByName(nil, "hat_construction_viewmodel")
+        if ent then
+            SendToConsole("ent_fire_output @player_proxy OutPlayerIsWearingHat " .. ent:GetModelName())
+        end
+
+        ent = Entities:FindByName(nil, "respirator_viewmodel")
+        if ent then
+            SendToConsole("ent_fire_output @player_proxy OutPlayerIsWearingHat " .. ent:GetModelName())
+        end
     end
 
     function EnableJeffElevatorDoorToner()

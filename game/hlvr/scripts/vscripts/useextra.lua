@@ -6,6 +6,8 @@ local name = thisEntity:GetName()
 local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
 
+player:Attribute_SetIntValue("useextra_executed", 1)
+
 if not (vlua.find(name, "elev_anim_door") and (thisEntity:Attribute_GetIntValue("used", 0) == 1 or thisEntity:GetVelocity() ~= Vector(0, 0, 0))) then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:Attribute_SetIntValue("toggle", 1)
@@ -388,6 +390,7 @@ end
 
 if vlua.find(name, "_wooden_board") then
     DoEntFireByInstanceHandle(thisEntity, "Break", "", 0, nil, nil)
+    player:Attribute_SetIntValue("break_boards_tutorial_shown", 1)
 end
 
 if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") then
@@ -1197,9 +1200,20 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
     ent:SetParent(viewmodel, "")
     ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(0, 0, 4)))
     ent:SetLocalAngles(0, 0, 0)
+
+    if thisEntity:GetMaterialGroupHash() < 0 then
+        ent:SetSkin(1)
+        local color = thisEntity:GetRenderColor()
+        ent:SetRenderColor(color.x, color.y, color.z)
+    end
+
     SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_NU 99\"")
 
     thisEntity:Kill()
+end
+
+if class == "item_item_crate" then
+    DoEntFireByInstanceHandle(thisEntity, "SetHealth", "0", 0, nil, nil)
 end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
