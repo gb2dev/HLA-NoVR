@@ -69,6 +69,10 @@ if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_h
     thisEntity:SetThink(function()
         local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 60)
         if vlua.find(ents, thisEntity) then
+            -- prevent wristpocket pickup of holograms
+            if string.match(thisEntity:GetModelName(), "combine_battery_hologram") then
+                return nil
+            end
             -- prevent wristpocket pickup if health station vial is already mounted in charger
             if class == "item_hlvr_health_station_vial" then
                 local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
