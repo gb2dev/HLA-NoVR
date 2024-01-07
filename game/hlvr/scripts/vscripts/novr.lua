@@ -171,13 +171,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:Attribute_SetIntValue("used", 1)
                             DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                             if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
-                                if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
-                                    print("[GameMenu] hacking_puzzle_trace")
-                                else
-                                    DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-                                    ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-                                    ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
-                                end
+                                -- if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+                                --     print("[GameMenu] hacking_puzzle_trace")
+                                -- else
+                                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                                ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                                -- end
                             end
                             return
                         end
@@ -916,6 +916,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
+            SendToConsole("bind " .. INTERACT .. " +use")
             SendToConsole("bind " .. CROUCH .. " \"\"")
             if not loading_save_file then
                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
@@ -937,14 +938,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent = Entities:FindByName(nil, "startup_relay")
             ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
 
-            if not GlobalSys:CommandLineCheck("-condebug") then
-                local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=20, ["x"]=-1, ["y"]=0.6})
-                DoEntFireByInstanceHandle(ent, "SetText", "The game needs to be started from the launcher!", 0, nil, nil)
-                DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
-                ent:SetThink(function()
-                    SendToConsole("host_timescale 0")
-                end, "", 0.02)
-            end
         else
             SendToConsole("binddefaults")
             SendToConsole("alias +forwardfixed \"+iv_forward;unstuck\"")
