@@ -6,6 +6,8 @@ local name = thisEntity:GetName()
 local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
 
+player:Attribute_SetIntValue("useextra_executed", 1)
+
 if not (vlua.find(name, "elev_anim_door") and (thisEntity:Attribute_GetIntValue("used", 0) == 1 or thisEntity:GetVelocity() ~= Vector(0, 0, 0))) then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:Attribute_SetIntValue("toggle", 1)
@@ -274,7 +276,7 @@ if vlua.find(model, "doorhandle") then
 end
 
 if vlua.find(name, "socket") then
-    local ent = Entities:FindByClassname(thisEntity, "prop_physics") 
+    local ent = Entities:FindByClassname(thisEntity, "prop_physics")
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "check_useextra_distance", 0, player, player)
 end
 
@@ -388,6 +390,7 @@ end
 
 if vlua.find(name, "_wooden_board") then
     DoEntFireByInstanceHandle(thisEntity, "Break", "", 0, nil, nil)
+    player:Attribute_SetIntValue("break_boards_tutorial_shown", 1)
 end
 
 if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") then
@@ -844,29 +847,6 @@ if class == "item_combine_tank_locker" then
     end
 end
 
-if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
-	SendToConsole("give weapon_pistol")
-	SendToConsole("ent_remove weapon_bugbait")
-	thisEntity:Kill()
-end
-
-if class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" then
-    SendToConsole("give weapon_shotgun")
-    SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
-    SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
-end
-
-if class == "item_hlvr_weapon_rapidfire" and name ~= "weapon_in_fabricator" then
-    SendToConsole("give weapon_ar2")
-    if map == "a3_hotel_interior_rooftop" then
-        local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
-        for k, v in pairs(ents) do
-            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
-        end
-    end
-    SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
-end
-
 if class == "item_healthcharger_reservoir" then
     local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
@@ -993,8 +973,8 @@ if class == "prop_hlvr_crafting_station_console" then
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             if viewmodel then
                 if string.match(viewmodel:GetModelName(), "v_pistol") then
-                    SendToConsole("ent_fire weapon_pistol kill 0.02")
-                    SendToConsole("impulse 200")
+                    SendToConsole("ent_fire weapon_pistol Kill")
+                    SendToConsole("use weapon_physcannon")
                     Convars:SetStr("weapon_in_crafting_station", "pistol")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -1013,25 +993,36 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_pistol.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent.upgrade1 = function()
                         if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 0 then
-                            SendToConsole("chooseupgrade1")
+                            SendToConsole("novr_crafting_station_choose_upgrade 1")
                         end
                     end
                     ent.upgrade2 = function()
                         if player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0) == 0 then
-                            SendToConsole("chooseupgrade2")
+                            SendToConsole("novr_crafting_station_choose_upgrade 2")
+                        end
+                    end
+                    ent.upgrade3 = function()
+                        if player:Attribute_GetIntValue("pistol_upgrade_hopper", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 3")
+                        end
+                    end
+                    ent.upgrade4 = function()
+                        if player:Attribute_GetIntValue("pistol_upgrade_lasersight", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 4")
                         end
                     end
                     ent.cancelupgrade = function()
-                        SendToConsole("cancelupgrade")
+                        SendToConsole("novr_crafting_station_cancel_upgrade")
                     end
-                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
-                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
-                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput0", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput2", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput3", "upgrade3", ent)
+                    ent:RedirectOutput("CustomOutput4", "upgrade4", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
-                    SendToConsole("ent_fire weapon_shotgun kill 0.02")
-                    --SendToConsole("impulse 200")
-                    SendToConsole("lastinv") -- fix for impulse 200 not hiding the shotgun somehow
+                    SendToConsole("ent_fire weapon_shotgun Kill")
+                    SendToConsole("use weapon_physcannon")
                     Convars:SetStr("weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -1047,30 +1038,37 @@ if class == "prop_hlvr_crafting_station_console" then
                     local origin = ents[2]:GetOrigin() + Vector(0,0,0.04)
                     ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_shotgun.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent.upgrade1 = function()
-                        if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 0 then
-                            SendToConsole("chooseupgrade1")
+                        if player:Attribute_GetIntValue("shotgun_upgrade_lasersight", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 1")
                         end
                     end
                     ent.upgrade2 = function()
+                        if player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 2")
+                        end
+                    end
+                    ent.upgrade3 = function()
+                        if player:Attribute_GetIntValue("shotgun_upgrade_hopper", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 3")
+                        end
+                    end
+                    ent.upgrade4 = function()
                         if player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0) == 0 then
-                            SendToConsole("chooseupgrade2")
+                            SendToConsole("novr_crafting_station_choose_upgrade 4")
                         end
                     end
                     ent.cancelupgrade = function()
-                        SendToConsole("cancelupgrade")
+                        SendToConsole("novr_crafting_station_cancel_upgrade")
                     end
-                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
-                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
-                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput0", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput2", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput3", "upgrade3", ent)
+                    ent:RedirectOutput("CustomOutput4", "upgrade4", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 elseif string.match(viewmodel:GetModelName(), "v_smg1") then
-                    if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                        SendToConsole("ent_fire weapon_ar2 kill 0.02")
-                    else
-                        SendToConsole("ent_fire weapon_smg1 kill 0.02")
-                    end
-                    --SendToConsole("impulse 200")
-                    SendToConsole("lastinv") -- fix for impulse 200 not hiding the smg somehow
+                    SendToConsole("ent_fire weapon_ar2 Kill")
+                    SendToConsole("use weapon_physcannon")
                     Convars:SetStr("weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
@@ -1087,20 +1085,26 @@ if class == "prop_hlvr_crafting_station_console" then
                     ent = SpawnEntityFromTableSynchronous("point_clientui_world_panel", {["panel_dpi"]=60, ["height"]=12, ["width"]=21, ["targetname"]="upgrade_ui", ["dialog_layout_name"]="file://{resources}/layout/custom_game/crafting_station_smg.xml", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent.upgrade1 = function()
                         if player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0) == 0 then
-                            SendToConsole("chooseupgrade1")
+                            SendToConsole("novr_crafting_station_choose_upgrade 1")
                         end
                     end
                     ent.upgrade2 = function()
-                        if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                            SendToConsole("chooseupgrade2")
+                        if player:Attribute_GetIntValue("smg_upgrade_lasersight", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 2")
+                        end
+                    end
+                    ent.upgrade3 = function()
+                        if player:Attribute_GetIntValue("smg_upgrade_casing", 0) == 0 then
+                            SendToConsole("novr_crafting_station_choose_upgrade 3")
                         end
                     end
                     ent.cancelupgrade = function()
-                        SendToConsole("cancelupgrade")
+                        SendToConsole("novr_crafting_station_cancel_upgrade")
                     end
-                    ent:RedirectOutput("CustomOutput0", "upgrade1", ent)
-                    ent:RedirectOutput("CustomOutput1", "upgrade2", ent)
-                    ent:RedirectOutput("CustomOutput2", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput0", "cancelupgrade", ent)
+                    ent:RedirectOutput("CustomOutput1", "upgrade1", ent)
+                    ent:RedirectOutput("CustomOutput2", "upgrade2", ent)
+                    ent:RedirectOutput("CustomOutput3", "upgrade3", ent)
                     SendToConsole("ent_fire upgrade_ui addcssclass HasObject")
                 else
                     return
@@ -1180,9 +1184,68 @@ if class == "prop_reviver_heart" then
     player:SetContextNum("player_picked_up_heart", 1, 10)
 end
 
+if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_construction" then
+    if Entities:FindByName(nil, "hat_construction_viewmodel") then
+        return
+    end
+
+    if player:Attribute_GetIntValue("wearable_tutorial_shown", 0) == 0 then
+        player:Attribute_SetIntValue("wearable_tutorial_shown", 1)
+        SendToConsole("ent_fire text_wearable ShowMessage")
+        SendToConsole("play sounds/ui/beepclear.vsnd")
+    end
+
+    local ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hat_construction_viewmodel", ["model"]="models/props/construction/hat_construction.vmdl", ["disableshadows"]=true, ["solid"]=0})
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    ent:SetParent(viewmodel, "")
+    ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(0, 0, 4)))
+    ent:SetLocalAngles(0, 0, 0)
+
+    if thisEntity:GetMaterialGroupHash() < 0 then
+        ent:SetSkin(1)
+        local color = thisEntity:GetRenderColor()
+        ent:SetRenderColor(color.x, color.y, color.z)
+    end
+
+    SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_NU 99\"")
+
+    thisEntity:Kill()
+end
+
+if class == "item_item_crate" then
+    DoEntFireByInstanceHandle(thisEntity, "SetHealth", "0", 0, nil, nil)
+end
+
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
 
-if vlua.find(class, "item_hlvr_crafting_currency_") then
+-- Weapons
+if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
+	SendToConsole("give weapon_pistol")
+	SendToConsole("ent_remove weapon_bugbait")
+	thisEntity:Kill()
+elseif class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" then
+    item_pickup_params.item = "hlvr_weapon_shotgun"
+    FireGameEvent("item_pickup", item_pickup_params)
+
+    SendToConsole("give weapon_shotgun")
+    SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
+    SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
+
+    player:SetThink(function()
+        SendToConsole("ent_fire 12712_shotgun_zombie_speak CancelSpeech")
+    end, "RemoveRusselReloadingHint", 0.5)
+elseif class == "item_hlvr_weapon_rapidfire" and name ~= "weapon_in_fabricator" then
+    SendToConsole("give weapon_ar2")
+    if map == "a3_hotel_interior_rooftop" then
+        local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
+        for k, v in pairs(ents) do
+            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
+        end
+    end
+    SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
+
+-- Other Items
+elseif vlua.find(class, "item_hlvr_crafting_currency_") then
     if name == "currency_booby_trap" then
         thisEntity:FireOutput("OnPlayerPickup", nil, nil, nil, 0)
     end
@@ -1254,7 +1317,7 @@ elseif class == "item_hlvr_clip_rapidfire" then
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     viewmodel:RemoveEffects(32)
     thisEntity:Kill()
-elseif class == "item_hlvr_grenade_xen" then --and player:Attribute_GetIntValue("grenade", 0) == 0 then
+elseif class == "item_hlvr_grenade_xen" then
     if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) <= 1 then
         player:Attribute_SetIntValue("grenade_tutorial_shown", 2)
         SendToConsole("ent_fire text_grenade ShowMessage")
@@ -1266,14 +1329,14 @@ elseif class == "item_hlvr_grenade_xen" then --and player:Attribute_GetIntValue(
         -- all grenades will go straight into pockets if there is capacity
         WristPockets_PickUpXenGrenade(player, thisEntity)
         FireGameEvent("item_pickup", item_pickup_params)
-        
+
         StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-        
+
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         viewmodel:RemoveEffects(32)
         thisEntity:Kill()
     end
-elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue("grenade", 0) == 0 then
+elseif class == "item_hlvr_grenade_frag" then
     thisEntity:Attribute_SetIntValue("picked_up", 0)
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
@@ -1286,13 +1349,14 @@ elseif class == "item_hlvr_grenade_frag" then --and player:Attribute_GetIntValue
         if ent then
             DoEntFireByInstanceHandle(ent, "SpeakConcept", "speech:open_grenades", 0, nil, nil)
         end
-        
+
         if WristPockets_PlayerHasFreePocketSlot(player) then
 			-- player can store max 2 grenades in pockets
 			-- all grenades will go straight into pockets if there is capacity
 			WristPockets_PickUpGrenade(player, thisEntity)
 			FireGameEvent("item_pickup", item_pickup_params)
-		    
+            SendToConsole("viewmodel_update")
+
             StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
             --SendToConsole("give weapon_frag")
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
@@ -1321,7 +1385,19 @@ elseif class == "item_healthvial" then
     end
 elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_vial" or class == "prop_reviver_heart" then
     if thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 0 then
-        WristPockets_PickUpValuableItem(player, thisEntity)
+        -- prevent wristpocket pickup if health station vial is already mounted in charger
+        if class == "item_hlvr_health_station_vial" then
+            local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
+            if entcharger ~= nil then
+                if not entcharger:GetSequence() == "idle_deployed" and not entcharger:GetSequence() == "idle_retracted" then
+                    WristPockets_PickUpValuableItem(player, thisEntity)
+                end
+            else
+                WristPockets_PickUpValuableItem(player, thisEntity)
+            end
+        else
+            WristPockets_PickUpValuableItem(player, thisEntity)
+        end
     elseif thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 1 then
         thisEntity:Attribute_SetIntValue("no_pick_up", 0)
     end

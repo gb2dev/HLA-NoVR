@@ -6,9 +6,10 @@ require "bindings" -- Moved to bindings file: USE_HEALTHPEN, DROP_ITEM
 -- starts from 1
 local itemsClasses = { "item_healthvial", "item_hlvr_grenade_frag", "item_hlvr_prop_battery", "prop_physics", "item_hlvr_health_station_vial", "prop_reviver_heart", "item_hlvr_grenade_xen" } 
 
---local itemsStrings = { "[z] He", "[x] Gr", "[c] Ba", "[c] It", "[c] Vi", "[c] Rv", "[c] Xe" }
-local itemsStrings = { "$", "^", "*", "<", "'", "|", "~" }
---local itemsStrings = { "f", "l", "h", "j", "g", "i" }
+--local itemsStrings = { "[z] He", "[x] Gr", "[c] Ba", "[c] It", "[c] Vi", "[c] Rv", "[c] Xe" } -- legacy
+local itemsStrings = { "$", "^", "*", "<", "'", "|", "~" } -- font wristpockets
+--local itemsStrings = { "HP", "GR", "BA", "OB", "HV", "RH", "XG" } -- steam deck/linux
+--local itemsStrings = { "f", "l", "h", "j", "g", "i" } -- font alyxhl2
 -- font:
 -- $ - Health Pen
 -- ^ - Grenade
@@ -18,9 +19,10 @@ local itemsStrings = { "$", "^", "*", "<", "'", "|", "~" }
 -- | - Reviver's Heart
 -- ~ - Xen Grenade
 
---local itemsUniqueStrings = { "[c] Vo", "[c] Ca"  }
-local itemsUniqueStrings = { "<", ">"  }
---local itemsUniqueStrings = { "j", "k"  }
+--local itemsUniqueStrings = { "[c] Vo", "[c] Ca"  } -- legacy
+local itemsUniqueStrings = { "<", ">"  } -- font wristpockets
+--local itemsUniqueStrings = { "BO", "KC"  } -- steam deck/linux
+--local itemsUniqueStrings = { "j", "k"  } -- font alyxhl2
 -- < - Bottle
 -- > - Keycard
 
@@ -115,6 +117,7 @@ local function ErasePocketSlot(playerEnt, itemSlot)
 		Storage:SaveString("pocketslots_slot" .. itemSlot .. "_objmodel", "")
 		Storage:SaveBoolean("pocketslots_slot" .. itemSlot .. "_keepacrossmaps", false)
 		Storage:SaveBoolean("pocketslots_slot" .. itemSlot .. "_keepiteminstance", false)
+		Storage:SaveString("pocketslots_slot" .. itemSlot .. "_materialgrouphash", "")
 		print("[WristPockets] Item in slot #" .. itemSlot .. " cannot be carried across maps, removed.")
 	end 
 end
@@ -224,6 +227,10 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 			if itemEnt:GetName() == "" then
 				keepItemInstance = false -- can't do much with no-name entities
 			end
+			-- set new instance for keycards in chapter 4
+			if itemEnt:GetName() == "control_door_2_key_prop" or itemEnt:GetName() == "control_door_1_key_prop" then
+				keepItemInstance = false
+			end
 			if itemModel == "models/props/distillery/bottle_vodka.vmdl" then
 				keepItemInstance = false
 				keepAcrossMaps = true
@@ -247,10 +254,22 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 			-- print("Item name: " .. itemEnt:GetName())
 			-- print("Item model: " .. itemModel)
 			-- print("Item class: " .. itemClass)
+			-- print("Item material group hash: " .. itemEnt:GetMaterialGroupHash())
 
 			playerEnt:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "", itemId)
 			Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objname", itemEnt:GetName())
 			Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objmodel", itemModel)
+
+			-- Store material hash of keycards
+			if itemEnt:GetName() == "control_door_2_key_prop" or itemEnt:GetName() == "control_door_1_key_prop" then
+				local MaterialGroupHash = itemEnt:GetMaterialGroupHash()
+				print(type(MaterialGroupHash))
+				-- SaveString because SaveNumber function will not bring the same hash back!
+				Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_materialgrouphash", tostring(MaterialGroupHash))
+			else
+				Storage:SaveNumber("pocketslots_slot" .. pocketSlotId .. "_materialgrouphash", 0)
+			end
+
 			if keepItemInstance then
 				itemEnt:DisableMotion() -- put valuable original item very far away, solution by FrostEpex
 				itemEnt:SetOrigin(Vector(-15000,-15000,-15000))		
@@ -276,13 +295,14 @@ Convars:RegisterCommand("wristpockets_healthpen", function()
 	local slot2ItemId = player:Attribute_GetIntValue("pocketslots_slot2", 0)
 	if slot1ItemId == 0 and slot2ItemId == 0 then
 		print("[WristPockets] Player don't have any health pens on inventory.")
-	else 
+	else
 		local pocketSlotId = GetPocketSlotToUse(slot1ItemId, slot2ItemId, 1)
 		if pocketSlotId ~= 0 then
 			if player:GetHealth() ~= player:GetMaxHealth() then
 				player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
 				StartSoundEventFromPosition("HealthPen.Stab", player:EyePosition())
 				StartSoundEventFromPosition("HealthPen.Success01", player:EyePosition())
+				StartSoundEventFromPosition("HealthPen.Success02", player:EyePosition())
 				player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
 				print("[WristPockets] Health pen has been used from slot #" .. pocketSlotId .. ".")
 			else
@@ -408,6 +428,11 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 						ent:ApplyAbsVelocityImpulse(-GetPhysVelocity(ent))
 					else
 						ent = SpawnEntityFromTableSynchronous(itemsClasses[itemTypeId], { ["origin"]= traceTable.pos.x .. " " .. traceTable.pos.y .. " " .. traceTable.pos.z, ["angles"]= player_ang, ["targetname"]= Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname"), ["model"]= Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objmodel") })
+						-- special treatment for the materials of keycards in chapter 4
+						if entName == "control_door_2_key_prop" or entName == "control_door_1_key_prop" then
+							local MaterialGroupHash = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_materialgrouphash")
+							ent:SetMaterialGroupHash(tonumber(MaterialGroupHash))
+						end
 					end
 					-- Debug
 					-- local debug_objname = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
@@ -423,6 +448,7 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 					Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objmodel", "")
 					Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", false)
 					Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance", false)
+					Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_materialgrouphash", "")
 					--Storage:SaveVector("pocketslots_slot" .. pocketSlotId .. "_objrendercolor", Vector(0,0,0))
 					ent:Attribute_SetIntValue("no_pick_up", 1)
 					DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player) -- pickup quest item

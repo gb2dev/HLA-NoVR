@@ -1,3 +1,4 @@
+require "wristpockets"
 
 -- Display upgraded weapon viewmodels by withoutaface
 
@@ -45,10 +46,14 @@ function Viewmodels_UpgradeModel()
     local shotgun_grenadelauncher = player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0)
     local shotgun_hopper = player:Attribute_GetIntValue("shotgun_upgrade_hopper", 0)
 
+    local shotgun_playerhasgrenade = WristPockets_PlayerHasGrenade()
+
     -- List of shotgun viewmodels
     local shotgun_search_str = "v_shotgun"
+    local shotgun_viewmodel_burst_grenade_attached = "models/weapons/v_shotgun_burst_grenade_attached.vmdl"
     local shotgun_viewmodel_burst_grenade = "models/weapons/v_shotgun_burst_grenade.vmdl"
     local shotgun_viewmodel_burst = "models/weapons/v_shotgun_burst.vmdl"
+    local shotgun_viewmodel_grenade_attached = "models/weapons/v_shotgun_grenade_attached.vmdl"
     local shotgun_viewmodel_grenade = "models/weapons/v_shotgun_grenade.vmdl"
     local shotgun_viewmodel_hopper = "models/weapons/v_shotgun_hopper.vmdl"
     local shotgun_viewmodel_base = "models/weapons/v_shotgun.vmdl"
@@ -129,11 +134,18 @@ function Viewmodels_UpgradeModel()
             end
             -- burst and grenade
             if shotgun_doubleshot == 1 and shotgun_grenadelauncher == 1 then
-                if string.match(viewmodel_name, shotgun_viewmodel_burst_grenade) then
+                if string.match(viewmodel_name, shotgun_viewmodel_burst_grenade_attached) and shotgun_playerhasgrenade then
+                    return
+                elseif string.match(viewmodel_name, shotgun_viewmodel_burst_grenade) and shotgun_playerhasgrenade == false then
                     return
                 else
-                    viewmodel:SetModel(shotgun_viewmodel_burst_grenade)
-                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_burst_grenade, shotgun_doubleshot, shotgun_grenadelauncher))
+                    if shotgun_playerhasgrenade then
+                        viewmodel:SetModel(shotgun_viewmodel_burst_grenade_attached)
+                        print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_burst_grenade_attached, shotgun_doubleshot, shotgun_grenadelauncher))
+                    else
+                        viewmodel:SetModel(shotgun_viewmodel_burst_grenade)
+                        print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_burst_grenade, shotgun_doubleshot, shotgun_grenadelauncher))
+                    end
                     return
                 end
             -- burst
@@ -147,11 +159,18 @@ function Viewmodels_UpgradeModel()
                 end
             -- grenade
             elseif shotgun_doubleshot == 0 and shotgun_grenadelauncher == 1 then
-                if string.match(viewmodel_name, shotgun_viewmodel_grenade) then
+                if string.match(viewmodel_name, shotgun_viewmodel_grenade_attached) and shotgun_playerhasgrenade then
+                    return
+                elseif string.match(viewmodel_name, shotgun_viewmodel_grenade) and shotgun_playerhasgrenade == false then
                     return
                 else
-                    viewmodel:SetModel(shotgun_viewmodel_grenade)
-                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_grenade, shotgun_doubleshot, shotgun_grenadelauncher))
+                    if shotgun_playerhasgrenade then
+                        viewmodel:SetModel(shotgun_viewmodel_grenade_attached)
+                        print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_grenade_attached, shotgun_doubleshot, shotgun_grenadelauncher))
+                    else
+                        viewmodel:SetModel(shotgun_viewmodel_grenade)
+                        print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_grenade, shotgun_doubleshot, shotgun_grenadelauncher))
+                    end
                     return
                 end
             end
@@ -211,17 +230,3 @@ Convars:RegisterCommand("viewmodel_update" , function()
         end, "ViewmodelUpdate", 0)
     end
 end, "function viewmodel_update", 0)
-
--- Assign upgraded viewmodels
-Convars:RegisterCommand("viewmodel_development_upgrades_toggle" , function()
-    local player = Entities:GetLocalPlayer()
-    if player:Attribute_GetIntValue("smg_upgrade_casing", 0) == 0 then
-        player:Attribute_SetIntValue("smg_upgrade_casing", 1)
-        player:Attribute_SetIntValue("shotgun_upgrade_hopper", 1)
-        player:Attribute_SetIntValue("pistol_upgrade_hopper", 1)
-    else
-        player:Attribute_SetIntValue("smg_upgrade_casing", 0)
-        player:Attribute_SetIntValue("shotgun_upgrade_hopper", 0)
-        player:Attribute_SetIntValue("pistol_upgrade_hopper", 0)
-    end
-end, "function viewmodel_development_upgrades_toggle", 0)
