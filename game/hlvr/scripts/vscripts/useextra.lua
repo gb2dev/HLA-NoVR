@@ -27,14 +27,18 @@ function IsCombineConsoleLocked()
     return true
 end
 
-if map == "a3_distillery" and vlua.find(name, "plug") then
-    if player:Attribute_GetIntValue("plug_lever", 0) == 0 then
-        return
-    elseif name == "11578_2420_181_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 2 then
-        return
-    elseif name == "11578_2420_183_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 3 then
-        return
-    elseif name == "antlion_plug_crank_c" and player:Attribute_GetIntValue("plug_lever", 0) ~= 4 then
+if map == "a3_distillery" then
+    if vlua.find(name, "plug") then
+        if player:Attribute_GetIntValue("plug_lever", 0) == 0 then
+            return
+        elseif name == "11578_2420_181_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 2 then
+            return
+        elseif name == "11578_2420_183_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 3 then
+            return
+        elseif name == "antlion_plug_crank_c" and player:Attribute_GetIntValue("plug_lever", 0) ~= 4 then
+            return
+        end
+    elseif name == "barricade_door" and player:GetOrigin().x > 433 then
         return
     end
 end
@@ -150,6 +154,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         ent:Attribute_SetIntValue("used", 0)
         DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0.1, nil, nil)
+        SendToConsole("ent_fire player_speedmod ModifySpeed 0")
     end
 
     local is_console = class == "prop_animinteractable" and model == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
@@ -222,6 +227,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
 
             if name == "barricade_door" then
                 DoEntFireByInstanceHandle(Entities:FindByName(nil, "barricade_lock_relay"), "Trigger", "", 0, nil, nil)
+                SendToConsole("ent_fire player_speedmod ModifySpeed 1")
             elseif name == "12712_shotgun_wheel" then
                 local bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
                 bar:Kill()
