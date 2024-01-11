@@ -1159,6 +1159,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("snd_sos_start_soundevent Player.FallDamage")
                         SendToConsole("ent_fire !player SetHealth 0")
                         return nil
+                    elseif GetMapName() == "a3_distillery" and Entities:FindByName(nil, "coughtalk_trigger") and player:GetAbsOrigin().y > 0 and player:GetAbsOrigin().z < 500 then
+                        SendToConsole("snd_sos_start_soundevent Player.FallDamage")
+                        SendToConsole("ent_fire !player SetHealth 0")
+                        return nil
                     end
 
                     local barnacle_tounge = Entities:FindByClassnameNearest("npc_barnacle_tongue_tip", player:GetOrigin(), 28)
@@ -1843,7 +1847,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         HUDHearts_StopUpdateLoop()
         WristPockets_StopUpdateLoop()
         SendToConsole("disable_flashlight")
-        SendToConsole("binddefaults")
     end
 
     function GoToMainMenu(a, b)
