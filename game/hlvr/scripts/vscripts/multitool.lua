@@ -56,9 +56,13 @@ elseif map == "a2_headcrabs_tunnel" then
     }
 end
 
-function DrawTonerPath(toner_path)
+function DrawTonerPath(toner_path, powered)
     for i = 3, #toner_path do
-        DebugDrawLine(toner_path[i - 1], toner_path[i], 0, 0, 255, false, -1)
+        if powered then
+            DebugDrawLine(toner_path[i - 1], toner_path[i], 0, 191, 255, false, -1)
+        else
+            DebugDrawLine(toner_path[i - 1], toner_path[i], 255, 165, 0, false, -1)
+        end
     end
 end
 
@@ -109,9 +113,6 @@ function ToggleTonerJunction()
 
     if junction then
         DebugDrawClear()
-        for toner_path_name, toner_path in pairs(toner_paths) do
-            DrawTonerPath(toner_path)
-        end
 
         local angles = thisEntity:GetAngles()
         StartSoundEventFromPosition("Toner.JunctionRotate", player:EyePosition())
@@ -125,6 +126,7 @@ function ToggleTonerJunction()
         local ent = Entities:FindByClassname(nil, "info_hlvr_toner_path")
         while ent do
             ent:FireOutput("OnPowerOff", nil, nil, nil, 0)
+            ent:Attribute_SetIntValue("toner_path_powered", 0)
             ent = Entities:FindByClassname(ent, "info_hlvr_toner_path")
         end
 
@@ -138,6 +140,7 @@ function ToggleTonerJunction()
                 toner_path = next_path
                 if next_path ~= "" then
                     SendToConsole("ent_fire_output " .. next_path .. " OnPowerOn")
+                    Entities:FindByName(nil, next_path):Attribute_SetIntValue("toner_path_powered", 1)
                     if next_path == toner_end_path then
                         StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
                         StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
@@ -165,6 +168,14 @@ function ToggleTonerJunction()
             angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
             DrawTonerJunction(junction, junction[2], angles)
         end
+
+        for toner_path_name, toner_path in pairs(toner_paths) do
+            if toner_path_name == "toner_path_1" then
+                Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
+            end
+
+            DrawTonerPath(toner_path, Entities:FindByName(nil, toner_path_name):Attribute_GetIntValue("toner_path_powered", 0) == 1)
+        end
     end
 end
 
@@ -179,7 +190,11 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             DrawTonerJunction(junction, junction[2], angles)
         end
         for toner_path_name, toner_path in pairs(toner_paths) do
-            DrawTonerPath(toner_path)
+            if toner_path_name == "toner_path_1" then
+                Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
+            end
+
+            DrawTonerPath(toner_path, Entities:FindByName(nil, toner_path_name):Attribute_GetIntValue("toner_path_powered", 0) == 1)
         end
     end
 
