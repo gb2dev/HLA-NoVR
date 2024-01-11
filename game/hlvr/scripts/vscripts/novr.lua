@@ -954,6 +954,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
         else
             SendToConsole("binddefaults")
+            SendToConsole("unbind TAB")
             SendToConsole("bind PAUSE main_menu_exec")
             print("[GameMenu] pause_menu_mode")
             Entities:GetLocalPlayer():SetThink(function()
