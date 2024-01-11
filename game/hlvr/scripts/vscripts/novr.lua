@@ -2083,7 +2083,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         Entities:GetLocalPlayer():SetThink(function()
             SendToConsole("ent_fire text_multitool_use ShowMessage")
             SendToConsole("play sounds/ui/beepclear.vsnd")
-        end, "MultiToolTutorial", 10)
+        end, "MultiToolTutorial", 5)
     end
 
     function ShowBreakBoardsTutorial()
