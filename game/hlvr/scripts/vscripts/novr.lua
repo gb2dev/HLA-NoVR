@@ -122,76 +122,77 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
 
         if viewmodel and string.match(viewmodel:GetModelName(), "v_multitool") then
-            player:SetThink(function()
-                local startVector = player:EyePosition()
-                local traceTable =
-                {
-                    startpos = startVector;
-                    endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(100, 0, 0));
-                    ignore = player;
-                    mask =  33636363
-                }
+            SendToConsole("-iv_attack")
+            SendToConsole("alias -customattack \"alias -customattack -iv_attack\"")
 
-                TraceLine(traceTable)
+            local startVector = player:EyePosition()
+            local traceTable =
+            {
+                startpos = startVector;
+                endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(100, 0, 0));
+                ignore = player;
+                mask =  33636363
+            }
 
-                if traceTable.hit then
-                    local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
-                    if ent then
-                        DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
-                    end
+            TraceLine(traceTable)
 
-                    ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 10)
-                    if ent then
-                        local name = ent:GetName()
-                        local parent = ent:GetMoveParent()
-                        if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and ent:GetGraphParameter("b_PlugDisabled") == false then
-                            -- Combine Console
-                            if parent and vlua.find(parent:GetName(), "Console") then
-                                if GetMapName() == "a2_quarantine_entrance" then
-                                    local rack = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
-                                    while rack do
-                                        rack:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", rack)
-                                        rack = Entities:FindByClassname(rack, "item_hlvr_combine_console_rack")
-                                    end
-                                end
-                                local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", parent:GetCenter(), 20)
-                                for k, v in pairs(ents) do
-                                    DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
-                                end
-                                SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
-                            end
+            if traceTable.hit then
+                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
+                if ent then
+                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
+                end
 
-                            if parent and parent:GetClassname() == "prop_hlvr_crafting_station_console" then
-                                DoEntFireByInstanceHandle(parent, "RunScriptFile", "multitool", 0, nil, nil)
-                            end
-
-                            if parent and parent:GetName() == "254_16189_combine_locker" then
-                                SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-2018 -1828 216", ["angles"]="0 270 0", ["parentname"]="scanner_return_clip_door"})
-                                SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-1868 -1744 216", ["angles"]="0 180 0", ["parentname"]="scanner_return_clip", ["modelscale"]=10})
-                            end
-
-                            ent:Attribute_SetIntValue("used", 1)
-                            DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
-                            if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
-                                if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
-                                    print("[GameMenu] hacking_puzzle_trace")
-                                else
-                                    DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-                                    ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-                                    ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 10)
+                if ent then
+                    local name = ent:GetName()
+                    local parent = ent:GetMoveParent()
+                    if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and ent:GetGraphParameter("b_PlugDisabled") == false then
+                        -- Combine Console
+                        if parent and vlua.find(parent:GetName(), "Console") then
+                            if GetMapName() == "a2_quarantine_entrance" then
+                                local rack = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
+                                while rack do
+                                    rack:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", rack)
+                                    rack = Entities:FindByClassname(rack, "item_hlvr_combine_console_rack")
                                 end
                             end
-                            return
+                            local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", parent:GetCenter(), 20)
+                            for k, v in pairs(ents) do
+                                DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
+                            end
+                            SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
                         end
-                    end
 
-                    local ent = Entities:FindByClassnameNearest("info_hlvr_toner_port", traceTable.pos, 10)
-                    if ent then
-                        DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
+                        if parent and parent:GetClassname() == "prop_hlvr_crafting_station_console" then
+                            DoEntFireByInstanceHandle(parent, "RunScriptFile", "multitool", 0, nil, nil)
+                        end
+
+                        if parent and parent:GetName() == "254_16189_combine_locker" then
+                            SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-2018 -1828 216", ["angles"]="0 270 0", ["parentname"]="scanner_return_clip_door"})
+                            SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-1868 -1744 216", ["angles"]="0 180 0", ["parentname"]="scanner_return_clip", ["modelscale"]=10})
+                        end
+
+                        ent:Attribute_SetIntValue("used", 1)
+                        DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+                        if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
+                            if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+                                print("[GameMenu] hacking_puzzle_trace")
+                            else
+                                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                                ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                            end
+                        end
                         return
                     end
                 end
-            end, "UseMultitool", 0.5)
+
+                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_port", traceTable.pos, 10)
+                if ent then
+                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
+                    return
+                end
+            end
         end
     end, "", 0)
 
