@@ -77,7 +77,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                 else
                     return 0
                 end
-            end, "", 0)
+            end, "Interacting", 0)
             SendToConsole("ent_fire traincar_01_hackplug Alpha 0")
         elseif map == "a3_distillery" and name == "verticaldoor_wheel" then
             count = 0
@@ -93,7 +93,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     SendToConsole("ent_fire @verticaldoor Open")
                     return 0
                 end
-            end, "", 0)
+            end, "Interacting", 0)
         elseif name == "12712_shotgun_wheel" then
             count = 0
             player:SetThink(function()
@@ -104,7 +104,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count / 2)
                     return 0
                 end
-            end, "", 0)
+            end, "Interacting", 0)
         elseif name == "console_selector_interact" then
             local ent = Entities:FindByName(nil, "console_opener_prop_handle_interact")
             ent:Attribute_SetIntValue("used", 0)
@@ -125,7 +125,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
                     return 0
                 end
-            end, "", 0)
+            end, "Interacting", 0)
         elseif not vlua.find(name, "elev_anim_door") and not vlua.find(name, "tractor_beam_console_lever") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
@@ -865,11 +865,9 @@ if class == "prop_dynamic" then
         ent = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
         if ent:GetSequence() == "idle_deployed" and tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
             ent = Entities:FindByClassnameNearest("item_healthcharger", thisEntity:GetOrigin(), 20)
-            ent:FireOutput("OnHealingPlayerStart", nil, nil, nil, 0)
 
-            if player:GetHealth() == player:GetMaxHealth() then
-                StartSoundEvent("HealthStation.Deny", player)
-            else
+            if player:GetHealth() < player:GetMaxHealth() then
+                ent:FireOutput("OnHealingPlayerStart", nil, nil, nil, 0)
                 StartSoundEvent("HealthStation.Start", player)
                 player:SetThink(function()
                     if player:GetVelocity().z == 0 then
@@ -878,27 +876,37 @@ if class == "prop_dynamic" then
                     end
                     return 0
                 end, "StopPlayerOnLand", 0)
-                thisEntity:Attribute_SetIntValue("used", 1)
-                thisEntity:SetThink(function()
-                    if player:GetHealth() < player:GetMaxHealth() then
-                        StartSoundEvent("HealthStation.Loop", player)
-                    end
-                end, "Loop", .7)
-                thisEntity:SetThink(function()
-                    if player:GetHealth() < player:GetMaxHealth() then
+            else
+                StartSoundEvent("HealthStation.Deny", player)
+                return
+            end
+
+            player:SetThink(function()
+                local stop = false
+
+                if player:Attribute_GetIntValue("use_released", 0) == 1 then
+                    stop = true
+                else
+                    if player:GetHealth() >= player:GetMaxHealth() then
+                        stop = true
+                        StartSoundEvent("HealthStation.Complete", player)
+                    else
                         player:SetHealth(player:GetHealth() + 1)
                         return 0.1
-                    else
-                        if map == "a2_quarantine_entrance" then
-                            SendToConsole("ent_fire_output health_station OnHealingPlayerStop")
-                        end
-                        StopSoundEvent("HealthStation.Loop", player)
-                        StartSoundEvent("HealthStation.Complete", player)
-                        SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                        thisEntity:Attribute_SetIntValue("used", 0)
                     end
-                end, "Heal", 0)
-            end
+                end
+
+                if stop then
+                    SendToConsole("ent_fire_output health_station OnHealingPlayerStop")
+                    player:StopThink("HealthChargeSoundLoop")
+                    StopSoundEvent("HealthStation.Loop", player)
+                    SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+                end
+            end, "Interacting", 0)
+
+            player:SetThink(function()
+                StartSoundEvent("HealthStation.Loop", player)
+            end, "HealthChargeSoundLoop", 0.7)
         end
     elseif model == "models/props/alyx_hideout/button_plate.vmdl" then
         SendToConsole("ent_fire 2_8127_elev_button_test_floor_" .. player:Attribute_GetIntValue("next_elevator_floor", 2) .. " Trigger")
