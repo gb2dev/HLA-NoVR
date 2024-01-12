@@ -1139,7 +1139,10 @@ if class == "item_hlvr_combine_console_tank" then
         player:SetThink(function()
             if player:Attribute_GetIntValue("use_released", 0) == 0 then
                 thisEntity:SetAngularVelocity(0,0,0)
-                local x = (look_delta.x - player:EyeAngles().x) * -180
+                local x = (look_delta.x - player:EyeAngles().x) * -50
+                if x < 0 then
+                    x = x * 1.75
+                end
                 thisEntity:ApplyLocalAngularVelocityImpulse(Vector(Clamp(x, -18, 18) , 0, 0))
                 look_delta = player:EyeAngles()
                 return 0
