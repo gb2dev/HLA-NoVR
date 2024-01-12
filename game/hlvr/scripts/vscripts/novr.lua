@@ -338,6 +338,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
 
                     if unstuck_count >= 1 then
+                        player:SetOrigin(unstuck_table[1])
                         unstuck_count = 0
                     else
                         unstuck_count = unstuck_count + 1
