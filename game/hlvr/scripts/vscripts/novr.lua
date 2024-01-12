@@ -1,6 +1,27 @@
 if GlobalSys:CommandLineCheck("-novr") then
     require "storage"
     unstuck_table = {}
+    unstuck_count = 0
+    collidable_props = {
+        "models/props_c17/oildrum001.vmdl",
+        "models/props/plastic_container_1.vmdl",
+        "models/industrial/industrial_board_01.vmdl",
+        "models/industrial/industrial_board_02.vmdl",
+        "models/industrial/industrial_board_03.vmdl",
+        "models/industrial/industrial_board_04.vmdl",
+        "models/industrial/industrial_board_05.vmdl",
+        "models/industrial/industrial_board_06.vmdl",
+        "models/industrial/industrial_board_07.vmdl",
+        "models/industrial/industrial_chemical_barrel_02.vmdl",
+        "models/props/barrel_plastic_1.vmdl",
+        "models/props/barrel_plastic_1_open.vmdl",
+        "models/props_c17/oildrum001_explosive.vmdl",
+        "models/props_junk/wood_crate001a.vmdl",
+        "models/props_junk/wood_crate002a.vmdl",
+        "models/props_junk/wood_crate004.vmdl",
+        "models/props/interior_furniture/interior_shelving_001_b.vmdl",
+        "models/props/interior_chairs/interior_chair_001.vmdl",
+    }
 
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
@@ -285,32 +306,43 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("unstuck", function()
         local player = Entities:GetLocalPlayer()
         if player ~= nil and player:Attribute_GetIntValue("disable_unstuck", 0) == 0 then
-            local startVector = player:GetOrigin()
-            local minVector = player:GetBoundingMins()
-            minVector.x = minVector.x + 0.01
-            minVector.y = minVector.y + 0.01
-            local maxVector = player:GetBoundingMaxs()
-            maxVector.x = maxVector.x - 0.01
-            maxVector.y = maxVector.y - 0.01
-            local traceTable =
-            {
-                startpos = startVector;
-                endpos = startVector;
-                ignore = player;
-                mask =  33636363;
-                min = minVector;
-                max = maxVector
-            }
+            if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
+                local startVector = player:GetOrigin()
+                local minVector = player:GetBoundingMins()
+                minVector.x = minVector.x + 0.01
+                minVector.y = minVector.y + 0.01
+                local maxVector = player:GetBoundingMaxs()
+                maxVector.x = maxVector.x - 0.01
+                maxVector.y = maxVector.y - 0.01
+                local traceTable =
+                {
+                    startpos = startVector;
+                    endpos = startVector;
+                    ignore = player;
+                    mask =  33636363;
+                    min = minVector;
+                    max = maxVector
+                }
 
-            TraceHull(traceTable)
+                TraceHull(traceTable)
 
-            if traceTable.hit then
-                Entities:GetLocalPlayer():SetThink(function()
-                    if player:GetVelocity().x == 0 and player:GetVelocity().y == 0 and unstuck_table[1] then
-                        player:SetOrigin(unstuck_table[1])
-                        SendToConsole("fadein 0.2")
+                if traceTable.hit then
+                    if traceTable.enthit:GetClassname() == "prop_ragdoll" then
+                        return
                     end
-                end, "Unstuck", 0.02)
+
+                    if traceTable.enthit:GetClassname() == "prop_physics" then
+                        if vlua.find(collidable_props, traceTable.enthit:GetModelName()) == nil then
+                            return
+                        end
+                    end
+
+                    if unstuck_count >= 1 then
+                        unstuck_count = 0
+                    else
+                        unstuck_count = unstuck_count + 1
+                    end
+                end
             end
         end
     end, "", 0)
@@ -979,14 +1011,14 @@ if GlobalSys:CommandLineCheck("-novr") then
             Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
             end, "SetGameUIState", 0.1)
-            SendToConsole("alias +forwardfixed \"+iv_forward;unstuck\"")
-            SendToConsole("alias -forwardfixed -iv_forward")
-            SendToConsole("alias +backfixed \"+iv_back;unstuck\"")
-            SendToConsole("alias -backfixed -iv_back")
-            SendToConsole("alias +leftfixed \"+iv_left;unstuck\"")
-            SendToConsole("alias -leftfixed -iv_left")
-            SendToConsole("alias +rightfixed \"+iv_right;unstuck\"")
-            SendToConsole("alias -rightfixed -iv_right")
+            SendToConsole("alias +forwardfixed +iv_forward")
+            SendToConsole("alias -forwardfixed \"-iv_forward;unstuck\"")
+            SendToConsole("alias +backfixed +iv_back")
+            SendToConsole("alias -backfixed \"-iv_back;unstuck\"")
+            SendToConsole("alias +leftfixed +iv_left")
+            SendToConsole("alias -leftfixed \"-iv_left;unstuck\"")
+            SendToConsole("alias +rightfixed +iv_right")
+            SendToConsole("alias -rightfixed \"-iv_right;unstuck\"")
             SendToConsole("alias +useextra \"+use;useextra\"")
             SendToConsole("alias -useextra \"-use;useextra_release\"")
             SendToConsole("bind " .. INTERACT .. " +useextra")
@@ -1190,7 +1222,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     cvar_setf("player_use_radius", min(2200/abs(player:GetAngles().x),60))
 
-                    if move_delta ~= Vector(0, 0, 0) then
+                    if VectorDistanceSq(Vector(0, 0, 0), move_delta) > 100 then
                         table.insert(unstuck_table, player:GetOrigin())
                         if #unstuck_table > 100 then
                             table.remove(unstuck_table, 1)
@@ -2341,26 +2373,6 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function AddCollisionToPhysicsProps(class)
-        local collidable_props = {
-            "models/props_c17/oildrum001.vmdl",
-            "models/props/plastic_container_1.vmdl",
-            "models/industrial/industrial_board_01.vmdl",
-            "models/industrial/industrial_board_02.vmdl",
-            "models/industrial/industrial_board_03.vmdl",
-            "models/industrial/industrial_board_04.vmdl",
-            "models/industrial/industrial_board_05.vmdl",
-            "models/industrial/industrial_board_06.vmdl",
-            "models/industrial/industrial_board_07.vmdl",
-            "models/industrial/industrial_chemical_barrel_02.vmdl",
-            "models/props/barrel_plastic_1.vmdl",
-            "models/props/barrel_plastic_1_open.vmdl",
-            "models/props_c17/oildrum001_explosive.vmdl",
-            "models/props_junk/wood_crate001a.vmdl",
-            "models/props_junk/wood_crate002a.vmdl",
-            "models/props_junk/wood_crate004.vmdl",
-            "models/props/interior_furniture/interior_shelving_001_b.vmdl",
-            "models/props/interior_chairs/interior_chair_001.vmdl",
-        }
         ent = Entities:FindByClassname(nil, class)
         while ent do
             local model = ent:GetModelName()
