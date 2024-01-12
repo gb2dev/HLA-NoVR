@@ -316,7 +316,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, "", 0)
 
     Convars:RegisterCommand("save_manual", function()
-        SendToConsole("save manual;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage")
+        SendToConsole("save manual;snd_sos_start_soundevent Instructor.StartLesson;ent_fire text_quicksave showmessage")
     end, "", 0)
 
     Convars:RegisterCommand("mouse_invert_y", function(name, value)
@@ -992,7 +992,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. INTERACT .. " +useextra")
             SendToConsole("bind " .. JUMP .. " jumpfixed")
             SendToConsole("bind " .. NOCLIP .. " toggle_noclip")
-            SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;play sounds/ui/beepclear.vsnd;ent_fire text_quicksave showmessage\"")
+            SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;snd_sos_start_soundevent Instructor.StartLesson;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"vr_enable_fake_vr 0;vr_enable_fake_vr 0;load quick\"")
             SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
