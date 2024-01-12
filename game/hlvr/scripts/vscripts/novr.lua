@@ -177,6 +177,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
                             if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
                                 print("[GameMenu] hacking_puzzle_trace")
+                                if GetMapName() == "a2_quarantine_entrance" then
+                                    SendToConsole("ent_fire text_hacking_puzzle_trace ShowMessage")
+                                    SendToConsole("play sounds/ui/beepclear.vsnd")
+                                end
                             else
                                 DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
                                 ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
@@ -1408,6 +1412,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_create env_message { targetname text_holdinteract message HOLD_INTERACT }")
                         SendToConsole("ent_create env_message { targetname text_multitool_equip message MULTITOOL_EQUIP }")
                         SendToConsole("ent_create env_message { targetname text_multitool_use message MULTITOOL_USE }")
+                        SendToConsole("ent_create env_message { targetname text_hacking_puzzle_trace message HACKING_PUZZLE_TRACE }")
 
                         SendToConsole("setpos 3215 2456 465")
                         SendToConsole("ent_fire traincar_border_trigger Disable")
