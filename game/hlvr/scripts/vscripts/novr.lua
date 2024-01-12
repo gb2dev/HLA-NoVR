@@ -36,19 +36,25 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     player_hurt_ev = ListenToGameEvent('player_hurt', function(info)
+        local player = Entities:GetLocalPlayer()
+
         -- Hack to stop pausing the game on death
         if info.health == 0 then
             PlayerDied()
-            Entities:GetLocalPlayer():SetThink(function()
+            player:SetThink(function()
                 PlayerDied()
             end, "UnpauseOnDeath1", 0)
-            Entities:GetLocalPlayer():SetThink(function()
+            player:SetThink(function()
                 PlayerDied()
             end, "UnpauseOnDeath2", 0.02)
+        elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 1 then
+            SendToConsole("ent_fire text_syringe ShowMessage")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
+            player:Attribute_SetIntValue("syringe_tutorial_shown", 2)
         end
 
         -- Kill on fall damage
-        if GetPhysVelocity(Entities:GetLocalPlayer()).z < -450 then
+        if GetPhysVelocity(player).z < -450 then
             SendToConsole("ent_fire !player SetHealth 0")
         end
 
