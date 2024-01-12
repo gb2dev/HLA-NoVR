@@ -137,12 +137,12 @@ if GlobalSys:CommandLineCheck("-novr") then
             TraceLine(traceTable)
 
             if traceTable.hit then
-                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
+                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 20)
                 if ent then
                     DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
                 end
 
-                ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 10)
+                ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", traceTable.pos, 20)
                 if ent then
                     local name = ent:GetName()
                     local parent = ent:GetMoveParent()
@@ -205,7 +205,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                 end
 
-                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_port", traceTable.pos, 10)
+                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_port", traceTable.pos, 20)
                 if ent then
                     DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
                     return
