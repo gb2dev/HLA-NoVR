@@ -801,7 +801,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             TraceLine(traceTable)
 
             if traceTable.hit then
-                local ent = Entities:FindByClassnameNearest("func_physical_button", traceTable.pos, 10)
+                local ent = Entities:FindByClassnameNearest("func_physical_button", traceTable.pos, 5)
                 if ent and ent:Attribute_GetIntValue("used", 0) == 0 then
                     ent:FireOutput("OnIn", nil, nil, nil, 0)
                     ent:Attribute_SetIntValue("used", 1)
