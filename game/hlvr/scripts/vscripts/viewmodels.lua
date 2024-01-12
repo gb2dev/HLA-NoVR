@@ -46,6 +46,7 @@ function Viewmodels_UpgradeModel()
     local shotgun_doubleshot = player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0)
     local shotgun_grenadelauncher = player:Attribute_GetIntValue("shotgun_upgrade_grenadelauncher", 0)
     local shotgun_hopper = player:Attribute_GetIntValue("shotgun_upgrade_hopper", 0)
+    local shotgun_lasersight = player:Attribute_GetIntValue("shotgun_upgrade_lasersight", 0)
 
     local shotgun_playerhasgrenade = WristPockets_PlayerHasGrenade()
 
@@ -63,6 +64,7 @@ function Viewmodels_UpgradeModel()
     local smg_aimdownsights = player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0)
     local smg_fasterfirerate = player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0)
     local smg_casing = player:Attribute_GetIntValue("smg_upgrade_casing", 0)
+    local smg_lasersight = player:Attribute_GetIntValue("smg_upgrade_lasersight", 0)
 
     -- List of smg1 viewmodels
     local smg_search_str = "v_smg1"
@@ -79,13 +81,15 @@ function Viewmodels_UpgradeModel()
         local viewmodel_name = viewmodel:GetModelName()
         --print(string.format("found viewmodel %s", viewmodel_name))
 
-        SendToConsole("hud_draw_fixed_reticle 1")
-        SendToConsole("crosshair 0")
+        if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
+            SendToConsole("hud_draw_fixed_reticle 1")
+            SendToConsole("crosshair 0")
+        end
         
         -- Set upgraded pistol viewmodels
         if string.match(viewmodel_name, pistol_search_str) then
             -- laser sight
-            if pistol_lasersight == 1 then
+            if pistol_lasersight == 1 and cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
                 SendToConsole("hud_draw_fixed_reticle 0")
                 SendToConsole("crosshair 1")
             end
@@ -131,6 +135,11 @@ function Viewmodels_UpgradeModel()
 
         -- Set upgraded shotgun viewmodels
         if string.match(viewmodel_name, shotgun_search_str) then
+            -- laser sight
+            if shotgun_lasersight == 1 and cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
+                SendToConsole("hud_draw_fixed_reticle 0")
+                SendToConsole("crosshair 1")
+            end
             -- hopper (TESTING)
             if shotgun_hopper == 1 then
                 if string.match(viewmodel_name, shotgun_viewmodel_hopper) then
@@ -187,6 +196,11 @@ function Viewmodels_UpgradeModel()
 
         -- Set upgraded smg1 viewmodels
         if string.match(viewmodel_name, smg_search_str) then
+            -- laser sight
+            if smg_lasersight == 1 and cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
+                SendToConsole("hud_draw_fixed_reticle 0")
+                SendToConsole("crosshair 1")
+            end
             -- casing (TESTING)
             if smg_casing == 1 then
                 if string.match(viewmodel_name, smg_viewmodel_casing) or string.match(viewmodel_name, smg_viewmodel_casing_ads) then

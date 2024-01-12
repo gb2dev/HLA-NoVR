@@ -598,6 +598,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             cvar_setf("viewmodel_offset_x", -0.005)
                         end, "ZoomActivate", 0.5)
                         SendToConsole("hud_draw_fixed_reticle 0")
+                        SendToConsole("crosshair 0")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
                         SendToConsole("ent_fire ads_zoom_out zoom")
@@ -605,7 +606,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
-                        SendToConsole("hud_draw_fixed_reticle 1")
+                        if player:Attribute_GetIntValue("pistol_upgrade_lasersight", 0) == 0 then
+                            SendToConsole("hud_draw_fixed_reticle 1")
+                        else
+                            SendToConsole("crosshair 1")
+                        end
                         player:SetThink(function()
                             SendToConsole("ent_fire ads_zoom unzoom")
                             SendToConsole("ent_fire ads_zoom_out unzoom")
@@ -623,6 +628,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                             cvar_setf("fov_ads_zoom", FOV_ADS_ZOOM)
                             cvar_setf("viewmodel_offset_x", 0.025)
                         end, "ZoomActivate", 0.5)
+                        SendToConsole("hud_draw_fixed_reticle 0")
+                        SendToConsole("crosshair 0")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
                         SendToConsole("ent_fire ads_zoom_out zoom")
@@ -630,6 +637,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
                         ViewmodelAnimation_ADStoHIP()
+                        if player:Attribute_GetIntValue("smg_upgrade_lasersight", 0) == 0 then
+                            SendToConsole("hud_draw_fixed_reticle 1")
+                        else
+                            SendToConsole("crosshair 1")
+                        end
                         player:SetThink(function()
                             SendToConsole("ent_fire ads_zoom unzoom")
                             SendToConsole("ent_fire ads_zoom_out unzoom")
