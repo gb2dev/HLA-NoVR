@@ -866,7 +866,9 @@ if class == "prop_dynamic" then
         if ent:GetSequence() == "idle_deployed" and tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
             ent = Entities:FindByClassnameNearest("item_healthcharger", thisEntity:GetOrigin(), 20)
 
-            if player:GetHealth() < player:GetMaxHealth() then
+            local charges = 75
+
+            if player:GetHealth() < player:GetMaxHealth() and ent:Attribute_GetIntValue("charges", charges) > 0 then
                 ent:FireOutput("OnHealingPlayerStart", nil, nil, nil, 0)
                 StartSoundEvent("HealthStation.Start", player)
                 player:SetThink(function()
@@ -887,11 +889,17 @@ if class == "prop_dynamic" then
                 if player:Attribute_GetIntValue("use_released", 0) == 1 then
                     stop = true
                 else
-                    if player:GetHealth() >= player:GetMaxHealth() then
+                    if player:GetHealth() >= player:GetMaxHealth() or ent:Attribute_GetIntValue("charges", charges) == 0 then
                         stop = true
                         StartSoundEvent("HealthStation.Complete", player)
                     else
                         player:SetHealth(player:GetHealth() + 1)
+                        ent:Attribute_SetIntValue("charges", ent:Attribute_GetIntValue("charges", charges) - 1)
+
+                        if ent:Attribute_GetIntValue("charges", charges) == 0 then
+                            Entities:FindByClassnameNearest("item_hlvr_health_station_vial", ent:GetOrigin(), 50):SetGraphParameterBool("bDrain", true)
+                        end
+
                         return 0.1
                     end
                 end
