@@ -179,7 +179,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 player:SetThink(function()
                                     if GetMapName() == "a2_quarantine_entrance" then
                                         SendToConsole("ent_fire text_hacking_puzzle_trace ShowMessage")
-                                        SendToConsole("play sounds/ui/beepclear.vsnd")
+                                        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
                                     end
 
                                     ent = Entities:FindByClassname(nil, "prop_hlvr_holo_hacking_sphere_trace")
@@ -223,7 +223,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         if player:Attribute_GetIntValue("noclip_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("noclip_tutorial_shown", 1)
             SendToConsole("ent_fire text_noclip ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end
 
         SendToConsole("noclip")
@@ -1099,7 +1099,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if Entities:FindByClassname(nil, "prop_hmd_avatar") then
                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="VR_SAVE_NOT_SUPPORTED"})
                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-                SendToConsole("play sounds/ui/beepclear.vsnd")
+                SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
             end
 
             if not loading_save_file then
@@ -2049,12 +2049,12 @@ if GlobalSys:CommandLineCheck("-novr") then
     function ShowInteractTutorial()
         local ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="INTERACT"})
         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     function ShowLadderTutorial()
         SendToConsole("ent_fire text_ladder ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     function CheckTutorialPistolEmpty()
@@ -2067,24 +2067,24 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ShowSprintTutorial()
         SendToConsole("ent_fire text_sprint ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     function ShowCrouchTutorial()
         SendToConsole("ent_fire text_crouch ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     function ShowPickUpTutorial()
         SendToConsole("ent_fire text_pick_up ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     function ShowGravityGlovesTutorial()
         local player = Entities:GetLocalPlayer()
         player:SetThink(function()
             SendToConsole("ent_fire text_gg ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
             return 10
         end, "GGTutorial", 0)
     end
@@ -2095,17 +2095,17 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire 13987_hint_mantle_delay Disable")
         SendToConsole("ent_fire 2861_4065_hint_mantle_delay Disable")
         SendToConsole("ent_fire text_crouchjump ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     function ShowMultiToolTutorial()
         SendToConsole("give weapon_physcannon")
         SendToConsole("use weapon_pistol")
         SendToConsole("ent_fire text_multitool_equip ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         Entities:GetLocalPlayer():SetThink(function()
             SendToConsole("ent_fire text_multitool_use ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end, "MultiToolTutorial", 5)
     end
 
@@ -2113,7 +2113,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
         if player:Attribute_GetIntValue("break_boards_tutorial_shown", 0) == 0 then
             SendToConsole("ent_fire text_break_boards ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end
     end
 
@@ -2122,20 +2122,20 @@ if GlobalSys:CommandLineCheck("-novr") then
         if player:Attribute_GetIntValue("hold_interact_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("hold_interact_tutorial_shown", 1)
             SendToConsole("ent_fire text_holdinteract ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end
     end
 
     function ShowCoverMouthTutorial()
         if Entities:GetLocalPlayer():Attribute_GetIntValue("covering_mouth", 0) == 0 then
             SendToConsole("ent_fire text_covermouth ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end
     end
 
     function ShowQuickSaveTutorial()
         SendToConsole("ent_fire text_quicksave_tutorial ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     function OpenHideoutGate()
@@ -2312,7 +2312,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function ShowVortEnergyTutorial()
         SendToConsole("ent_fire text_vortenergy ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     function GiveVortEnergy(a, b)

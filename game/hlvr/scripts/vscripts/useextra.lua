@@ -606,7 +606,7 @@ if map == "a2_headcrabs_tunnel" then
 
         local ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="FLASHLIGHT"})
         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
 
         SendToConsole("inv_flashlight")
     end
@@ -1198,7 +1198,7 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
     if player:Attribute_GetIntValue("wearable_tutorial_shown", 0) == 0 then
         player:Attribute_SetIntValue("wearable_tutorial_shown", 1)
         SendToConsole("ent_fire text_wearable ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     local ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hat_construction_viewmodel", ["model"]="models/props/construction/hat_construction.vmdl", ["disableshadows"]=true, ["solid"]=0})
@@ -1283,7 +1283,7 @@ elseif class == "item_hlvr_clip_energygun" or class == "item_hlvr_clip_generic_p
         SendToConsole("ent_fire_output ammo_insert_listener OnEventFired")
         player:SetThink(function()
             SendToConsole("ent_fire text_shoot ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end, "ShowShootTutorial", 4)
     else
         SendToConsole("hlvr_addresources 10 0 0 0")
@@ -1327,7 +1327,7 @@ elseif class == "item_hlvr_grenade_xen" then
     if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) <= 1 then
         player:Attribute_SetIntValue("grenade_tutorial_shown", 2)
         SendToConsole("ent_fire text_grenade ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     if WristPockets_PlayerHasFreePocketSlot(player) then
@@ -1348,7 +1348,7 @@ elseif class == "item_hlvr_grenade_frag" then
         if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("grenade_tutorial_shown", 1)
             SendToConsole("ent_fire text_grenade ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end
 
         local ent = Entities:FindByName(nil, "player_radio_station")
@@ -1384,7 +1384,7 @@ elseif class == "item_healthvial" then
     elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
         player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         SendToConsole("ent_fire text_syringe ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     else
 		WristPockets_PickUpHealthPen(player, thisEntity)
 		FireGameEvent("item_pickup", item_pickup_params)

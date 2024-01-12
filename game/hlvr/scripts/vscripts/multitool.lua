@@ -302,13 +302,13 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("give weapon_pistol")
                 SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_pistol_upgrade_aimdownsights ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
+                SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
             elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
                 player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
                 SendToConsole("give weapon_pistol")
                 SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
+                SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
             elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_hopper" then
                 player:Attribute_SetIntValue("pistol_upgrade_hopper", 1)
                 SendToConsole("give weapon_pistol")
@@ -333,13 +333,13 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("give weapon_shotgun")
                 SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_shotgun_upgrade_grenadelauncher ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
+                SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
                 player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
                 SendToConsole("give weapon_shotgun")
                 SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
+                SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
             elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_lasersight" then
                 player:Attribute_SetIntValue("shotgun_upgrade_lasersight", 1)
                 SendToConsole("give weapon_shotgun")
@@ -363,7 +363,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 SendToConsole("give weapon_ar2")
                 SendToConsole("viewmodel_update")
                 SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
+                SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
             elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_lasersight" then
                 player:Attribute_SetIntValue("smg_upgrade_lasersight", 1)
                 SendToConsole("give weapon_ar2")

@@ -245,7 +245,7 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 			if playerEnt:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) == 0 then
 				playerEnt:Attribute_SetIntValue("wristpockets_tutorial_shown", 1)
 				SendToConsole("ent_fire text_wristpockets ShowMessage")
-				SendToConsole("play sounds/ui/beepclear.vsnd")
+				SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
 			end
 
 			-- Debug
