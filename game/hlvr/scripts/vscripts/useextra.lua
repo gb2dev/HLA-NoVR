@@ -1283,15 +1283,6 @@ elseif vlua.find(class, "item_hlvr_crafting_currency_") then
     end
     StartSoundEventFromPosition("Inventory.BackpackGrabItemResin", player:EyePosition())
 
-    -- Show resin count
-    player:SetThink(function()
-        local t = {}
-        player:GatherCriteria(t)
-        local ent = Entities:FindByName(nil, "text_resin")
-        DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
-        DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
-    end, "", 0.02)
-
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_energygun" or class == "item_hlvr_clip_generic_pistol" then
     player:Attribute_SetIntValue("pistol_magazine_ammo", 10)
