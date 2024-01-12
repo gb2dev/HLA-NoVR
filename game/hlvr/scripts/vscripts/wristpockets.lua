@@ -413,7 +413,7 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 			TraceLine(traceTable)
 
 			if traceTable.hit then -- TODO: under certain angle you still can drop item into wall
-				StartSoundEventFromPosition("HealthStation.Deny", player:EyePosition())
+				SendToConsole("snd_sos_start_soundevent PlayerTeleport.Fail")
 				print("[WristPockets] Cannot drop item - too close to obstacle.")
 			else
 				if itemTypeId == 3 or itemTypeId == 4 or itemTypeId == 5 or itemTypeId == 6 then

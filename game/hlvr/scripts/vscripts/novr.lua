@@ -453,7 +453,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         SendToConsole("ent_fire text_resin SetText #HLVR_CraftingStation_NotEnoughResin")
         SendToConsole("ent_fire text_resin Display")
-        SendToConsole("play sounds/common/wpn_denyselect.vsnd")
+        SendToConsole("snd_sos_start_soundevent PlayerTeleport.Fail")
         SendToConsole("novr_crafting_station_cancel_upgrade")
     end, "", 0)
 
@@ -478,7 +478,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
         local playerhasxengrenade = WristPockets_PlayerHasXenGrenade()
         if not WristPockets_PlayerHasGrenade() and not playerhasxengrenade then
-            SendToConsole("play sounds/common/wpn_denyselect.vsnd")
+            SendToConsole("snd_sos_start_soundevent PlayerTeleport.Fail")
             return
         end
         local pos = player:EyePosition()
