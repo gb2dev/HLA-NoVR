@@ -29,6 +29,7 @@ function Viewmodels_UpgradeModel()
     local pistol_aimdownsights = player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0)
     local pistol_burstfire = player:Attribute_GetIntValue("pistol_upgrade_burstfire", 0)
     local pistol_hopper = player:Attribute_GetIntValue("pistol_upgrade_hopper", 0)
+    local pistol_lasersight = player:Attribute_GetIntValue("pistol_upgrade_lasersight", 0)
 
     -- List of pistol viewmodels
     local pistol_search_str = "v_pistol"
@@ -77,9 +78,17 @@ function Viewmodels_UpgradeModel()
     if viewmodel then
         local viewmodel_name = viewmodel:GetModelName()
         --print(string.format("found viewmodel %s", viewmodel_name))
+
+        SendToConsole("hud_draw_fixed_reticle 1")
+        SendToConsole("crosshair 0")
         
         -- Set upgraded pistol viewmodels
         if string.match(viewmodel_name, pistol_search_str) then
+            -- laser sight
+            if pistol_lasersight == 1 then
+                SendToConsole("hud_draw_fixed_reticle 0")
+                SendToConsole("crosshair 1")
+            end
             -- hopper (TESTING)
             if pistol_hopper == 1 then
                 if string.match(viewmodel_name, pistol_viewmodel_hopper) or string.match(viewmodel_name, pistol_viewmodel_hopper_ads) then
