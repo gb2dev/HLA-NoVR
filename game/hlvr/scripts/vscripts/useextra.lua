@@ -1405,8 +1405,11 @@ elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_v
         if class == "item_hlvr_health_station_vial" then
             local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
             if entcharger ~= nil then
-                if not entcharger:GetSequence() == "idle_deployed" and not entcharger:GetSequence() == "idle_retracted" then
+                if not entcharger:GetSequence() == "idle_deployed" and not entcharger:GetSequence() == "prepare_inject" and not entcharger:GetSequence() == "idle_retracted" then
                     WristPockets_PickUpValuableItem(player, thisEntity)
+                else
+                    local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
+                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
                 end
             else
                 WristPockets_PickUpValuableItem(player, thisEntity)
