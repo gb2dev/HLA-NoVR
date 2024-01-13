@@ -288,7 +288,7 @@ end
 
 if class == "prop_ragdoll" or class == "prop_ragdoll_attached" then
     for k, v in pairs(thisEntity:GetChildren()) do
-        DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
+        DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, player)
     end
 end
 

@@ -78,6 +78,13 @@ if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_h
         end
     end
 
+    local parent = thisEntity:GetMoveParent()
+    if parent and parent:GetClassname() == "prop_ragdoll" then
+        local pos = thisEntity:GetOrigin()
+        thisEntity:Kill()
+        thisEntity = SpawnEntityFromTableSynchronous(class, {["origin"]="" .. pos.x .. " " .. pos.y .. " " .. pos.z})
+    end
+
     local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
     FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
     player:StopThink("GGTutorial")
