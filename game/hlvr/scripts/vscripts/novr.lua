@@ -220,6 +220,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                                     player:SetThink(function()
                                         player:SetAngles(angles.x, angles.y, angles.z)
                                     end, "HideOrb2", 0.04)
+                                    player:SetThink(function()
+                                        if player:GetVelocity().z == 0 then
+                                            SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+                                            return nil
+                                        end
+                                        return 0
+                                    end, "StopPlayerOnLand", 0)
                                     print("[GameMenu] hacking_puzzle_trace")
                                 end, "HackingPuzzleTrace", 2.5)
                             else
@@ -296,6 +303,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         ent:FireOutput("OnHackFailed", nil, nil, nil, 0)
         ent:FireOutput("OnPuzzleFailed", nil, nil, nil, 0)
         ent:Attribute_SetIntValue("used", 0)
+        SendToConsole("ent_fire player_speedmod ModifySpeed 1")
     end, "", 0)
 
     Convars:RegisterCommand("novr_hacking_puzzle_success", function()
@@ -303,6 +311,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         DoEntFireByInstanceHandle(ent, "EndHack", "", 0, nil, nil)
         ent:FireOutput("OnHackSuccess", nil, nil, nil, 0)
         ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 0)
+        SendToConsole("ent_fire player_speedmod ModifySpeed 1")
     end, "", 0)
 
     Convars:RegisterConvar("chosen_upgrade", "", "", 0)
