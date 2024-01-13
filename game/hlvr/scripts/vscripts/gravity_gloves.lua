@@ -79,10 +79,13 @@ if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_h
     end
 
     local parent = thisEntity:GetMoveParent()
-    if parent and parent:GetClassname() == "prop_ragdoll" then
-        local pos = thisEntity:GetOrigin()
-        thisEntity:Kill()
-        thisEntity = SpawnEntityFromTableSynchronous(class, {["origin"]="" .. pos.x .. " " .. pos.y .. " " .. pos.z})
+    if parent then
+        local parentClass = parent:GetClassname()
+        if parentClass == "prop_ragdoll" or parentClass == "npc_zombie" or parentClass == "npc_combine_s" then
+            local pos = thisEntity:GetOrigin()
+            thisEntity:Kill()
+            thisEntity = SpawnEntityFromTableSynchronous(class, {["origin"]="" .. pos.x .. " " .. pos.y .. " " .. pos.z})
+        end
     end
 
     local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
