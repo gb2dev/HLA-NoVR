@@ -1519,8 +1519,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = Entities:FindByName(nil, "13990_wooden_board")
                         DoEntFireByInstanceHandle(ent, "Break", "", 0, nil, nil)
 
-                        ent = SpawnEntityFromTableSynchronous("prop_physics_override", {["targetname"]="shotgun_pickup_blocker", ["CollisionGroupOverride"]=5, ["renderamt"]=0, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl", ["origin"]="605.122 1397.567 -32.079", ["modelscale"]=2})
-                        ent:SetParent(Entities:FindByName(nil, "12712_hanging_shotgun_zombie"), "hand_r")
+                        ent = SpawnEntityFromTableSynchronous("prop_physics_override", {["targetname"]="shotgun_pickup_blocker", ["parentname"]="12712_intro_shotgun", ["CollisionGroupOverride"]=5, ["renderamt"]=0, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl", ["modelscale"]=2})
+                        ent:SetLocalOrigin(Vector(0, 0, 0))
+                        DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
 
                         Entities:FindByName(nil, "12712_shotgun_wheel"):Attribute_SetIntValue("used", 1)
                         ent = Entities:FindByName(nil, "12712_293_relay_zombies_hitting_wall")
