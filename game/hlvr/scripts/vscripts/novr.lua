@@ -1487,7 +1487,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if not loading_save_file then
                         -- Default Junction Rotations
                         Entities:FindByName(nil, "toner_junction_1"):Attribute_SetIntValue("junction_rotation", 1)
-                        --Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 2)
+                        Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 1)
                         Entities:FindByName(nil, "toner_junction_3"):Attribute_SetIntValue("junction_rotation", 1)
 
                         ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1298 2480 280", ["angles"]="0 22 0", ["modelscale"]=10})
@@ -1611,9 +1611,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent:RedirectOutput("OnCompletion", "ReachForEli", ent)
 
                         if not loading_save_file then
-                            -- TODO: Remove once toner puzzle is implemented
-                            ent = Entities:FindByClassnameNearest("trigger_once", Vector(748, 589, 104), 10)
-                            ent:Kill()
+                            -- Default Junction Rotations
+                            Entities:FindByName(nil, "5325_4704_train_gate_junction_0_0"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "5325_4704_train_gate_junction_0_1"):Attribute_SetIntValue("junction_rotation", 2) -- Should be 3, but you actually accidentally press this the first time
+                            Entities:FindByName(nil, "5325_4704_train_gate_junction_0_2"):Attribute_SetIntValue("junction_rotation", 3)
+                            Entities:FindByName(nil, "5325_4704_train_gate_junction_1_0"):Attribute_SetIntValue("junction_rotation", 2)
+                            Entities:FindByName(nil, "5325_4704_train_gate_junction_1_2"):Attribute_SetIntValue("junction_rotation", 3)
+                            Entities:FindByName(nil, "5325_4704_train_gate_junction_2_1"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "5325_4704_train_gate_junction_2_2"):Attribute_SetIntValue("junction_rotation", 1)
 
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1080 3200 -350", ["angles"]="0 12 0", ["modelscale"]=5, ["targetname"]="elipreventfall"})
                             ent = Entities:FindByName(nil, "eli_rescue_3_relay")
@@ -2496,7 +2501,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function dump(o)
         if type(o) == 'table' then
            local s = '{ '
-           for k,v in pairs(o) do
+           for k, v in pairs(o) do
               if type(k) ~= 'number' then k = '"'..k..'"' end
               s = s .. '['..k..'] = ' .. dump(v) .. ','
            end
