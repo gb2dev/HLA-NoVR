@@ -230,6 +230,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                                     print("[GameMenu] hacking_puzzle_trace")
                                 end, "HackingPuzzleTrace", 2.5)
                             else
+                                local ents = Entities:FindAllByClassnameWithin("baseanimating", ent:GetCenter(), 3)
+                                for i = 1, #ents do
+                                    local ent = ents[i]
+                                    if ent:GetModelName() == "models/props_combine/combine_consoles/vr_combine_interface_01.vmdl" then
+                                        return
+                                    end
+                                end
+
                                 DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
                                 ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
                                 ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
