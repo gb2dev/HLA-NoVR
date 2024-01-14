@@ -1640,6 +1640,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             DoEntFireByInstanceHandle(ent, "SetOpenDirection", "" .. 2, 0, nil, nil)
                         end
                     elseif GetMapName() == "a3_hotel_lobby_basement" then
+                        Entities:FindByName(nil, "power_stake_2_start"):Attribute_SetIntValue("used", 1)
                         if not loading_save_file then
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER5_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)

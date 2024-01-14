@@ -111,6 +111,49 @@ elseif map == "a3_station_street" then
         toner_junction_3 = {1, Vector(1432, -116, -440), "", "toner_path_5", "toner_path_6", ""},
         toner_junction_alarm_1 = {1, Vector(1432, -104, -424), "toner_path_4", "toner_path_alarm_1", "", ""},
     }
+elseif map == "a3_hotel_lobby_basement" then
+    if player:Attribute_GetIntValue("circuit_" .. map .. "_junction_1_completed", 0) == 0 then
+        toner_start_junction = "junction_1"
+        toner_start_junction_input = 0
+        toner_end_path = "toner_path_6"
+
+        toner_paths = {
+            toner_path_1 = {{0}, {"junction_1"}, Vector(919.6, -1457.38, 191.875), Vector(919.6, -1447.5, 191.875), Vector(920.6, -1447.5, 191.875), Vector(920.6, -1447.5, 187.099), Vector(920.6, -1429, 187.099)},
+            toner_path_2 = {{1, 0}, {"junction_1", "junction_2_panel"}, Vector(920.6, -1426, 190.099), Vector(920.6, -1426, 205.375), Vector(920.6, -1437, 205.375), Vector(920.6, -1437, 209.1), Vector(919.7, -1437, 209.1), Vector(919.7, -1437, 212.45), Vector(916.8, -1437, 212.45), Vector(916.8, -1437, 214), Vector(916.8, -1421.3, 214), Vector(918, -1421.3, 214), Vector(918, -1400, 214), Vector(917, -1399.6, 214), Vector(916, -1398.7, 214), Vector(916, -1389.3, 214), Vector(917, -1388.2, 214), Vector(918, -1388.1, 214), Vector(918, -1375, 214), Vector(919, -1374, 214), Vector(929, -1374, 214), Vector(929, -1375.9, 212), Vector(929, -1375.5, 199.5), Vector(957, -1375.5, 199.5), Vector(957, -1387, 199.5), Vector(970, -1387, 199.5)},
+            toner_path_lights_1 = {{3}, {"junction_1"}, Vector(920.6, -1426, 184.099), Vector(920.6, -1426, 180), Vector(920.6, -1420.5, 180), Vector(919.7, -1420.5, 180), Vector(919.7, -1400, 180)},
+            path_2_panel = {{3}, {"junction_2_panel"}, Vector(973, -1387, 196.5), Vector(973, -1387, 185), Vector(964.5, -1387, 185), Vector(964.5, -1387, 183)},
+            path_2_panelexit = {{1, 0}, {"junction_2_panel", "junction_2"}, Vector(973, -1387, 202.5), Vector(973, -1387, 208), Vector(980, -1387, 208), Vector(980, -1387, 187), Vector(983, -1387, 187), Vector(983, -1375, 187), Vector(989.8, -1375, 187), Vector(989.8, -1374.3, 187), Vector(1003.5, -1374.3, 187), Vector(1003.5, -1374.3, 204), Vector(1023.45, -1374.3, 204), Vector(1023.45, -1359, 204)},
+            toner_path_3 = {{1, 1}, {"junction_2", "junction_3"}, Vector(1023.45, -1356, 207), Vector(1023.45, -1356, 213), Vector(1023.45, -1317.26, 213), Vector(1023.45, -1317.26, 192)},
+            toner_path_4 = {{3}, {"junction_2"}, Vector(1023.45, -1356, 201), Vector(1023.45, -1356, 182), Vector(1023.45, -1365, 182), Vector(1023.45, -1365, 162)},
+            toner_path_5 = {{0, 3}, {"junction_3", "toner_junction_4"}, Vector(1023.45, -1320.26, 189), Vector(1023.45, -1325, 189), Vector(1023.45, -1325, 182), Vector(1023.45, -1264.1, 182), Vector(979.875, -1264.1, 182), Vector(979.875, -1264.1, 185)},
+            tp_maint_6 = {{2}, {"junction_3"}, Vector(1023.45, -1314.26, 189), Vector(1023.45, -1299, 189), Vector(1023.45, -1299, 215)},
+            toner_path_6 = {{2}, {"toner_junction_4"}, Vector(976.875, -1264.1, 188), Vector(972.5, -1264.1, 188), Vector(972.5, -1264.1, 175)},
+        }
+        toner_junctions = {
+            junction_1 = {2, Vector(920.6, -1426, 187.099), "toner_path_1", "toner_path_2", "", "toner_path_lights_1"},
+            junction_2_panel = {1, Vector(973, -1387, 199.5), "toner_path_2", "path_2_panelexit", "", "path_2_panel"},
+            junction_2 = {1, Vector(1023.45, -1356, 204), "path_2_panelexit", "toner_path_3", "", "toner_path_4"},
+            junction_3 = {1, Vector(1023.45, -1317.26, 189), "toner_path_5", "toner_path_3", "tp_maint_6", ""},
+            toner_junction_4 = {1, Vector(979.875, -1264.1, 188), "", "", "toner_path_6", "toner_path_5"},
+        }
+    else
+        toner_start_junction = "junction_5"
+        toner_start_junction_input = 3
+        toner_end_path = "toner_path_11"
+    
+        toner_paths = {
+            toner_path_7 = {{3}, {"junction_5"}, Vector(1170.43, -1535, 167.518), Vector(1159, -1535, 167.518), Vector(1159, -1535, 188), Vector(1139.16, -1535, 188), Vector(1139.16, -1535, 204.518)},
+            toner_path_8 = {{0, 2}, {"junction_5", "junction_6"}, Vector(1136.16, -1535, 207.503), Vector(1132, -1535, 207.503), Vector(1132, -1535, 243.515), Vector(1128, -1535, 243.515), Vector(1128, -1528, 243.515), Vector(1120, -1528, 243.515), Vector(1120, -1535, 243.515), Vector(1083.87, -1535, 243.515)},
+            toner_path_9 = {{2}, {"junction_5"}, Vector(1142.16, -1535, 207.503), Vector(1160, -1535, 207.503), Vector(1160, -1535, 220)},
+            toner_path_10 = {{0, 2}, {"junction_6", "junction_7"}, Vector(1077.87, -1535, 243.515), Vector(1040, -1535, 243.515), Vector(1040, -1528, 243.515), Vector(1032, -1528, 243.515), Vector(1032, -1524, 243.515), Vector(1032, -1524, 213), Vector(1032, -1517, 213), Vector(1020, -1517, 213), Vector(1020, -1511.5, 213)},
+            toner_path_11 = {{0}, {"junction_7"}, Vector(1020, -1505.5, 213), Vector(1020, -1490, 213), Vector(1032.1, -1490, 213), Vector(1032.1, -1480, 213), Vector(1036, -1480, 213), Vector(1036, -1476, 213), Vector(1036, -1476, 180)},
+        }
+        toner_junctions = {
+            junction_5 = {2, Vector(1139.16, -1535, 207.503), "toner_path_8", "", "toner_path_9", "toner_path_7"},
+            junction_6 = {0, Vector(1080.87, -1535, 243.515), "toner_path_10", "", "toner_path_8", ""},
+            junction_7 = {0, Vector(1020, -1508.5, 213), "toner_path_11", "", "toner_path_10", ""}
+        }
+    end
 end
 
 function DrawTonerPath(toner_path, powered)
@@ -253,6 +296,14 @@ function PowerTonerPath(junction, junction_name, junction_input)
 
                     player:Attribute_SetIntValue("circuit_" .. map .. "_" .. toner_start_junction .. "_completed", 1)
 
+                    if map == "a3_hotel_lobby_basement" then
+                        if player:Attribute_GetIntValue("circuit_" .. map .. "_junction_1_completed", 0) == 0 then
+                            Entities:FindByName(nil, "power_stake_2_start"):Attribute_SetIntValue("used", 0)
+                        else
+                            player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
+                        end
+                    end
+
                     player:SetThink(function()
                         DebugDrawClear()
                     end, "TonerComplete", 3)
@@ -312,6 +363,10 @@ function ToggleTonerJunction()
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
             end
 
+            if map == "a3_hotel_lobby_basement" and toner_path_name == "toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_junction_1_completed", 0) == 1 then
+                Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
+            end
+
             DrawTonerPath(toner_path, Entities:FindByName(nil, toner_path_name):Attribute_GetIntValue("toner_path_powered", 0) == 1)
         end
     end
@@ -340,18 +395,17 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
             end
 
+            if map == "a3_hotel_lobby_basement" and toner_path_name == "toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_junction_1_completed", 0) == 1 then
+                Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
+            end
+
             DrawTonerPath(toner_path, Entities:FindByName(nil, toner_path_name):Attribute_GetIntValue("toner_path_powered", 0) == 1)
         end
     end
 
     if thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
-        if map == "a3_hotel_lobby_basement" and name == "power_stake_1_start" then
-            SendToConsole("ent_fire_output power_logic_enable_lights OnTrigger")
-            SendToConsole("ent_fire_output toner_path_11 OnPowerOn")
-            player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
-        end
-
         if map == "a3_hotel_street" and name == "power_stake_1_start" then
+            -- TODO: Remove once puzzle implemented
             SendToConsole("ent_fire_output toner_path_11 onpoweron")
         end
 
