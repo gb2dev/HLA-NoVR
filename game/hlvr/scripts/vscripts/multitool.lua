@@ -91,6 +91,26 @@ elseif map == "a2_train_yard" then
         train_gate_junction_2_1 = {1, Vector(733, 563, 88), "train_gate_path_11_to_21", "train_gate_path_20_to_21", "", "train_gate_path_21_to_22"},
         train_gate_junction_2_2 = {0, Vector(733, 563, 68), "train_gate_path_12_to_22", "train_gate_path_21_to_22", "train_gate_path_22_to_end", ""},
     }
+elseif map == "a3_station_street" then
+    toner_start_junction = "toner_junction_1"
+    toner_start_junction_input = 0
+    toner_end_path = "toner_path_6"
+
+    toner_paths = {
+        toner_path_1 = {{0}, {"toner_junction_1"}, Vector(1439.2, -182.292, -433.661), Vector(1439.2, -182.292, -443), Vector(1439.2, -162, -443), Vector(1429.3, -162, -443), Vector(1429.3, -150, -443), Vector(1429.3, -150, -448), Vector(1429.3, -143, -448)},
+        toner_path_2 = {{0, 1}, {"toner_junction_2", "toner_junction_1"}, Vector(1429.3, -140, -445), Vector(1429.3, -140, -424), Vector(1429.3, -125, -424), Vector(1430, -124, -424), Vector(1432, -123.3, -424), Vector(1432, -119, -424)},
+        toner_path_3 = {{3}, {"toner_junction_1"}, Vector(1429.3, -140, -451), Vector(1429.3, -140, -455), Vector(1429.6, -127.5, -455), Vector(1429.6, -127.5, -457), Vector(1429.9, -127.5, -457.5), Vector(1431.9, -127.5, -458.1), Vector(1431.9, -127.5, -470)},
+        toner_path_4 = {{2, 0}, {"toner_junction_2", "toner_junction_alarm_1"}, Vector(1432, -113, -424), Vector(1432, -107, -424)},
+        toner_path_5 = {{3, 1}, {"toner_junction_2", "toner_junction_3"}, Vector(1432, -116, -427), Vector(1432, -116, -437)},
+        toner_path_6 = {{2}, {"toner_junction_3"}, Vector(1432, -113, -440), Vector(1432, -112, -440), Vector(1432, -112, -450)},
+        toner_path_alarm_1 = {{1}, {"toner_junction_alarm_1"}, Vector(1432, -104, -421), Vector(1432, -104, -410)},
+    }
+    toner_junctions = {
+        toner_junction_1 = {1, Vector(1429.3, -140, -448), "toner_path_1", "toner_path_2", "", "toner_path_3"},
+        toner_junction_2 = {2, Vector(1432, -116, -424), "toner_path_2", "", "toner_path_4", "toner_path_5"},
+        toner_junction_3 = {1, Vector(1432, -116, -440), "", "toner_path_5", "toner_path_6", ""},
+        toner_junction_alarm_1 = {1, Vector(1432, -104, -424), "toner_path_4", "toner_path_alarm_1", "", ""},
+    }
 end
 
 function DrawTonerPath(toner_path, powered)
@@ -167,25 +187,25 @@ function PowerTonerPath(junction, junction_name, junction_input)
     local junction_rotation = junction_entity:Attribute_GetIntValue("junction_rotation", 0)
 
     local junction_types = {
-        { -- Type 1: I Junction
+        { -- Type 0: I Junction
             {{2}, { }, {0}, { }}, -- Rotation 0
             {{ }, {3}, { }, {1}}, -- Rotation 1
             {{2}, { }, {0}, { }}, -- Rotation 2
             {{ }, {3}, { }, {1}}, -- Rotation 3
         },
-        { -- Type 2: L Junction
+        { -- Type 1: L Junction
             {{1}, {0}, { }, { }}, -- Rotation 0
             {{ }, {2}, {1}, { }}, -- Rotation 1
             {{ }, { }, {3}, {2}}, -- Rotation 2
             {{3}, { }, { }, {0}}, -- Rotation 3
         },
-        { -- Type 3: T Junction
+        { -- Type 2: T Junction
             {{2, 3}, {    }, {0, 3}, {0, 2}}, -- Rotation 0
             {{1, 3}, {0, 3}, {    }, {0, 1}}, -- Rotation 1
             {{1, 2}, {0, 2}, {0, 1}, {    }}, -- Rotation 2
             {{    }, {2, 3}, {1, 3}, {1, 2}}, -- Rotation 3
         },
-        { -- Type 4: LL Junction
+        { -- Type 3: LL Junction
             {{1}, {0}, {3}, {2}}, -- Rotation 0
             {{3}, {2}, {1}, {0}}, -- Rotation 1
             {{1}, {0}, {3}, {2}}, -- Rotation 2
@@ -197,7 +217,6 @@ function PowerTonerPath(junction, junction_name, junction_input)
     local output_toner_paths = junction_types[junction_type + 1][junction_rotation + 1][junction_input + 1]
 
     for i = 1, #output_toner_paths do
-        print(output_toner_paths[i] + 3)
         local toner_path_powered_name = junction[output_toner_paths[i] + 3]
 
         if toner_path_powered_name ~= "" then
@@ -326,11 +345,6 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
     end
 
     if thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
-        if map == "a3_station_street" and name == "power_stake_1_start" then
-            SendToConsole("ent_fire_output toner_path_alarm_1 OnPowerOn")
-            SendToConsole("ent_fire toner_path_6_relay_debug Trigger")
-        end
-
         if map == "a3_hotel_lobby_basement" and name == "power_stake_1_start" then
             SendToConsole("ent_fire_output power_logic_enable_lights OnTrigger")
             SendToConsole("ent_fire_output toner_path_11 OnPowerOn")
