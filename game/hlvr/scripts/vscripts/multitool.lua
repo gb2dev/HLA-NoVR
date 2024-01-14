@@ -48,7 +48,7 @@ elseif map == "a2_headcrabs_tunnel" then
         toner_path_1 = {{0}, {"toner_junction_1"}, Vector(-440.082, -591.641, 10.1066), Vector(-453.538, -583.872, 10.1066)},
         toner_path_2 = {{3}, {"toner_junction_1"}, Vector(-456.077, -582.406, 7.1066), Vector(-456.077, -582.406, 1.25), Vector(-492.011, -561.866, 1.25), Vector(-508.747, -590.854, 1.25)},
         toner_path_3 = {{1, 1}, {"toner_junction_1", "toner_junction_2"}, Vector(-456.077, -582.406, 13.1066), Vector(-456.077, -582.406, 20.25), Vector(-489.012, -563.389, 20.25), Vector(-507.848, -589.466, 20.25), Vector(-563.691, -557.735, 20.25), Vector(-563.471, -557.356, 3.5)},
-        toner_path_5 = {{2}, {"toner_junction_2"}, Vector(-566.054, -555.864, 0.5), Vector(-591.523, -541.157, 0.5), Vector(-583.348, -527.429, 0.5), Vector(-612.043, -511.988, 3.5)},
+        toner_path_5 = {{2}, {"toner_junction_2"}, Vector(-566.054, -555.864, 0.5), Vector(-591.523, -541.157, 0.5), Vector(-583.348, -527.429, 0.5), Vector(-612.043, -511.988, 0.5)},
         toner_path_6 = {{0}, {"toner_junction_2"}, Vector(-561.36, -558.574, 0.5), Vector(-551.359, -564.352, 0.5), Vector(-518.847, -584.56, 0.5)},
         toner_path_8 = {{}, {}, Vector(), Vector()},
         toner_path_10 = {{}, {}, Vector(), Vector()},
@@ -56,7 +56,7 @@ elseif map == "a2_headcrabs_tunnel" then
 
     toner_junctions = {
         toner_junction_1 = {3, Vector(-456.077, -582.406, 10.1066), "toner_path_1", "toner_path_3", "", "toner_path_2"},
-        toner_junction_2 = {3, Vector(-563.471, -557.356, 0.5), "toner_path_3", "toner_path_3", "toner_path_10", ""},
+        toner_junction_2 = {3, Vector(-563.471, -557.356, 0.5), "toner_path_6", "toner_path_3", "toner_path_5", ""},
     }
 elseif map == "a2_train_yard" then
     toner_start_junction = "train_gate_junction_0_1"

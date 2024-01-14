@@ -156,7 +156,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             local traceTable =
             {
                 startpos = startVector;
-                endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(100, 0, 0));
+                endpos = startVector + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(65, 0, 0));
                 ignore = player;
                 mask =  33636363
             }
