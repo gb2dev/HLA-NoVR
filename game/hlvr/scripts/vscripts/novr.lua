@@ -164,7 +164,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             TraceLine(traceTable)
 
             if traceTable.hit then
-                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 20)
+                local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
                 if ent then
                     DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
                 end
@@ -1659,6 +1659,12 @@ if GlobalSys:CommandLineCheck("-novr") then
                         DoEntFireByInstanceHandle(ent, "SetOpenDirection", "1", 0, nil, nil)
                     elseif GetMapName() == "a3_hotel_street" then
                         if not loading_save_file then
+                            -- Default Junction Rotations
+                            Entities:FindByName(nil, "junction_1"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "junction_4"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "junction_5"):Attribute_SetIntValue("junction_rotation", 3)
+                            Entities:FindByName(nil, "junction_7"):Attribute_SetIntValue("junction_rotation", 2)
+
                             Entities:FindByName(nil, "elev_anim_door"):Attribute_SetIntValue("toggle", 1)
 
                             ent = Entities:FindByName(nil, "elev_anim_door")

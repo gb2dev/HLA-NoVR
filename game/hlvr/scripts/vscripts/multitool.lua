@@ -4,12 +4,6 @@ local class = thisEntity:GetClassname()
 local model = thisEntity:GetModelName()
 local player = Entities:GetLocalPlayer()
 
-if thisEntity:Attribute_GetIntValue("junction_rotation", 0) == 3 then
-    thisEntity:Attribute_SetIntValue("junction_rotation", 0)
-else
-    thisEntity:Attribute_SetIntValue("junction_rotation", thisEntity:Attribute_GetIntValue("junction_rotation", 0) + 1)
-end
-
 -- First Junction in the Puzzle
 local toner_start_junction
 -- First Junction input number
@@ -18,7 +12,7 @@ local toner_start_junction_input
 local toner_end_path
 -- example_toner_path = {{start_junction_input_number [leave out for first path], end_junction_input_number [leave out for dead end/last path]}, {start_junction_name [leave out for first path], end_junction_name [leave out for dead end/last path]}, absolute_start_position, absolute_end_position},
 local toner_paths
--- example_toner_junction = {type [0 = I Junction, 1 = L Junction, 2 = T Junction, 3 = LL Junction], absolute_junction_position, toner_path_for_input_0, toner_path_for_input_1, toner_path_for_input_2, toner_path_for_input_3}
+-- example_toner_junction = {type [0 = I Junction, 1 = L Junction, 2 = T Junction, 3 = LL Junction, 4 = Static T Junction], absolute_junction_position, toner_path_for_input_0, toner_path_for_input_1, toner_path_for_input_2, toner_path_for_input_3}
 local toner_junctions
 
 if map == "a2_quarantine_entrance" then
@@ -154,6 +148,32 @@ elseif map == "a3_hotel_lobby_basement" then
             junction_7 = {0, Vector(1020, -1508.5, 213), "toner_path_11", "", "toner_path_10", ""}
         }
     end
+elseif map == "a3_hotel_street" then
+    toner_start_junction = "junction_1"
+    toner_start_junction_input = 0
+    toner_end_path = "toner_path_11"
+
+    toner_paths = {
+        toner_path_7 = {{0}, {"junction_1"}, Vector(1076, 162.3, 116.829), Vector(1076, 162.3, 130), Vector(1089, 162.3, 130)},
+        toner_path_9 = {{1, 0}, {"junction_1", "junction_2"}, Vector(1092, 162.3, 133), Vector(1092, 162.3, 139), Vector(1103, 162.3, 139), Vector(1103, 133.1, 139), Vector(1103, 133.1, 125), Vector(1107, 133.1, 125)},
+        toner_path_5 = {{3, 2}, {"junction_1", "junction_6"}, Vector(1092, 162.3, 127), Vector(1092, 162.3, 120), Vector(1103, 162.3, 120), Vector(1103, 146.5, 120), Vector(1103, 146.5, 114), Vector(1121, 146.5, 114)},
+        toner_path_2 = {{1, 3}, {"junction_2", "junction_4"}, Vector(1110, 133.1, 128), Vector(1110, 133.1, 139)},
+        toner_path_1 = {{2, 0}, {"junction_4", "junction_5"}, Vector(1113, 133.1, 142), Vector(1116.9, 133.1, 142), Vector(1116.9, 130.9, 142), Vector(1123, 130.9, 142)},
+        toner_path_4 = {{3, 1}, {"junction_5", "junction_3"}, Vector(1126, 130.9, 139), Vector(1126, 130.9, 131)},
+        toner_path_10 = {{1, 0}, {"junction_5", "junction_7"}, Vector(1126, 130.9, 145), Vector(1126, 130.9, 152), Vector(1129.9, 130.9, 152), Vector(1129.9, 138, 152), Vector(1123.3, 138, 152), Vector(1123.3, 154.2, 152), Vector(1129.1, 154.2, 152), Vector(1129.1, 162.3, 152), Vector(1138, 162.3, 152)},
+        toner_path_12 = {{1}, {"junction_6"}, Vector(1124, 149.5, 114), Vector(1124, 152.75, 114), Vector(1129.9, 152.75, 114), Vector(1129.9, 152.75, 126), Vector(1123.5, 152.75, 126), Vector(1123.5, 152.75, 135.4), Vector(1124.9, 152.75, 135.4), Vector(1124.9, 152.75, 142)},
+        toner_path_13 = {{3}, {"junction_6"}, Vector(1124, 143.5, 114), Vector(1124, 138.25, 114), Vector(1111.5, 138.25, 114), Vector(1111.5, 143.25, 114), Vector(1103, 143.25, 114), Vector(1103, 143.25, 130.8), Vector(1107.1, 143.25, 130.8), Vector(1107.1, 143.25, 134)},
+        toner_path_11 = {{3}, {"junction_7"}, Vector(1141, 162.3, 149), Vector(1141, 162.3, 119)},
+    }
+    toner_junctions = {
+        junction_1 = {4, Vector(1092, 162.3, 130), "toner_path_7", "toner_path_9", "", "toner_path_5"},
+        junction_2 = {2, Vector(1110, 133.1, 125), "toner_path_9", "toner_path_2", "", ""},
+        junction_3 = {0, Vector(1126, 130.9, 128), "", "toner_path_4", "", ""},
+        junction_4 = {2, Vector(1110, 133.1, 142), "", "", "toner_path_1", "toner_path_2"},
+        junction_5 = {2, Vector(1126, 130.9, 142), "toner_path_1", "toner_path_10", "", "toner_path_4"},
+        junction_6 = {3, Vector(1124, 146.5, 114), "", "toner_path_12", "toner_path_5", "toner_path_13"},
+        junction_7 = {1, Vector(1141, 162.3, 152), "toner_path_10", "", "", "toner_path_11"}
+    }
 end
 
 function DrawTonerPath(toner_path, powered)
@@ -213,6 +233,14 @@ function DrawTonerJunction(junction, center, angles)
         min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
         max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
         DebugDrawLine(center + min, center + max, 0, 255, 0, false, -1)
+    elseif junction_type == 4 then
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,3,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 255, false, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-3))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 255, false, -1)
     end
 end
 
@@ -257,6 +285,9 @@ function PowerTonerPath(junction, junction_name, junction_input)
     }
 
     local junction_type = junction[1]
+    if junction_type == 4 then
+        junction_type = 2
+    end
     local output_toner_paths = junction_types[junction_type + 1][junction_rotation + 1][junction_input + 1]
 
     for i = 1, #output_toner_paths do
@@ -323,6 +354,17 @@ function ToggleTonerJunction()
     local junction = toner_junctions[junction_name]
 
     if junction then
+        local junction_type = junction[1]
+        if junction_type == 4 then
+            return
+        end
+
+        if thisEntity:Attribute_GetIntValue("junction_rotation", 0) == 3 then
+            thisEntity:Attribute_SetIntValue("junction_rotation", 0)
+        else
+            thisEntity:Attribute_SetIntValue("junction_rotation", thisEntity:Attribute_GetIntValue("junction_rotation", 0) + 1)
+        end
+
         DebugDrawClear()
 
         local angles = thisEntity:GetAngles()
@@ -367,6 +409,10 @@ function ToggleTonerJunction()
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
             end
 
+            if map == "a3_hotel_street" and toner_path_name == "toner_path_7" then
+                Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
+            end
+
             DrawTonerPath(toner_path, Entities:FindByName(nil, toner_path_name):Attribute_GetIntValue("toner_path_powered", 0) == 1)
         end
     end
@@ -386,6 +432,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
             DrawTonerJunction(junction, junction[2], angles)
         end
+
         for toner_path_name, toner_path in pairs(toner_paths) do
             if map == "a2_train_yard" then
                 toner_path_name = "5325_4704_" .. toner_path_name
@@ -393,10 +440,25 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
 
             if toner_path_name == "toner_path_1" or toner_path_name == "5325_4704_train_gate_path_start" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
+                SendToConsole("ent_fire_output " .. toner_path_name .. " OnPowerOn")
             end
 
             if map == "a3_hotel_lobby_basement" and toner_path_name == "toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_junction_1_completed", 0) == 1 then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
+                SendToConsole("ent_fire_output " .. toner_path_name .. " OnPowerOn")
+            end
+
+            if map == "a3_hotel_street" and toner_path_name == "toner_path_7" then
+                Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
+                SendToConsole("ent_fire_output " .. toner_path_name .. " OnPowerOn")
+            end
+        end
+
+        PowerTonerPath(toner_junctions[toner_start_junction], toner_start_junction, toner_start_junction_input)
+
+        for toner_path_name, toner_path in pairs(toner_paths) do
+            if map == "a2_train_yard" then
+                toner_path_name = "5325_4704_" .. toner_path_name
             end
 
             DrawTonerPath(toner_path, Entities:FindByName(nil, toner_path_name):Attribute_GetIntValue("toner_path_powered", 0) == 1)
@@ -404,11 +466,6 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
     end
 
     if thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
-        if map == "a3_hotel_street" and name == "power_stake_1_start" then
-            -- TODO: Remove once puzzle implemented
-            SendToConsole("ent_fire_output toner_path_11 onpoweron")
-        end
-
         if map == "a3_c17_processing_plant" and name == "shack_path_6_port_1" then
             DoEntFireByInstanceHandle(thisEntity, "Disable", "", 0, nil, nil)
             -- TODO: Remove once puzzle implemented
