@@ -401,7 +401,7 @@ function ToggleTonerJunction()
                 toner_path_name = "5325_4704_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" or toner_path_name == "5325_4704_train_gate_path_start" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "5325_4704_train_gate_path_start" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
             end
 
@@ -438,7 +438,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
                 toner_path_name = "5325_4704_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" or toner_path_name == "5325_4704_train_gate_path_start" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "5325_4704_train_gate_path_start" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
                 SendToConsole("ent_fire_output " .. toner_path_name .. " OnPowerOn")
             end
