@@ -1710,6 +1710,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_fire item_hlvr_weapon_tripmine OnHackSuccessAnimationComplete")
 
                         if not loading_save_file then
+                            -- Default Junction Rotations
+                            --Entities:FindByName(nil, "shack_path_6_junction_2"):Attribute_SetIntValue("junction_rotation", 2)
+
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/construction/construction_yard_lift.vmdl", ["origin"]="-1984 -2456 154", ["angles"]="0 270 0", ["parentname"]="pallet_crane_platform"})
 
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER6_TITLE"})

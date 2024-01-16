@@ -175,6 +175,43 @@ elseif map == "a3_hotel_street" then
         junction_7 = {1, Vector(1141, 162.3, 152), "toner_path_10", "", "", "toner_path_11"}
     }
 elseif map == "a3_c17_processing_plant" then
+    if player:Attribute_GetIntValue("circuit_" .. map .. "_shack_path_6_junction_1_completed", 0) == 0 then
+        toner_start_junction = "shack_path_6_junction_1"
+        toner_start_junction_input = 2
+        toner_end_path = "shack_path_11"
+
+        toner_paths = {
+            shack_path_6 = {{2}, {"shack_path_6_junction_1"}, Vector(-1941.8, -1905, 255), Vector(-1941.8, -1905, 271), Vector(-1941.8, -1916.66, 271)},
+            shack_path_7 = {{3, 1}, {"shack_path_6_junction_1", "shack_path_6_junction_2"}, Vector(-1941.8, -1919.66, 268), Vector(-1941.8, -1919.66, 255.5), Vector(-1941.8, -1932.2, 255.5), Vector(-1943.5, -1932.2, 255.5), Vector(-1943.5, -1943.5, 255.5), Vector(-1943.5, -1943.5, 311.5), Vector(-1952.5, -1943.5, 311.5), Vector(-1952.5, -1881, 311.5), Vector(-1941.8, -1881, 311.5), Vector(-1941.8, -1881, 283)},
+            shack_path_8 = {{1}, {"shack_path_6_junction_1"}, Vector(-1941.8, -1919.66, 274), Vector(-1941.8, -1919.66, 290.25), Vector(-1941.8, -1892.5, 290.25), Vector(-1941.8, -1892.5, 264), Vector(-1941.8, -1887.5, 264), Vector(-1941.8, -1887.5, 250)},
+            shack_path_9 = {{2}, {"shack_path_6_junction_2"}, Vector(-1941.8, -1878, 280), Vector(-1941.8, -1860, 280)},
+            shack_path_10 = {{0, 0}, {"shack_path_6_junction_2", "shack_path_11_junction_1"}, Vector(-1941.8, -1884, 280), Vector(-1941.8, -1889, 280), Vector(-1941.8, -1889, 269), Vector(-1941.8, -1884, 269)},
+            shack_path_11 = {{2}, {"shack_path_11_junction_1"}, Vector(-1941.8, -1878, 269), Vector(-1941.8, -1875.5, 269), Vector(-1942.5, -1875.5, 269), Vector(-1942.5, -1870.5, 269), Vector(-1942.5, -1870.5, 258.8)},
+        }
+        toner_junctions = {
+            shack_path_6_junction_1 = {2, Vector(-1941.8, -1919.66, 271), "", "shack_path_8", "shack_path_6", "shack_path_7"},
+            shack_path_6_junction_2 = {1, Vector(-1941.8, -1881, 280), "shack_path_10", "shack_path_7", "shack_path_9", ""},
+            shack_path_11_junction_1 = {0, Vector(-1941.8, -1881, 269), "shack_path_10", "", "shack_path_11", ""},
+        }
+    else
+        toner_start_junction = "shack_path_1_junction_1"
+        toner_start_junction_input = 1
+        toner_end_path = "shack_path_5"
+
+        toner_paths = {
+            shack_path_1 = {{1}, {"shack_path_1_junction_1"}, Vector(-2039.9, -2018.31, 231), Vector(-2039.9, -2018.31, 247), Vector(-2039.9, -1984.1, 247), Vector(-2024, -1984.1, 247), Vector(-2024, -1987.4, 247), Vector(-2022, -1987.4, 247), Vector(-2022, -1974, 247), Vector(-2022, -1974, 263.9), Vector(-2001.16, -1974, 263.9)},
+            shack_path_2 = {{3, 1}, {"shack_path_1_junction_1", "shack_path_2_junction_1"}, Vector(-1995.16, -1974, 263.9), Vector(-1978, -1974, 263.9), Vector(-1978, -1974, 231.5), Vector(-1978, -1987.4, 231.5), Vector(-1957.9, -1987.4, 231.5), Vector(-1957.9, -1964.1, 231.5), Vector(-1957.9, -1964.1, 261.9), Vector(-1957.9, -1975, 261.9), Vector(-1957.9, -1975, 263.9), Vector(-1957.9, -1975, 263.9), Vector(-1927, -1975, 263.9), Vector(-1914, -1975, 242), Vector(-1914, -1975, 239.08)},
+            shack_path_3 = {{3, 1}, {"shack_path_2_junction_1", "shack_path_3_junction_1"}, Vector(-1914, -1975, 233.08), Vector(-1914, -1975, 229), Vector(-1926.5, -1975, 229), Vector(-1926.5, -1987.4, 229), Vector(-1926.5, -1987.4, 220), Vector(-1896.1, -1987.4, 220), Vector(-1896.1, -1997, 220), Vector(-1896.1, -1997, 232), Vector(-1896.1, -2036, 232), Vector(-1896.1, -2036, 256.5), Vector(-1896.1, -2060.52, 256.5), Vector(-1896.1, -2060.52, 251), Vector(-1901.2, -2060.52, 251), Vector(-1901.2, -2060.52, 245.5)},
+            shack_path_4 = {{0, 1}, {"shack_path_3_junction_1", "shack_path_4_junction_1"}, Vector(-1901.2, -2063.52, 242.5), Vector(-1896.1, -2063.52, 242.5), Vector(-1896.1, -2089, 242.5), Vector(-1896.1, -2089, 253), Vector(-1896.1, -2104.14, 253), Vector(-1896.1, -2104.14, 244.365)},
+            shack_path_5 = {{3}, {"shack_path_4_junction_1"}, Vector(-1896.5, -2104.14, 238.365), Vector(-1896.5, -2104.14, 235)},
+        }
+        toner_junctions = {
+            shack_path_1_junction_1 = {0, Vector(-1998.16, -1974, 263.9), "", "shack_path_1", "", "shack_path_2"},
+            shack_path_2_junction_1 = {0, Vector(-1914, -1975, 236.08), "", "shack_path_2", "", "shack_path_3"},
+            shack_path_3_junction_1 = {1, Vector(-1901.2, -2060.52, 242.5), "shack_path_4", "shack_path_3", "", ""},
+            shack_path_4_junction_1 = {0, Vector(-1896.5, -2104.14, 241.365), "", "shack_path_4", "", "shack_path_5"},
+        }
+    end
 elseif map == "a3_distillery" then
     if player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 0 then
         toner_start_junction = "freezer_toner_junction_1"
@@ -437,7 +474,7 @@ function ToggleTonerJunction()
                 toner_path_name = "5325_4704_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or (toner_path_name == "freezer_toner_path_1") or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or (toner_path_name == "freezer_toner_path_1") or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
             end
 
@@ -479,7 +516,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
                 toner_path_name = "5325_4704_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "freezer_toner_path_1" or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "freezer_toner_path_1" or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
                 SendToConsole("ent_fire_output " .. toner_path_name .. " OnPowerOn")
             end
@@ -507,12 +544,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
     end
 
     if thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
-        if map == "a3_c17_processing_plant" and name == "shack_path_6_port_1" then
-            DoEntFireByInstanceHandle(thisEntity, "Disable", "", 0, nil, nil)
-            -- TODO: Remove once puzzle implemented
-            SendToConsole("ent_fire_output shack_path_5 OnPowerOn")
-        end
-
+        -- TODO: REMOVE THESE WHEN ALL TONER PUZZLES ARE IMPLEMENTED
         if map == "a4_c17_zoo" and name == "589_test_outlet" then
             SendToConsole("ent_fire_output 589_path_unlock_door OnPowerOn")
             SendToConsole("ent_fire_output 589_path_11 OnPowerOn")
