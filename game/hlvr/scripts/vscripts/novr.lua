@@ -1835,6 +1835,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                             end
 
                             if not loading_save_file then
+                                -- Default Junction Rotations
+                                Entities:FindByName(nil, "1489_4074_junction_demux_1_1"):Attribute_SetIntValue("junction_rotation", 1)
+                                Entities:FindByName(nil, "1489_4074_junction_demux_2_1"):Attribute_SetIntValue("junction_rotation", 1)
+                                Entities:FindByName(nil, "1489_4074_junction_demux_2_2"):Attribute_SetIntValue("junction_rotation", 1)
+
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER9_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
