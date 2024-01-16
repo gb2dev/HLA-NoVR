@@ -1711,7 +1711,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         if not loading_save_file then
                             -- Default Junction Rotations
-                            --Entities:FindByName(nil, "shack_path_6_junction_2"):Attribute_SetIntValue("junction_rotation", 2)
+                            Entities:FindByName(nil, "shack_path_3_junction_1"):Attribute_SetIntValue("junction_rotation", 3)
+                            Entities:FindByName(nil, "shack_path_6_junction_2"):Attribute_SetIntValue("junction_rotation", 2)
+                            Entities:FindByName(nil, "shack_path_11_junction_1"):Attribute_SetIntValue("junction_rotation", 1)
 
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/construction/construction_yard_lift.vmdl", ["origin"]="-1984 -2456 154", ["angles"]="0 270 0", ["parentname"]="pallet_crane_platform"})
 
