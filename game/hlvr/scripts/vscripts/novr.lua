@@ -1792,8 +1792,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 DoEntFireByInstanceHandle(ent, "Kill", "", 0, nil, nil)
                             end
 
-                            -- !!!!!!!!!!!! ent_setpos freezer_toner_junction_2 460.1 444.5 302
-
                             -- TODO: Fix error model for this plank
                             -- ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["solid"]=6, ["modelscale"]=0.9, ["model"]="models/rural/barn_loose_boards_03.vmdl", ["origin"]="196 40 546.5", ["angles"]="3 0 0"})
 
@@ -1804,6 +1802,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                     else
                         if GetMapName() == "a4_c17_zoo" then
                             if not loading_save_file then
+                                -- Default Junction Rotations
+                                Entities:FindByName(nil, "health_trap_static_t2"):Attribute_SetIntValue("junction_rotation", 2)
+                                Entities:FindByName(nil, "junction_health_trap_3"):Attribute_SetIntValue("junction_rotation", 1)
+                                Entities:FindByName(nil, "junction_health_trap_split"):Attribute_SetIntValue("junction_rotation", 3)
+
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER8_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 

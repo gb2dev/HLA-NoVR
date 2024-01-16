@@ -248,6 +248,30 @@ elseif map == "a3_distillery" then
         }
     end
 elseif map == "a4_c17_zoo" then
+    toner_start_junction = "junction_health_trap_2"
+    toner_start_junction_input = 1
+    toner_end_path = ""
+
+    toner_paths = {
+        path_health_trap_1 = {{1}, {"junction_health_trap_2"}, Vector(5715.13, 1327.9, -71), Vector(5702, 1327.9, -71), Vector(5702, 1327.9, -76.25)},
+        path_health_trap_7 = {{3, 1}, {"junction_health_trap_2", "health_trap_static_t2"}, Vector(5702, 1327.9, -82.25), Vector(5702, 1327.9, -88.125)},
+        path_health_trap_8 = {{2, 0}, {"health_trap_static_t2", "junction_health_trap_3"}, Vector(5699, 1327.9, -91.125), Vector(5692, 1327.9, -91.125)},
+        path_health_trap_5 = {{1}, {"junction_health_trap_3"}, Vector(5689, 1327.9, -88.125), Vector(5689, 1327.9, -81.625), Vector(5676.1, 1327.9, -81.625), Vector(5676.1, 1299, -81.625)},
+        path_health_trap_3 = {{0, 2}, {"health_trap_static_t2", "health_trap_static_t"}, Vector(5705, 1327.9, -91.125), Vector(5716.5, 1327.9, -91.125)},
+        path_health_trap_4 = {{3}, {"health_trap_static_t"}, Vector(5719.5, 1327.9, -94.125), Vector(5719.5, 1327.9, -105)},
+        path_health_trap_6 = {{0, 2}, {"health_trap_static_t", "junction_health_trap_1"}, Vector(5722.5, 1327.9, -91.125), Vector(5757.63, 1327.9, -76.75)},
+        path_health_trap_2 = {{0, 2}, {"junction_health_trap_1", "junction_health_trap_split"}, Vector(5763.63, 1327.9, -76.75), Vector(5783, 1327.9, -76.75)},
+        path_health_trap_tripmine_1 = {{1}, {"junction_health_trap_split"}, Vector(5786, 1327.9, -73.7057), Vector(5786, 1327.9, -64.5), Vector(5827, 1327.9, -64.5)},
+        path_health_trap_tripmine_3 = {{3}, {"junction_health_trap_split"}, Vector(5786, 1327.9, -79.7057), Vector(5786, 1327.9, -87), Vector(5827, 1327.9, -87)},
+    }
+    toner_junctions = {
+        junction_health_trap_2 = {0, Vector(5702, 1327.9, -79.25), "", "path_health_trap_1", "", "path_health_trap_7"},
+        health_trap_static_t2 = {4, Vector(5702, 1327.9, -91.125), "path_health_trap_3", "path_health_trap_7", "path_health_trap_8", ""},
+        junction_health_trap_3 = {1, Vector(5689, 1327.9, -91.125), "path_health_trap_8", "path_health_trap_5", "", ""},
+        health_trap_static_t = {4, Vector(5719.5, 1327.9, -91.125), "path_health_trap_6", "", "path_health_trap_3", "path_health_trap_4"},
+        junction_health_trap_1 = {0, Vector(5760.63, 1327.9, -76.75), "path_health_trap_2", "", "path_health_trap_6", ""},
+        junction_health_trap_split = {4, Vector(5786, 1327.9, -76.7057), "", "path_health_trap_tripmine_1", "path_health_trap_2", "path_health_trap_tripmine_3"},
+    }
 elseif map == "a4_c17_tanker_yard" then
     toner_start_junction = "junction_demux_0"
     toner_start_junction_input = 2
@@ -516,7 +540,7 @@ function ToggleTonerJunction()
                 toner_path_name = "1489_4074_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or (toner_path_name == "freezer_toner_path_1") or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" or toner_path_name == "1489_4074_path_demux_0" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or (toner_path_name == "freezer_toner_path_1") or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" or toner_path_name == "path_health_trap_1" or toner_path_name == "1489_4074_path_demux_0" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
             end
 
@@ -562,7 +586,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
                 toner_path_name = "1489_4074_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "freezer_toner_path_1" or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" or toner_path_name == "1489_4074_path_demux_0" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "freezer_toner_path_1" or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" or toner_path_name == "path_health_trap_1" or toner_path_name == "1489_4074_path_demux_0" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
                 SendToConsole("ent_fire_output " .. toner_path_name .. " OnPowerOn")
             end
@@ -593,11 +617,6 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
 
     if thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
         -- TODO: REMOVE THESE WHEN ALL TONER PUZZLES ARE IMPLEMENTED
-        if map == "a4_c17_zoo" and name == "589_test_outlet" then
-            SendToConsole("ent_fire_output 589_path_unlock_door OnPowerOn")
-            SendToConsole("ent_fire_output 589_path_11 OnPowerOn")
-        end
-
         if map == "a4_c17_parking_garage" then
             if name == "toner_port" then
                 SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
