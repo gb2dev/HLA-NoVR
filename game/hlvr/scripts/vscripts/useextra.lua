@@ -740,9 +740,6 @@ if map == "a3_distillery" then
     end
 
     if name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_jeff_in_freezer", 0) == 1 then
-        -- !!!!!!!!!!! TODO: MAKE IT INSTANT
-        --SendToConsole("ent_remove debug_teleport_player_freezer_door")
-        --SendToConsole("ent_fire relay_debug_freezer_breakout Trigger")
         SendToConsole("ent_fire barricade_begin_exit_relay Trigger")
     end
 

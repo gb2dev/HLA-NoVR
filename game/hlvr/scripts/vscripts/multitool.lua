@@ -361,8 +361,6 @@ function PowerTonerPath(junction, junction_name, junction_input)
                     StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
                     StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
 
-                    player:Attribute_SetIntValue("circuit_" .. map .. "_" .. toner_start_junction .. "_completed", 1)
-
                     if map == "a3_hotel_lobby_basement" then
                         if player:Attribute_GetIntValue("circuit_" .. map .. "_junction_1_completed", 0) == 0 then
                             Entities:FindByName(nil, "power_stake_2_start"):Attribute_SetIntValue("used", 0)
@@ -370,6 +368,8 @@ function PowerTonerPath(junction, junction_name, junction_input)
                             player:Attribute_SetIntValue("EnabledHotelLobbyPower", 1)
                         end
                     end
+
+                    player:Attribute_SetIntValue("circuit_" .. map .. "_" .. toner_start_junction .. "_completed", 1)
 
                     player:SetThink(function()
                         DebugDrawClear()

@@ -1613,7 +1613,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         if not loading_save_file then
                             -- Default Junction Rotations
                             Entities:FindByName(nil, "5325_4704_train_gate_junction_0_0"):Attribute_SetIntValue("junction_rotation", 1)
-                            Entities:FindByName(nil, "5325_4704_train_gate_junction_0_1"):Attribute_SetIntValue("junction_rotation", 2) -- Should be 3, but you actually accidentally press this the first time
+                            Entities:FindByName(nil, "5325_4704_train_gate_junction_0_1"):Attribute_SetIntValue("junction_rotation", 3)
                             Entities:FindByName(nil, "5325_4704_train_gate_junction_0_2"):Attribute_SetIntValue("junction_rotation", 3)
                             Entities:FindByName(nil, "5325_4704_train_gate_junction_1_0"):Attribute_SetIntValue("junction_rotation", 2)
                             Entities:FindByName(nil, "5325_4704_train_gate_junction_1_2"):Attribute_SetIntValue("junction_rotation", 3)
@@ -1641,7 +1641,17 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end
                     elseif GetMapName() == "a3_hotel_lobby_basement" then
                         Entities:FindByName(nil, "power_stake_2_start"):Attribute_SetIntValue("used", 1)
+
                         if not loading_save_file then
+                            -- Default Junction Rotations
+                            Entities:FindByName(nil, "junction_2"):Attribute_SetIntValue("junction_rotation", 3)
+                            Entities:FindByName(nil, "junction_2_panel"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "junction_3"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "toner_junction_4"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "junction_5"):Attribute_SetIntValue("junction_rotation", 2)
+                            Entities:FindByName(nil, "junction_6"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "junction_7"):Attribute_SetIntValue("junction_rotation", 1)
+
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER5_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
@@ -1740,6 +1750,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         if not loading_save_file then
                             -- Default Junction Rotations
+                            Entities:FindByName(nil, "freezer_toner_junction_1"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "freezer_toner_junction_2"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "freezer_toner_junction_5"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "freezer_toner_junction_5a"):Attribute_SetIntValue("junction_rotation", 1)
+                            Entities:FindByName(nil, "freezer_toner_junction_6"):Attribute_SetIntValue("junction_rotation", 1)
                             Entities:FindByName(nil, "freezer_toner_junction_7"):Attribute_SetIntValue("junction_rotation", 1)
 
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
