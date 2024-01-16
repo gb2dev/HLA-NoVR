@@ -174,6 +174,42 @@ elseif map == "a3_hotel_street" then
         junction_6 = {3, Vector(1124, 146.5, 114), "", "toner_path_12", "toner_path_5", "toner_path_13"},
         junction_7 = {1, Vector(1141, 162.3, 152), "toner_path_10", "", "", "toner_path_11"}
     }
+elseif map == "a3_c17_processing_plant" then
+elseif map == "a3_distillery" then
+    if player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 0 then
+        toner_start_junction = "freezer_toner_junction_1"
+        toner_start_junction_input = 2
+        toner_end_path = "freezer_toner_path_6"
+
+        toner_paths = {
+            freezer_toner_path_1 = {{2}, {"freezer_toner_junction_1"}, Vector(476.447, 610, 315.269), Vector(471.5, 610, 315.269), Vector(470.5, 613, 315.269), Vector(462.2, 616, 315.269), Vector(462.2, 640, 315.269), Vector(465, 643, 315.269), Vector(467, 648, 315.269), Vector(467, 655, 315.269), Vector(469.2, 656.5, 315.269), Vector(468, 659.8, 315.269), Vector(457, 654, 315.269), Vector(447.5, 650, 315.269), Vector(447.5, 653, 315.269), Vector(440, 653, 315.269), Vector(430, 650, 315.269), Vector(420, 640, 315.269), Vector(420, 620, 315.269), Vector(426, 571, 315)},
+            freezer_toner_path_2 = {{3, 2}, {"freezer_toner_junction_1", "freezer_toner_junction_2"}, Vector(426, 568, 312), Vector(426, 568, 302), Vector(426, 463.9, 302), Vector(439.9, 463.9, 302), Vector(439.9, 411.8, 302), Vector(460.1, 411.8, 302), Vector(460.1, 441.5, 302)},
+            freezer_toner_path_3 = {{0, 2}, {"freezer_toner_junction_2", "freezer_toner_junction_5"}, Vector(460.1, 447.5, 302), Vector(460.1, 478.5, 302), Vector(460.1, 478.5, 291), Vector(460.1, 525, 291)},
+            freezer_toner_alarm = {{1, 3}, {"freezer_toner_junction_5", "freezer_toner_junction_5a"}, Vector(460.1, 528, 294), Vector(460.1, 528, 311.01)},
+            freezer_toner_alarm_2 = {{1}, {"freezer_toner_junction_5a"}, Vector(460.1, 528, 317.01), Vector(460.1, 528, 336), Vector(460.1, 530, 336)},
+            freezer_toner_path_5 = {{3, 3}, {"freezer_toner_junction_5", "freezer_toner_junction_6"}, Vector(460.1, 528, 288), Vector(460.1, 528, 280), Vector(460.1, 575.9, 280), Vector(549.5, 575.9, 280), Vector(549.5, 575.9, 291.8), Vector(549.5, 572, 292), Vector(549.5, 572, 306.632)},
+            freezer_toner_path_6 = {{0}, {"freezer_toner_junction_6"}, Vector(552.5, 572, 309.632), Vector(563.7, 572, 309.632), Vector(563.7, 575.9, 309.632), Vector(576.5, 575.9, 309.632), Vector(576.5, 575.9, 305)}
+        }
+        toner_junctions = {
+            freezer_toner_junction_1 = {1, Vector(426, 568, 315), "", "", "freezer_toner_path_1", "freezer_toner_path_2"},
+            freezer_toner_junction_2 = {0, Vector(460.1, 444.5, 302), "freezer_toner_path_3", "", "freezer_toner_path_2", ""},
+            freezer_toner_junction_5 = {2, Vector(460.1, 528, 291), "", "freezer_toner_alarm", "freezer_toner_path_3", "freezer_toner_path_5"},
+            freezer_toner_junction_5a = {0, Vector(460.1, 528, 314.01), "", "freezer_toner_alarm_2", "", "freezer_toner_alarm"},
+            freezer_toner_junction_6 = {1, Vector(549.5, 572, 309.632), "freezer_toner_path_6", "", "", "freezer_toner_path_5"}
+        }
+    else
+        toner_start_junction = "freezer_toner_junction_7"
+        toner_start_junction_input = 0
+        toner_end_path = "freezer_toner_path_8"
+
+        toner_paths = {
+            freezer_toner_path_7 = {{0}, {"freezer_toner_junction_7"}, Vector(427.4, 823.713, 295), Vector(427.4, 823.713, 289.394), Vector(427.4, 851.5, 289.394), Vector(300.2, 851.5, 289.394), Vector(300.2, 730.668, 289.394)},
+            freezer_toner_path_8 = {{2}, {"freezer_toner_junction_7"}, Vector(300.2, 724.668, 289.394), Vector(300.2, 709.2, 289.394)},
+        }
+        toner_junctions = {
+            freezer_toner_junction_7 = {0, Vector(302.2, 727.668, 289.394), "freezer_toner_path_7", "", "freezer_toner_path_8", ""},
+        }
+    end
 end
 
 function DrawTonerPath(toner_path, powered)
@@ -401,7 +437,7 @@ function ToggleTonerJunction()
                 toner_path_name = "5325_4704_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "5325_4704_train_gate_path_start" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or (toner_path_name == "freezer_toner_path_1") or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
             end
 
@@ -418,9 +454,14 @@ function ToggleTonerJunction()
     end
 end
 
-if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 1) then
+if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or (thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 1 and thisEntity:Attribute_GetIntValue("disabled", 0) == 0)) then
     DoEntFireByInstanceHandle(thisEntity, "OnPlugRotated", "", 0, nil, nil)
     DebugDrawClear()
+
+    if name == "freezer_toner_outlet_1" then
+        thisEntity:Attribute_SetIntValue("disabled", 0)
+    end
+
     if toner_junctions then
         for junction_name, junction in pairs(toner_junctions) do
             if map == "a2_train_yard" then
@@ -438,7 +479,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
                 toner_path_name = "5325_4704_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "5325_4704_train_gate_path_start" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "freezer_toner_path_1" or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
                 SendToConsole("ent_fire_output " .. toner_path_name .. " OnPowerOn")
             end
@@ -470,22 +511,6 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
             DoEntFireByInstanceHandle(thisEntity, "Disable", "", 0, nil, nil)
             -- TODO: Remove once puzzle implemented
             SendToConsole("ent_fire_output shack_path_5 OnPowerOn")
-        end
-
-        if map == "a3_distillery" then
-            if name == "freezer_toner_outlet_1" then
-                SendToConsole("ent_fire_output barricade_door OnCompletionA_Backward")
-                SendToConsole("ent_fire_output freezer_toner_path_3 OnPowerOn")
-                SendToConsole("ent_fire_output freezer_toner_path_6 OnPowerOn")
-                SendToConsole("ent_remove debug_teleport_player_freezer_door")
-                SendToConsole("ent_fire relay_debug_freezer_breakout Trigger")
-            end
-
-            if name == "freezer_toner_outlet_2" then
-                SendToConsole("ent_fire_output freezer_toner_path_7 OnPowerOn")
-                -- TODO: Remove once puzzle implemented
-                SendToConsole("ent_fire_output freezer_toner_path_8 OnPowerOn 0 0 5")
-            end
         end
 
         if map == "a4_c17_zoo" and name == "589_test_outlet" then

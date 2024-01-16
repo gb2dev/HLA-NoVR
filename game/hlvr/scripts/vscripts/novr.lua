@@ -1739,6 +1739,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent:RedirectOutput("OnTrigger", "EnablePlugLever1", ent)
 
                         if not loading_save_file then
+                            -- Default Junction Rotations
+                            Entities:FindByName(nil, "freezer_toner_junction_7"):Attribute_SetIntValue("junction_rotation", 1)
+
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
@@ -1758,6 +1761,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:RedirectOutput("OnEntitySpawned", "LarrySeesWearable", ent)
 
                             ent = Entities:FindByName(nil, "freezer_toner_outlet_1")
+                            ent:Attribute_SetIntValue("disabled", 1)
                             ent:Attribute_SetIntValue("used", 1)
 
                             ent = Entities:FindByName(nil, "11479_elevator_busted_doors_relay")
@@ -1768,7 +1772,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 DoEntFireByInstanceHandle(ent, "Kill", "", 0, nil, nil)
                             end
 
-                            ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["solid"]=6, ["modelscale"]=0.9, ["model"]="models/rural/barn_loose_boards_03.vmdl", ["origin"]="196 40 546.5", ["angles"]="3 0 0"})
+                            -- !!!!!!!!!!!! ent_setpos freezer_toner_junction_2 460.1 444.5 302
+
+                            -- TODO: Fix error model for this plank
+                            -- ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["solid"]=6, ["modelscale"]=0.9, ["model"]="models/rural/barn_loose_boards_03.vmdl", ["origin"]="196 40 546.5", ["angles"]="3 0 0"})
 
                             -- Detect shooting so Jeff hears it
                             ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["targetname"]="bullet_trigger", ["modelscale"]=1000, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl"})
@@ -2303,7 +2310,8 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function EnableJeffElevatorDoorToner()
-        Entities:FindByName(nil, "freezer_toner_outlet_1"):Attribute_SetIntValue("used", 0)
+        local ent = Entities:FindByName(nil, "freezer_toner_outlet_1")
+        ent:Attribute_SetIntValue("used", 0)
     end
 
     function EnablePlugLever1()

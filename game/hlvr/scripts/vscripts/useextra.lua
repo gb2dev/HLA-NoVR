@@ -223,6 +223,10 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
             if name ~= "barricade_door_hook" then
                 thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
+                if map == "a3_distillery" and name == "verticaldoor_wheel" then
+                    Entities:GetLocalPlayer():Attribute_SetIntValue("locked_jeff_in_freezer", 1)
+                    SendToConsole("ent_fire relay_verticaldoor_opened Trigger")
+                end
             end
 
             if name == "barricade_door" then
@@ -247,7 +251,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             return 0
         end
     end, "AnimateCompletionValue", 0)
-elseif name == "barricade_door_hook" or name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or name == "tc_door_control" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
+elseif (name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_jeff_in_freezer", 0) == 0) or name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or name == "tc_door_control" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
     if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
         if name == "barricade_door_hook" then
             thisEntity:StopThink("AnimateCompletionValue")
@@ -733,6 +737,13 @@ if map == "a3_distillery" then
         SendToConsole("ent_fire relay_door_xen_crust_d Trigger")
         SendToConsole("ent_fire relay_door_xen_crust_e Trigger")
         SendToConsole("ent_fire @snd_music_bz_hello Kill")
+    end
+
+    if name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_jeff_in_freezer", 0) == 1 then
+        -- !!!!!!!!!!! TODO: MAKE IT INSTANT
+        --SendToConsole("ent_remove debug_teleport_player_freezer_door")
+        --SendToConsole("ent_fire relay_debug_freezer_breakout Trigger")
+        SendToConsole("ent_fire barricade_begin_exit_relay Trigger")
     end
 
     if name == "tc_door_control" then
