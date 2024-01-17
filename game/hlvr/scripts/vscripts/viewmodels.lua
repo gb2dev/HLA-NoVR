@@ -41,6 +41,10 @@ function Viewmodels_UpgradeModel()
     local pistol_viewmodel_hopper = "models/weapons/v_pistol_hopper.vmdl"
     local pistol_viewmodel_hopper_ads = "models/weapons/v_pistol_hopper_ads.vmdl"
     local pistol_viewmodel_base = "models/weapons/v_pistol.vmdl"
+    local pistol_viewmodel_hopper_no_shroud = "models/weapons/v_pistol_hopper_no_shroud.vmdl"
+	local pistol_viewmodel_hopper_no_shroud_stock = "models/weapons/v_pistol_hopper_no_shroud_stock.vmdl"
+	local pistol_viewmodel_hopper_no_stock = "models/weapons/v_pistol_hopper_no_stock.vmdl"
+	local pistol_viewmodel_hopper_no_stock_ads = "models/weapons/v_pistol_hopper_no_stock_ads.vmdl"
 
     -- Fetch shotgun upgrades
     local shotgun_doubleshot = player:Attribute_GetIntValue("shotgun_upgrade_doubleshot", 0)
@@ -59,6 +63,11 @@ function Viewmodels_UpgradeModel()
     local shotgun_viewmodel_grenade = "models/weapons/v_shotgun_grenade.vmdl"
     local shotgun_viewmodel_hopper = "models/weapons/v_shotgun_hopper.vmdl"
     local shotgun_viewmodel_base = "models/weapons/v_shotgun.vmdl"
+    local shotgun_viewmodel_hopper_grenade_attached = "models/weapons/v_shotgun_hopper_grenade_attached.vmdl"
+	local shotgun_viewmodel_hopper_no_burst = "models/weapons/v_shotgun_hopper_no_burst.vmdl"
+	local shotgun_viewmodel_hopper_no_burst_grenade_attached = "models/weapons/v_shotgun_hopper_no_burst_grenade_attached.vmdl"
+	local shotgun_viewmodel_hopper_no_grenade = "models/weapons/v_shotgun_hopper_no_grenade.vmdl"
+    local shotgun_viewmodel_hopper_no_burst_grenade = "models/weapons/v_shotgun_hopper_no_burst_grenade.vmdl"
 
     -- Fetch smg1 upgrades
     local smg_aimdownsights = player:Attribute_GetIntValue("smg_upgrade_aimdownsights", 0)
@@ -74,6 +83,8 @@ function Viewmodels_UpgradeModel()
     local smg_viewmodel_base = "models/weapons/v_smg1.vmdl"
     local smg_viewmodel_casing = "models/weapons/v_smg1_casing.vmdl"
     local smg_viewmodel_casing_ads = "models/weapons/v_smg1_casing_ads.vmdl"
+    local smg_viewmodel_casing_no_holo = "models/weapons/v_smg1_casing_no_holo.vmdl"
+	local smg_viewmodel_casing_no_holo_powerpack = "models/weapons/v_smg1_casing_no_holo_powerpack.vmdl"
 
     -- Update weapon viewmodel
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
@@ -93,18 +104,44 @@ function Viewmodels_UpgradeModel()
                 SendToConsole("hud_draw_fixed_reticle 0")
                 SendToConsole("crosshair 1")
             end
-            -- hopper (TESTING)
-            if pistol_hopper == 1 then
+            -- hopper
+            if pistol_hopper == 1 and pistol_aimdownsights == 1 and pistol_burstfire == 1 then
                 if string.match(viewmodel_name, pistol_viewmodel_hopper) or string.match(viewmodel_name, pistol_viewmodel_hopper_ads) then
                     return
                 else
                     viewmodel:SetModel(pistol_viewmodel_hopper)
-                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s)", pistol_viewmodel_hopper, pistol_aimdownsights, pistol_burstfire))
+                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s, hopper %s)", pistol_viewmodel_hopper, pistol_aimdownsights, pistol_burstfire, pistol_hopper))
                     return
                 end
-            end
+            -- hopper no shroud
+            elseif pistol_hopper == 1 and pistol_aimdownsights == 0 and pistol_burstfire == 1 then
+                if string.match(viewmodel_name, pistol_viewmodel_hopper_no_shroud) then
+                    return
+                else
+                    viewmodel:SetModel(pistol_viewmodel_hopper_no_shroud)
+                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s, hopper %s)", pistol_viewmodel_hopper_no_shroud, pistol_aimdownsights, pistol_burstfire, pistol_hopper))
+                    return
+                end
+            -- hopper no stock
+            elseif pistol_hopper == 1 and pistol_aimdownsights == 1 and pistol_burstfire == 0 then
+                if string.match(viewmodel_name, pistol_viewmodel_hopper_no_stock) or string.match(viewmodel_name, pistol_viewmodel_hopper_no_stock_ads) then
+                    return
+                else
+                    viewmodel:SetModel(pistol_viewmodel_hopper_no_stock)
+                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s, hopper %s)", pistol_viewmodel_hopper_no_stock, pistol_aimdownsights, pistol_burstfire, pistol_hopper))
+                    return
+                end
+            -- hopper no shroud no stock
+            elseif pistol_hopper == 1 and pistol_aimdownsights == 0 and pistol_burstfire == 0 then
+                if string.match(viewmodel_name, pistol_viewmodel_hopper_no_shroud_stock) then
+                    return
+                else
+                    viewmodel:SetModel(pistol_viewmodel_hopper_no_shroud_stock)
+                    print(string.format("Viewmodels - pistol: %s (aimdownsights %s, burstfire %s, hopper %s)", pistol_viewmodel_hopper_no_shroud_stock, pistol_aimdownsights, pistol_burstfire, pistol_hopper))
+                    return
+                end
             -- shroud and stock
-            if pistol_aimdownsights == 1 and pistol_burstfire == 1 then
+            elseif pistol_aimdownsights == 1 and pistol_burstfire == 1 then
                 if string.match(viewmodel_name, pistol_viewmodel_shroud_stock) or string.match(viewmodel_name, pistol_viewmodel_shroud_stock_ads) then
                     return
                 else
@@ -140,18 +177,58 @@ function Viewmodels_UpgradeModel()
                 SendToConsole("hud_draw_fixed_reticle 0")
                 SendToConsole("crosshair 1")
             end
-            -- hopper (TESTING)
-            if shotgun_hopper == 1 then
-                if string.match(viewmodel_name, shotgun_viewmodel_hopper) then
+            -- hopper
+            if shotgun_hopper == 1 and shotgun_doubleshot == 1 and shotgun_grenadelauncher == 1 then
+                if string.match(viewmodel_name, shotgun_viewmodel_hopper_grenade_attached) and shotgun_playerhasgrenade then
+                    return
+                elseif string.match(viewmodel_name, shotgun_viewmodel_hopper) and shotgun_playerhasgrenade == false then
                     return
                 else
-                    viewmodel:SetModel(shotgun_viewmodel_hopper)
-                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s)", shotgun_viewmodel_hopper, shotgun_doubleshot, shotgun_grenadelauncher))
+                    if shotgun_playerhasgrenade then
+                        viewmodel:SetModel(shotgun_viewmodel_hopper_grenade_attached)
+                        print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s, hopper %s)", shotgun_viewmodel_hopper_grenade_attached, shotgun_doubleshot, shotgun_grenadelauncher, shotgun_hopper))
+                    else
+                        viewmodel:SetModel(shotgun_viewmodel_hopper)
+                        print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s, hopper %s)", shotgun_viewmodel_hopper, shotgun_doubleshot, shotgun_grenadelauncher, shotgun_hopper))
+                    end
                     return
                 end
-            end
+            -- hopper no burst
+            elseif shotgun_hopper == 1 and shotgun_doubleshot == 0 and shotgun_grenadelauncher == 1 then
+                if string.match(viewmodel_name, shotgun_viewmodel_hopper_no_burst_grenade_attached) and shotgun_playerhasgrenade then
+                    return
+                elseif string.match(viewmodel_name, shotgun_viewmodel_hopper_no_burst) and shotgun_playerhasgrenade == false then
+                    return
+                else
+                    if shotgun_playerhasgrenade then
+                        viewmodel:SetModel(shotgun_viewmodel_hopper_no_burst_grenade_attached)
+                        print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s, hopper %s)", shotgun_viewmodel_hopper_no_burst_grenade_attached, shotgun_doubleshot, shotgun_grenadelauncher, shotgun_hopper))
+                    else
+                        viewmodel:SetModel(shotgun_viewmodel_hopper_no_burst)
+                        print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s, hopper %s)", shotgun_viewmodel_hopper_no_burst, shotgun_doubleshot, shotgun_grenadelauncher, shotgun_hopper))
+                    end
+                    return
+                end
+            -- hopper no grenade
+            elseif shotgun_hopper == 1 and shotgun_doubleshot == 1 and shotgun_grenadelauncher == 0 then
+                if string.match(viewmodel_name, shotgun_viewmodel_hopper_no_grenade) then
+                    return
+                else
+                    viewmodel:SetModel(shotgun_viewmodel_hopper_no_grenade)
+                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s, hopper %s)", shotgun_viewmodel_hopper_no_grenade, shotgun_doubleshot, shotgun_grenadelauncher, shotgun_hopper))
+                    return
+                end
+            -- hopper no burst no grenade
+            elseif shotgun_hopper == 1 and shotgun_doubleshot == 0 and shotgun_grenadelauncher == 0 then
+                if string.match(viewmodel_name, shotgun_viewmodel_hopper_no_burst_grenade) then
+                    return
+                else
+                    viewmodel:SetModel(shotgun_viewmodel_hopper_no_burst_grenade)
+                    print(string.format("Viewmodels - shotgun: %s (doubleshot %s, grenadelauncher %s, hopper %s)", shotgun_viewmodel_hopper_no_burst_grenade, shotgun_doubleshot, shotgun_grenadelauncher, shotgun_hopper))
+                    return
+                end
             -- burst and grenade
-            if shotgun_doubleshot == 1 and shotgun_grenadelauncher == 1 then
+            elseif shotgun_doubleshot == 1 and shotgun_grenadelauncher == 1 then
                 if string.match(viewmodel_name, shotgun_viewmodel_burst_grenade_attached) and shotgun_playerhasgrenade then
                     return
                 elseif string.match(viewmodel_name, shotgun_viewmodel_burst_grenade) and shotgun_playerhasgrenade == false then
@@ -201,27 +278,35 @@ function Viewmodels_UpgradeModel()
                 SendToConsole("hud_draw_fixed_reticle 0")
                 SendToConsole("crosshair 1")
             end
-            -- casing (TESTING)
-            if smg_casing == 1 then
+            -- casing
+            if smg_casing == 1 and smg_aimdownsights == 1 and (smg_fasterfirerate == 1 or smg_fasterfirerate == 0) then
                 if string.match(viewmodel_name, smg_viewmodel_casing) or string.match(viewmodel_name, smg_viewmodel_casing_ads) then
                     return
                 else
                     viewmodel:SetModel(smg_viewmodel_casing)
-                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s)", smg_viewmodel_casing, smg_aimdownsights, smg_fasterfirerate))
+                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s, casing %s)", smg_viewmodel_casing, smg_aimdownsights, smg_fasterfirerate, smg_casing))
                     return
                 end
-            end
-            -- holo and powerpack
-            if smg_aimdownsights == 1 and smg_fasterfirerate == 1 then
-                if string.match(viewmodel_name, smg_viewmodel_holo) or string.match(viewmodel_name, smg_viewmodel_holo_ads) then
+            -- casing no holo
+            elseif smg_casing == 1 and smg_aimdownsights == 0 and smg_fasterfirerate == 1 then
+                if string.match(viewmodel_name, smg_viewmodel_casing_no_holo) then
                     return
                 else
-                    viewmodel:SetModel(smg_viewmodel_holo)
-                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s)", smg_viewmodel_holo, smg_aimdownsights, smg_fasterfirerate))
+                    viewmodel:SetModel(smg_viewmodel_casing_no_holo)
+                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s, casing %s)", smg_viewmodel_casing_no_holo, smg_aimdownsights, smg_fasterfirerate, smg_casing))
+                    return
+                end
+            -- casing no holo no powerpack
+            elseif smg_casing == 1 and smg_aimdownsights == 0 and smg_fasterfirerate == 0 then
+                if string.match(viewmodel_name, smg_viewmodel_casing_no_holo_powerpack) then
+                    return
+                else
+                    viewmodel:SetModel(smg_viewmodel_casing_no_holo_powerpack)
+                    print(string.format("Viewmodels - smg: %s (aimdownsights %s, fasterfirerate %s, casing %s)", smg_viewmodel_casing_no_holo_powerpack, smg_aimdownsights, smg_fasterfirerate, smg_casing))
                     return
                 end
             -- holo
-            elseif smg_aimdownsights == 1 and smg_fasterfirerate == 0 then
+            elseif smg_aimdownsights == 1 and (smg_fasterfirerate == 1 or smg_fasterfirerate == 0) then
                 if string.match(viewmodel_name, smg_viewmodel_holo) or string.match(viewmodel_name, smg_viewmodel_holo_ads) then
                     return
                 else

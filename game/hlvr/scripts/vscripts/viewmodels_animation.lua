@@ -11,6 +11,8 @@ local pistol_viewmodel_shroud_stock = "models/weapons/v_pistol_shroud_stock.vmdl
 local pistol_viewmodel_shroud_stock_ads = "models/weapons/v_pistol_shroud_stock_ads.vmdl"
 local pistol_viewmodel_hopper = "models/weapons/v_pistol_hopper.vmdl"
 local pistol_viewmodel_hopper_ads = "models/weapons/v_pistol_hopper_ads.vmdl"
+local pistol_viewmodel_hopper_no_stock = "models/weapons/v_pistol_hopper_no_stock.vmdl"
+local pistol_viewmodel_hopper_no_stock_ads = "models/weapons/v_pistol_hopper_no_stock_ads.vmdl"
 
 -- LevelChange is called in novr.lua
 function ViewmodelAnimation_LevelChange()
@@ -71,13 +73,16 @@ function ViewmodelAnimation_PlayInspectAnimation()
         local viewmodel_name = viewmodel:GetModelName()
 		local viewmodel_sequence = viewmodel:GetSequence()
 
-        if string.match(viewmodel_name, "v_pistol") or string.match(viewmodel_name, "v_smg1") then
+        if string.match(viewmodel_name, "v_pistol") or string.match(viewmodel_name, "v_smg1") or string.match(viewmodel_name, "v_shotgun") then
             print(string.format("Play inspect for viewmodel %s on sequence %s", viewmodel_name, viewmodel_sequence))
 
             -- Set animation play length per model
             animation_time = 2.3
             if string.match(viewmodel_name, "v_pistol") then 
                 animation_time = 3.6
+            end
+            if string.match(viewmodel_name, "v_shotgun") then
+                animation_time = 3.4
             end
 
             ViewmodelAnimation_PrepareAnimation(viewmodel, player)
@@ -123,6 +128,10 @@ function ViewmodelAnimation_HIPtoADS()
         if string.match(viewmodel_name, pistol_viewmodel_hopper) then
             viewmodel:SetModel(pistol_viewmodel_hopper_ads)
         end
+        -- pistol hopper no stock
+        if string.match(viewmodel_name, pistol_viewmodel_hopper_no_stock) then
+            viewmodel:SetModel(pistol_viewmodel_hopper_no_stock_ads)
+        end
         
         viewmodel_name = viewmodel:GetModelName()
 		print(string.format("Play hip to ads for viewmodel %s on sequence %s", viewmodel_name, viewmodel_sequence))
@@ -165,6 +174,10 @@ function ViewmodelAnimation_ADStoHIP()
         -- pistol hopper
         if string.match(viewmodel_name, pistol_viewmodel_hopper_ads) then
             viewmodel:SetModel(pistol_viewmodel_hopper)
+        end
+        -- pistol hopper no stock
+        if string.match(viewmodel_name, pistol_viewmodel_hopper_no_stock_ads) then
+            viewmodel:SetModel(pistol_viewmodel_hopper_no_stock)
         end
         
         viewmodel_name = viewmodel:GetModelName()
