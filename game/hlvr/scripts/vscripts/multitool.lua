@@ -335,6 +335,27 @@ elseif map == "a4_c17_tanker_yard" then
         junction_demux_2_3 = {3, Vector(2352.1, 6408.3, 108.744), "", "path_demux_3_6", "path_demux_2_3", ""},
     }
 elseif map == "a4_c17_parking_garage" then
+    toner_start_junction = "toner_junction_5"
+    toner_start_junction_input = 0
+    toner_end_path = "toner_path_8"
+
+    toner_paths = {
+        toner_path_1 = {{0}, {"toner_junction_5"}, Vector(-210, 11, 43), Vector(-210, 25, 43), Vector(-210, 25, 68.5), Vector(-210, 21.5, 68.5)},
+        toner_path_9 = {{2, 1}, {"toner_junction_5", "toner_junction_1"}, Vector(-210, 15.5, 68.5), Vector(-210, 1, 68.5), Vector(-205.5, 1, 68.5), Vector(-205.5, 1, 59.25)},
+        toner_path_2 = {{2, 1}, {"toner_junction_1", "toner_junction_2"}, Vector(-202.5, 1, 56.25), Vector(-197.75, 1, 56.25), Vector(-197.75, 1, 77)},
+        toner_path_3 = {{}, {}, Vector(-333, -295, 68), Vector(-333, -295, 76),  Vector(-333, -320.5, 76), Vector(-329, -320.5, 76), Vector(-329, -336, 76), Vector(-329, -336, 58)},
+        toner_path_6 = {{2, 3}, {"toner_junction_2", "toner_junction_3"}, Vector(-329, -339, 55), Vector(-329, -346.5, 55), Vector(-329, -346.5, 42.5), Vector(-329, -369.5, 42.5), Vector(-333, -369.5, 42.5), Vector(-333, -369.5, 49.5)},
+        toner_path_5 = {{1, 3}, {"toner_junction_3", "toner_junction_4"}, Vector(-333, -369.5, 55.5), Vector(-333, -369.5, 72.5), Vector(-333, -358.5, 72.5), Vector(-333, -358.5, 80), Vector(-333, -362.5, 80)},
+        toner_path_7 = {{}, {}, Vector(-190.6, -181.25, 176), Vector(-190.6, -181.25, 182.5)},
+        toner_path_8 = {{1}, {"toner_junction_4"}, Vector(-190.6, -181.25, 188.5), Vector(-190.6, -181.25, 192.25), Vector(-190.6, -170, 192.25), Vector(-190.6, -170, 189.3)},
+    }
+    toner_junctions = {
+        toner_junction_5 = {0, Vector(-210, 18.5, 68.5), "toner_path_1", "", "toner_path_9", ""},
+        toner_junction_1 = {1, Vector(-205.5, 1, 56.25), "toner_path_1", "toner_path_9", "toner_path_2", ""},
+        toner_junction_2 = {1, Vector(-329, -336, 55), "", "toner_path_3", "toner_path_6", ""},
+        toner_junction_3 = {0, Vector(-333, -369.5, 52.5), "", "toner_path_5", "", "toner_path_6"},
+        toner_junction_4 = {0, Vector(-190.6, -181.25, 185.5), "", "toner_path_8", "", "toner_path_7"},
+    }
 end
 
 function DrawTonerPath(toner_path, powered)
@@ -598,7 +619,7 @@ function ToggleTonerJunction()
                 toner_path_name = "589_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or (toner_path_name == "freezer_toner_path_1") or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" or toner_path_name == "path_health_trap_1" or toner_path_name == "589_path_1" or (toner_path_name == "589_path_4" and Entities:FindByName(nil, "589_path_2"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_7" and Entities:FindByName(nil, "589_path_6"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_a" and Entities:FindByName(nil, "589_path_9"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_11" and Entities:FindByName(nil, "589_path_12"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or toner_path_name == "1489_4074_path_demux_0" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or (toner_path_name == "freezer_toner_path_1") or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" or toner_path_name == "path_health_trap_1" or toner_path_name == "589_path_1" or (toner_path_name == "589_path_4" and Entities:FindByName(nil, "589_path_2"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_7" and Entities:FindByName(nil, "589_path_6"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_a" and Entities:FindByName(nil, "589_path_9"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_11" and Entities:FindByName(nil, "589_path_12"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (map == "a4_c17_parking_garage" and (toner_path_name == "toner_path_3" and Entities:FindByName(nil, "toner_path_2"):Attribute_GetIntValue("toner_path_powered", 0) == 1 or toner_path_name == "toner_path_7" and Entities:FindByName(nil, "toner_path_5"):Attribute_GetIntValue("toner_path_powered", 0) == 1)) or toner_path_name == "1489_4074_path_demux_0" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
             end
 
@@ -624,19 +645,11 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
     end
 
     if thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 0 then
-        --[[ if map == "a4_c17_parking_garage" then
+        if map == "a4_c17_parking_garage" then
             if name == "toner_port" then
-                SendToConsole("ent_fire_output toner_path_2 OnPowerOn")
                 Entities:FindByName(nil, "falling_cabinet_door"):ApplyLocalAngularVelocityImpulse(Vector(0, 1200, 0))
-            elseif name == "toner_port_2" then
-                SendToConsole("ent_fire_output toner_path_5 OnPowerOn")
-            elseif name == "toner_port_3" then
-                SendToConsole("ent_fire_output toner_path_8 OnPowerOn")
-                if Entities:FindByName(nil, "door_reset"):GetCycle() >= 0.99 then
-                    SendToConsole("ent_fire_output door_reset OnCompletionA_Forward")
-                end
             end
-        end ]]
+        end
     end
 
     if toner_junctions then
@@ -664,7 +677,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
                 toner_path_name = "589_" .. toner_path_name
             end
 
-            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "freezer_toner_path_1" or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" or toner_path_name == "path_health_trap_1" or toner_path_name == "589_path_1" or (toner_path_name == "589_path_4" and Entities:FindByName(nil, "589_path_2"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_7" and Entities:FindByName(nil, "589_path_6"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_a" and Entities:FindByName(nil, "589_path_9"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_11" and Entities:FindByName(nil, "589_path_12"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or toner_path_name == "1489_4074_path_demux_0" then
+            if toner_path_name == "toner_path_1" and map ~= "a3_hotel_street" or toner_path_name == "freezer_toner_path_1" or (toner_path_name == "freezer_toner_path_7" and player:Attribute_GetIntValue("circuit_" .. map .. "_freezer_toner_junction_1_completed", 0) == 1) or toner_path_name == "5325_4704_train_gate_path_start" or toner_path_name == "shack_path_6" or toner_path_name == "shack_path_1" or toner_path_name == "path_health_trap_1" or toner_path_name == "589_path_1" or (toner_path_name == "589_path_4" and Entities:FindByName(nil, "589_path_2"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_7" and Entities:FindByName(nil, "589_path_6"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_a" and Entities:FindByName(nil, "589_path_9"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (toner_path_name == "589_path_11" and Entities:FindByName(nil, "589_path_12"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or (map == "a4_c17_parking_garage" and (toner_path_name == "toner_path_3" and Entities:FindByName(nil, "toner_path_2"):Attribute_GetIntValue("toner_path_powered", 0) == 1 or toner_path_name == "toner_path_7" and Entities:FindByName(nil, "toner_path_5"):Attribute_GetIntValue("toner_path_powered", 0) == 1)) or toner_path_name == "1489_4074_path_demux_0" then
                 Entities:FindByName(nil, toner_path_name):Attribute_SetIntValue("toner_path_powered", 1)
                 SendToConsole("ent_fire_output " .. toner_path_name .. " OnPowerOn")
             end
