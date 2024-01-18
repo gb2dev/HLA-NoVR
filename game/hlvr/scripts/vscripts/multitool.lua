@@ -498,14 +498,6 @@ function PowerTonerPath(junction, junction_name, junction_input)
                 end
 
                 if toner_path_powered_name == toner_end_path then
-                    StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
-                    StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
-                    StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
-                    StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
-                    StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
-                    StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
-                    StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
-
                     if map == "a3_hotel_lobby_basement" then
                         if player:Attribute_GetIntValue("circuit_" .. map .. "_junction_1_completed", 0) == 0 then
                             Entities:FindByName(nil, "power_stake_2_start"):Attribute_SetIntValue("used", 0)
@@ -516,9 +508,21 @@ function PowerTonerPath(junction, junction_name, junction_input)
 
                     player:Attribute_SetIntValue("circuit_" .. map .. "_" .. toner_start_junction .. "_completed", 1)
 
-                    player:SetThink(function()
-                        DebugDrawClear()
-                    end, "TonerComplete", 3)
+                    if map == "a4_c17_zoo" and toner_start_junction == "junction_1" then
+                        DoEntFireByInstanceHandle(Entities:FindByName(nil, "589_toner_port_5"), "RunScriptFile", "multitool", 0, nil, nil)
+                    else
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+
+                        player:SetThink(function()
+                            DebugDrawClear()
+                        end, "TonerComplete", 3)
+                    end
                 end
             end
         end
@@ -695,7 +699,7 @@ if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used",
     thisEntity:Attribute_SetIntValue("redraw_toner", 0)
 end
 
-if class == "info_hlvr_toner_junction" and toner_start_junction ~= nil and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_junction .. "_completed", 0) == 0 then
+if class == "info_hlvr_toner_junction" and toner_start_junction ~= nil and (player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_junction .. "_completed", 0) == 0 or map == "a4_c17_zoo") then
     ToggleTonerJunction()
 end
 
