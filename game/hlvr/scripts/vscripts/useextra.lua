@@ -251,7 +251,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             return 0
         end
     end, "AnimateCompletionValue", 0)
-elseif (name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_jeff_in_freezer", 0) == 0) or name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or name == "tc_door_control" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
+elseif (name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_jeff_in_freezer", 0) == 0) or (name == "589_panel_switch" and Entities:FindByName(nil, "589_path_11"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or name == "5628_2901_barricade_door_hook" or name == "tc_door_control" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
     if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
         if name == "barricade_door_hook" then
             thisEntity:StopThink("AnimateCompletionValue")
@@ -770,6 +770,13 @@ if map == "a3_distillery" then
     if name == "antlion_plug_crank_c" then
         SendToConsole("ent_fire_output antlion_plug_crank_c oncompletionc_forward")
     end
+end
+
+
+---------- a4_c17_zoo ----------
+
+if map == "a4_c17_zoo" and model == "models/props/industrial_door_1_40_92_white_temp.vmdl" and thisEntity:GetOrigin() == Vector(7218, 2044, -128) then
+    player:Attribute_SetIntValue("circuit_" .. map .. "_junction_health_trap_2_completed", 1)
 end
 
 

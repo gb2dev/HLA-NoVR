@@ -1806,6 +1806,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 Entities:FindByName(nil, "health_trap_static_t2"):Attribute_SetIntValue("junction_rotation", 2)
                                 Entities:FindByName(nil, "junction_health_trap_3"):Attribute_SetIntValue("junction_rotation", 1)
                                 Entities:FindByName(nil, "junction_health_trap_split"):Attribute_SetIntValue("junction_rotation", 3)
+                                Entities:FindByName(nil, "589_junction_1"):Attribute_SetIntValue("junction_rotation", 1)
+                                Entities:FindByName(nil, "589_junction_3"):Attribute_SetIntValue("junction_rotation", 2)
+                                Entities:FindByName(nil, "589_junction_4"):Attribute_SetIntValue("junction_rotation", 1)
+                                Entities:FindByName(nil, "589_junction_7"):Attribute_SetIntValue("junction_rotation", 1)
+                                Entities:FindByName(nil, "589_junction_bc"):Attribute_SetIntValue("junction_rotation", 1)
 
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER8_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
