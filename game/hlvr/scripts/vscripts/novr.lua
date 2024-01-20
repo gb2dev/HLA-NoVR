@@ -1762,6 +1762,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                             Entities:FindByName(nil, "freezer_toner_junction_6"):Attribute_SetIntValue("junction_rotation", 1)
                             Entities:FindByName(nil, "freezer_toner_junction_7"):Attribute_SetIntValue("junction_rotation", 1)
 
+                            Entities:FindByName(nil, "freezer_toner_junction_2"):SetOrigin(Vector(460.1, 444.5, 302))
+
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER7_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
