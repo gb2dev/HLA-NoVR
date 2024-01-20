@@ -199,8 +199,17 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_2_40_92_white.vmdl", ["origin"]="-1868 -1744 216", ["angles"]="0 180 0", ["parentname"]="scanner_return_clip", ["modelscale"]=10})
                         end
 
+                        local ents = Entities:FindAllByClassnameWithin("baseanimating", ent:GetCenter(), 3)
+                        for i = 1, #ents do
+                            local ent = ents[i]
+                            if ent:GetModelName() == "models/props_combine/combine_consoles/vr_combine_interface_01.vmdl" and ent:GetCycle() > 0 then
+                                return
+                            end
+                        end
+
                         ent:Attribute_SetIntValue("used", 1)
                         DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
+                        
                         if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
                             if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
                                 player:SetThink(function()
@@ -230,14 +239,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                                     print("[GameMenu] hacking_puzzle_trace")
                                 end, "HackingPuzzleTrace", 2.5)
                             else
-                                local ents = Entities:FindAllByClassnameWithin("baseanimating", ent:GetCenter(), 3)
-                                for i = 1, #ents do
-                                    local ent = ents[i]
-                                    if ent:GetModelName() == "models/props_combine/combine_consoles/vr_combine_interface_01.vmdl" then
-                                        return
-                                    end
-                                end
-
                                 DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
                                 ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
                                 ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
