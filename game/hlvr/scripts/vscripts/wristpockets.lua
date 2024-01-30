@@ -242,10 +242,10 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
 			end
 
 			-- Tutorial
-			if playerEnt:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) == 0 then
-				playerEnt:Attribute_SetIntValue("wristpockets_tutorial_shown", 1)
+			if playerEnt:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) < 2 and itemId ~= 1 then
+				playerEnt:Attribute_SetIntValue("wristpockets_tutorial_shown", playerEnt:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) + 1)
 				SendToConsole("ent_fire text_wristpockets ShowMessage")
-				SendToConsole("play sounds/ui/beepclear.vsnd")
+				SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
 			end
 
 			-- Debug
@@ -413,7 +413,7 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
 			TraceLine(traceTable)
 
 			if traceTable.hit then -- TODO: under certain angle you still can drop item into wall
-				StartSoundEventFromPosition("HealthStation.Deny", player:EyePosition())
+				SendToConsole("snd_sos_start_soundevent PlayerTeleport.Fail")
 				print("[WristPockets] Cannot drop item - too close to obstacle.")
 			else
 				if itemTypeId == 3 or itemTypeId == 4 or itemTypeId == 5 or itemTypeId == 6 then

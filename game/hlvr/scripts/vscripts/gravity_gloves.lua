@@ -57,6 +57,37 @@ if traceTable.enthit ~= player then
 end
 
 if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.find(ignore_props, thisEntity:GetModelName()) == nil and player:Attribute_GetIntValue("gravity_gloves", 0) == 1 and (class == "prop_physics" or class == "item_hlvr_health_station_vial" or class == "item_hlvr_grenade_frag" or class == "item_item_crate" or class == "item_healthvial" or class == "item_hlvr_crafting_currency_small" or class == "item_hlvr_crafting_currency_large" or class == "item_hlvr_clip_shotgun_single" or class == "item_hlvr_clip_shotgun_multiple" or class == "item_hlvr_clip_rapidfire" or class == "item_hlvr_clip_energygun_multiple" or class == "item_hlvr_clip_energygun" or class == "item_hlvr_grenade_xen" or class == "item_hlvr_prop_battery" or class == "item_hlvr_combine_console_tank" or class == "item_hlvr_weapon_energygun") and (thisEntity:GetMass() <= 15 or vlua.find(thisEntity:GetModelName(), "bottle") or class == "item_hlvr_prop_battery" or thisEntity:GetModelName() == "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl") then
+    -- prevent gravity gloving installed combine console tank
+    if class == "item_hlvr_combine_console_tank" and Entities:FindByClassnameWithin(nil, "baseanimating", thisEntity:GetCenter(), 3) then
+        return
+    end
+
+
+    -- prevent wristpocket pickup of holograms
+    if string.match(thisEntity:GetModelName(), "combine_battery_hologram") then
+        return
+    end
+
+    -- prevent wristpocket pickup if health station vial is already mounted in charger
+    if class == "item_hlvr_health_station_vial" then
+        local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
+        if entcharger ~= nil then
+            if entcharger:GetSequence() == "idle_deployed" or entcharger:GetSequence() == "idle_retracted" then
+                return
+            end
+        end
+    end
+
+    local parent = thisEntity:GetMoveParent()
+    if parent then
+        local parentClass = parent:GetClassname()
+        if parentClass == "prop_ragdoll" or parentClass == "npc_zombie" or parentClass == "npc_combine_s" then
+            local pos = thisEntity:GetOrigin()
+            thisEntity:Kill()
+            thisEntity = SpawnEntityFromTableSynchronous(class, {["origin"]="" .. pos.x .. " " .. pos.y .. " " .. pos.z})
+        end
+    end
+
     local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
     FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
     player:StopThink("GGTutorial")
@@ -69,19 +100,6 @@ if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_h
     thisEntity:SetThink(function()
         local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 60)
         if vlua.find(ents, thisEntity) then
-            -- prevent wristpocket pickup of holograms
-            if string.match(thisEntity:GetModelName(), "combine_battery_hologram") then
-                return nil
-            end
-            -- prevent wristpocket pickup if health station vial is already mounted in charger
-            if class == "item_hlvr_health_station_vial" then
-                local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
-                if entcharger ~= nil then
-                    if entcharger:GetSequence() == "idle_deployed" or entcharger:GetSequence() == "idle_retracted" then
-                        return nil
-                    end
-                end
-            end
             if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
             end

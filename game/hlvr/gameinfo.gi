@@ -27,6 +27,7 @@
 		//
 		SearchPaths
 		{
+			Game				novr_viewmodels
 			Game				novr
 			Game				hlvr
 			Game				core

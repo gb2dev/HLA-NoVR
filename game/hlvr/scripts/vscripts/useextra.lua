@@ -27,19 +27,23 @@ function IsCombineConsoleLocked()
     return true
 end
 
-if map == "a3_distillery" and vlua.find(name, "plug") then
-    if player:Attribute_GetIntValue("plug_lever", 0) == 0 then
-        return
-    elseif name == "11578_2420_181_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 2 then
-        return
-    elseif name == "11578_2420_183_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 3 then
-        return
-    elseif name == "antlion_plug_crank_c" and player:Attribute_GetIntValue("plug_lever", 0) ~= 4 then
+if map == "a3_distillery" then
+    if vlua.find(name, "plug") then
+        if player:Attribute_GetIntValue("plug_lever", 0) == 0 then
+            return
+        elseif name == "11578_2420_181_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 2 then
+            return
+        elseif name == "11578_2420_183_antlion_plug_crank_a" and player:Attribute_GetIntValue("plug_lever", 0) ~= 3 then
+            return
+        elseif name == "antlion_plug_crank_c" and player:Attribute_GetIntValue("plug_lever", 0) ~= 4 then
+            return
+        end
+    elseif name == "barricade_door" and player:GetOrigin().x > 433 then
         return
     end
 end
 
-if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and IsCombineConsoleLocked() == false)) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and IsCombineConsoleLocked() == false)) and not (map == "a4_c17_parking_garage" and name == "door_reset" and player:Attribute_GetIntValue("circuit_" .. map .. "_toner_junction_5_completed", 0) == 0) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "slide_train_door") and Entities:FindByClassnameNearest("phys_constraint", thisEntity:GetCenter(), 20) then
         return
     end
@@ -73,7 +77,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                 else
                     return 0
                 end
-            end, "", 0)
+            end, "Interacting", 0)
             SendToConsole("ent_fire traincar_01_hackplug Alpha 0")
         elseif map == "a3_distillery" and name == "verticaldoor_wheel" then
             count = 0
@@ -89,7 +93,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     SendToConsole("ent_fire @verticaldoor Open")
                     return 0
                 end
-            end, "", 0)
+            end, "Interacting", 0)
         elseif name == "12712_shotgun_wheel" then
             count = 0
             player:SetThink(function()
@@ -100,7 +104,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     SendToConsole("ent_fire_output " .. thisEntity:GetName() .. " Position " .. count / 2)
                     return 0
                 end
-            end, "", 0)
+            end, "Interacting", 0)
         elseif name == "console_selector_interact" then
             local ent = Entities:FindByName(nil, "console_opener_prop_handle_interact")
             ent:Attribute_SetIntValue("used", 0)
@@ -121,7 +125,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                     DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
                     return 0
                 end
-            end, "", 0)
+            end, "Interacting", 0)
         elseif not vlua.find(name, "elev_anim_door") and not vlua.find(name, "tractor_beam_console_lever") then
             thisEntity:Attribute_SetIntValue("used", 1)
         end
@@ -150,6 +154,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         ent:Attribute_SetIntValue("used", 0)
         DoEntFireByInstanceHandle(ent, "SetCompletionValue", "0", 0, nil, nil)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0.1, nil, nil)
+        SendToConsole("ent_fire player_speedmod ModifySpeed 0")
     end
 
     local is_console = class == "prop_animinteractable" and model == "models/props_combine/combine_consoles/vr_console_rack_1.vmdl"
@@ -218,10 +223,15 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
             if name ~= "barricade_door_hook" then
                 thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
+                if map == "a3_distillery" and name == "verticaldoor_wheel" then
+                    Entities:GetLocalPlayer():Attribute_SetIntValue("locked_jeff_in_freezer", 1)
+                    SendToConsole("ent_fire relay_verticaldoor_opened Trigger")
+                end
             end
 
             if name == "barricade_door" then
                 DoEntFireByInstanceHandle(Entities:FindByName(nil, "barricade_lock_relay"), "Trigger", "", 0, nil, nil)
+                SendToConsole("ent_fire player_speedmod ModifySpeed 1")
             elseif name == "12712_shotgun_wheel" then
                 local bar = Entities:FindByName(nil, "12712_shotgun_bar_for_wheel")
                 bar:Kill()
@@ -241,7 +251,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             return 0
         end
     end, "AnimateCompletionValue", 0)
-elseif name == "barricade_door_hook" or name == "589_panel_switch" or name == "5628_2901_barricade_door_hook" or name == "tc_door_control" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
+elseif (name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_jeff_in_freezer", 0) == 0) or (name == "589_panel_switch" and Entities:FindByName(nil, "589_path_11"):Attribute_GetIntValue("toner_path_powered", 0) == 1) or name == "5628_2901_barricade_door_hook" or name == "tc_door_control" or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:GetVelocity() == Vector(0, 0, 0)) then
     if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
         if name == "barricade_door_hook" then
             thisEntity:StopThink("AnimateCompletionValue")
@@ -282,7 +292,7 @@ end
 
 if class == "prop_ragdoll" or class == "prop_ragdoll_attached" then
     for k, v in pairs(thisEntity:GetChildren()) do
-        DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
+        DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, player)
     end
 end
 
@@ -600,7 +610,7 @@ if map == "a2_headcrabs_tunnel" then
 
         local ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="FLASHLIGHT"})
         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
 
         SendToConsole("inv_flashlight")
     end
@@ -729,6 +739,10 @@ if map == "a3_distillery" then
         SendToConsole("ent_fire @snd_music_bz_hello Kill")
     end
 
+    if name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_jeff_in_freezer", 0) == 1 then
+        SendToConsole("ent_fire barricade_begin_exit_relay Trigger")
+    end
+
     if name == "tc_door_control" then
         SendToConsole("ent_fire relay_close_compactor_doors Trigger")
     end
@@ -756,6 +770,13 @@ if map == "a3_distillery" then
     if name == "antlion_plug_crank_c" then
         SendToConsole("ent_fire_output antlion_plug_crank_c oncompletionc_forward")
     end
+end
+
+
+---------- a4_c17_zoo ----------
+
+if map == "a4_c17_zoo" and model == "models/props/industrial_door_1_40_92_white_temp.vmdl" and thisEntity:GetOrigin() == Vector(7218, 2044, -128) then
+    player:Attribute_SetIntValue("circuit_" .. map .. "_junction_health_trap_2_completed", 1)
 end
 
 
@@ -859,11 +880,11 @@ if class == "prop_dynamic" then
         ent = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
         if ent:GetSequence() == "idle_deployed" and tostring(thisEntity:GetMaterialGroupMask()) == "5" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
             ent = Entities:FindByClassnameNearest("item_healthcharger", thisEntity:GetOrigin(), 20)
-            ent:FireOutput("OnHealingPlayerStart", nil, nil, nil, 0)
 
-            if player:GetHealth() == player:GetMaxHealth() then
-                StartSoundEvent("HealthStation.Deny", player)
-            else
+            local charges = 75
+
+            if player:GetHealth() < player:GetMaxHealth() and ent:Attribute_GetIntValue("charges", charges) > 0 then
+                ent:FireOutput("OnHealingPlayerStart", nil, nil, nil, 0)
                 StartSoundEvent("HealthStation.Start", player)
                 player:SetThink(function()
                     if player:GetVelocity().z == 0 then
@@ -872,27 +893,43 @@ if class == "prop_dynamic" then
                     end
                     return 0
                 end, "StopPlayerOnLand", 0)
-                thisEntity:Attribute_SetIntValue("used", 1)
-                thisEntity:SetThink(function()
-                    if player:GetHealth() < player:GetMaxHealth() then
-                        StartSoundEvent("HealthStation.Loop", player)
-                    end
-                end, "Loop", .7)
-                thisEntity:SetThink(function()
-                    if player:GetHealth() < player:GetMaxHealth() then
-                        player:SetHealth(player:GetHealth() + 1)
-                        return 0.1
-                    else
-                        if map == "a2_quarantine_entrance" then
-                            SendToConsole("ent_fire_output health_station OnHealingPlayerStop")
-                        end
-                        StopSoundEvent("HealthStation.Loop", player)
-                        StartSoundEvent("HealthStation.Complete", player)
-                        SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                        thisEntity:Attribute_SetIntValue("used", 0)
-                    end
-                end, "Heal", 0)
+            else
+                StartSoundEvent("HealthStation.Deny", player)
+                return
             end
+
+            player:SetThink(function()
+                local stop = false
+
+                if player:Attribute_GetIntValue("use_released", 0) == 1 then
+                    stop = true
+                else
+                    if player:GetHealth() >= player:GetMaxHealth() or ent:Attribute_GetIntValue("charges", charges) == 0 then
+                        stop = true
+                        StartSoundEvent("HealthStation.Complete", player)
+                    else
+                        player:SetHealth(player:GetHealth() + 1)
+                        ent:Attribute_SetIntValue("charges", ent:Attribute_GetIntValue("charges", charges) - 1)
+
+                        if ent:Attribute_GetIntValue("charges", charges) == 0 then
+                            Entities:FindByClassnameNearest("item_hlvr_health_station_vial", ent:GetOrigin(), 50):SetGraphParameterBool("bDrain", true)
+                        end
+
+                        return 0.1
+                    end
+                end
+
+                if stop then
+                    SendToConsole("ent_fire_output health_station OnHealingPlayerStop")
+                    player:StopThink("HealthChargeSoundLoop")
+                    StopSoundEvent("HealthStation.Loop", player)
+                    SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+                end
+            end, "Interacting", 0)
+
+            player:SetThink(function()
+                StartSoundEvent("HealthStation.Loop", player)
+            end, "HealthChargeSoundLoop", 0.7)
         end
     elseif model == "models/props/alyx_hideout/button_plate.vmdl" then
         SendToConsole("ent_fire 2_8127_elev_button_test_floor_" .. player:Attribute_GetIntValue("next_elevator_floor", 2) .. " Trigger")
@@ -1133,7 +1170,10 @@ if class == "item_hlvr_combine_console_tank" then
         player:SetThink(function()
             if player:Attribute_GetIntValue("use_released", 0) == 0 then
                 thisEntity:SetAngularVelocity(0,0,0)
-                local x = (look_delta.x - player:EyeAngles().x) * -180
+                local x = (look_delta.x - player:EyeAngles().x) * -50
+                if x < 0 then
+                    x = x * 1.75
+                end
                 thisEntity:ApplyLocalAngularVelocityImpulse(Vector(Clamp(x, -18, 18) , 0, 0))
                 look_delta = player:EyeAngles()
                 return 0
@@ -1192,7 +1232,7 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
     if player:Attribute_GetIntValue("wearable_tutorial_shown", 0) == 0 then
         player:Attribute_SetIntValue("wearable_tutorial_shown", 1)
         SendToConsole("ent_fire text_wearable ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     local ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hat_construction_viewmodel", ["model"]="models/props/construction/hat_construction.vmdl", ["disableshadows"]=true, ["solid"]=0})
@@ -1258,15 +1298,6 @@ elseif vlua.find(class, "item_hlvr_crafting_currency_") then
     end
     StartSoundEventFromPosition("Inventory.BackpackGrabItemResin", player:EyePosition())
 
-    -- Show resin count
-    player:SetThink(function()
-        local t = {}
-        player:GatherCriteria(t)
-        local ent = Entities:FindByName(nil, "text_resin")
-        DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
-        DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
-    end, "", 0.02)
-
     thisEntity:Kill()
 elseif class == "item_hlvr_clip_energygun" or class == "item_hlvr_clip_generic_pistol" then
     player:Attribute_SetIntValue("pistol_magazine_ammo", 10)
@@ -1277,7 +1308,7 @@ elseif class == "item_hlvr_clip_energygun" or class == "item_hlvr_clip_generic_p
         SendToConsole("ent_fire_output ammo_insert_listener OnEventFired")
         player:SetThink(function()
             SendToConsole("ent_fire text_shoot ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end, "ShowShootTutorial", 4)
     else
         SendToConsole("hlvr_addresources 10 0 0 0")
@@ -1321,7 +1352,7 @@ elseif class == "item_hlvr_grenade_xen" then
     if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) <= 1 then
         player:Attribute_SetIntValue("grenade_tutorial_shown", 2)
         SendToConsole("ent_fire text_grenade ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     end
 
     if WristPockets_PlayerHasFreePocketSlot(player) then
@@ -1342,7 +1373,7 @@ elseif class == "item_hlvr_grenade_frag" then
         if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("grenade_tutorial_shown", 1)
             SendToConsole("ent_fire text_grenade ShowMessage")
-            SendToConsole("play sounds/ui/beepclear.vsnd")
+            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
         end
 
         local ent = Entities:FindByName(nil, "player_radio_station")
@@ -1378,7 +1409,7 @@ elseif class == "item_healthvial" then
     elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
         player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
         SendToConsole("ent_fire text_syringe ShowMessage")
-        SendToConsole("play sounds/ui/beepclear.vsnd")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     else
 		WristPockets_PickUpHealthPen(player, thisEntity)
 		FireGameEvent("item_pickup", item_pickup_params)
@@ -1389,8 +1420,11 @@ elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_v
         if class == "item_hlvr_health_station_vial" then
             local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
             if entcharger ~= nil then
-                if not entcharger:GetSequence() == "idle_deployed" and not entcharger:GetSequence() == "idle_retracted" then
+                if not entcharger:GetSequence() == "idle_deployed" and not entcharger:GetSequence() == "prepare_inject" and not entcharger:GetSequence() == "idle_retracted" then
                     WristPockets_PickUpValuableItem(player, thisEntity)
+                else
+                    local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
+                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
                 end
             else
                 WristPockets_PickUpValuableItem(player, thisEntity)
