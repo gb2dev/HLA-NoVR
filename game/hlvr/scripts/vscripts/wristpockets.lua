@@ -200,7 +200,7 @@ function WristPockets_PickUpXenGrenade(playerEnt, itemEnt)
 	local pocketSlotId = GetFreePocketSlot(playerEnt)
 	if pocketSlotId ~= 0 then
 		playerEnt:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "", 7)
-		Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", false) -- TODO: keep xen grenades after map change?
+		Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", true) -- keep xen grenades after map change!
 		print("[WristPockets] XenGrenade acquired on slot #" .. pocketSlotId .. ".")
 	end
 end
