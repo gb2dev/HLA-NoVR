@@ -1429,6 +1429,24 @@ elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_v
             else
                 WristPockets_PickUpValuableItem(player, thisEntity)
             end
+        elseif class == "item_hlvr_prop_battery" or class == "prop_reviver_heart" then
+            -- do not pick up batteries if already mounted in combine machines
+            local entcombineconsole = Entities:FindByClassnameNearest("prop_animinteractable", thisEntity:GetOrigin(), 40) 
+            if entcombineconsole ~= nil then
+                if not string.match(entcombineconsole:GetModelName(), "vr_console_rack_1") then
+                    WristPockets_PickUpValuableItem(player, thisEntity)
+                end
+            else
+                -- battery post
+                local entcombinepost = Entities:FindByClassnameNearest("prop_dynamic", thisEntity:GetOrigin(), 40) 
+                if entcombinepost ~= nil then
+                    if not string.match(entcombinepost:GetModelName(), "combine_battery_post") and not string.match(entcombinepost:GetModelName(), "combine_battery_large") then
+                        WristPockets_PickUpValuableItem(player, thisEntity)
+                    end
+                else
+                    WristPockets_PickUpValuableItem(player, thisEntity)
+                end
+            end
         else
             WristPockets_PickUpValuableItem(player, thisEntity)
         end
