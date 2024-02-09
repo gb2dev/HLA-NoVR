@@ -1431,7 +1431,7 @@ elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_v
             end
         elseif class == "item_hlvr_prop_battery" or class == "prop_reviver_heart" then
             -- do not pick up batteries if already mounted in combine machines
-            local entcombineconsole = Entities:FindByClassnameNearest("prop_animinteractable", thisEntity:GetOrigin(), 40) 
+            local entcombineconsole = Entities:FindByClassnameNearest("prop_animinteractable", thisEntity:GetOrigin(), 70) 
             if entcombineconsole ~= nil then
                 if not string.match(entcombineconsole:GetModelName(), "vr_console_rack_1") then
                     WristPockets_PickUpValuableItem(player, thisEntity)
