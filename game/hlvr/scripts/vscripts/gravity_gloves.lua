@@ -62,9 +62,8 @@ if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_h
         return
     end
 
-
     -- prevent wristpocket pickup of holograms
-    if string.match(thisEntity:GetModelName(), "combine_battery_hologram") then
+    if string.match(thisEntity:GetModelName(), "combine_battery_hologram") or string.match(thisEntity:GetModelName(), "combine_health_vial_hologram") or string.match(thisEntity:GetModelName(), "combine_memory_tank_hologram") then
         return
     end
 
@@ -72,7 +71,25 @@ if thisEntity:GetName() == "peeled_corridor_objects" or class == "prop_reviver_h
     if class == "item_hlvr_health_station_vial" then
         local entcharger = Entities:FindByClassnameNearest("item_healthcharger_internals", thisEntity:GetOrigin(), 20)
         if entcharger ~= nil then
-            if entcharger:GetSequence() == "idle_deployed" or entcharger:GetSequence() == "idle_retracted" then
+            if entcharger:GetSequence() == "idle_deployed" or entcharger:GetSequence() == "prepare_inject" or entcharger:GetSequence() == "idle_retracted" then
+                return
+            end
+        end
+    end
+
+    -- do not pick up batteries if already mounted in combine machines
+    if class == "item_hlvr_prop_battery" or class == "prop_reviver_heart" then 
+        -- console
+        local entcombineconsole = Entities:FindByClassnameNearest("prop_animinteractable", thisEntity:GetOrigin(), 40) 
+        if entcombineconsole ~= nil then
+            if string.match(entcombineconsole:GetModelName(), "vr_console_rack_1") then
+                return
+            end
+        end
+        -- battery post
+        local entcombinepost = Entities:FindByClassnameNearest("prop_dynamic", thisEntity:GetOrigin(), 40) 
+        if entcombinepost ~= nil then
+            if string.match(entcombinepost:GetModelName(), "combine_battery_post") or string.match(entcombinepost:GetModelName(), "combine_battery_large") then
                 return
             end
         end
