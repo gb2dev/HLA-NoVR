@@ -575,7 +575,7 @@ if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 
     thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
-    SendToConsole("hudhearts_startupdateloop")
+    --SendToConsole("hudhearts_startupdateloop")
     SendToConsole("wristpockets_startupdateloop")
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 end
@@ -806,7 +806,7 @@ if name == "l_candler" or name == "r_candler" then
         SendToConsole("hidehud 4")
     end
     -- Just to make sure the heart icons are gone, hidehud 4 seems fine
-    SendToConsole("hudhearts_stopupdateloop")
+    --SendToConsole("hudhearts_stopupdateloop")
     SendToConsole("wristpockets_stopupdateloop")
 end
 

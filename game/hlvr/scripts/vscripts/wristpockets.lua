@@ -7,8 +7,8 @@ require "bindings" -- Moved to bindings file: USE_HEALTHPEN, DROP_ITEM
 local itemsClasses = { "item_healthvial", "item_hlvr_grenade_frag", "item_hlvr_prop_battery", "prop_physics", "item_hlvr_health_station_vial", "prop_reviver_heart", "item_hlvr_grenade_xen" } 
 
 --local itemsStrings = { "[z] He", "[x] Gr", "[c] Ba", "[c] It", "[c] Vi", "[c] Rv", "[c] Xe" } -- legacy
-local itemsStrings = { "$", "^", "*", "<", "'", "|", "~" } -- font wristpockets
---local itemsStrings = { "HP", "GR", "BA", "OB", "HV", "RH", "XG" } -- steam deck/linux
+--local itemsStrings = { "$", "^", "*", "<", "'", "|", "~" } -- font wristpockets
+local itemsStrings = { "HP", "GR", "BA", "OB", "HV", "RH", "XG" } -- steam deck/linux
 --local itemsStrings = { "f", "l", "h", "j", "g", "i" } -- font alyxhl2
 -- font:
 -- $ - Health Pen
@@ -20,8 +20,8 @@ local itemsStrings = { "$", "^", "*", "<", "'", "|", "~" } -- font wristpockets
 -- ~ - Xen Grenade
 
 --local itemsUniqueStrings = { "[c] Vo", "[c] Ca"  } -- legacy
-local itemsUniqueStrings = { "<", ">"  } -- font wristpockets
---local itemsUniqueStrings = { "BO", "KC"  } -- steam deck/linux
+--local itemsUniqueStrings = { "<", ">"  } -- font wristpockets
+local itemsUniqueStrings = { "BO", "KC"  } -- steam deck/linux
 --local itemsUniqueStrings = { "j", "k"  } -- font alyxhl2
 -- < - Bottle
 -- > - Keycard
@@ -31,7 +31,7 @@ local itemsUniqueStrings = { "<", ">"  } -- font wristpockets
 
 function WristPockets_StartupPreparations()
 	SendToConsole("ent_remove text_pocketslots")
-	SendToConsole("ent_create game_text { targetname text_pocketslots effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 4 fxtime 0 holdtime 0.11 x 0.162 y -0.030 }")
+	SendToConsole("ent_create game_text { targetname text_pocketslots effect 0 spawnflags 1 color \"236 193 39\" color2 \"0 0 0\" fadein 0 fadeout 0 channel 4 fxtime 0 holdtime 0.11 x 0.170 y -0.030 }")
 
 	-- This is for old savegames and can be removed in future
 	SendToConsole("ent_remove text_pocketslots_empty")
@@ -64,7 +64,7 @@ function WristPockets_UpdateHUD()
 	local pocketSlot1Msg = SetSlotItemMsg(player:Attribute_GetIntValue("pocketslots_slot1", 0), 1)
 	local pocketSlot2Msg = SetSlotItemMsg(player:Attribute_GetIntValue("pocketslots_slot2", 0), 2)
 	
-	DoEntFireByInstanceHandle(textEntity, "SetText", "" .. pocketSlot1Msg .. pocketSlot2Msg .. "", 0, nil, nil)
+	DoEntFireByInstanceHandle(textEntity, "SetText", "" .. pocketSlot1Msg .. " " .. pocketSlot2Msg .. "", 0, nil, nil)
 	DoEntFireByInstanceHandle(textEntity, "Display", "", 0.1, nil, nil)
 end
 

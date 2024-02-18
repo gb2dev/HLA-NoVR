@@ -1331,12 +1331,12 @@ if GlobalSys:CommandLineCheck("-novr") then
             if not loading_save_file then
                 ViewmodelAnimation_LevelChange()
             end
-            HUDHearts_StartupPreparations()
+            --HUDHearts_StartupPreparations()
             ViewmodelAnimation_ADSZoom()
 
             if is_on_map_or_later("a2_quarantine_entrance") then
                 ent = Entities:GetLocalPlayer()
-                HUDHearts_StartUpdateLoop()
+                --HUDHearts_StartUpdateLoop()
                 WristPockets_StartUpdateLoop()
 
                 -- Resin hud
@@ -1434,7 +1434,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
-                    HUDHearts_StartUpdateLoop()
+                    --HUDHearts_StartUpdateLoop()
                     WristPockets_StartUpdateLoop()
                 end
 
@@ -1985,7 +1985,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function PlayerDied()
         SendToServerConsole("unpause")
-        HUDHearts_StopUpdateLoop()
+        --HUDHearts_StopUpdateLoop()
         WristPockets_StopUpdateLoop()
         SendToConsole("disable_flashlight")
     end
