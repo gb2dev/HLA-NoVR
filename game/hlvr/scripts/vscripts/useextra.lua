@@ -1257,6 +1257,9 @@ if class == "item_item_crate" then
 end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
+if thisEntity:GetMoveParent() ~= nil then
+    item_pickup_params.wasparentedto = thisEntity:GetMoveParent():GetClassname()
+end
 
 -- Weapons
 if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
