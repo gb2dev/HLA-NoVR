@@ -211,38 +211,39 @@ if GlobalSys:CommandLineCheck("-novr") then
                         DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
                         
                         if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
-                            if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
-                                player:SetThink(function()
-                                    if GetMapName() == "a2_quarantine_entrance" then
-                                        SendToConsole("ent_fire text_hacking_puzzle_trace ShowMessage")
-                                        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
-                                    end
+                            -- TODO: Re-enable hacking minigame when it's less buggy
+                            -- if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
+                            --     player:SetThink(function()
+                            --         if GetMapName() == "a2_quarantine_entrance" then
+                            --             SendToConsole("ent_fire text_hacking_puzzle_trace ShowMessage")
+                            --             SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
+                            --         end
 
-                                    ent = Entities:FindByClassname(nil, "prop_hlvr_holo_hacking_sphere_trace")
-                                    SendToConsole("fadein 0.2")
-                                    DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
-                                    local angles = player:GetAngles()
-                                    player:SetAngles(angles.x, angles.y + 180, angles.z)
-                                    player:SetThink(function()
-                                        SendToConsole("+iv_use;-iv_use")
-                                    end, "HideOrb1", 0.02)
-                                    player:SetThink(function()
-                                        player:SetAngles(angles.x, angles.y, angles.z)
-                                    end, "HideOrb2", 0.04)
-                                    player:SetThink(function()
-                                        if player:GetVelocity().z == 0 then
-                                            SendToConsole("ent_fire player_speedmod ModifySpeed 0")
-                                            return nil
-                                        end
-                                        return 0
-                                    end, "StopPlayerOnLand", 0)
-                                    print("[GameMenu] hacking_puzzle_trace")
-                                end, "HackingPuzzleTrace", 2.5)
-                            else
-                                DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
-                                ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
-                                ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
-                            end
+                            --         ent = Entities:FindByClassname(nil, "prop_hlvr_holo_hacking_sphere_trace")
+                            --         SendToConsole("fadein 0.2")
+                            --         DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
+                            --         local angles = player:GetAngles()
+                            --         player:SetAngles(angles.x, angles.y + 180, angles.z)
+                            --         player:SetThink(function()
+                            --             SendToConsole("+iv_use;-iv_use")
+                            --         end, "HideOrb1", 0.02)
+                            --         player:SetThink(function()
+                            --             player:SetAngles(angles.x, angles.y, angles.z)
+                            --         end, "HideOrb2", 0.04)
+                            --         player:SetThink(function()
+                            --             if player:GetVelocity().z == 0 then
+                            --                 SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+                            --                 return nil
+                            --             end
+                            --             return 0
+                            --         end, "StopPlayerOnLand", 0)
+                            --         print("[GameMenu] hacking_puzzle_trace")
+                            --     end, "HackingPuzzleTrace", 2.5)
+                            -- else
+                            DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                            ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
+                            -- end
                         end
                         return
                     end
