@@ -1346,7 +1346,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("ent_create env_message { targetname text_smg_upgrade_aimdownsights message SMG_UPGRADE_AIMDOWNSIGHTS }")
 
             SendToConsole("ent_remove text_resin")
-            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" holdtime 0.11 x 0.027 y -0.15 }")
+            SendToConsole("ent_create game_text { targetname text_resin effect 2 spawnflags 1 color \"255 220 0\" color2 \"92 107 192\" fadein 0 fadeout 0.15 fxtime 0.25 holdtime 5 x 0.02 y -0.16 }")
 
             SendToConsole("ent_remove text_grenade")
             SendToConsole("ent_create env_message { targetname text_grenade message GRENADE }")
@@ -1379,17 +1379,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent = Entities:GetLocalPlayer()
                 HUDHearts_StartUpdateLoop()
                 WristPockets_StartUpdateLoop()
-
-                -- Resin hud
-                local player = Entities:GetLocalPlayer()
-                player:SetThink(function()
-                    local textEntity = Entities:FindByName(nil, "text_resin")
-                    local t = {}
-                    player:GatherCriteria(t)
-                    DoEntFireByInstanceHandle(textEntity, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
-                    DoEntFireByInstanceHandle(textEntity, "Display", "", 0.1, nil, nil)
-                    return 0.1
-                end, "Resin_UpdateLoop", 0)
             end
 
             if GetMapName() == "a1_intro_world" then
