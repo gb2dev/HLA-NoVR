@@ -584,6 +584,14 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterConvar("fov_ads_zoom", "", "", 0)
     cvar_setf("fov_ads_zoom", FOV)
 
+
+    Convars:RegisterCommand("novr_resetads", function()
+        if cvar_getf("fov_ads_zoom") <= FOV_ADS_ZOOM then
+            SendToConsole("+customattack2;-customattack2")
+        end
+    end, "", 0)
+
+
     -- Custom attack 2
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
@@ -1069,7 +1077,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. GRENADE .. " throwgrenade")
-            SendToConsole("bind " .. RELOAD .. " +reload")
+            SendToConsole("bind " .. RELOAD .. " \"+reload;novr_resetads\"")
             SendToConsole("bind " .. QUICK_SWAP .. " \"lastinv;viewmodel_update\"")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
             SendToConsole("bind " .. MOVE_FORWARD .. " +forwardfixed")
