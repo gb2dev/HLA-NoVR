@@ -585,6 +585,20 @@ if GlobalSys:CommandLineCheck("-novr") then
     cvar_setf("fov_ads_zoom", FOV)
 
 
+    Convars:RegisterCommand("+novr_zoom", function()
+        if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
+            Entities:GetLocalPlayer():Attribute_SetIntValue("is_zoomed", 1)
+            SendToConsole("+zoom")
+        end
+    end, "", 0)
+
+
+    Convars:RegisterCommand("-novr_zoom", function()
+        Entities:GetLocalPlayer():Attribute_SetIntValue("is_zoomed", 0)
+        SendToConsole("-zoom")
+    end, "", 0)
+
+
     Convars:RegisterCommand("novr_resetads", function()
         if cvar_getf("fov_ads_zoom") <= FOV_ADS_ZOOM then
             SendToConsole("+customattack2;-customattack2")
@@ -596,6 +610,10 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("+customattack2", function()
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
+
+        if player:Attribute_GetIntValue("is_zoomed", 0) == 1 then
+            return
+        end
 
         -- Reset viewmodel after auto weapon switch
         if viewmodel and cvar_getf("fov_ads_zoom") == FOV_ADS_ZOOM and not string.match(viewmodel:GetModelName(), "_ads.vmdl") then
@@ -1088,7 +1106,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. SPRINT .. " +iv_sprint")
             SendToConsole("bind " .. PAUSE .. " pause")
             SendToConsole("bind " .. VIEWM_INSPECT .. " viewmodel_inspect_animation")
-            SendToConsole("bind " .. ZOOM .. " +zoom")
+            SendToConsole("bind " .. ZOOM .. " +novr_zoom")
             SendToConsole("bind " .. UNEQUIP_WEARABLE .. " novr_unequip_wearable")
             -- NOTE: Put additional custom bindings under here. Example:
             -- SendToConsole("bind X quit")
