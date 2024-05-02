@@ -1034,6 +1034,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         if GetMapName() == "startup" then
             SendToConsole("sv_cheats 1")
+            SendToConsole("addon_enable novr")
             SendToConsole("hidehud 96")
             SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
