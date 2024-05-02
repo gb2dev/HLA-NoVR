@@ -569,6 +569,14 @@ end
 
 if name == "621_6487_button_pusher_prop" then
     SendToConsole("ent_fire 621_6487_button_branch test")
+
+    thisEntity:SetThink(function()
+        local ent = Entities:FindByName(nil, "camera_player")
+        local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+        ent:SetParent(viewmodel, "")
+        ent:SetLocalOrigin(Vector(0, 0, 0))
+        ent:SetLocalAngles(0, 0, 0)
+    end, "FixRussellCamera", 0.1)
 end
 
 if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then

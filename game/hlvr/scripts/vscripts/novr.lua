@@ -1495,12 +1495,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     ent = Entities:FindByName(nil, "relay_weapon_pistol_fakefire")
                     ent:RedirectOutput("OnTrigger", "RedirectPistol", ent)
-
-                    ent = Entities:FindByName(nil, "camera_player")
-                    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
-                    ent:SetParent(viewmodel, "")
-                    ent:SetLocalOrigin(Vector(0, 0, 0))
-                    ent:SetLocalAngles(0, 0, 0)
                 end
             else
                 SendToConsole("hidehud 64")
