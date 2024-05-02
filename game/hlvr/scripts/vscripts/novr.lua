@@ -1490,11 +1490,17 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["model"]="maps/a1_intro_world_2/entities/gate_ammo_trigger_621_2249_345.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z})
                     ent:RedirectOutput("OnDetectedBulletFire", "CheckTutorialPistolEmpty", ent)
 
-                    ent = Entities:FindByName(nil, "hint_crouch_trigger")
-                    ent:RedirectOutput("OnStartTouch", "GetOutOfCrashedVan", ent)
+                    ent = Entities:FindByName(nil, "relay_van_open")
+                    ent:RedirectOutput("OnTrigger", "GetOutOfCrashedVan", ent)
 
                     ent = Entities:FindByName(nil, "relay_weapon_pistol_fakefire")
                     ent:RedirectOutput("OnTrigger", "RedirectPistol", ent)
+
+                    ent = Entities:FindByName(nil, "camera_player")
+                    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+                    ent:SetParent(viewmodel, "")
+                    ent:SetLocalOrigin(Vector(0, 0, 0))
+                    ent:SetLocalAngles(0, 0, 0)
                 end
             else
                 SendToConsole("hidehud 64")
@@ -2048,9 +2054,14 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function GetOutOfCrashedVan(a, b)
-        SendToConsole("fadein 0.2")
-        SendToConsole("setpos_exact -1408 2307 -114")
-        SendToConsole("ent_fire 4962_car_door_left_front open")
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("fadeout 0.5")
+        end, "FadeOut", 1.5)
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("fadein 0.5")
+            SendToConsole("setpos_exact -1408 2307 -114")
+            SendToConsole("ent_fire 4962_car_door_left_front open")
+        end, "FadeIn", 2)
     end
 
     function RedirectPistol(a, b)
