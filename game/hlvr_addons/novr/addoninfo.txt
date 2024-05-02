@@ -10,5 +10,9 @@
 			parent_map = "a1_intro_world"
 			extension_map = "a1_intro_world_novr"
 		},
+		{
+			parent_map = "a1_intro_world_2"
+			extension_map = "a1_intro_world_2_novr"
+		},
 	]
 }
