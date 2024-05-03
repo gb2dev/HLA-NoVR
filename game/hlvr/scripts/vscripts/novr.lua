@@ -611,7 +611,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         local viewmodel = Entities:FindByClassname(nil, "viewmodel")
         local player = Entities:GetLocalPlayer()
 
-        if player:Attribute_GetIntValue("is_zoomed", 0) == 1 then
+        if player ~= nil and player:Attribute_GetIntValue("is_zoomed", 0) == 1 then
             return
         end
 
@@ -1508,6 +1508,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 1)
                         Entities:FindByName(nil, "toner_junction_3"):Attribute_SetIntValue("junction_rotation", 1)
 
+                        ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1298 2480 280", ["angles"]="0 22 0", ["modelscale"]=10})
+                        ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1100 2180 280", ["angles"]="0 22 0", ["modelscale"]=10})
+                        ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-1312 2504 280", ["angles"]="0 -67 0", ["modelscale"]=2})
+
                         ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER2_TITLE"})
                         DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
@@ -1591,6 +1595,13 @@ if GlobalSys:CommandLineCheck("-novr") then
                         local pos = ent:GetAbsOrigin()
                         local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hideout_gate_prop", ["CollisionGroupOverride"]=5, ["solid"]=6, ["DefaultAnim"]="vort_barrier_start_idle", ["renderamt"]=0, ["model"]=ent:GetModelName(), ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z - 20})
                         child:SetParent(ent, "")
+
+                        local player_clip = Entities:FindAllByClassname("func_brush")[1]
+                        local player_clip_name = player_clip:GetName()
+                        if vlua.find(player_clip_name, "clip_big_door_player")  then
+                            SendToConsole("ent_fire trigger_player_in_big_room AddOutput \"OnTrigger>" .. player_clip_name .. ">Enable>>0>-1\"")
+                            SendToConsole("ent_fire ss_kitchen_to_cardshow AddOutput \"OnScriptEvent01>" .. player_clip_name .. ">Disable>>1>-1\"")
+                        end
                     end
                 else
                     SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
