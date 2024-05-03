@@ -18,5 +18,9 @@
 			parent_map = "a2_quarantine_entrance"
 			extension_map = "a2_quarantine_entrance_novr"
 		},
+		{
+			parent_map = "a2_pistol"
+			extension_map = "a2_pistol_novr"
+		},
 	]
 }
