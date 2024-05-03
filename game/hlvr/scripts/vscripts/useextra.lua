@@ -1282,6 +1282,7 @@ elseif class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" th
     SendToConsole("give weapon_shotgun")
     SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
     SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
+    SendToConsole("ent_fire 12712_achievment_get_shotgun FireEvent")
 
     player:SetThink(function()
         SendToConsole("ent_fire 12712_shotgun_zombie_speak CancelSpeech")
