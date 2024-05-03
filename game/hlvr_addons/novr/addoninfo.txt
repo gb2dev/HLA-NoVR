@@ -22,5 +22,9 @@
 			parent_map = "a2_pistol"
 			extension_map = "a2_pistol_novr"
 		},
+		{
+			parent_map = "a2_hideout"
+			extension_map = "a2_hideout_novr"
+		},
 	]
 }
