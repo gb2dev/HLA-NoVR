@@ -26,5 +26,9 @@
 			parent_map = "a2_hideout"
 			extension_map = "a2_hideout_novr"
 		},
+		{
+			parent_map = "a2_headcrabs_tunnel"
+			extension_map = "a2_headcrabs_tunnel_novr"
+		},
 	]
 }
