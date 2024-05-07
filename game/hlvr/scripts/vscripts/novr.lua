@@ -1295,21 +1295,22 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end
                     end
 
+                    -- TODO: Make view bob more like HL2
                     local view_bob_x = sin(Time() * 8 % 6.28318530718) * move_delta.y * 0.0025
                     local view_bob_y = sin(Time() * 8 % 6.28318530718) * move_delta.x * 0.0025
                     local angle = player:GetAngles()
                     angle = QAngle(0, -angle.y, 0)
                     move_delta = RotatePosition(Vector(0, 0, 0), angle, player:GetVelocity())
 
-                    local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.07
-                    local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.07
+                    local weapon_sway_x = RotationDelta(look_delta, viewmodel:GetAngles()).y * 0.1
+                    local weapon_sway_y = RotationDelta(look_delta, viewmodel:GetAngles()).x * 0.1
 
                     look_delta = viewmodel:GetAngles()
 
                     -- Set weapon sway and view bob if zoom is not active
                     if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
-                        cvar_setf("viewmodel_offset_x", Lerp(0.06, cvar_getf("viewmodel_offset_x"), view_bob_x + weapon_sway_x))
-                        cvar_setf("viewmodel_offset_y", Lerp(0.06, cvar_getf("viewmodel_offset_y"), view_bob_y + weapon_sway_y))
+                        cvar_setf("viewmodel_offset_x", Lerp(0.07, cvar_getf("viewmodel_offset_x"), view_bob_x + weapon_sway_x))
+                        cvar_setf("viewmodel_offset_y", Lerp(0.07, cvar_getf("viewmodel_offset_y"), view_bob_y + weapon_sway_y))
                     end
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 30)
