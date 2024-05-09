@@ -1299,7 +1299,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     local move_delta_length = Vector(move_delta.x, move_delta.y, move_delta.z * 0.1):Length()
 
-                    local view_bob_x = sin(Time() * 6 % 6.28318530718) * move_delta_length * 0.0025
+                    local view_bob_x = sin(Time() * 6 % 6.28318530718) * move_delta_length * 0.0020
                     local view_bob_y = sin(Time() * 12 % 6.28318530718) * move_delta_length * 0.001
 
                     local angle = player:GetAngles()
@@ -1718,6 +1718,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = Entities:FindByName(nil, "167_18945_hint_multitool_on_tripmine_trigger_1")
                             ent:RedirectOutput("OnTrigger", "ShowCrouchJumpTutorial", ent)
+                            ent:RedirectOutput("OnTrigger", "UnlockTripmineAchievement", ent)
 
                             ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", Vector(780, 1614, 336), 10)
                             ent:RedirectOutput("OnOpen", "ExplodeFirstDoorMine", ent)
@@ -2061,6 +2062,12 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function DisableUICursor(a, b)
         SendToConsole("ent_fire point_clientui_world_panel IgnoreUserInput")
+    end
+
+    -- TODO: Do this when successfully hacking a tripmine
+    function UnlockTripmineAchievement(a, b)
+        local params = { ["userid"]=player:GetUserID() }
+        FireGameEvent("tripmine_hacked", params)
     end
 
     function GetOutOfCrashedVan(a, b)
