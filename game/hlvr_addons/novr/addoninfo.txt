@@ -34,5 +34,9 @@
 			parent_map = "a2_drainage"
 			extension_map = "a2_drainage_novr"
 		},
+		{
+			parent_map = "a2_train_yard"
+			extension_map = "a2_train_yard_novr"
+		},
 	]
 }
