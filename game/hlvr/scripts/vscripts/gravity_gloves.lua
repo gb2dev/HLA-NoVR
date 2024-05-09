@@ -105,6 +105,9 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
                 item_pickup_params.wasparentedto = parentClass
                 FireGameEvent("item_pickup", item_pickup_params)
             end
+            local grabbity_glove_pull_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
+            grabbity_glove_pull_params.wasparentedto = parentClass
+            FireGameEvent("grabbity_glove_pull", grabbity_glove_pull_params)
             local pos = thisEntity:GetOrigin()
             thisEntity:Kill()
             thisEntity = SpawnEntityFromTableSynchronous(class, {["origin"]="" .. pos.x .. " " .. pos.y .. " " .. pos.z})
