@@ -138,6 +138,7 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
                     DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0.02, player, player)
                 end, "", 0.02)
                 if vlua.find(thisEntity:GetSequence(), "vr_grenade_arm_") then
+                    print("[GameMenu] give_achievement SKILL_GGENEMY_GRENADE_MID_FLIGHT")
                     DoEntFireByInstanceHandle(thisEntity, "SetTimer", "3", 0, nil, nil)
                 end
             end
