@@ -1915,6 +1915,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             if not loading_save_file then
                                 ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER10_TITLE"})
                                 DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
+
+                                ent = Entities:FindByName(nil, "fade_out")
+                                ent:RedirectOutput("OnBeginFade", "CheckForGnome", ent)
                             end
                         elseif GetMapName() == "a4_c17_parking_garage" then
                             if loading_save_file then
@@ -1933,6 +1936,23 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 ent = Entities:FindByName(nil, "relay_shoot_gun")
                                 ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
+
+                                local function PrecacheModels()
+                                    local ent_table = { -- used solution by SoMNst & Epic
+                                        targetname = "novr_precachemodels",
+                                        vscripts = "novr_precache.lua"
+                                    }
+                                    SpawnEntityFromTableAsynchronous("logic_script", ent_table, nil, nil);
+                                end
+
+                                PrecacheModels()
+                                if Entities:GetLocalPlayer():Attribute_GetIntValue("HasGnome", 0) == 1 then
+                                    Entities:GetLocalPlayer():SetThink(function()
+                                        local gnome = SpawnEntityFromTableSynchronous("prop_physics", {["model"]="models/props/choreo_office/gnome.vmdl"})
+                                        gnome:SetOrigin(Entities:GetLocalPlayer():GetCenter())
+                                        gnome:SetEntityName("gnome")
+                                    end, "SpawnGnome", 1.0)
+                                end
                             end
                             Convars:RegisterCommand("novr_shootcombinegun", function()
                                 ent = Entities:FindByName(nil, "combine_gun_interact")
@@ -2068,6 +2088,15 @@ if GlobalSys:CommandLineCheck("-novr") then
     function UnlockTripmineAchievement(a, b)
         local params = { ["userid"]=player:GetUserID() }
         FireGameEvent("tripmine_hacked", params)
+    end
+
+    function CheckForGnome(a, b)
+        local ents = Entities:FindAllByClassnameWithin("prop_physics", Entities:GetLocalPlayer():GetCenter(), 100)
+        for k, v in pairs(ents) do
+            if vlua.find(v:GetModelName(), "models/props/choreo_office/gnome.vmdl") then
+                Entities:GetLocalPlayer():Attribute_SetIntValue("HasGnome", 1)
+            end
+        end
     end
 
     function GetOutOfCrashedVan(a, b)

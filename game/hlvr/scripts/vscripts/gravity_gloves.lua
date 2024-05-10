@@ -116,6 +116,8 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
 
     local grabbity_glove_catch_params = { ["userid"]=player:GetUserID() }
     FireGameEvent("grabbity_glove_catch", grabbity_glove_catch_params)
+    local grabbity_glove_pull_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
+    FireGameEvent("grabbity_glove_pull", grabbity_glove_pull_params)
     player:StopThink("GGTutorial")
     local direction = eyePos - thisEntity:GetAbsOrigin()
     thisEntity:ApplyAbsVelocityImpulse(Vector(direction.x * 2, direction.y * 2, direction.z * (115 / direction.z + 1.9)))
