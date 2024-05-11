@@ -1918,6 +1918,13 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 ent = Entities:FindByName(nil, "fade_out")
                                 ent:RedirectOutput("OnBeginFade", "CheckForGnome", ent)
+
+                                local player_clip = Entities:FindAllByClassname("func_brush")[1]
+                                local player_clip_name = player_clip:GetName()
+                                if vlua.find(player_clip_name, "fence_blocker_player")  then
+                                    ent = Entities:FindByClassnameNearest("trigger_once", Vector(2752, 5740, 384), 20)
+                                    DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip_name .. ">Disable>>0>-1", 0, nil, nil)
+                                end
                             end
                         elseif GetMapName() == "a4_c17_parking_garage" then
                             if loading_save_file then
