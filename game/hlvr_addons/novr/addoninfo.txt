@@ -38,5 +38,9 @@
 			parent_map = "a2_train_yard"
 			extension_map = "a2_train_yard_novr"
 		},
+		{
+			parent_map = "a3_station_street"
+			extension_map = "a3_station_street_novr"
+		},
 	]
 }
