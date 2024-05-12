@@ -46,5 +46,9 @@
 			parent_map = "a4_c17_water_tower"
 			extension_map = "a4_c17_water_tower_novr"
 		},
+		{
+			parent_map = "a4_c17_parking_garage"
+			extension_map = "a4_c17_parking_garage_novr"
+		},
 	]
 }
