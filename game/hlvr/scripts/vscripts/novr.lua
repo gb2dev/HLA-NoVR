@@ -1001,7 +1001,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
         elseif GetMapName() == "a5_vault" then
             if vlua.find(Entities:FindAllInSphere(Vector(-445, 2900, -515), 10), player) then
-                ClimbLadder(-450, Vector(0, 0, 1))
+                ClimbLadder(-440, Vector(0, 0, 0.5))
             end
         end
     end, "", 0)
@@ -1994,6 +1994,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:SetThink(function()
                                 SendToConsole("hidehud 67")
                             end, "", 0)
+                            SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
 
                             if not loading_save_file then
                                 Entities:GetLocalPlayer():Attribute_SetIntValue("grenade", 0)
@@ -2024,6 +2025,13 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 ent = Entities:FindByName(nil, "longcorridor_energysource_01_activate_relay")
                                 ent:RedirectOutput("OnTrigger", "GiveVortEnergy", ent)
+
+                                local player_clip = Entities:FindAllByClassname("func_brush")[1]
+                                local player_clip_name = player_clip:GetName()
+                                if vlua.find(player_clip_name, "rooftop_concretedislodge_brush_player")  then
+                                    ent = Entities:FindByName(nil, "rooftop_concretedislodge_relay")
+                                    DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip_name .. ">Disable>>0>-1", 0, nil, nil)
+                                end
                             else
                                 if Entities:GetLocalPlayer():Attribute_GetIntValue("vort_energy", 0) == 1 then
                                     GiveVortEnergy()
