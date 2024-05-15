@@ -51,6 +51,10 @@
 			extension_map = "a4_c17_parking_garage_novr"
 		},
 		{
+			parent_map = "a5_vault"
+			extension_map = "a5_vault_novr"
+		},
+		{
 			extension_map = "a5_ending_novr"
 			parent_map = "a5_ending"
 		},
