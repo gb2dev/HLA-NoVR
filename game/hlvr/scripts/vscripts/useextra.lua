@@ -795,10 +795,11 @@ if name == "toner_sliding_ladder" then
 end
 
 
----------- Other ----------
+---------- a5_endings ----------
 
 if name == "prop_crowbar" then
     thisEntity:Kill()
+    return
 end
 
 if name == "l_candler" or name == "r_candler" then
@@ -817,6 +818,9 @@ if name == "l_candler" or name == "r_candler" then
     SendToConsole("hudhearts_stopupdateloop")
     SendToConsole("wristpockets_stopupdateloop")
 end
+
+
+---------- Other ----------
 
 if name == "combine_gun_mechanical" then
     SendToConsole("bind J novr_leavecombinegun")

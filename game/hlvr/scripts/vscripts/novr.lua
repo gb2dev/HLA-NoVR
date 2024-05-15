@@ -1930,6 +1930,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                             if loading_save_file then
                                 SendToConsole("novr_leavecombinegun") -- avoid softlock
                             else
+                                SendToConsole("setpos -958 -842 910")
+
+                                SendToConsole("ent_fire template_spawn_black_headcrabs_01 AddOutput OnEntitySpawned>headcrab_black_underground_01>Kill>>0>-1\"")
+
                                 ent = Entities:FindByName(nil, "falling_cabinet_door")
                                 DoEntFireByInstanceHandle(ent, "DisablePickup", "", 0, nil, nil)
 
@@ -2047,6 +2051,15 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = Entities:FindByName(nil, "vcd_ending_eli")
                             ent:RedirectOutput("OnTrigger3", "EndCredits", ent)
+
+                            if not loading_save_file then
+                                local player_clip = Entities:FindAllByClassname("func_brush")[1]
+                                local player_clip_name = player_clip:GetName()
+                                if vlua.find(player_clip_name, "innervault_nobacktrack_brush_player")  then
+                                    ent = Entities:FindByClassnameNearest("trigger_once", Vector(620, -144, -2432), 20)
+                                    DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip_name .. ">Enable>>0>-1", 0, nil, nil)
+                                end
+                            end
                         end
                     end
                 end
