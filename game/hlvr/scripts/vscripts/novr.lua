@@ -884,7 +884,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("ent_fire elev_button_floor_1 Press")
                 end
             elseif vlua.find(Entities:FindAllInSphere(Vector(976, -1487, 208), 15), player) then
-                ClimbLadder(272, Vector(0, 0.8, 0.8))
+                ClimbLadder(280)
             end
         elseif GetMapName() == "a3_hotel_underground_pit" then
             if vlua.find(Entities:FindAllInSphere(Vector(2239, -1017, 528), 15), player) then
