@@ -131,7 +131,7 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
             if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
             end
-            if class == "item_hlvr_grenade_frag" then
+            if class == "item_hlvr_grenade_frag" or class == "item_hlvr_grenade_xen" then
                 SendToConsole("+use")
                 thisEntity:SetThink(function()
                     SendToConsole("-use")

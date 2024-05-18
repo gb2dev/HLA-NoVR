@@ -114,7 +114,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             if child and child:GetClassname() == "prop_dynamic" then
                 child:SetEntityName("held_prop_dynamic_override")
             end
-            if ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" then
+            if ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_grenade_xen" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" then
                 ent:Attribute_SetIntValue("picked_up", 1)
             end
             player:Attribute_SetIntValue("picked_up", 1)
