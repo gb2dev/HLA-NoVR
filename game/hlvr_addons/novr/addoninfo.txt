@@ -55,6 +55,10 @@
 			extension_map = "a3_hotel_interior_rooftop_novr"
 		},
 		{
+			parent_map = "a3_hotel_street"
+			extension_map = "a3_hotel_street_novr"
+		},
+		{
 			parent_map = "a4_c17_water_tower"
 			extension_map = "a4_c17_water_tower_novr"
 		},
