@@ -2114,7 +2114,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     -- TODO: Do this when successfully hacking a tripmine
     function UnlockTripmineAchievement(a, b)
-        local params = { ["userid"]=player:GetUserID() }
+        local params = { ["userid"]=Entities:GetLocalPlayer():GetUserID() }
         FireGameEvent("tripmine_hacked", params)
     end
 
