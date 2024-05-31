@@ -973,7 +973,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             end
         elseif GetMapName() == "a4_c17_tanker_yard" then
             if vlua.find(Entities:FindAllInSphere(Vector(6980, 2591, 13), 10), player) then
-                ClimbLadder(260)
+                ClimbLadder(270)
             elseif vlua.find(Entities:FindAllInSphere(Vector(6618, 2938, 334), 10), player) then
                 ClimbLadder(402)
             elseif vlua.find(Entities:FindAllInSphere(Vector(6069, 3902, 416), 10), player) then
@@ -1224,6 +1224,15 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 AddCollisionToPhysicsProps("prop_physics")
                 AddCollisionToPhysicsProps("prop_physics_override")
+
+                local trigger_crouch = Entities:FindByClassname(nil, "trigger_multiple")
+                while trigger_crouch do
+                    if vlua.find(trigger_crouch:GetName(), "trigger_crouch") then
+                        trigger_crouch:RedirectOutput("OnStartTouch", "StartCrouching", trigger_crouch)
+                        trigger_crouch:RedirectOutput("OnEndTouch", "StopCrouching", trigger_crouch)
+                    end
+                    trigger_crouch = Entities:FindByClassname(trigger_crouch, "trigger_multiple")
+                end
             else
                 if is_on_map_or_later("a2_pistol") then
                     SendToConsole("give weapon_physcannon")
@@ -2233,6 +2242,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                 DoEntFireByInstanceHandle(v, "PlayAnimation", "doorhandle_locked_anim", 0, nil, nil)
             end
         end
+    end
+
+    function StartCrouching(a, b)
+        SendToConsole("+duck")
+    end
+
+    function StopCrouching(a, b)
+        SendToConsole("-duck")
     end
 
     function ClimbLadder(height, push_direction)
