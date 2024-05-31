@@ -67,6 +67,14 @@
 			extension_map = "a3_distillery_novr"
 		},
 		{
+			parent_map = "a4_c17_zoo"
+			extension_map = "a4_c17_zoo_novr"
+		},
+		{
+			parent_map = "a4_c17_tanker_yard"
+			extension_map = "a4_c17_tanker_yard_novr"
+		},
+		{
 			parent_map = "a4_c17_water_tower"
 			extension_map = "a4_c17_water_tower_novr"
 		},
