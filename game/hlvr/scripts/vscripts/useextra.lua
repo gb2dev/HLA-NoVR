@@ -748,7 +748,7 @@ if map == "a3_distillery" then
     end
 
     if name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_jeff_in_freezer", 0) == 1 then
-        SendToConsole("ent_fire barricade_begin_exit_relay Trigger")
+        SendToConsole("ent_fire_output barricade_door_hook OnInteractStart")
     end
 
     if name == "tc_door_control" then
