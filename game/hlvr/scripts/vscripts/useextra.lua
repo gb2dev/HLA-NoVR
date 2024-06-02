@@ -1260,6 +1260,7 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
     end
 
     SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_NU 99\"")
+    SendToConsole("r_drawviewmodel 1")
 
     thisEntity:Kill()
     return

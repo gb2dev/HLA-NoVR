@@ -132,7 +132,7 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
     thisEntity:SetThink(function()
         local ents = Entities:FindAllInSphere(Entities:GetLocalPlayer():EyePosition(), 60)
         if vlua.find(ents, thisEntity) then
-            if not WristPockets_PickUpValuableItem(player, thisEntity) and thisEntity:GetMass() ~= 1 then
+            if not WristPockets_PickUpValuableItem(player, thisEntity) and (thisEntity:GetMass() ~= 1 or thisEntity:GetModelName() == "models/props/metal_box_1.vmdl") then
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
             end
             if class == "item_hlvr_grenade_frag" or class == "item_hlvr_grenade_xen" then

@@ -115,13 +115,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                 child:SetEntityName("held_prop_dynamic_override")
             end
             if ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_grenade_xen" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" then
+                SendToConsole("r_drawviewmodel 0")
                 ent:Attribute_SetIntValue("picked_up", 1)
             end
             player:Attribute_SetIntValue("picked_up", 1)
             player:SetThink(function()
                 player:Attribute_SetIntValue("picked_up", 0)
             end, "ResetPickedUp", 0.02)
-            DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0)>0.02>1", 0, nil, nil)
+            DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0);SendToConsole(\"r_drawviewmodel 1\")>0.02>1", 0, nil, nil)
             DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
         end
     end, nil)
