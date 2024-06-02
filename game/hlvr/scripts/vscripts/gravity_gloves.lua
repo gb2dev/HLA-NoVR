@@ -34,6 +34,10 @@ local ignore_props = {
     "models/props/construction/pallet_jack_1.vmdl",
     "models/props_junk/wood_crate001a.vmdl",
     "models/props/desk_1_drawer_middle.vmdl",
+    "models/industrial/padlock001a.vmdl",
+    "models/industrial/padlock001b.vmdl",
+    "models/industrial/padlock001c.vmdl",
+    "models/industrial/padlock001d.vmdl",
 }
 
 if player:Attribute_GetIntValue("used_gravity_gloves", 0) == 1 then
