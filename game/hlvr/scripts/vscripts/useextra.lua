@@ -523,9 +523,9 @@ end
 
 ---------- a1_intro_world_2 ----------
 
-if name == "russell_headset" then
-    SendToConsole("ent_fire debug_relay_put_on_headphones trigger")
-    SendToConsole("ent_fire 4962_car_door_left_front close")
+if name == "russell_headset" or name == "brush_block_window" then
+    SendToConsole("ent_fire debug_relay_put_on_headphones Trigger")
+    SendToConsole("ent_fire 4962_car_door_left_front Close")
 end
 
 if name == "carousel" then
