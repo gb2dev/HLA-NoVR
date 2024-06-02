@@ -114,9 +114,11 @@ if GlobalSys:CommandLineCheck("-novr") then
             if child and child:GetClassname() == "prop_dynamic" then
                 child:SetEntityName("held_prop_dynamic_override")
             end
-            if ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_grenade_xen" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" then
-                SendToConsole("r_drawviewmodel 0")
+            if ent:GetClassname() ~= "item_healthvial" and ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_grenade_xen" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" then
                 ent:Attribute_SetIntValue("picked_up", 1)
+                ent:SetThink(function()
+                    SendToConsole("r_drawviewmodel 0")
+                end, "DoesEntStillExist", 0)
             end
             player:Attribute_SetIntValue("picked_up", 1)
             player:SetThink(function()
@@ -390,15 +392,19 @@ if GlobalSys:CommandLineCheck("-novr") then
         -- Reflex Sight
         if value == "0" then
             Convars:SetStr("chosen_upgrade", "pistol_upgrade_aimdownsights")
+            print("[GameMenu] give_achievement TRAINING_FIRST_PISTOL_UPGRADE")
         -- Burst Fire
         elseif value == "1" then
             Convars:SetStr("chosen_upgrade", "pistol_upgrade_burstfire")
+            print("[GameMenu] give_achievement TRAINING_FIRST_PISTOL_UPGRADE")
         -- Bullet Reservoir
         elseif value == "2" then
             Convars:SetStr("chosen_upgrade", "pistol_upgrade_hopper")
+            print("[GameMenu] give_achievement TRAINING_FIRST_PISTOL_UPGRADE")
         -- Laser Sight
         elseif value == "3" then
             Convars:SetStr("chosen_upgrade", "pistol_upgrade_lasersight")
+            print("[GameMenu] give_achievement TRAINING_FIRST_PISTOL_UPGRADE")
         else
             return
         end
@@ -1061,6 +1067,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 if Convars:GetBool("vr_enable_fake_vr") then
                     SendToConsole("vr_fakemove_mlook_speed 0")
                     SendToConsole("vr_fakemove_speed 0")
+                    SendToConsole("achievement_disable 1")
                     ent = SpawnEntityFromTableSynchronous("info_hlvr_equip_player", {["energygun"]=true, ["pistol_upgrade_reflexsight"]=true})
                     DoEntFireByInstanceHandle(ent, "EquipNow", "", 0, nil, nil)
                     Entities:GetLocalPlayer():SetThink(function()
@@ -2121,6 +2128,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         print("[GameMenu] main_menu_mode")
         Entities:GetLocalPlayer():SetThink(function()
             SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
+            SendToConsole("achievement_disable 0")
         end, "SetGameUIState", 0.1)
     end
 
