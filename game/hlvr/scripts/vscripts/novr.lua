@@ -791,6 +791,19 @@ if GlobalSys:CommandLineCheck("-novr") then
         }
         TraceLine(eyetrace)
         if eyetrace.hit then
+            local ent = Entities:FindByClassnameNearest("prop_handpose", eyetrace.pos, 20)
+            if ent then
+                ent = Entities:FindAllByClassname("point_soundevent")
+                for k, v in pairs(ent) do
+                    if vlua.find(v:GetName(), "snd_car_horn") and VectorDistanceSq(eyetrace.pos, v:GetCenter()) < 3000 then
+                        DoEntFireByInstanceHandle(v, "StartSound", "", 0, nil, nil)
+                        v:SetThink(function()
+                            DoEntFireByInstanceHandle(v, "StopSound", "", 0, nil, nil)
+                        end, "StopSound", 1)
+                    end
+                end
+            end
+
             local minDistanceEnt
             local minDistance
             for k, v in pairs(Entities:FindAllInSphere(eyetrace.pos, 10)) do
