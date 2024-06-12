@@ -124,7 +124,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             player:SetThink(function()
                 player:Attribute_SetIntValue("picked_up", 0)
             end, "ResetPickedUp", 0.02)
-            DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0);SendToConsole(\"r_drawviewmodel 1\")>0.02>1", 0, nil, nil)
+            DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0);if Convars:GetInt(\"hidehud\") ~= 96 and Convars:GetInt(\"hidehud\") ~= 1 then SendToConsole(\"r_drawviewmodel 1\") end>0.02>1", 0, nil, nil)
             DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
         end
     end, nil)
@@ -2179,11 +2179,14 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function EquipPistol(a, b)
+        local player = Entities:GetLocalPlayer()
         SendToConsole("ent_fire_output weapon_equip_listener OnEventFired")
         SendToConsole("hidehud 64")
-        SendToConsole("r_drawviewmodel 1")
         SendToConsole("ent_fire item_hlvr_weapon_energygun kill")
-        Entities:GetLocalPlayer():Attribute_SetIntValue("pistol", 1)
+        player:Attribute_SetIntValue("pistol", 1)
+        player:SetThink(function()
+            SendToConsole("r_drawviewmodel 1")
+        end, "ShowPistolViewmodel", 0.02)
     end
 
     function DisableHideoutPuzzleButtons(a, b)

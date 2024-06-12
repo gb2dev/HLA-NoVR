@@ -1260,7 +1260,9 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
     end
 
     SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_NU 99\"")
-    SendToConsole("r_drawviewmodel 1")
+    if Convars:GetInt("hidehud") ~= 96 and Convars:GetInt("hidehud") ~= 1 then
+        SendToConsole("r_drawviewmodel 1")
+    end
 
     thisEntity:Kill()
     return
