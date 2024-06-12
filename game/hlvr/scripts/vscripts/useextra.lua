@@ -1268,6 +1268,38 @@ if model == "models/props/construction/hat_construction.vmdl" and name ~= "hat_c
     return
 end
 
+if (model == "models/props/hazmat/respirator_01b.vmdl" or model == "models/props/hazmat/respirator_01a.vmdl") and name ~= "respirator" then
+    if Entities:FindByName(nil, "respirator_viewmodel") then
+        return
+    end
+
+    if player:Attribute_GetIntValue("wearable_tutorial_shown", 0) == 0 then
+        player:Attribute_SetIntValue("wearable_tutorial_shown", 1)
+        SendToConsole("ent_fire text_wearable ShowMessage")
+        SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
+    end
+
+    local ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="respirator_viewmodel", ["model"]="models/props/hazmat/respirator_01a.vmdl", ["disableshadows"]=true, ["solid"]=0})
+    local viewmodel = Entities:FindByClassname(nil, "viewmodel")
+    ent:SetParent(viewmodel, "")
+    ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(1, 0, -5.5)))
+    ent:SetLocalAngles(0, -10, 0)
+
+    SendToConsole("ent_fire lefthand Disable;novr_uncover_mouth")
+    SendToConsole("snd_sos_start_soundevent Player.Gasmask_On")
+    SendToConsole("ent_fire !player suppresscough 1;ent_fire_output @player_proxy OnPlayerCoverMouth")
+    SendToConsole("alias +covermouth \"\"")
+    SendToConsole("alias -covermouth \"\"")
+
+    SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_NU 99\"")
+    if Convars:GetInt("hidehud") ~= 96 and Convars:GetInt("hidehud") ~= 1 then
+        SendToConsole("r_drawviewmodel 1")
+    end
+
+    thisEntity:Kill()
+    return
+end
+
 if class == "item_item_crate" then
     DoEntFireByInstanceHandle(thisEntity, "SetHealth", "0", 0, nil, nil)
 end

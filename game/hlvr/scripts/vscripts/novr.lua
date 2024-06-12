@@ -212,7 +212,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                         ent:Attribute_SetIntValue("used", 1)
                         DoEntFireByInstanceHandle(ent, "BeginHack", "", 0, nil, nil)
-                        
+
                         if not vlua.find(name, "cshield") and not vlua.find(name, "switch_box") then
                             -- TODO: Re-enable hacking minigame when it's less buggy
                             -- if parent:GetModelName() == "models/props_combine/combine_lockers/combine_locker_doors.vmdl" then
@@ -295,6 +295,24 @@ if GlobalSys:CommandLineCheck("-novr") then
             Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_HT 99\"")
             end, "HostileBarnacles", 0.2)
+        else
+            ent = Entities:FindByName(nil, "respirator_viewmodel")
+            if ent then
+                local respirator = SpawnEntityFromTableSynchronous("prop_physics", {["model"]="models/props/hazmat/respirator_01a.vmdl"})
+                respirator:SetOrigin(Entities:GetLocalPlayer():EyePosition())
+                local angles = Entities:GetLocalPlayer():EyeAngles()
+                respirator:SetAngles(angles.x, angles.y, angles.z)
+
+                SendToConsole("snd_sos_start_soundevent Player.Gasmask_Remove")
+                SendToConsole("ent_fire !player suppresscough 0;ent_fire_output @player_proxy OnPlayerUncoverMouth")
+                SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy OnPlayerUncoverMouth;ent_fire lefthand Disable;novr_uncover_mouth\"")
+                SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy OnPlayerCoverMouth;ent_fire lefthand Enable;novr_cover_mouth\"")
+                ent:Kill()
+
+                Entities:GetLocalPlayer():SetThink(function()
+                    SendToConsole("ent_fire npc_barnacle SetRelationship \"player D_HT 99\"")
+                end, "HostileBarnacles", 0.2)
+            end
         end
     end, "", 0)
 
@@ -555,7 +573,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         else
             WristPockets_UseGrenade()
         end
-        
+
         local ent = SpawnEntityFromTableSynchronous(class, {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
         ent:SetOwner(player)
         if class == "item_hlvr_grenade_frag" then
@@ -1859,9 +1877,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 DoEntFireByInstanceHandle(ent, "Kill", "", 0, nil, nil)
                             end
 
-                            -- TODO: Fix error model for this plank
-                            -- ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["solid"]=6, ["modelscale"]=0.9, ["model"]="models/rural/barn_loose_boards_03.vmdl", ["origin"]="196 40 546.5", ["angles"]="3 0 0"})
-
                             -- Detect shooting so Jeff hears it
                             ent = SpawnEntityFromTableSynchronous("trigger_detect_bullet_fire", {["targetname"]="bullet_trigger", ["modelscale"]=1000, ["model"]="models/hacking/holo_hacking_sphere_prop.vmdl"})
                             DoEntFireByInstanceHandle(ent, "AddOutput", "OnDetectedBulletFire>!player>GenerateBlindZombieSound>>0>-1", 0, nil, nil)
@@ -2478,7 +2493,12 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function LarrySeesWearable()
+        -- TODO: Add respirator voice line
         local ent = Entities:FindByName(nil, "hat_construction_viewmodel")
+        if ent then
+            SendToConsole("ent_fire_output @player_proxy OutPlayerIsWearingHat " .. ent:GetModelName())
+        end
+        ent = Entities:FindByName(nil, "respirator_viewmodel")
         if ent then
             SendToConsole("ent_fire_output @player_proxy OutPlayerIsWearingHat " .. ent:GetModelName())
         end
@@ -2589,6 +2609,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
         SendToConsole("phys_pushscale 1")
         SendToConsole("ent_remove hat_construction_viewmodel")
+        SendToConsole("ent_remove respirator_viewmodel")
     end
 
     function ShowVortEnergyTutorial()
