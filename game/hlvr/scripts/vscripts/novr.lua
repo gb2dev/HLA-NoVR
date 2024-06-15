@@ -118,7 +118,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent:Attribute_SetIntValue("picked_up", 1)
                 ent:SetThink(function()
                     SendToConsole("r_drawviewmodel 0")
-                end, "DoesEntStillExist", 0)
+                end, "DoesEntStillExist", 0.02)
             end
             player:Attribute_SetIntValue("picked_up", 1)
             player:SetThink(function()
