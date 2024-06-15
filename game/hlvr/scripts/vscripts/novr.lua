@@ -117,7 +117,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             if ent:GetClassname() ~= "item_healthvial" and ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_grenade_xen" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" then
                 ent:Attribute_SetIntValue("picked_up", 1)
                 ent:SetThink(function()
-                    SendToConsole("r_drawviewmodel 0")
+                    if ent:GetModelName() ~= "models/interaction/anim_interact/hand_crank_wheel/hand_crank_wheel.vmdl" then
+                        SendToConsole("r_drawviewmodel 0")
+                    end
                 end, "DoesEntStillExist", 0.02)
             end
             player:Attribute_SetIntValue("picked_up", 1)
