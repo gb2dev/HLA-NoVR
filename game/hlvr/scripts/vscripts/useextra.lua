@@ -145,6 +145,14 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         thisEntity:FireOutput("OnCompletionB", nil, nil, nil, 0)
     end
 
+    if name == "greenhouse_door" then
+        count = thisEntity:GetCycle()
+        StartSoundEvent("Sliding_Window.Down", player)
+        player:SetThink(function()
+            StopSoundEvent("Sliding_Window.Down", player)
+        end, "StopGreenhouseDoorSound", 1)
+    end
+
     if name == "barricade_door_hook" then
         count = thisEntity:GetCycle()
     end
