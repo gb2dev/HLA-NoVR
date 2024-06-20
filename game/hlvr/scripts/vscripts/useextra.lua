@@ -452,6 +452,21 @@ if name == "greenhouse_door_lock" then
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
 end
 
+if name == "205_2724_hingecam" then
+    SendToConsole("bind J novr_leavehingecam")
+    if thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+        DoEntFireByInstanceHandle(ent, "SetText", "Press [J] to get out", 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+
+        ent = Entities:FindByName(nil, "205_2724_hingecam") -- parent hingecam entity
+        ent:Attribute_SetIntValue("ready", 1)
+        ent:SaveQAngle("OrigAngle", ent:GetAngles())
+    end
+    EquipHingeCam(player)
+    thisEntity:Attribute_SetIntValue("used", 1)
+end
+
 if name == "205_2653_door" or name == "205_2653_door2" or name == "205_8018_button_pusher_prop" then
     SendToConsole("ent_fire debug_roof_elevator_call_relay trigger")
 end
@@ -802,6 +817,21 @@ if name == "toner_sliding_ladder" then
     ClimbLadder(160)
 end
 
+if name == "combine_gun_mechanical" then
+    SendToConsole("bind J novr_leavecombinegun")
+    if thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
+        DoEntFireByInstanceHandle(ent, "SetText", "Press [J] to get out", 0, nil, nil)
+        DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+
+        ent = Entities:FindByName(nil, "combine_gun_interact") -- parent gun entity
+        ent:Attribute_SetIntValue("ready", 1)
+        ent:SaveQAngle("OrigAngle", ent:GetAngles())
+    end
+    EquipCombineGunMechanical(player)
+    thisEntity:Attribute_SetIntValue("used", 1)
+end
+
 
 ---------- a5_endings ----------
 
@@ -829,21 +859,6 @@ end
 
 
 ---------- Other ----------
-
-if name == "combine_gun_mechanical" then
-    SendToConsole("bind J novr_leavecombinegun")
-	if thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-		local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=5, ["x"]=-1, ["y"]=0.6})
-		DoEntFireByInstanceHandle(ent, "SetText", "Press [J] to get out", 0, nil, nil)
-		DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
-
-		ent = Entities:FindByName(nil, "combine_gun_interact") -- parent gun entity
-		ent:Attribute_SetIntValue("ready", 1)
-		ent:SaveQAngle("OrigAngle", ent:GetAngles())
-	end
-	EquipCombineGunMechanical(player)
-    thisEntity:Attribute_SetIntValue("used", 1)
-end
 
 -- Call elevator button
 if name == "18918_5275_button_pusher_prop" then
@@ -1319,9 +1334,9 @@ end
 
 -- Weapons
 if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
-	SendToConsole("give weapon_pistol")
-	SendToConsole("ent_remove weapon_bugbait")
-	thisEntity:Kill()
+    SendToConsole("give weapon_pistol")
+    SendToConsole("ent_remove weapon_bugbait")
+    thisEntity:Kill()
 elseif class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" then
     item_pickup_params.item = "hlvr_weapon_shotgun"
     FireGameEvent("item_pickup", item_pickup_params)
@@ -1451,10 +1466,10 @@ elseif class == "item_hlvr_grenade_frag" then
         end
 
         if WristPockets_PlayerHasFreePocketSlot(player) then
-			-- player can store max 2 grenades in pockets
-			-- all grenades will go straight into pockets if there is capacity
-			WristPockets_PickUpGrenade(player, thisEntity)
-			FireGameEvent("item_pickup", item_pickup_params)
+            -- player can store max 2 grenades in pockets
+            -- all grenades will go straight into pockets if there is capacity
+            WristPockets_PickUpGrenade(player, thisEntity)
+            FireGameEvent("item_pickup", item_pickup_params)
             SendToConsole("viewmodel_update")
 
             StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
@@ -1462,7 +1477,7 @@ elseif class == "item_hlvr_grenade_frag" then
             local viewmodel = Entities:FindByClassname(nil, "viewmodel")
             viewmodel:RemoveEffects(32)
             thisEntity:Kill()
-		end
+        end
     end
 elseif class == "item_healthvial" then
     thisEntity:Attribute_SetIntValue("picked_up", 0)
@@ -1480,8 +1495,8 @@ elseif class == "item_healthvial" then
         SendToConsole("ent_fire text_syringe ShowMessage")
         SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
     else
-		WristPockets_PickUpHealthPen(player, thisEntity)
-		FireGameEvent("item_pickup", item_pickup_params)
+        WristPockets_PickUpHealthPen(player, thisEntity)
+        FireGameEvent("item_pickup", item_pickup_params)
     end
 elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_vial" or class == "prop_reviver_heart" then
     if thisEntity:Attribute_GetIntValue("no_pick_up", 0) == 0 then
@@ -1500,14 +1515,14 @@ elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_v
             end
         elseif class == "item_hlvr_prop_battery" or class == "prop_reviver_heart" then
             -- do not pick up batteries if already mounted in combine machines
-            local entcombineconsole = Entities:FindByClassnameNearest("prop_animinteractable", thisEntity:GetOrigin(), 70) 
+            local entcombineconsole = Entities:FindByClassnameNearest("prop_animinteractable", thisEntity:GetOrigin(), 70)
             if entcombineconsole ~= nil then
                 if not string.match(entcombineconsole:GetModelName(), "vr_console_rack_1") then
                     WristPockets_PickUpValuableItem(player, thisEntity)
                 end
             else
                 -- battery post
-                local entcombinepost = Entities:FindByClassnameNearest("prop_dynamic", thisEntity:GetOrigin(), 40) 
+                local entcombinepost = Entities:FindByClassnameNearest("prop_dynamic", thisEntity:GetOrigin(), 40)
                 if entcombinepost ~= nil then
                     if not string.match(entcombinepost:GetModelName(), "combine_battery_post") and not string.match(entcombinepost:GetModelName(), "combine_battery_large") then
                         WristPockets_PickUpValuableItem(player, thisEntity)
