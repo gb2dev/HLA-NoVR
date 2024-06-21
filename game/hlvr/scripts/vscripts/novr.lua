@@ -2137,10 +2137,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                             if not loading_save_file then
                                 local player_clip = Entities:FindAllByClassname("func_brush")[1]
                                 local player_clip_name = player_clip:GetName()
+                                ent = Entities:FindByClassnameNearest("trigger_once", Vector(620, -144, -2432), 20)
                                 if vlua.find(player_clip_name, "innervault_nobacktrack_brush_player")  then
-                                    ent = Entities:FindByClassnameNearest("trigger_once", Vector(620, -144, -2432), 20)
                                     DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip_name .. ">Enable>>0>-1", 0, nil, nil)
                                 end
+                                ent:RedirectOutput("OnTrigger", "GrabCandlers", ent)
                             end
                         end
                     end
@@ -2670,6 +2671,25 @@ if GlobalSys:CommandLineCheck("-novr") then
     function RemoveVortEnergy(a, b)
         SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
         Entities:GetLocalPlayer():Attribute_SetIntValue("vort_energy", 0)
+    end
+
+    function GrabCandlers(a, b)
+        player:SetThink(function()
+            player:Attribute_SetIntValue("disable_unstuck", 1)
+            SendToConsole("ent_fire innervault_energize_event_relay Kill")
+            SendToConsole("ent_fire_output g_release_hand1 OnHandPosed")
+            SendToConsole("ent_fire_output g_release_hand2 OnHandPosed")
+            SendToConsole("ent_fire player_speedmod ModifySpeed 0")
+            -- If subtitles are deactivated hide also the custom hud elements
+            if Convars:GetStr("cc_subtitles") == "0" then
+                SendToConsole("r_drawvgui 0")
+            else
+                SendToConsole("hidehud 4")
+            end
+            -- Just to make sure the heart icons are gone, hidehud 4 seems fine
+            SendToConsole("hudhearts_stopupdateloop")
+            SendToConsole("wristpockets_stopupdateloop")
+        end, "GrabCandlers", 5)
     end
 
     function GiveAdvisorVortEnergy(a, b)

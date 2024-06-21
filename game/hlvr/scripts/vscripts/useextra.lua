@@ -848,23 +848,6 @@ if name == "prop_crowbar" then
     return
 end
 
-if name == "l_candler" or name == "r_candler" then
-    player:Attribute_SetIntValue("disable_unstuck", 1)
-    SendToConsole("ent_fire innervault_energize_event_relay Kill")
-    SendToConsole("ent_fire_output g_release_hand1 OnHandPosed")
-    SendToConsole("ent_fire_output g_release_hand2 OnHandPosed")
-    SendToConsole("ent_fire player_speedmod ModifySpeed 0")
-    -- If subtitles are deactivated hide also the custom hud elements
-    if Convars:GetStr("cc_subtitles") == "0" then
-        SendToConsole("r_drawvgui 0")
-    else
-        SendToConsole("hidehud 4")
-    end
-    -- Just to make sure the heart icons are gone, hidehud 4 seems fine
-    SendToConsole("hudhearts_stopupdateloop")
-    SendToConsole("wristpockets_stopupdateloop")
-end
-
 
 ---------- Other ----------
 
