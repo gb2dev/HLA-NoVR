@@ -680,6 +680,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end, "ZoomActivate", 0.5)
                         SendToConsole("hud_draw_fixed_reticle 0")
                         SendToConsole("crosshair 0")
+                        SendToConsole("pistol_use_new_accuracy 1")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
                         SendToConsole("ent_fire ads_zoom_out zoom")
@@ -689,6 +690,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ViewmodelAnimation_ADStoHIP()
                         if player:Attribute_GetIntValue("pistol_upgrade_lasersight", 0) == 0 then
                             SendToConsole("hud_draw_fixed_reticle 1")
+                            SendToConsole("pistol_use_new_accuracy 0")
                         else
                             SendToConsole("crosshair 1")
                         end
@@ -1749,6 +1751,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             ent = Entities:FindByName(nil, "door")
                             DoEntFireByInstanceHandle(ent, "SetOpenDirection", "" .. 2, 0, nil, nil)
+
+                            ent = Entities:FindByName(nil, "patrol_trigger_seq_cancel")
+                            ent:SetOrigin(Vector(1834, -40, -488))
                         end
                     elseif GetMapName() == "a3_hotel_lobby_basement" then
                         Entities:FindByName(nil, "power_stake_2_start"):Attribute_SetIntValue("used", 1)
