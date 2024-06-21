@@ -1473,7 +1473,9 @@ elseif class == "item_hlvr_grenade_frag" then
 elseif class == "item_healthvial" then
     thisEntity:Attribute_SetIntValue("picked_up", 0)
     if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
-        player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
+        if player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
+            player:Attribute_SetIntValue("syringe_tutorial_shown", 1)
+        end
         player:SetContextNum("used_health_pen", 1, 10)
         player:SetHealth(min(player:GetHealth() + cvar_getf("hlvr_health_vial_amount"), player:GetMaxHealth()))
         FireGameEvent("item_pickup", item_pickup_params)
