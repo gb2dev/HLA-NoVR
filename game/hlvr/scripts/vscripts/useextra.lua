@@ -468,11 +468,19 @@ if name == "205_2724_hingecam" then
 end
 
 if name == "205_2653_door" or name == "205_2653_door2" or name == "205_8018_button_pusher_prop" then
-    SendToConsole("ent_fire debug_roof_elevator_call_relay trigger")
+    if player:Attribute_GetIntValue("CalledIntroRoofElevator", 0) == 0 then
+        SendToConsole("ent_fire debug_roof_elevator_call_relay trigger")
+        SendToConsole("snd_sos_start_soundevent Button_Basic.Press")
+        player:Attribute_SetIntValue("CalledIntroRoofElevator", 1)
+    end
 end
 
 if name == "205_8032_button_pusher_prop" then
-    SendToConsole("ent_fire_output 205_8032_button_center_pusher OnIn")
+    if player:Attribute_GetIntValue("UsedIntroRoofElevator", 0) == 0 then
+        SendToConsole("ent_fire_output 205_8032_button_center_pusher OnIn")
+        SendToConsole("snd_sos_start_soundevent Button_Basic.Press")
+        player:Attribute_SetIntValue("UsedIntroRoofElevator", 1)
+    end
 end
 
 if model == "models/props/eli_manor/antique_globe01a.vmdl" then

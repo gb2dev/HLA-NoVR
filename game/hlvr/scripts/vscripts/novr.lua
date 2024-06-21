@@ -1488,7 +1488,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     ent:RedirectOutput("OnTrigger", "ShowLadderTutorial", ent)
 
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="-541.6 1770.1 133.4", ["angles"]="0 0 0", ["modelscale"]=2})
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_2", ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="-903.2 1691.6 111", ["angles"]="0 0 0", ["modelscale"]=2})
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="light_switch_2", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="-903.2 1691.6 111", ["angles"]="0 0 0", ["modelscale"]=2})
 
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_1", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="1473.99 -853.165 -347.75", ["angles"]="0 0 0", ["modelscale"]=2})
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["targetname"]="washing_machine_button_2", ["solid"]=6, ["renderamt"]=0, ["model"]="models/props/lightswitch_2_switch.vmdl", ["origin"]="1393.17 -923.015 -347.75", ["angles"]="0 0 0", ["modelscale"]=2})
@@ -1515,7 +1515,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("ent_fire 205_2724_hingecam enablecollision")
                             SendToConsole("ent_fire player_speedmod ModifySpeed 1")
                             SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
-                            SendToConsole("r_drawviewmodel 1")
                             SendToConsole("unbind J")
                         end
                     end, "", 0)
