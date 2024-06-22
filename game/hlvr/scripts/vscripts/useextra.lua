@@ -970,11 +970,12 @@ end
 
 if map == "a3_hotel_interior_rooftop" and name == "window_sliding1" then
     SendToConsole("fadein 0.2")
-    SendToConsole("setpos_exact 788 -1420 576")
+    SendToConsole("setpos 788 -1420 576")
     SendToConsole("-use")
     thisEntity:SetThink(function()
         SendToConsole("+use")
     end, "", 0)
+    CheckForGnome(nil, nil)
 end
 
 if name == "2860_window_sliding1" then

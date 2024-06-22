@@ -2225,7 +2225,11 @@ if GlobalSys:CommandLineCheck("-novr") then
         local ents = Entities:FindAllByClassnameWithin("prop_physics", Entities:GetLocalPlayer():GetCenter(), 100)
         for k, v in pairs(ents) do
             if vlua.find(v:GetModelName(), "models/props/choreo_office/gnome.vmdl") then
-                Entities:GetLocalPlayer():Attribute_SetIntValue("HasGnome", 1)
+                if GetMapName() == "a3_hotel_interior_rooftop" then
+                    v:SetOrigin(Vector(792, -1420, 576))
+                else
+                    Entities:GetLocalPlayer():Attribute_SetIntValue("HasGnome", 1)
+                end
             end
         end
     end
