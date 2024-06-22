@@ -110,6 +110,17 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
         local ent = EntIndexToHScript(info.entindex)
         if ent then
+            if ent:GetClassname() == "item_hlvr_grenade_frag" then
+                ent:Attribute_SetIntValue("picked_up", 1)
+                ent:SetThink(function()
+                    if ent:GetMass() == 1 then
+                        return 0
+                    end
+
+                    -- Grenade dropped
+                    ent:Attribute_SetIntValue("picked_up", 0)
+                end, "CheckGrenadeDrop", 0)
+            end
             local child = ent:GetChildren()[1]
             if child and child:GetClassname() == "prop_dynamic" then
                 child:SetEntityName("held_prop_dynamic_override")
@@ -570,19 +581,30 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("throwgrenade", function(name, launcher)
         local player = Entities:GetLocalPlayer()
-        local playerhasxengrenade = WristPockets_PlayerHasXenGrenade()
-        if not WristPockets_PlayerHasGrenade() and not playerhasxengrenade then
+        local player_holding_grenade = false
+        local ents = Entities:FindAllByClassname("item_hlvr_grenade_frag")
+        for k, v in pairs(ents) do
+            if v:GetMass() == 1 then
+                v:Kill()
+                player_holding_grenade = true
+            end
+        end
+
+        local player_has_xen_grenade = WristPockets_PlayerHasXenGrenade()
+        if not WristPockets_PlayerHasGrenade() and not player_has_xen_grenade then
             SendToConsole("snd_sos_start_soundevent PlayerTeleport.Fail")
             return
         end
         local pos = player:EyePosition()
         local class = "item_hlvr_grenade_frag"
         -- Remove xen grenade or frag grenade from wristpocket slots
-        if playerhasxengrenade then
-            class = "item_hlvr_grenade_xen"
-            WristPockets_UseXenGrenade()
-        else
-            WristPockets_UseGrenade()
+        if not player_holding_grenade then
+            if player_has_xen_grenade then
+                class = "item_hlvr_grenade_xen"
+                WristPockets_UseXenGrenade()
+            else
+                WristPockets_UseGrenade()
+            end
         end
 
         local ent = SpawnEntityFromTableSynchronous(class, {["targetname"]="player_grenade", ["origin"]=pos.x .. " " .. pos.y .. " " .. pos.z})
