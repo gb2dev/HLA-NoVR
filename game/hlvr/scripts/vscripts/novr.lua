@@ -129,11 +129,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ent:Attribute_SetIntValue("picked_up", 1)
                 ent:SetThink(function()
                     local ent2 = Entities:FindByName(nil, "hat_construction_viewmodel")
-                    if ent2 ~= nil then
-                        return
-                    end
-                    ent2 = Entities:FindByName(nil, "respirator_viewmodel")
-                    if ent2 ~= nil then
+                    local ent3 = Entities:FindByName(nil, "respirator_viewmodel")
+                    if ent2 == nil and ent3 == nil then
                         return
                     end
 
