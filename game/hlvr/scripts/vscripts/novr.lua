@@ -1762,6 +1762,9 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                             -- TODO: Remove when Map Edits are done
                             ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["solid"]=6, ["renderamt"]=0, ["model"]="models/architecture/metal_siding/metal_siding_32_a.vmdl", ["origin"]="2320 -1854 834", ["angles"]="0 0 0", ["modelscale"]=0.5})
+
+                            -- Prevent picking up window
+                            SendToConsole("ent_fire window_sliding1* SetMass 501")
                         end
                     elseif GetMapName() == "a3_station_street" then
                         if not loading_save_file then
@@ -2702,6 +2705,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function GrabCandlers(a, b)
+        local player = Entities:GetLocalPlayer()
         player:SetThink(function()
             player:Attribute_SetIntValue("disable_unstuck", 1)
             SendToConsole("ent_fire innervault_energize_event_relay Kill")
