@@ -403,6 +403,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     if unstuck_count >= 1 then
                         player:SetOrigin(unstuck_table[1])
+                        SendToConsole("fadein 0.2")
                         unstuck_count = 0
                     else
                         unstuck_count = unstuck_count + 1
@@ -585,6 +586,15 @@ if GlobalSys:CommandLineCheck("-novr") then
                 player_holding_grenade = true
             end
         end
+        local player_holding_xen_grenade = false
+        ents = Entities:FindAllByClassname("item_hlvr_grenade_xen")
+        for k, v in pairs(ents) do
+            if v:GetMass() == 1 then
+                v:Kill()
+                player_holding_grenade = true
+                player_holding_xen_grenade = true
+            end
+        end
 
         local player_has_xen_grenade = WristPockets_PlayerHasXenGrenade()
         if not WristPockets_PlayerHasGrenade() and not player_has_xen_grenade then
@@ -594,7 +604,11 @@ if GlobalSys:CommandLineCheck("-novr") then
         local pos = player:EyePosition()
         local class = "item_hlvr_grenade_frag"
         -- Remove xen grenade or frag grenade from wristpocket slots
-        if not player_holding_grenade then
+        if player_holding_grenade then
+            if player_holding_xen_grenade then
+                class = "item_hlvr_grenade_xen"
+            end
+        else
             if player_has_xen_grenade then
                 class = "item_hlvr_grenade_xen"
                 WristPockets_UseXenGrenade()
