@@ -597,7 +597,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         end
 
         local player_has_xen_grenade = WristPockets_PlayerHasXenGrenade()
-        if not WristPockets_PlayerHasGrenade() and not player_has_xen_grenade then
+        if not player_holding_grenade and not WristPockets_PlayerHasGrenade() and not player_has_xen_grenade then
             SendToConsole("snd_sos_start_soundevent PlayerTeleport.Fail")
             return
         end
