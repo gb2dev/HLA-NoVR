@@ -961,7 +961,14 @@ if GlobalSys:CommandLineCheck("-novr") then
                 ClimbLadder(570)
             end
         elseif GetMapName() == "a3_hotel_interior_rooftop" then
-            if vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
+            if vlua.find(Entities:FindAllInSphere(Vector(763.5, -1424, 578), 50), player) then
+                if player:Attribute_GetIntValue("entered_hotel_rooftop_window", 0) == 0 then
+                    SendToConsole("fadein 0.2")
+                    SendToConsole("setpos 788 -1420 576")
+                    CheckForGnome(nil, nil)
+                    player:Attribute_SetIntValue("entered_hotel_rooftop_window", 1)
+                end
+            elseif vlua.find(Entities:FindAllInSphere(Vector(2381, -1841, 448), 10), player) then
                 ClimbLadder(560)
             elseif vlua.find(Entities:FindAllInSphere(Vector(2335, -1832, 757), 20), player) then
                 ClimbLadder(840, Vector(0, 0, 0))

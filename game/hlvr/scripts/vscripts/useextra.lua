@@ -968,13 +968,6 @@ if class == "prop_dynamic" then
     end
 end
 
-if map == "a3_hotel_interior_rooftop" and vlua.find(name, "window_sliding1") and player:Attribute_GetIntValue("entered_hotel_rooftop_window", 0) == 0 then
-    SendToConsole("fadein 0.2")
-    SendToConsole("setpos 788 -1420 576")
-    CheckForGnome(nil, nil)
-    player:Attribute_SetIntValue("entered_hotel_rooftop_window", 1)
-end
-
 if name == "2860_window_sliding1" then
     SendToConsole("fadein 0.2")
     SendToConsole("setpos_exact 1437 -1422 140")
