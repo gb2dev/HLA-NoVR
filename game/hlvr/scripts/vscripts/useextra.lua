@@ -1163,6 +1163,15 @@ if class == "prop_hlvr_crafting_station_console" then
                 else
                     return
                 end
+                -- Show resin count
+                player:SetThink(function()
+                    local t = {}
+                    player:GatherCriteria(t)
+                    local ent = Entities:FindByName(nil, "text_resin")
+                    DoEntFireByInstanceHandle(ent, "SetText", "Resin: " .. t.current_crafting_currency, 0, nil, nil)
+                    DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
+                end, "", 0.02)
+
                 thisEntity:SetGraphParameterBool("bCollectingResin", true)
                 thisEntity:SetGraphParameterBool("bCrafting", true)
                 thisEntity:Attribute_GetIntValue("crafting_station_ready", 0)
