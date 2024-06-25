@@ -46,10 +46,12 @@ if GlobalSys:CommandLineCheck("-novr") then
             player:SetThink(function()
                 PlayerDied()
             end, "UnpauseOnDeath2", 0.02)
-        elseif player:Attribute_GetIntValue("syringe_tutorial_shown", 0) < 2 then
-            SendToConsole("ent_fire text_syringe ShowMessage")
-            SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
-            player:Attribute_SetIntValue("syringe_tutorial_shown", 2)
+        elseif player:Attribute_GetIntValue("syringe_tutorial_shown_damage", 0) == 0 then
+            if GetMapName() ~= "a1_intro_world_2" then
+                SendToConsole("ent_fire text_syringe ShowMessage")
+                SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
+                player:Attribute_SetIntValue("syringe_tutorial_shown_damage", 1)
+            end
         end
 
         -- Kill on fall damage
