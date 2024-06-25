@@ -22,7 +22,6 @@ if GlobalSys:CommandLineCheck("-novr") then
         "models/props/interior_furniture/interior_shelving_001_b.vmdl",
         "models/props/interior_chairs/interior_chair_001.vmdl",
     }
-
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
     DoIncludeScript("jumpfix.lua", nil)
@@ -1153,6 +1152,13 @@ if GlobalSys:CommandLineCheck("-novr") then
             print("[GameMenu] pause_menu_mode")
             Entities:GetLocalPlayer():SetThink(function()
                 SendToConsole("gameui_allowescape;gameui_preventescapetoshow;gameui_hide")
+
+                -- Prevent crash with delayed execution
+                SendToConsole("sv_gravity 500")
+                SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy OnPlayerUncoverMouth;ent_fire lefthand Disable;novr_uncover_mouth\"")
+                SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy OnPlayerCoverMouth;ent_fire lefthand Enable;novr_cover_mouth\"")
+                SendToConsole("alias -customattack -iv_attack")
+                SendToConsole("alias +customattack \"+iv_attack;usemultitool\"")
             end, "SetGameUIState", 0.1)
             SendToConsole("alias +forwardfixed +iv_forward")
             SendToConsole("alias -forwardfixed \"-iv_forward;unstuck\"")
@@ -1225,11 +1231,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("hl_headcrab_deliberate_miss_chance 0")
             SendToConsole("combine_grenade_timer 4")
             SendToConsole("sk_auto_reload_time 9999")
-            SendToConsole("sv_gravity 500")
-            SendToConsole("alias -covermouth \"ent_fire !player suppresscough 0;ent_fire_output @player_proxy OnPlayerUncoverMouth;ent_fire lefthand Disable;novr_uncover_mouth\"")
-            SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy OnPlayerCoverMouth;ent_fire lefthand Enable;novr_cover_mouth\"")
-            SendToConsole("alias -customattack -iv_attack")
-            SendToConsole("alias +customattack \"+iv_attack;usemultitool\"")
             SendToConsole("mouse_disableinput 0")
             SendToConsole("-attack")
             SendToConsole("-attack2")
