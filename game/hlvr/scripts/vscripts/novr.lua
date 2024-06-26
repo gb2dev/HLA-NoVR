@@ -1546,24 +1546,25 @@ if GlobalSys:CommandLineCheck("-novr") then
                     -- TODO: Remove when Map Edits are done
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="640 -1770 -210", ["angles"]="0 -10 0", ["modelscale"]=0.75})
                     ent = SpawnEntityFromTableSynchronous("prop_dynamic", {["solid"]=6, ["renderamt"]=0, ["model"]="models/props/industrial_door_1_40_92_white_temp.vmdl", ["origin"]="-233 1772 182", ["angles"]="90 0 0"})
-
-                    Convars:RegisterCommand("novr_leavehingecam", function()
-                        ent = Entities:FindByName(nil, "205_2724_hingecam")  -- parent hingecam entity
-                        if ent:Attribute_GetIntValue("active", 0) == 1 then
-                            ent:StopThink("UsingHingeCam")
-                            ent:FireOutput("OnInteractStop", nil, nil, nil, 0)
-                            local gunAngle = ent:LoadQAngle("OrigAngle")
-                            ent:SetAngles(gunAngle.x,gunAngle.y,gunAngle.z)
-                            ent:Attribute_SetIntValue("active", 0)
-                            SendToConsole("setpos_exact -831.591980 1946.499878 80")
-                            SendToConsole("noclip")
-                            SendToConsole("ent_fire 205_2724_hingecam enablecollision")
-                            SendToConsole("ent_fire player_speedmod ModifySpeed 1")
-                            SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
-                            SendToConsole("unbind J")
-                        end
-                    end, "", 0)
                 end
+
+                Convars:RegisterCommand("novr_leavehingecam", function()
+                    ent = Entities:FindByName(nil, "205_2724_hingecam")  -- parent hingecam entity
+                    if ent:Attribute_GetIntValue("active", 0) == 1 then
+                        Entities:GetLocalPlayer():Attribute_SetIntValue("disable_unstuck", 0)
+                        ent:StopThink("UsingHingeCam")
+                        ent:FireOutput("OnInteractStop", nil, nil, nil, 0)
+                        local gunAngle = ent:LoadQAngle("OrigAngle")
+                        ent:SetAngles(gunAngle.x,gunAngle.y,gunAngle.z)
+                        ent:Attribute_SetIntValue("active", 0)
+                        SendToConsole("setpos_exact -831.591980 1946.499878 80")
+                        SendToConsole("noclip")
+                        SendToConsole("ent_fire 205_2724_hingecam enablecollision")
+                        SendToConsole("ent_fire player_speedmod ModifySpeed 1")
+                        SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
+                        SendToConsole("unbind J")
+                    end
+                end, "", 0)
             elseif GetMapName() == "a1_intro_world_2" then
                 if not loading_save_file then
                     ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER1_TITLE"})

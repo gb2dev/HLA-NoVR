@@ -463,6 +463,7 @@ if name == "205_2724_hingecam" then
         ent:Attribute_SetIntValue("ready", 1)
         ent:SaveQAngle("OrigAngle", ent:GetAngles())
     end
+    player:Attribute_SetIntValue("disable_unstuck", 1)
     EquipHingeCam(player)
     thisEntity:Attribute_SetIntValue("used", 1)
 end
