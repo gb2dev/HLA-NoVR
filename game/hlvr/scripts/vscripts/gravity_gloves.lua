@@ -39,6 +39,10 @@ local ignore_props = {
     "models/industrial/padlock001c.vmdl",
     "models/industrial/padlock001d.vmdl",
     "models/props/barrel_plastic_1_open.vmdl",
+    "models/props/interior_furniture/interior_kitchen_cabinet_002_door_a.vmdl",
+    "models/props/interior_furniture/interior_kitchen_cabinet_002_door_b.vmdl",
+    "models/props/interior_furniture/interior_kitchen_cabinet_003_door_a.vmdl",
+    "models/props/interior_furniture/interior_kitchen_cabinet_003_door_b.vmdl",
 }
 
 if player:Attribute_GetIntValue("used_gravity_gloves", 0) == 1 then
