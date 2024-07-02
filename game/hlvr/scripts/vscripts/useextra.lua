@@ -411,8 +411,10 @@ if vlua.find(name, "_wooden_board") then
     player:Attribute_SetIntValue("break_boards_tutorial_shown", 1)
 end
 
-if class == "prop_door_rotating_physics" and vlua.find(name, "padlock_door") then
-    DoEntFireByInstanceHandle(thisEntity, "InteractStart", "", 0, nil, nil)
+if class == "prop_door_rotating_physics" then
+    if vlua.find(name, "padlock_door") then
+        DoEntFireByInstanceHandle(thisEntity, "InteractStart", "", 0, nil, nil)
+    end
 end
 
 if vlua.find(model, "van_a0") then
