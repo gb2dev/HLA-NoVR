@@ -19,7 +19,7 @@ if eyetrace.hit then
     if eyetrace.enthit and eyetrace.enthit:GetClassname() == "func_brush" then
         local door = Entities:FindByClassnameNearest("prop_door_rotating_physics", eyetrace.enthit:GetOrigin(), 1)
         if door then
-            SendToConsole("ent_fire !picker")
+            DoEntFireByInstanceHandle(door, "Use", "", 0, player, player)
 
             door:SetThink(function()
                 local angles = door:GetAngles()

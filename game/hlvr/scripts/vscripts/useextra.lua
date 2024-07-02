@@ -290,7 +290,7 @@ end
 
 if vlua.find(model, "doorhandle") then
     local door = Entities:FindByClassnameNearest("prop_door_rotating_physics", thisEntity:GetOrigin(), 60)
-    SendToConsole("ent_fire !picker")
+    DoEntFireByInstanceHandle(door, "Use", "", 0, player, player)
 
     local clip = Entities:FindByClassnameNearest("func_brush", door:GetAbsOrigin(), 1)
     door:SetThink(function()
