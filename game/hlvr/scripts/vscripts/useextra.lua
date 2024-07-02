@@ -293,11 +293,13 @@ if vlua.find(model, "doorhandle") then
     DoEntFireByInstanceHandle(door, "Use", "", 0, player, player)
 
     local clip = Entities:FindByClassnameNearest("func_brush", door:GetAbsOrigin(), 1)
-    door:SetThink(function()
-        local angles = door:GetAngles()
-        clip:SetAngles(angles.x, angles.y, angles.z)
-        return 0
-    end, "RotateDoorBrush", 0)
+    if clip then
+        door:SetThink(function()
+            local angles = door:GetAngles()
+            clip:SetAngles(angles.x, angles.y, angles.z)
+            return 0
+        end, "RotateDoorBrush", 0)
+    end
 end
 
 if vlua.find(name, "socket") then
