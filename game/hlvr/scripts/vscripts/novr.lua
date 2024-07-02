@@ -1490,6 +1490,16 @@ if GlobalSys:CommandLineCheck("-novr") then
             HUDHearts_StartupPreparations()
             ViewmodelAnimation_ADSZoom()
 
+            local function PrecacheModels()
+                local ent_table = { -- used solution by SoMNst & Epic
+                    targetname = "novr_precachemodels",
+                    vscripts = "novr_precache.lua"
+                }
+                SpawnEntityFromTableAsynchronous("logic_script", ent_table, nil, nil);
+            end
+
+            PrecacheModels()
+
             if is_on_map_or_later("a2_quarantine_entrance") then
                 ent = Entities:GetLocalPlayer()
                 HUDHearts_StartUpdateLoop()
@@ -2074,15 +2084,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 ent = Entities:FindByName(nil, "relay_shoot_gun")
                                 ent:RedirectOutput("OnTrigger", "CombineGunHandleAnim", ent)
 
-                                local function PrecacheModels()
-                                    local ent_table = { -- used solution by SoMNst & Epic
-                                        targetname = "novr_precachemodels",
-                                        vscripts = "novr_precache.lua"
-                                    }
-                                    SpawnEntityFromTableAsynchronous("logic_script", ent_table, nil, nil);
-                                end
-
-                                PrecacheModels()
                                 if Entities:GetLocalPlayer():Attribute_GetIntValue("HasGnome", 0) == 1 then
                                     Entities:GetLocalPlayer():SetThink(function()
                                         local gnome = SpawnEntityFromTableSynchronous("prop_physics", {["model"]="models/props/choreo_office/gnome.vmdl"})
