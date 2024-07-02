@@ -289,8 +289,15 @@ elseif (name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_j
 end
 
 if vlua.find(model, "doorhandle") then
-    local ent = Entities:FindByClassnameNearest("prop_door_rotating_physics", thisEntity:GetOrigin(), 60)
-    DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player)
+    local door = Entities:FindByClassnameNearest("prop_door_rotating_physics", thisEntity:GetOrigin(), 60)
+    SendToConsole("ent_fire !picker")
+
+    local clip = Entities:FindByClassnameNearest("func_brush", door:GetAbsOrigin(), 1)
+    door:SetThink(function()
+        local angles = door:GetAngles()
+        clip:SetAngles(angles.x, angles.y, angles.z)
+        return 0
+    end, "RotateDoorBrush", 0)
 end
 
 if vlua.find(name, "socket") then

@@ -1262,12 +1262,14 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("physcannon_tracelength 0")
             -- TODO: Lower this when picking up very low mass objects
             SendToConsole("player_throwforce 500")
-            -- Add locked door handle animation
             ent = Entities:FindByClassname(nil, "prop_door_rotating_physics")
             while ent do
+                -- Add locked door handle animation
                 ent:RedirectOutput("OnLockedUse", "PlayLockedDoorHandleAnimation", ent)
+
                 ent = Entities:FindByClassname(ent, "prop_door_rotating_physics")
             end
+
             -- Disable func_tracktrain user control
             ent = Entities:FindByClassname(nil, "func_tracktrain")
             while ent do

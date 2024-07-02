@@ -19,12 +19,13 @@ if eyetrace.hit then
     if eyetrace.enthit and eyetrace.enthit:GetClassname() == "func_brush" then
         local door = Entities:FindByClassnameNearest("prop_door_rotating_physics", eyetrace.enthit:GetOrigin(), 1)
         if door then
+            SendToConsole("ent_fire !picker")
+
             door:SetThink(function()
                 local angles = door:GetAngles()
                 eyetrace.enthit:SetAngles(angles.x, angles.y, angles.z)
                 return 0
             end, "RotateDoorBrush", 0)
-            DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, nil, nil)
         end
     end
 
