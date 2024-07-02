@@ -1678,6 +1678,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_create env_message { targetname text_break_boards message BREAK_BOARDS }")
 
                         SendToConsole("ent_fire *_rebar EnablePickup")
+
+                        Entities:FindByName(nil, "bullseye_explosion_platform_a"):SetOrigin(Vector(-128, 1123.933, 488))
                     end
                 elseif GetMapName() == "a2_headcrabs_tunnel" then
                     if not loading_save_file then
