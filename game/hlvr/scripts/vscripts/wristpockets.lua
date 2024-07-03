@@ -246,8 +246,8 @@ function WristPockets_PickUpValuableItem(playerEnt, itemEnt)
                 keepAcrossMaps = false
             end
 
-            -- Tutorial
-            if playerEnt:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) < 2 and itemId ~= 1 then
+            -- Wrist Pockets Tutorial
+            if playerEnt:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) < 3 and itemId ~= 1 then
                 playerEnt:Attribute_SetIntValue("wristpockets_tutorial_shown", playerEnt:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) + 1)
                 SendToConsole("ent_fire text_wristpockets ShowMessage")
                 SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")

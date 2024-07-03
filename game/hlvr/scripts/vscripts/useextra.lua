@@ -252,6 +252,16 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             elseif model == "models/interaction/anim_interact/twohandlift/twohandlift.vmdl" then
                 SendToConsole("snd_sos_start_soundevent RollUpDoor.FullOpen")
             end
+
+            if is_console then
+                -- Wrist Pockets Tutorial
+                if player:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) < 3 then
+                    player:Attribute_SetIntValue("wristpockets_tutorial_shown", player:Attribute_GetIntValue("wristpockets_tutorial_shown", 0) + 1)
+                    SendToConsole("ent_fire text_wristpockets ShowMessage")
+                    SendToConsole("snd_sos_start_soundevent Instructor.StartLesson")
+                end
+            end
+
             return nil
         elseif name == "console_selector_interact" and count <= 0 then
             thisEntity:Attribute_SetIntValue("reverse", 0)
@@ -1208,9 +1218,9 @@ if class == "item_hlvr_combine_console_tank" then
         player:SetThink(function()
             if player:Attribute_GetIntValue("use_released", 0) == 0 then
                 thisEntity:SetAngularVelocity(0,0,0)
-                local x = (look_delta.x - player:EyeAngles().x) * -50
+                local x = (look_delta.x - player:EyeAngles().x) * -80
                 if x < 0 then
-                    x = x * 1.75
+                    x = x * 6
                 end
                 thisEntity:ApplyLocalAngularVelocityImpulse(Vector(Clamp(x, -18, 18) , 0, 0))
                 look_delta = player:EyeAngles()
