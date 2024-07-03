@@ -1056,9 +1056,9 @@ if class == "prop_hlvr_crafting_station_console" then
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
                     local origin = ent:GetCenter() - angles:Forward() * 1.5 - Vector(0,0,2.25)
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/vr_alyxgun/vr_alyxgun.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator_idle", ["model"]="models/weapons/vr_alyxgun/vr_alyxgun.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
-                    ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator", ["model"]="models/weapons/vr_alyxgun/vr_alyxgun_slide_anim_interact.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="weapon_in_fabricator_idle", ["model"]="models/weapons/vr_alyxgun/vr_alyxgun_slide_anim_interact.vmdl", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
 
                     local ents = Entities:FindAllByClassname("point_clientui_world_panel")
@@ -1104,7 +1104,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
                     local origin = ent:GetCenter() - angles:Forward() * 1.5 - Vector(0,0,2.25)
-                    ent = SpawnEntityFromTableSynchronous("item_hlvr_weapon_shotgun", {["targetname"]="weapon_in_fabricator", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    ent = SpawnEntityFromTableSynchronous("item_hlvr_weapon_shotgun", {["targetname"]="weapon_in_fabricator_idle", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
 
                     local ents = Entities:FindAllByClassname("point_clientui_world_panel")
@@ -1150,7 +1150,7 @@ if class == "prop_hlvr_crafting_station_console" then
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
                     local origin = ent:GetCenter() - angles:Forward() * 1.5 - Vector(0,0,2.25)
-                    ent = SpawnEntityFromTableSynchronous("item_hlvr_weapon_rapidfire", {["targetname"]="weapon_in_fabricator", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
+                    ent = SpawnEntityFromTableSynchronous("item_hlvr_weapon_rapidfire", {["targetname"]="weapon_in_fabricator_idle", ["origin"]= origin.x .. " " .. origin.y .. " " .. origin.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z })
                     ent:SetParent(console, "item_attach")
 
                     local ents = Entities:FindAllByClassname("point_clientui_world_panel")
@@ -1350,7 +1350,7 @@ if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
     SendToConsole("give weapon_pistol")
     SendToConsole("ent_remove weapon_bugbait")
     thisEntity:Kill()
-elseif class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" then
+elseif class == "item_hlvr_weapon_shotgun" and not vlua.find(name, "weapon_in_fabricator") then
     item_pickup_params.item = "hlvr_weapon_shotgun"
     FireGameEvent("item_pickup", item_pickup_params)
 
@@ -1362,7 +1362,7 @@ elseif class == "item_hlvr_weapon_shotgun" and name ~= "weapon_in_fabricator" th
     player:SetThink(function()
         SendToConsole("ent_fire 12712_shotgun_zombie_speak CancelSpeech")
     end, "RemoveRusselReloadingHint", 0.5)
-elseif class == "item_hlvr_weapon_rapidfire" and name ~= "weapon_in_fabricator" then
+elseif class == "item_hlvr_weapon_rapidfire" and not vlua.find(name, "weapon_in_fabricator") then
     SendToConsole("give weapon_ar2")
     if map == "a3_hotel_interior_rooftop" then
         local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)

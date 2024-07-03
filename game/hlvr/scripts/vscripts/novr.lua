@@ -492,6 +492,10 @@ if GlobalSys:CommandLineCheck("-novr") then
         local t = {}
         Entities:GetLocalPlayer():GatherCriteria(t)
 
+        for k, v in pairs(Entities:FindAllByName("weapon_in_fabricator_idle")) do
+            v:SetEntityName("weapon_in_fabricator")
+        end
+
         if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
             -- Reflex Sight
             if value == "1" and t.current_crafting_currency >= 10 then
@@ -563,7 +567,7 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     Convars:RegisterCommand("novr_crafting_station_cancel_upgrade", function()
         Convars:SetStr("chosen_upgrade", "cancel")
-        SendToConsole("ent_fire weapon_in_fabricator Kill")
+        SendToConsole("ent_fire weapon_in_fabricator_idle Kill")
         SendToConsole("ent_fire upgrade_ui kill")
         -- TODO: Give weapon back, but don't fill magazine
         if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
