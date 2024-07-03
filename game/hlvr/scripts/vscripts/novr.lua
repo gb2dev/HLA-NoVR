@@ -2716,6 +2716,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("phys_pushscale 1")
         SendToConsole("ent_remove hat_construction_viewmodel")
         SendToConsole("ent_remove respirator_viewmodel")
+        WristPockets_DisableKeepAcrossMaps()
     end
 
     function ShowVortEnergyTutorial()
