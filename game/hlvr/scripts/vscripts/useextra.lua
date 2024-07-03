@@ -1346,6 +1346,10 @@ if thisEntity:GetMoveParent() ~= nil then
 end
 
 -- Weapons
+if name == "weapon_in_fabricator_idle" then
+    SendToConsole("novr_crafting_station_cancel_upgrade")
+end
+
 if class == "item_hlvr_weapon_energygun" and map ~= "a1_intro_world_2" then
     SendToConsole("give weapon_pistol")
     SendToConsole("ent_remove weapon_bugbait")
