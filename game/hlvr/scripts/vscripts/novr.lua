@@ -21,6 +21,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         "models/props_junk/wood_crate004.vmdl",
         "models/props/interior_furniture/interior_shelving_001_b.vmdl",
         "models/props/interior_chairs/interior_chair_001.vmdl",
+        "models/props_junk/trashbin02_open.vmdl",
     }
     DoIncludeScript("bindings.lua", nil)
     DoIncludeScript("flashlight.lua", nil)
