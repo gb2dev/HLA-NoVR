@@ -1,3 +1,15 @@
+## HLA-NoVR branch mods
+With this branch of NoVR mod, you will be able to also play & complete next modifications (you can get them from Steam Workshop):
+- ``Levitation`` (campaign, 7 maps + intro)
+- ``Extra-Ordinary Value`` (campaign, 4 maps) 
+- ``Resident Alyx: biohazard`` (campaign, 6 maps + epilogue)
+- ``GoldenEye Alyx 007 - Dam`` (part 1)
+- ``Belomorskaya Station`` (1 map)
+- ``Overcharge`` (1 map)
+- ``Red Dust`` (1 map)
+- ``Post-Human`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))
+- ``Buckshot Bugs`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3086502947))
+
 # HLA-NoVR
 The easiest to use and most flexible NoVR mod for Half-Life: Alyx!
 

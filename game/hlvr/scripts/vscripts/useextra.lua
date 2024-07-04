@@ -8,12 +8,240 @@ local player = Entities:GetLocalPlayer()
 
 player:Attribute_SetIntValue("useextra_executed", 1)
 
+local isModActive = ModSupport_IsAddonMap(GetMapName())
+-- Mod support by Hypercycle
+
 if not (vlua.find(name, "elev_anim_door") and (thisEntity:Attribute_GetIntValue("used", 0) == 1 or thisEntity:GetVelocity() ~= Vector(0, 0, 0))) then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:Attribute_SetIntValue("toggle", 1)
     else
         thisEntity:Attribute_SetIntValue("toggle", 0)
     end
+end
+
+if thisEntity:Attribute_GetIntValue("junction_rotation", 0) == 3 then
+    thisEntity:Attribute_SetIntValue("junction_rotation", 0)
+else
+    thisEntity:Attribute_SetIntValue("junction_rotation", thisEntity:Attribute_GetIntValue("junction_rotation", 0) + 1)
+end
+
+
+-- Toner Puzzles
+
+-- First Path in the Puzzle
+local toner_start_path
+-- Last/Success Path
+local toner_end_path
+-- example_toner_path = {"leads_to_this_junction", point1, point2, point3, ...}
+local toner_paths
+-- example_toner_junction = {type (0=straight, 1=right angle, 2=two right angles, 3=static T), "activated_toner_path_1", "activated_toner_path_2", "activated_toner_path_3", "activated_toner_path_4"}
+local toner_junctions
+
+local toner_path_color = {
+	r = 94, g = 172, b = 199, a = 255,
+}
+local toner_junction_color = {
+	r = 231, g = 150, b = 78, a = 255,
+}
+
+if map == "a2_quarantine_entrance" then
+    toner_start_path = "toner_path_1"
+    toner_end_path = "toner_path_5"
+
+    toner_paths = {
+        toner_path_1 = {"toner_junction_1", Vector(-912.1, 1150.47, 100), Vector(-912.1, 1112, 100)},
+        toner_path_2 = {"toner_junction_2", Vector(-912.1, 1112, 100), Vector(-912.1, 1099, 100), Vector(-912.1, 1099, 108.658), Vector(-912.1, 1088.1, 108.658), Vector(-929, 1088.1, 108.658)},
+        toner_path_3 = {"", Vector(-929, 1088.1, 108.658), Vector(-929, 1088.1, 144), Vector(-946, 1088.1, 144)},
+        toner_path_5 = {"", Vector(-970, 1088.1, 98.4348), Vector(-986, 1088.1, 98.4348)},
+        toner_path_7 = {"toner_junction_3", Vector(-929, 1088.1, 108.658), Vector(-929, 1088.1, 98.4348), Vector(-947, 1088.1, 98.4348), Vector(-947, 1088.1, 69.5763), Vector(-947, 1088.1, 98.4348), Vector(-970, 1088.1, 98.4348)},
+    }
+    
+    toner_junctions = {
+        toner_junction_1 = {0, "toner_path_2", "", "toner_path_2", ""},
+        toner_junction_2 = {1, "toner_path_3", "toner_path_7", "", ""},
+        toner_junction_3 = {0, "toner_path_5", "", "toner_path_5", ""},
+    }
+elseif map == "a2_headcrabs_tunnel" then
+    toner_start_path = "toner_path_1"
+    toner_end_path = ""
+
+    toner_paths = {
+        toner_path_1 = {"toner_junction_1", Vector(-440.082, -591.641, 10.1066), Vector(-456.077, -582.406, 10.1066)},
+        toner_path_2 = {"", Vector(-456.077, -582.406, 10.1066), Vector(-456.077, -582.406, 1.25), Vector(-492.011, -561.866, 1.25), Vector(-508.747, -590.854, 1.25)},
+        toner_path_3 = {"toner_junction_2", Vector(-456.077, -582.406, 10.1066), Vector(-456.077, -582.406, 20.25), Vector(-489.012, -563.389, 20.25), Vector(-507.848, -589.466, 20.25), Vector(-563.691, -557.735, 20.25), Vector(-563.471, -557.356, 0.5)},
+        toner_path_5 = {"", Vector(-563.471, -557.356, 0.5), Vector(-591.523, -541.157, 0.5), Vector(-583.348, -527.429, 0.5), Vector(-612.043, -511.988, 3.5)},
+        toner_path_6 = {"", Vector(-563.471, -557.356, 0.5), Vector(-551.359, -564.352, 0.5), Vector(-518.847, -584.56, 0.5)},
+        toner_path_8 = {"", Vector(), Vector()},
+    }
+
+    toner_junctions = {
+        toner_junction_1 = {2, "toner_path_3", "toner_path_2", "toner_path_3", "toner_path_2"},
+        toner_junction_2 = {2, "toner_path_6", "toner_path_5", "toner_path_6", "toner_path_5"},
+        --toner_junction_i = {0, "toner_path_8", "", "toner_path_8", ""},
+    }
+end
+-- Levitation toner puzzles
+-- TODO doesn't work yet
+if map == "02_notimelikenow" then
+    toner_start_path = "6061_toner_path_1"
+    toner_end_path = "6061_toner_path_2"
+
+    toner_paths = {
+        ["6061_toner_path_1"] = {"6061_toner_junction_1", 
+		Vector(-1237.11, -358.27, -699.75), Vector(-1237.11, -358.27, -697.37), -- from port to up
+		Vector(-1216.92, -354.34, -697.37), -- to junction 1
+		Vector(-1217.04, -354.43, -718.12), -- corner
+		Vector(-1237.94, -358.27, -718.12)}, -- to junction 2
+		["6061_toner_path_2"] = {"6061_toner_junction_2", 
+		Vector(-1237.94, -358.27, -718.12), Vector(-1237.97, -358.10, -747.01)}, -- down
+    }
+    
+    toner_junctions = {
+        ["6061_toner_junction_1"] = {1, "6061_toner_path_1", "6061_toner_path_1", "", ""},
+        ["6061_toner_junction_2"] = {1, "", "", "6061_toner_path_1", "6061_toner_path_2"},
+    }
+end
+
+function draw_toner_path(toner_path)
+    for i = 3, #toner_path do
+        --DebugDrawLine(toner_path[i - 1], toner_path[i], 0, 0, 255, false, -1)
+		DebugDrawLine(toner_path[i - 1], toner_path[i], toner_path_color.r, toner_path_color.g, toner_path_color.b, false, -1)
+    end
+end
+
+function draw_toner_junction(junction, center, angles)
+    local type = junction[1]
+
+    if type == 0 then
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,3,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+    elseif type == 1 then
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,3))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+    elseif type == 2 then
+        local min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
+        local max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,3))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,3,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-3))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,-3,0))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
+        DebugDrawLine(center + min, center + max, 0, 255, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,0,-1))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,0,1))
+        DebugDrawLine(center + min, center + max, 0, 0, 0, true, -1)
+
+        min = RotatePosition(Vector(0,0,0), angles, Vector(0,-1,0))
+        max = RotatePosition(Vector(0,0,0), angles, Vector(0,1,0))
+        DebugDrawLine(center + min, center + max, 0, 0, 0, true, -1)
+    end
+end
+
+function toggle_toner_junction()
+    local junction = toner_junctions[thisEntity:GetName()]
+
+    if junction then
+        DebugDrawClear()
+        for toner_path_name, toner_path in pairs(toner_paths) do
+            draw_toner_path(toner_path)
+        end
+
+        local angles = thisEntity:GetAngles()
+        StartSoundEventFromPosition("Toner.JunctionRotate", player:EyePosition())
+
+        local new_index = thisEntity:Attribute_GetIntValue("junction_rotation", 0) + 1
+        local old_index = new_index - 1
+        if old_index == 0 then
+            old_index = 4
+        end
+
+        ent = Entities:FindByClassname(nil, "info_hlvr_toner_path")
+        while ent do
+            ent:FireOutput("OnPowerOff", nil, nil, nil, 0)
+            ent = Entities:FindByClassname(ent, "info_hlvr_toner_path")
+        end
+
+        local toner_path = toner_start_path
+        while toner_path ~= "" do
+            local junction_name = toner_paths[toner_path][1]
+            local junction_entity = Entities:FindByName(nil, junction_name)
+            if junction_entity then
+                local activated_path = junction_entity:Attribute_GetIntValue("junction_rotation", 0) + 2
+                local next_path = toner_junctions[junction_name][activated_path]
+                toner_path = next_path
+                if next_path ~= "" then
+                    SendToConsole("ent_fire_output " .. next_path .. " OnPowerOn")
+                    if next_path == toner_end_path then
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+                        StartSoundEventFromPosition("Toner.PortComplete", player:EyePosition())
+
+                        player:Attribute_SetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 1)
+
+                        player:SetThink(function()
+                            DebugDrawClear()
+                        end, "TonerComplete", 3)
+                    end
+                end
+            else
+                toner_path = ""
+            end
+        end
+
+        for junction_name, junction in pairs(toner_junctions) do
+            local junction_entity = Entities:FindByName(nil, junction_name)
+            local angles = junction_entity:GetAngles()
+            angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
+            draw_toner_junction(junction, junction_entity:GetCenter(), angles)
+        end
+    end
+end
+
+if not isModActive and class == "info_hlvr_toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    --thisEntity:Attribute_SetIntValue("used", 1)
+    DoEntFireByInstanceHandle(thisEntity, "OnPlugRotated", "", 0, nil, nil)
+    DebugDrawClear()
+    if toner_junctions then
+        for junction_name, junction in pairs(toner_junctions) do
+            local junction_entity = Entities:FindByName(nil, junction_name)
+            local angles = junction_entity:GetAngles()
+            angles = QAngle(angles.x, angles.y, junction_entity:Attribute_GetIntValue("junction_rotation", 0) * 90)
+            draw_toner_junction(junction, junction_entity:GetCenter(), angles)
+        end
+        for toner_path_name, toner_path in pairs(toner_paths) do
+            draw_toner_path(toner_path)
+        end
+    end
+end
+
+if class == "info_hlvr_toner_junction" and player:Attribute_GetIntValue("circuit_" .. map .. "_" .. toner_start_path .. "_completed", 0) == 0 then
+    toggle_toner_junction()
 end
 
 function IsCombineConsoleLocked()
@@ -1030,6 +1258,68 @@ if name == "traincar_01_hatch" and thisEntity:Attribute_GetIntValue("used", 0) =
     SendToConsole("ent_fire_output traincar_01_hackplug OnHackSuccess")
 end
 
+-- TODO Hotfix Will allow to get your weapon after loading a savegame with a unlocked fabricator
+-- Combine Fabricator
+if class == "prop_hlvr_crafting_station_console" then
+    local function AnimTagListener(sTagName, nStatus)
+        if sTagName == 'Bootup Done' and nStatus == 2 then
+            thisEntity:Attribute_SetIntValue("crafting_station_ready", 1)
+        elseif sTagName == 'Crafting Done' and nStatus == 2 then
+            if Convars:GetStr("chosen_upgrade") == "pistol_upgrade_aimdownsights" then
+                player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
+                SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_pistol_upgrade_aimdownsights ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
+                player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
+                SendToConsole("give weapon_pistol")
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
+                player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
+                SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_shotgun_upgrade_grenadelauncher ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
+                player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
+                SendToConsole("give weapon_shotgun")
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
+                player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
+                if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
+                    SendToConsole("give weapon_ar2")
+                else
+                    SendToConsole("give weapon_smg1")
+                end
+                SendToConsole("viewmodel_update")
+                SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
+                SendToConsole("play sounds/ui/beepclear.vsnd")
+            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
+                player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
+                SendToConsole("ent_remove weapon_ar2")
+                SendToConsole("give weapon_smg1")
+                SendToConsole("viewmodel_update")
+            end
+
+            SendToConsole("ent_fire point_clientui_world_panel Enable")
+            SendToConsole("ent_fire weapon_in_fabricator Kill")
+            thisEntity:SetGraphParameterBool("bCrafting", false)
+            Convars:SetStr("chosen_upgrade", "")
+            Convars:SetStr("weapon_in_crafting_station", "")
+        elseif sTagName == 'Trays Retracted' and nStatus == 2 then
+            thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 1)
+        end
+    end
+
+    thisEntity:RegisterAnimTagListener(AnimTagListener)
+end
+-- TODO Hotfix End
+
 -- Combine fabricator
 if class == "prop_hlvr_crafting_station_console" then
     if thisEntity:GetGraphParameter("bBootup") == true and thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
@@ -1266,6 +1556,36 @@ end
 
 if class == "item_hlvr_headcrab_gland" then
     SendToConsole("ent_fire achievement_squeeze_heart FireEvent")
+end
+
+ModSupport_CheckUseObjectInteraction(thisEntity)
+
+if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    if map == "a2_quarantine_entrance" then
+        ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
+        while ent do
+            ent:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", ent)
+            ent = Entities:FindByClassname(ent, "item_hlvr_combine_console_rack")
+        end
+    end
+    thisEntity:Attribute_SetIntValue("used", 1)
+    SendToConsole("ent_fire_output *_console_hacking_plug OnHackSuccess")
+    local ents = Entities:FindAllByClassnameWithin("item_hlvr_combine_console_tank", thisEntity:GetCenter(), 20)
+    for k, v in pairs(ents) do
+        DoEntFireByInstanceHandle(v, "DisablePickup", "", 0, player, nil)
+    end
+    SendToConsole("ent_fire 5325_3947_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1")
+	SendToConsole("ent_fire 26976_combine_console AddOutput OnTankAdded>item_hlvr_combine_console_tank>DisablePickup>>0>1") -- Levitation
+end
+
+if class == "item_hlvr_grenade_xen" then
+    thisEntity:SetThink(function()
+        if GetPhysVelocity(thisEntity):Length() > 200 then
+            DoEntFireByInstanceHandle(thisEntity, "ArmGrenade", "", 0, nil, nil)
+        else
+            return 0
+        end
+    end, "ArmOnHighVelocity", 0.1)
 end
 
 if class == "prop_reviver_heart" then

@@ -636,7 +636,14 @@ function ToggleTonerJunction()
     end
 end
 
-if class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or (thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 1 and thisEntity:Attribute_GetIntValue("disabled", 0) == 0)) then
+-- Enable multitool on mod maps
+local isModActive = ModSupport_IsAddonMap(GetMapName())
+
+if isModActive then
+    ModSupport_CheckUseObjectInteraction(thisEntity)
+end
+
+if not isModActive and class == "info_hlvr_toner_port" and (thisEntity:Attribute_GetIntValue("used", 0) == 0 or thisEntity:Attribute_GetIntValue("redraw_toner", 0) == 1) then
     DoEntFireByInstanceHandle(thisEntity, "OnPlugRotated", "", 0, nil, nil)
     DebugDrawClear()
 
