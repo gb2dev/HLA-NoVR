@@ -1685,6 +1685,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                         SendToConsole("ent_fire *_rebar EnablePickup")
 
                         Entities:FindByName(nil, "bullseye_explosion_platform_a"):SetOrigin(Vector(-128, 1123.933, 488))
+                        Entities:FindByName(nil, "no_look_trigger_for_hc_intro"):SetOrigin(Vector(-1984, 390, 440))
                     end
                 elseif GetMapName() == "a2_headcrabs_tunnel" then
                     if not loading_save_file then
