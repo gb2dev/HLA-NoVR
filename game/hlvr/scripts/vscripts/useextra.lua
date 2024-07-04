@@ -68,7 +68,7 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
                 if player:Attribute_GetIntValue("use_released", 0) == 1 then
                     SendToConsole("ent_fire track_switch_lever SetCompletionValue 0.35 0")
                     SendToConsole("ent_fire train_switch_reset_relay Trigger 0 0")
-                    if player:Attribute_GetIntValue("released_train_lever_once", 0) == 0 then
+                    if player:Attribute_GetIntValue("enable_released_train_lever_dialogue", 0) == 1 and player:Attribute_GetIntValue("released_train_lever_once", 0) == 0 then
                         SendToConsole("ent_fire speech_radio CancelSpeech")
                         SendToConsole("ent_fire train_switch_control_override_0 Cancel")
                         SendToConsole("ent_fire train_switch_control_override_10 Start")

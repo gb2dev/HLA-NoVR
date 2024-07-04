@@ -1179,17 +1179,18 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("alias +covermouth \"ent_fire !player suppresscough 1;ent_fire_output @player_proxy OnPlayerCoverMouth;ent_fire lefthand Enable;novr_cover_mouth\"")
                 SendToConsole("alias -customattack -iv_attack")
                 SendToConsole("alias +customattack \"+iv_attack;usemultitool\"")
-            end, "SetGameUIState", 0.1)
-            SendToConsole("alias +forwardfixed +iv_forward")
-            SendToConsole("alias -forwardfixed \"-iv_forward;unstuck\"")
-            SendToConsole("alias +backfixed +iv_back")
-            SendToConsole("alias -backfixed \"-iv_back;unstuck\"")
-            SendToConsole("alias +leftfixed +iv_left")
-            SendToConsole("alias -leftfixed \"-iv_left;unstuck\"")
-            SendToConsole("alias +rightfixed +iv_right")
-            SendToConsole("alias -rightfixed \"-iv_right;unstuck\"")
-            SendToConsole("alias +useextra \"+use;useextra\"")
-            SendToConsole("alias -useextra \"-use;useextra_release\"")
+                SendToConsole("alias +forwardfixed +iv_forward")
+                SendToConsole("alias -forwardfixed \"-iv_forward;unstuck\"")
+                SendToConsole("alias +backfixed +iv_back")
+                SendToConsole("alias -backfixed \"-iv_back;unstuck\"")
+                SendToConsole("alias +leftfixed +iv_left")
+                SendToConsole("alias -leftfixed \"-iv_left;unstuck\"")
+                SendToConsole("alias +rightfixed +iv_right")
+                SendToConsole("alias -rightfixed \"-iv_right;unstuck\"")
+                SendToConsole("alias +useextra \"+use;useextra\"")
+                SendToConsole("alias -useextra \"-use;useextra_release\"")
+                SendToConsole("-covermouth")
+            end, "SetGameUIState", 0.2)
             SendToConsole("bind " .. INTERACT .. " +useextra")
             SendToConsole("bind " .. JUMP .. " jumpfixed")
             SendToConsole("bind " .. NOCLIP .. " toggle_noclip")
@@ -1200,7 +1201,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. GRENADE .. " throwgrenade")
-            SendToConsole("bind " .. RELOAD .. " \"+reload;novr_resetads\"")
+            SendToConsole("bind " .. RELOAD .. " +reload")
             SendToConsole("bind " .. QUICK_SWAP .. " \"lastinv;viewmodel_update\"")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
             SendToConsole("bind " .. MOVE_FORWARD .. " +forwardfixed")
@@ -1254,7 +1255,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("mouse_disableinput 0")
             SendToConsole("-attack")
             SendToConsole("-attack2")
-            SendToConsole("-covermouth")
             SendToConsole("sk_headcrab_runner_health 69")
             SendToConsole("sk_antlion_worker_spit_interval_max 2")
             SendToConsole("sk_antlion_worker_spit_interval_min 1")
@@ -1776,6 +1776,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                             DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>bullet_trigger>Kill>>0>1", 0, nil, nil)
                         end
                     elseif GetMapName() == "a2_train_yard" then
+                        ent = Entities:FindByName(nil, "train_arrival_trigger")
+                        ent:RedirectOutput("OnTrigger", "EnableTrainLeverReleaseDialogue", ent)
+
                         ent = Entities:FindByName(nil, "relay_train_will_crash")
                         ent:RedirectOutput("OnTrigger", "DisableTrainLever", ent)
 
@@ -2334,6 +2337,10 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function EnableShotgunWheel(a, b)
         Entities:FindByName(nil, "12712_shotgun_wheel"):Attribute_SetIntValue("used", 0)
+    end
+
+    function EnableTrainLeverReleaseDialogue(a, b)
+        Entities:GetLocalPlayer():Attribute_SetIntValue("enable_released_train_lever_dialogue", 1)
     end
 
     function DisableTrainLever(a, b)
