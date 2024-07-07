@@ -1306,6 +1306,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if not loading_save_file then
                 if is_on_map_or_later("a2_quarantine_entrance") then
+                    SendToConsole("give weapon_frag")
+                    SendToConsole("ent_remove weapon_frag")
                     SendToConsole("give weapon_pistol")
 
                     if is_on_map_or_later("a2_pistol") then
