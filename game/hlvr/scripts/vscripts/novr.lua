@@ -1225,6 +1225,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("cc_spectator_only 1")
             SendToConsole("sv_gameinstructor_disable 1")
             SendToConsole("hud_draw_fixed_reticle 0")
+            SendToConsole("hud_reticle_minalpha 255")
             SendToConsole("r_drawvgui 1")
             SendToConsole("ent_fire *_locker_door_* DisablePickup")
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
@@ -1306,8 +1307,6 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if not loading_save_file then
                 if is_on_map_or_later("a2_quarantine_entrance") then
-                    SendToConsole("give weapon_frag")
-                    SendToConsole("ent_remove weapon_frag")
                     SendToConsole("give weapon_pistol")
 
                     if is_on_map_or_later("a2_pistol") then
@@ -1431,10 +1430,11 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     look_delta = viewmodel:GetAngles()
 
-                    local viewmodel_offset_y_additional = -0.75
+                    local viewmodel_offset_y_additional = -1.0
                     if string.match(viewmodel:GetModelName(), "v_pistol") then
-                        viewmodel_offset_y_additional = -1.0
+                        viewmodel_offset_y_additional = -1.25
                     end
+                    viewmodel_offset_y_additional = viewmodel_offset_y_additional
 
                     -- Set weapon sway and view bob if zoom is not active
                     if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
