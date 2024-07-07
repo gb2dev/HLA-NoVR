@@ -1202,7 +1202,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. GRENADE .. " throwgrenade")
-            SendToConsole("bind " .. RELOAD .. " +reload")
+            SendToConsole("bind " .. RELOAD .. " \"+reload;novr_resetads\"")
             SendToConsole("bind " .. QUICK_SWAP .. " \"lastinv;viewmodel_update\"")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
             SendToConsole("bind " .. MOVE_FORWARD .. " +forwardfixed")
@@ -1380,9 +1380,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                     return 1
                 end, "ReturnFabricatorWeapon", 0)
 
+                Convars:RegisterConvar("novr_current_vm_model", "", "", 0)
                 ent:SetThink(function()
                     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                     local player = Entities:GetLocalPlayer()
+
+                    local current_vm_model = viewmodel:GetModelName()
+                    if current_vm_model ~= Convars:GetStr("novr_current_vm_model") then
+                        SendToConsole("novr_resetads")
+                        Convars:SetStr("novr_current_vm_model", current_vm_model)
+                    end
 
                     if GetMapName() == "a3_c17_processing_plant" and player:Attribute_GetIntValue("activated_processing_plant_lift", 0) == 0 and player:GetAbsOrigin().z < 600 then
                         SendToConsole("snd_sos_start_soundevent Player.FallDamage")
