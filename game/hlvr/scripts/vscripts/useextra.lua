@@ -1238,6 +1238,12 @@ if name == "plug_console_starter_lever" then
     SendToConsole("ent_fire_output plug_console_starter_lever OnCompletionB_Forward")
 end
 
+if model == "models/props_combine/combine_consoles/combine_lever_switch.vmdl" then
+    local lever_pos = thisEntity:GetCenter() + thisEntity:GetForwardVector() * 17
+    local lever = Entities:FindByModelWithin(nil, "models/props_combine/combine_consoles/lever_main_slide.vmdl", lever_pos, 5)
+    DoEntFireByInstanceHandle(lever, "RunScriptFile", "useextra", 0, player, player)
+end
+
 if name == "lift_button_box" then
     if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
         SendToConsole("ent_fire_output lift_button_down onin")
@@ -1363,7 +1369,7 @@ elseif class == "item_hlvr_weapon_rapidfire" and not vlua.find(name, "weapon_in_
     if map == "a3_hotel_interior_rooftop" then
         local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
         for k, v in pairs(ents) do
-            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
+            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, player)
         end
     end
     SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
