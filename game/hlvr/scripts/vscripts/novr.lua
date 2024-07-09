@@ -900,12 +900,18 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         -- Ladders and position based interactions
         if GetMapName() == "a1_intro_world" then
-            if vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
+            if vlua.find(Entities:FindAllInSphere(Vector(-958, 1735, 118), 10), player) then
+                DoEntFireByInstanceHandle(Entities:FindByName(nil, "205_8032_button_pusher_prop"), "RunScriptFile", "useextra", 0, nil, nil)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
                 ClimbLadder(-64)
-            elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 20), player) then
+            elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 25), player) then
                 ClimbLadderSound()
                 SendToConsole("fadein 0.2")
                 SendToConsole("setpos_exact 574 -2328 -130")
+            elseif vlua.find(Entities:FindAllInSphere(Vector(606, -2339, -217), 20), player) then
+                if 135 < player:GetAngles().y or player:GetAngles().y < -135 then
+                    DoEntFireByInstanceHandle(Entities:FindByName(nil, "979_518_button_pusher_prop"), "RunScriptFile", "useextra", 0, nil, nil)
+                end
             end
         elseif GetMapName() == "a1_intro_world_2" then
             if vlua.find(Entities:FindAllInSphere(Vector(-1268, 576, -63), 10), player) and Entities:FindByName(nil, "balcony_ladder"):GetSequence() == "idle_open" then

@@ -533,8 +533,13 @@ if vlua.find(model, "models/props/c17/antenna01") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
 end
 
-if name == "979_518_button_pusher_prop" then
+if name == "979_518_button_pusher_prop" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    SendToConsole("snd_sos_start_soundevent Button_Basic.Press")
     SendToConsole("ent_fire debug_choreo_start_relay trigger")
+    thisEntity:Attribute_SetIntValue("used", 1)
+    thisEntity:SetThink(function()
+        thisEntity:Attribute_SetIntValue("used", 0)
+    end, "EnableButton", 2)
 end
 
 if name == "light_switch_1" then
