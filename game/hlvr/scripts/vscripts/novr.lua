@@ -2210,13 +2210,13 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                                 ent = Entities:FindByName(nil, "timer_briefcase")
                                 DoEntFireByInstanceHandle(ent, "RefireTime", "5", 0, nil, nil)
-    
+
                                 ent = Entities:FindByName(nil, "relay_advisor_void")
                                 ent:RedirectOutput("OnTrigger", "GiveAdvisorVortEnergy", ent)
-    
+
                                 ent = Entities:FindByName(nil, "relay_first_credits_start")
                                 ent:RedirectOutput("OnTrigger", "StartCredits", ent)
-    
+
                                 ent = Entities:FindByName(nil, "vcd_ending_eli")
                                 ent:RedirectOutput("OnTrigger3", "EndCredits", ent)
 
@@ -2789,6 +2789,16 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function StartCredits(a, b)
         SendToConsole("mouse_disableinput 1")
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("ent_fire assignment_panel_1 IgnoreUserInput")
+            SendToConsole("ent_fire assignment_panel_2 IgnoreUserInput")
+            SendToConsole("ent_fire assignment_panel_3 IgnoreUserInput")
+        end, "HideUICursorAssignment", 1.1)
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("ent_fire credits_panel_left IgnoreUserInput")
+            SendToConsole("ent_fire credits_panel_middle IgnoreUserInput")
+            SendToConsole("ent_fire credits_panel_right IgnoreUserInput")
+        end, "HideUICursorCredits", 14.1)
     end
 
     function EndCredits(a, b)
