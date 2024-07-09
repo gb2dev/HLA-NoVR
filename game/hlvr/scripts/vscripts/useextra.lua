@@ -863,14 +863,6 @@ if name == "combine_gun_mechanical" then
 end
 
 
----------- a5_endings ----------
-
-if name == "prop_crowbar" then
-    thisEntity:Kill()
-    return
-end
-
-
 ---------- Other ----------
 
 -- Call elevator button

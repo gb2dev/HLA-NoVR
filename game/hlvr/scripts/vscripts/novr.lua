@@ -1433,6 +1433,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     local viewmodel_offset_y_additional = -1.0
                     if string.match(viewmodel:GetModelName(), "v_pistol") then
                         viewmodel_offset_y_additional = -1.25
+                    elseif string.match(viewmodel:GetModelName(), "v_crowbar") then
+                        viewmodel_offset_y_additional = -7.0
                     end
                     viewmodel_offset_y_additional = viewmodel_offset_y_additional
 
@@ -2197,18 +2199,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("bind " .. COVER_MOUTH .. " \"\"")
                             Entities:GetLocalPlayer():Attribute_SetIntValue("grenade", 0)
 
-                            ent = Entities:FindByName(nil, "timer_briefcase")
-                            DoEntFireByInstanceHandle(ent, "RefireTime", "5", 0, nil, nil)
-
-                            ent = Entities:FindByName(nil, "relay_advisor_void")
-                            ent:RedirectOutput("OnTrigger", "GiveAdvisorVortEnergy", ent)
-
-                            ent = Entities:FindByName(nil, "relay_first_credits_start")
-                            ent:RedirectOutput("OnTrigger", "StartCredits", ent)
-
-                            ent = Entities:FindByName(nil, "vcd_ending_eli")
-                            ent:RedirectOutput("OnTrigger3", "EndCredits", ent)
-
                             if not loading_save_file then
                                 local player_clip = Entities:FindAllByClassname("func_brush")[1]
                                 local player_clip_name = player_clip:GetName()
@@ -2217,6 +2207,21 @@ if GlobalSys:CommandLineCheck("-novr") then
                                     DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip_name .. ">Enable>>0>-1", 0, nil, nil)
                                 end
                                 ent:RedirectOutput("OnTrigger", "GrabCandlers", ent)
+
+                                ent = Entities:FindByName(nil, "timer_briefcase")
+                                DoEntFireByInstanceHandle(ent, "RefireTime", "5", 0, nil, nil)
+    
+                                ent = Entities:FindByName(nil, "relay_advisor_void")
+                                ent:RedirectOutput("OnTrigger", "GiveAdvisorVortEnergy", ent)
+    
+                                ent = Entities:FindByName(nil, "relay_first_credits_start")
+                                ent:RedirectOutput("OnTrigger", "StartCredits", ent)
+    
+                                ent = Entities:FindByName(nil, "vcd_ending_eli")
+                                ent:RedirectOutput("OnTrigger3", "EndCredits", ent)
+
+                                ent = Entities:FindByName(nil, "ss_gordon")
+                                ent:RedirectOutput("OnScriptEvent01", "GiveCrowbar", ent)
                             end
                         end
                     end
@@ -2270,6 +2275,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function CheckForGnome(a, b)
+        -- GNOME RANGE
         local ents = Entities:FindAllByClassnameWithin("prop_physics", Entities:GetLocalPlayer():GetCenter(), 100)
         for k, v in pairs(ents) do
             if vlua.find(v:GetModelName(), "models/props/choreo_office/gnome.vmdl") then
@@ -2788,7 +2794,20 @@ if GlobalSys:CommandLineCheck("-novr") then
     function EndCredits(a, b)
         SendToConsole("mouse_disableinput 0")
         SendToConsole("use weapon_bugbait")
-        SendToConsole("hidehud 32")
+        SendToConsole("hidehud 96")
+    end
+
+    function GiveCrowbar(a, b)
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("give weapon_crowbar")
+            SendToConsole("r_drawviewmodel 1")
+            SendToConsole("ent_fire_output prop_crowbar OnPlayerPickup")
+            SendToConsole("ent_fire prop_crowbar Kill")
+        end, "GiveCrowbar", 4.0)
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("r_drawviewmodel 0")
+            SendToConsole("hidehud 4")
+        end, "HideCrowbar", 9.0)
     end
 
     function AddCollisionToPhysicsProps(class)
