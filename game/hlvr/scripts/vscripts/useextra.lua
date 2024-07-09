@@ -8,6 +8,18 @@ local player = Entities:GetLocalPlayer()
 
 player:Attribute_SetIntValue("useextra_executed", 1)
 
+if vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:Attribute_GetIntValue("player_in_combine_elevator", 0) == 1 then
+    local ent = Entities:FindByName(nil, "2_203_inside_elevator_button")
+    if ent then
+        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+    end
+    ent = Entities:FindByName(nil, "inside_elevator_button")
+    if ent then
+        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+    end
+    return
+end
+
 if not (vlua.find(name, "elev_anim_door") and (thisEntity:Attribute_GetIntValue("used", 0) == 1 or thisEntity:GetVelocity() ~= Vector(0, 0, 0))) then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
         thisEntity:Attribute_SetIntValue("toggle", 1)
@@ -188,6 +200,12 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             count = count + 0.01
         end
 
+        if vlua.find(name, "elev_anim_door") then
+            if math.floor((count * 100 % 20)) == 5 then
+                SendToConsole("snd_sos_start_soundevent AnimDoor_Elevator_Combine.Grab")
+            end
+        end
+
         if is_console then
             DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
         end
@@ -229,6 +247,11 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         end
 
         if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
+            if vlua.find(name, "elev_anim_door") then
+                thisEntity:Attribute_SetIntValue("player_in_combine_elevator", 0)
+                SendToConsole("snd_sos_start_soundevent AnimDoor_Elevator_Combine.Tick")
+            end
+
             if name ~= "barricade_door_hook" then
                 thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
                 if map == "a3_distillery" and name == "verticaldoor_wheel" then
@@ -288,8 +311,22 @@ elseif (name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_j
     local count = 1 - thisEntity:GetCycle()
     thisEntity:SetThink(function()
         DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. 1 - count, 0, nil, nil)
+
         count = count + 0.01
+
+        if vlua.find(name, "elev_anim_door") then
+            if math.floor((count * 100 % 20)) == 5 then
+                SendToConsole("snd_sos_start_soundevent AnimDoor_Elevator_Combine.Grab")
+            end
+        end
+
         if count >= 1 then
+            if vlua.find(name, "elev_anim_door") then
+                if vlua.find(Entities:FindAllInSphere(thisEntity:GetCenter(), 35), player) then
+                    thisEntity:Attribute_SetIntValue("player_in_combine_elevator", 1)
+                end
+                --DebugDrawSphere(thisEntity:GetCenter(), Vector(255, 255, 255), 255, 35, false, 3)
+            end
             thisEntity:FireOutput("OnCompletionA_Backward", nil, nil, nil, 0)
             return nil
         else
@@ -1002,17 +1039,23 @@ if name == "2_11128_cshield_station_prop_button" then
     Entities:FindByName(nil, "2_11128_cshield_station_handpose"):FireOutput("OnHandPosed", nil, nil, nil, 0)
 end
 
+
+-- Combine Elevator
+
 if name == "2_203_elev_button_floor_1" or name == "2_203_elevator_switch_box" then
     SendToConsole("ent_fire_output 2_203_elev_button_floor_1_handpose OnHandPosed")
 end
 
 if name == "2_203_inside_elevator_button" then
     SendToConsole("ent_fire_output 2_203_elev_button_elevator_handpose OnHandPosed")
+    Entities:FindByName(nil, "2_203_elev_anim_door"):Attribute_SetIntValue("player_in_combine_elevator", 0)
 end
 
 if name == "inside_elevator_button" then
     SendToConsole("ent_fire_output elev_button_elevator_handpose OnHandPosed")
+    Entities:FindByName(nil, "elev_anim_door"):Attribute_SetIntValue("player_in_combine_elevator", 0)
 end
+
 
 if name == "@pod_shell" or name == "pod_insides" then
     local ent = Entities:FindByName(nil, "@pod_shell")
