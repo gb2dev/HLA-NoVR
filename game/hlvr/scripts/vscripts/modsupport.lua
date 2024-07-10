@@ -725,6 +725,10 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
 		if not isSaveLoaded then -- Start point collisions can be bugged here
 			SendToConsole("setpos_exact -304.557 331.460 -761")
 		end
+        SendToConsole("ent_create env_message { targetname text_multitool_equip message MULTITOOL_EQUIP }")
+        SendToConsole("ent_create env_message { targetname text_multitool_use message MULTITOOL_USE }")
+        ent = Entities:FindByName(nil, "6061_HackHint")
+        ent:RedirectOutput("OnSoundFinished", "ShowMultiToolTutorial", ent)
 	-- skip map "03_metrodynamo"
 	elseif map == "04_hehungers" then
 		SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
@@ -1019,7 +1023,7 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
 	local class = thisEntity:GetClassname()
 	local name = thisEntity:GetName()
 	local model = thisEntity:GetModelName()
-	--print("ModSupport_CheckUseObjectInteraction of " .. name .. ".")
+	print("ModSupport_CheckUseObjectInteraction of " .. name .. ".")
 	--
 	-- Common mod stuff
 	--
@@ -1174,14 +1178,14 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
         if name == "TimeGearsValve" then
             SendToConsole("ent_fire_output timegearsvalve oncompletiona")
         end
-        if name == "6061_toner_port" then
+        if name == "6061_toner_port" and MultitoolEquiped() then
             SendToConsole("ent_fire 6061_toner_port OnPlugRotated")
             SendToConsole("ent_fire_output 6061_toner_path_9 onpoweron")
         end
         if name == "43250_button_pusher_prop" then -- PushUselessLiftButton
             StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
         end
-        if name == "31397_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        if name == "31397_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 and MultitoolEquiped() then
 			thisEntity:Attribute_SetIntValue("used", 1)
             SendToConsole("ent_fire_output 31397_switch_box_hack_plug OnHackSuccess")
         end
@@ -1189,7 +1193,7 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
 			thisEntity:Attribute_SetIntValue("used", 1)
             SendToConsole("ent_fire_output 31397_handpose_combine_switchbox_button_press OnHandPosed")
         end
-        if name == "tonerport" then
+        if name == "tonerport" and MultitoolEquiped() then
             SendToConsole("ent_fire_output simpleunlock_path2 onpoweron")
         end
     end

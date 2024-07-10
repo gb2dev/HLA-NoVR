@@ -8,6 +8,10 @@ local player = Entities:GetLocalPlayer()
 
 player:Attribute_SetIntValue("useextra_executed", 1)
 
+print(class)
+print(name)
+print(model)
+
 local isModActive = ModSupport_IsAddonMap(GetMapName())
 -- Mod support by Hypercycle
 if vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:Attribute_GetIntValue("player_in_combine_elevator", 0) == 1 then
@@ -914,6 +918,15 @@ if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 end
 
+---------- 03_metrodynamo ----------
+
+if map == "03_metrodynamo" then
+    if IsCombineConsoleLocked() == false then
+        local ent = Entities:FindByName(nil, "26976_combine_console")
+        DoEntFireByInstanceHandle(ent, "RackOpening", "1", 0, thisEntity, thisEntity)
+    end
+end
+
 
 ---------- a2_quarantine_entrance ----------
 
@@ -1607,7 +1620,7 @@ if class == "item_hlvr_headcrab_gland" then
     SendToConsole("ent_fire achievement_squeeze_heart FireEvent")
 end
 
-ModSupport_CheckUseObjectInteraction(thisEntity)
+--ModSupport_CheckUseObjectInteraction(thisEntity)
 
 if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if map == "a2_quarantine_entrance" then
