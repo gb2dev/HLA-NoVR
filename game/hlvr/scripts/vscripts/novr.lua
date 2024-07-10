@@ -119,6 +119,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
+        SendToConsole("novr_resetads")
         local player = Entities:GetLocalPlayer()
         local ent = EntIndexToHScript(info.entindex)
         if ent then
@@ -717,22 +718,32 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("+attack2")
                 end
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
-                if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
+                if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 and player:Attribute_GetIntValue("ads_ready", 1) == 1 then
                     if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
+                        local ents = Entities:FindAllInSphere(player:GetCenter(), 80)
+                        for k, v in pairs(ents) do
+                            if v:Attribute_GetIntValue("picked_up", 0) == 1 then
+                                return
+                            end
+                        end
+
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", -0.04)
                         SendToConsole("ent_fire ads_zoom zoom")
+                        player:Attribute_SetIntValue("ads_ready", 0)
                         ViewmodelAnimation_HIPtoADS()
                         player:SetThink(function()
                             cvar_setf("fov_ads_zoom", FOV_ADS_ZOOM)
                             cvar_setf("viewmodel_offset_x", -0.005)
-                        end, "ZoomActivate", 0.5)
+                            player:Attribute_SetIntValue("ads_ready", 1)
+                        end, "ZoomActivate", 0.4)
                         SendToConsole("hud_draw_fixed_reticle 0")
                         SendToConsole("crosshair 0")
                         SendToConsole("pistol_use_new_accuracy 1")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
                         SendToConsole("ent_fire ads_zoom_out zoom")
+                        player:Attribute_SetIntValue("ads_ready", 0)
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
@@ -746,7 +757,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                         player:SetThink(function()
                             SendToConsole("ent_fire ads_zoom unzoom")
                             SendToConsole("ent_fire ads_zoom_out unzoom")
-                        end, "ZoomDeactivate", 0.5)
+                            player:Attribute_SetIntValue("ads_ready", 1)
+                        end, "ZoomDeactivate", 0.3)
                     end
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
@@ -910,12 +922,18 @@ if GlobalSys:CommandLineCheck("-novr") then
 
         -- Ladders and position based interactions
         if GetMapName() == "a1_intro_world" then
-            if vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
+            if vlua.find(Entities:FindAllInSphere(Vector(-958, 1735, 118), 10), player) then
+                DoEntFireByInstanceHandle(Entities:FindByName(nil, "205_8032_button_pusher_prop"), "RunScriptFile", "useextra", 0, nil, nil)
+            elseif vlua.find(Entities:FindAllInSphere(Vector(648, -1757, -141), 10), player) then
                 ClimbLadder(-64)
-            elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 20), player) then
+            elseif vlua.find(Entities:FindAllInSphere(Vector(530, -2331, -84), 25), player) then
                 ClimbLadderSound()
                 SendToConsole("fadein 0.2")
                 SendToConsole("setpos_exact 574 -2328 -130")
+            elseif vlua.find(Entities:FindAllInSphere(Vector(606, -2339, -217), 20), player) then
+                if 135 < player:GetAngles().y or player:GetAngles().y < -135 then
+                    DoEntFireByInstanceHandle(Entities:FindByName(nil, "979_518_button_pusher_prop"), "RunScriptFile", "useextra", 0, nil, nil)
+                end
             end
         elseif GetMapName() == "a1_intro_world_2" then
             if vlua.find(Entities:FindAllInSphere(Vector(-1268, 576, -63), 10), player) and Entities:FindByName(nil, "balcony_ladder"):GetSequence() == "idle_open" then
@@ -1214,7 +1232,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
             SendToConsole("bind " .. GRENADE .. " throwgrenade")
-            SendToConsole("bind " .. RELOAD .. " +reload")
+            SendToConsole("bind " .. RELOAD .. " \"+reload;novr_resetads\"")
             SendToConsole("bind " .. QUICK_SWAP .. " \"lastinv;viewmodel_update\"")
             SendToConsole("bind " .. COVER_MOUTH .. " +covermouth")
             SendToConsole("bind " .. MOVE_FORWARD .. " +forwardfixed")
@@ -1237,6 +1255,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("cc_spectator_only 1")
             SendToConsole("sv_gameinstructor_disable 1")
             SendToConsole("hud_draw_fixed_reticle 0")
+            SendToConsole("hud_reticle_minalpha 255")
             SendToConsole("r_drawvgui 1")
             SendToConsole("ent_fire *_locker_door_* DisablePickup")
             SendToConsole("ent_fire *_hazmat_crate_lid DisablePickup")
@@ -1393,9 +1412,16 @@ if GlobalSys:CommandLineCheck("-novr") then
                     return 1
                 end, "ReturnFabricatorWeapon", 0)
 
+                Convars:RegisterConvar("novr_current_vm_model", "", "", 0)
                 ent:SetThink(function()
                     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
                     local player = Entities:GetLocalPlayer()
+
+                    local current_vm_model = viewmodel:GetModelName()
+                    if current_vm_model ~= Convars:GetStr("novr_current_vm_model") then
+                        SendToConsole("novr_resetads")
+                        Convars:SetStr("novr_current_vm_model", current_vm_model)
+                    end
 
                     if GetMapName() == "a3_c17_processing_plant" and player:Attribute_GetIntValue("activated_processing_plant_lift", 0) == 0 and player:GetAbsOrigin().z < 600 then
                         SendToConsole("snd_sos_start_soundevent Player.FallDamage")
@@ -1435,10 +1461,13 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     look_delta = viewmodel:GetAngles()
 
-                    local viewmodel_offset_y_additional = -0.75
+                    local viewmodel_offset_y_additional = -1.0
                     if string.match(viewmodel:GetModelName(), "v_pistol") then
-                        viewmodel_offset_y_additional = -1.0
+                        viewmodel_offset_y_additional = -1.25
+                    elseif string.match(viewmodel:GetModelName(), "v_crowbar") then
+                        viewmodel_offset_y_additional = -7.0
                     end
+                    viewmodel_offset_y_additional = viewmodel_offset_y_additional
 
                     -- Set weapon sway and view bob if zoom is not active
                     if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
@@ -1779,6 +1808,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     if GetMapName() == "a2_drainage" then
                         if not loading_save_file then
+                            Entities:FindByName(nil, "wheel2_physics"):SetOrigin(Vector(307, -2502, 380))
+
                             SendToConsole("ent_fire math_count_wheel2_installment AddOutput \"OnChangedFromMin>relay_install_wheel2>Trigger>>0>1\"")
                             SendToConsole("ent_fire math_count_wheel_installment AddOutput \"OnChangedFromMin>relay_install_wheel>Trigger>>0>1\"")
                             SendToConsole("ent_fire wheel_physics DisablePickup")
@@ -2207,18 +2238,6 @@ if GlobalSys:CommandLineCheck("-novr") then
                             SendToConsole("bind " .. COVER_MOUTH .. " \"\"")
                             Entities:GetLocalPlayer():Attribute_SetIntValue("grenade", 0)
 
-                            ent = Entities:FindByName(nil, "timer_briefcase")
-                            DoEntFireByInstanceHandle(ent, "RefireTime", "5", 0, nil, nil)
-
-                            ent = Entities:FindByName(nil, "relay_advisor_void")
-                            ent:RedirectOutput("OnTrigger", "GiveAdvisorVortEnergy", ent)
-
-                            ent = Entities:FindByName(nil, "relay_first_credits_start")
-                            ent:RedirectOutput("OnTrigger", "StartCredits", ent)
-
-                            ent = Entities:FindByName(nil, "vcd_ending_eli")
-                            ent:RedirectOutput("OnTrigger3", "EndCredits", ent)
-
                             if not loading_save_file then
                                 local player_clip = Entities:FindAllByClassname("func_brush")[1]
                                 local player_clip_name = player_clip:GetName()
@@ -2227,6 +2246,21 @@ if GlobalSys:CommandLineCheck("-novr") then
                                     DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip_name .. ">Enable>>0>-1", 0, nil, nil)
                                 end
                                 ent:RedirectOutput("OnTrigger", "GrabCandlers", ent)
+
+                                ent = Entities:FindByName(nil, "timer_briefcase")
+                                DoEntFireByInstanceHandle(ent, "RefireTime", "5", 0, nil, nil)
+
+                                ent = Entities:FindByName(nil, "relay_advisor_void")
+                                ent:RedirectOutput("OnTrigger", "GiveAdvisorVortEnergy", ent)
+
+                                ent = Entities:FindByName(nil, "relay_first_credits_start")
+                                ent:RedirectOutput("OnTrigger", "StartCredits", ent)
+
+                                ent = Entities:FindByName(nil, "vcd_ending_eli")
+                                ent:RedirectOutput("OnTrigger3", "EndCredits", ent)
+
+                                ent = Entities:FindByName(nil, "ss_gordon")
+                                ent:RedirectOutput("OnScriptEvent01", "GiveCrowbar", ent)
                             end
                         end
                     end
@@ -2280,6 +2314,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     function CheckForGnome(a, b)
+        -- GNOME RANGE
         local ents = Entities:FindAllByClassnameWithin("prop_physics", Entities:GetLocalPlayer():GetCenter(), 100)
         for k, v in pairs(ents) do
             if vlua.find(v:GetModelName(), "models/props/choreo_office/gnome.vmdl") then
@@ -2793,12 +2828,35 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function StartCredits(a, b)
         SendToConsole("mouse_disableinput 1")
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("ent_fire assignment_panel_1 IgnoreUserInput")
+            SendToConsole("ent_fire assignment_panel_2 IgnoreUserInput")
+            SendToConsole("ent_fire assignment_panel_3 IgnoreUserInput")
+        end, "HideUICursorAssignment", 1.1)
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("ent_fire credits_panel_left IgnoreUserInput")
+            SendToConsole("ent_fire credits_panel_middle IgnoreUserInput")
+            SendToConsole("ent_fire credits_panel_right IgnoreUserInput")
+        end, "HideUICursorCredits", 14.1)
     end
 
     function EndCredits(a, b)
         SendToConsole("mouse_disableinput 0")
         SendToConsole("use weapon_bugbait")
-        SendToConsole("hidehud 32")
+        SendToConsole("hidehud 96")
+    end
+
+    function GiveCrowbar(a, b)
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("give weapon_crowbar")
+            SendToConsole("r_drawviewmodel 1")
+            SendToConsole("ent_fire_output prop_crowbar OnPlayerPickup")
+            SendToConsole("ent_fire prop_crowbar Kill")
+        end, "GiveCrowbar", 4.0)
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("r_drawviewmodel 0")
+            SendToConsole("hidehud 4")
+        end, "HideCrowbar", 9.0)
     end
 
     function AddCollisionToPhysicsProps(class)

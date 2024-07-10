@@ -27,4 +27,4 @@ ZOOM              = "Z"
 USE_HEALTHPEN     = "B"
 DROP_ITEM         = "X"
 UNEQUIP_WEARABLE  = "U"
-FOV               = 75
+FOV               = 90

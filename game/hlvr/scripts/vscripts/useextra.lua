@@ -10,6 +10,17 @@ player:Attribute_SetIntValue("useextra_executed", 1)
 
 local isModActive = ModSupport_IsAddonMap(GetMapName())
 -- Mod support by Hypercycle
+if vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 0 and thisEntity:Attribute_GetIntValue("player_in_combine_elevator", 0) == 1 then
+    local ent = Entities:FindByName(nil, "2_203_inside_elevator_button")
+    if ent then
+        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+    end
+    ent = Entities:FindByName(nil, "inside_elevator_button")
+    if ent then
+        DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+    end
+    return
+end
 
 if not (vlua.find(name, "elev_anim_door") and (thisEntity:Attribute_GetIntValue("used", 0) == 1 or thisEntity:GetVelocity() ~= Vector(0, 0, 0))) then
     if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
@@ -416,6 +427,12 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
             count = count + 0.01
         end
 
+        if vlua.find(name, "elev_anim_door") then
+            if math.floor((count * 100 % 20)) == 5 then
+                SendToConsole("snd_sos_start_soundevent AnimDoor_Elevator_Combine.Grab")
+            end
+        end
+
         if is_console then
             DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. count, 0, nil, nil)
         end
@@ -457,6 +474,11 @@ if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and nam
         end
 
         if not (map == "a3_distillery" and name == "verticaldoor_wheel") and count >= 1 or count >= 10 then
+            if vlua.find(name, "elev_anim_door") then
+                thisEntity:Attribute_SetIntValue("player_in_combine_elevator", 0)
+                SendToConsole("snd_sos_start_soundevent AnimDoor_Elevator_Combine.Tick")
+            end
+
             if name ~= "barricade_door_hook" then
                 thisEntity:FireOutput("OnCompletionA_Forward", nil, nil, nil, 0)
                 if map == "a3_distillery" and name == "verticaldoor_wheel" then
@@ -516,8 +538,22 @@ elseif (name == "barricade_door_hook" and player:Attribute_GetIntValue("locked_j
     local count = 1 - thisEntity:GetCycle()
     thisEntity:SetThink(function()
         DoEntFireByInstanceHandle(thisEntity, "SetCompletionValue", "" .. 1 - count, 0, nil, nil)
+
         count = count + 0.01
+
+        if vlua.find(name, "elev_anim_door") then
+            if math.floor((count * 100 % 20)) == 5 then
+                SendToConsole("snd_sos_start_soundevent AnimDoor_Elevator_Combine.Grab")
+            end
+        end
+
         if count >= 1 then
+            if vlua.find(name, "elev_anim_door") then
+                if vlua.find(Entities:FindAllInSphere(thisEntity:GetCenter(), 35), player) then
+                    thisEntity:Attribute_SetIntValue("player_in_combine_elevator", 1)
+                end
+                --DebugDrawSphere(thisEntity:GetCenter(), Vector(255, 255, 255), 255, 35, false, 3)
+            end
             thisEntity:FireOutput("OnCompletionA_Backward", nil, nil, nil, 0)
             return nil
         else
@@ -625,7 +661,7 @@ end
 
 if vlua.find(model, "models/props/interior_furniture/interior_kitchen_cabinet_") or vlua.find(model, "models/props/interior_furniture/interior_furniture_cabinet_") then
     if vlua.find(model, "002") then
-        if vlua.find(model, "door_a") then
+        if vlua.find(model, "door_a") or vlua.find(model, "door_b") then
             if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
                 thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,2000))
             else
@@ -645,6 +681,10 @@ if vlua.find(model, "models/props/interior_furniture/interior_kitchen_cabinet_")
             thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
         end
     else
+        if vlua.find(model, "nohandle") then
+            return
+        end
+
         if thisEntity:Attribute_GetIntValue("toggle", 0) == 0 then
             thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
         else
@@ -761,8 +801,13 @@ if vlua.find(model, "models/props/c17/antenna01") then
     thisEntity:ApplyLocalAngularVelocityImpulse(Vector(0,0,-2000))
 end
 
-if name == "979_518_button_pusher_prop" then
+if name == "979_518_button_pusher_prop" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+    SendToConsole("snd_sos_start_soundevent Button_Basic.Press")
     SendToConsole("ent_fire debug_choreo_start_relay trigger")
+    thisEntity:Attribute_SetIntValue("used", 1)
+    thisEntity:SetThink(function()
+        thisEntity:Attribute_SetIntValue("used", 0)
+    end, "EnableButton", 2)
 end
 
 if name == "light_switch_1" then
@@ -1091,14 +1136,6 @@ if name == "combine_gun_mechanical" then
 end
 
 
----------- a5_endings ----------
-
-if name == "prop_crowbar" then
-    thisEntity:Kill()
-    return
-end
-
-
 ---------- Other ----------
 
 -- Call elevator button
@@ -1233,17 +1270,23 @@ if name == "2_11128_cshield_station_prop_button" then
     Entities:FindByName(nil, "2_11128_cshield_station_handpose"):FireOutput("OnHandPosed", nil, nil, nil, 0)
 end
 
+
+-- Combine Elevator
+
 if name == "2_203_elev_button_floor_1" or name == "2_203_elevator_switch_box" then
     SendToConsole("ent_fire_output 2_203_elev_button_floor_1_handpose OnHandPosed")
 end
 
 if name == "2_203_inside_elevator_button" then
     SendToConsole("ent_fire_output 2_203_elev_button_elevator_handpose OnHandPosed")
+    Entities:FindByName(nil, "2_203_elev_anim_door"):Attribute_SetIntValue("player_in_combine_elevator", 0)
 end
 
 if name == "inside_elevator_button" then
     SendToConsole("ent_fire_output elev_button_elevator_handpose OnHandPosed")
+    Entities:FindByName(nil, "elev_anim_door"):Attribute_SetIntValue("player_in_combine_elevator", 0)
 end
+
 
 if name == "@pod_shell" or name == "pod_insides" then
     local ent = Entities:FindByName(nil, "@pod_shell")
@@ -1536,6 +1579,12 @@ if name == "plug_console_starter_lever" then
     SendToConsole("ent_fire_output plug_console_starter_lever OnCompletionB_Forward")
 end
 
+if model == "models/props_combine/combine_consoles/combine_lever_switch.vmdl" then
+    local lever_pos = thisEntity:GetCenter() + thisEntity:GetForwardVector() * 17
+    local lever = Entities:FindByModelWithin(nil, "models/props_combine/combine_consoles/lever_main_slide.vmdl", lever_pos, 5)
+    DoEntFireByInstanceHandle(lever, "RunScriptFile", "useextra", 0, player, player)
+end
+
 if name == "lift_button_box" then
     if thisEntity:Attribute_GetIntValue("used", 0) == 1 then
         SendToConsole("ent_fire_output lift_button_down onin")
@@ -1691,7 +1740,7 @@ elseif class == "item_hlvr_weapon_rapidfire" and not vlua.find(name, "weapon_in_
     if map == "a3_hotel_interior_rooftop" then
         local ents = Entities:FindAllByClassnameWithin("item_hlvr_clip_rapidfire", thisEntity:GetCenter(), 10)
         for k, v in pairs(ents) do
-            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, nil)
+            DoEntFireByInstanceHandle(v, "RunScriptFile", "useextra", 0, player, player)
         end
     end
     SendToConsole("ent_fire item_hlvr_weapon_rapidfire Kill")
