@@ -707,22 +707,25 @@ if GlobalSys:CommandLineCheck("-novr") then
                     SendToConsole("+attack2")
                 end
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
-                if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 then
+                if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 and player:Attribute_GetIntValue("ads_ready", 1) == 1 then
                     if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", -0.04)
                         SendToConsole("ent_fire ads_zoom zoom")
+                        player:Attribute_SetIntValue("ads_ready", 0)
                         ViewmodelAnimation_HIPtoADS()
                         player:SetThink(function()
                             cvar_setf("fov_ads_zoom", FOV_ADS_ZOOM)
                             cvar_setf("viewmodel_offset_x", -0.005)
-                        end, "ZoomActivate", 0.5)
+                            player:Attribute_SetIntValue("ads_ready", 1)
+                        end, "ZoomActivate", 0.4)
                         SendToConsole("hud_draw_fixed_reticle 0")
                         SendToConsole("crosshair 0")
                         SendToConsole("pistol_use_new_accuracy 1")
                     else
                         cvar_setf("fov_ads_zoom", FOV)
                         SendToConsole("ent_fire ads_zoom_out zoom")
+                        player:Attribute_SetIntValue("ads_ready", 0)
                         cvar_setf("viewmodel_offset_x", 0)
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", 0)
@@ -736,7 +739,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                         player:SetThink(function()
                             SendToConsole("ent_fire ads_zoom unzoom")
                             SendToConsole("ent_fire ads_zoom_out unzoom")
-                        end, "ZoomDeactivate", 0.5)
+                            player:Attribute_SetIntValue("ads_ready", 1)
+                        end, "ZoomDeactivate", 0.3)
                     end
                 end
             elseif string.match(viewmodel:GetModelName(), "v_smg1") then
