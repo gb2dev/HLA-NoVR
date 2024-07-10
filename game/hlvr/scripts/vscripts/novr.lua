@@ -109,6 +109,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     end
 
     pickup_ev = ListenToGameEvent('physgun_pickup', function(info)
+        SendToConsole("novr_resetads")
         local player = Entities:GetLocalPlayer()
         local ent = EntIndexToHScript(info.entindex)
         if ent then
@@ -709,6 +710,13 @@ if GlobalSys:CommandLineCheck("-novr") then
             elseif string.match(viewmodel:GetModelName(), "v_pistol") then
                 if player:Attribute_GetIntValue("pistol_upgrade_aimdownsights", 0) == 1 and player:Attribute_GetIntValue("ads_ready", 1) == 1 then
                     if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then
+                        local ents = Entities:FindAllInSphere(player:GetCenter(), 80)
+                        for k, v in pairs(ents) do
+                            if v:Attribute_GetIntValue("picked_up", 0) == 1 then
+                                return
+                            end
+                        end
+
                         cvar_setf("viewmodel_offset_y", 0)
                         cvar_setf("viewmodel_offset_z", -0.04)
                         SendToConsole("ent_fire ads_zoom zoom")
