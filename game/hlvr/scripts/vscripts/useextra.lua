@@ -1620,10 +1620,8 @@ if class == "item_hlvr_headcrab_gland" then
     SendToConsole("ent_fire achievement_squeeze_heart FireEvent")
 end
 
---ModSupport_CheckUseObjectInteraction(thisEntity)
-
 if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
-    if map == "a2_quarantine_entrance" then
+    if map == "a2_quarantine_entrance" and not isModActive then
         ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
         while ent do
             ent:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", ent)
@@ -1726,6 +1724,8 @@ local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["it
 if thisEntity:GetMoveParent() ~= nil then
     item_pickup_params.wasparentedto = thisEntity:GetMoveParent():GetClassname()
 end
+
+ModSupport_CheckUseObjectInteraction(thisEntity)
 
 -- Weapons
 if name == "weapon_in_fabricator_idle" then

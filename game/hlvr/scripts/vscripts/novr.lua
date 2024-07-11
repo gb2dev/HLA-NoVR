@@ -157,7 +157,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                 player:Attribute_SetIntValue("picked_up", 0)
             end, "ResetPickedUp", 0.02)
             DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptCode>thisEntity:Attribute_SetIntValue(\"picked_up\", 0);if Convars:GetInt(\"hidehud\") ~= 96 and Convars:GetInt(\"hidehud\") ~= 1 and Convars:GetInt(\"hidehud\") ~= 67 then SendToConsole(\"r_drawviewmodel 1\") end>0.02>1", 0, nil, nil)
-            DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+            if GetMapName() ~= "03_metrodynamo" or (GetMapName() == "03_metrodynamo" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" and not string.match(ent:GetModelName(), "vr_console_rack_1")) --Levitation
+            then
+                DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+            end
         end
     end, nil)
 
@@ -211,7 +214,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     if ent:Attribute_GetIntValue("used", 0) == 0 and not (parent and (vlua.find(parent:GetModelName(), "power_stake"))) and name ~= "traincar_01_hackplug" and ent:GetGraphParameter("b_PlugDisabled") == false then
                         -- Combine Console
                         if parent and vlua.find(parent:GetName(), "Console") then
-                            if GetMapName() == "a2_quarantine_entrance" then
+                            if GetMapName() == "a2_quarantine_entrance" and not isModActive then
                                 local rack = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
                                 while rack do
                                     rack:RedirectOutput("OnCompletionA_Forward", "ShowHoldInteractTutorial", rack)
