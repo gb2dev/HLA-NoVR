@@ -97,8 +97,18 @@ TraceLine(eyetrace)
 if eyetrace.hit then
     local useRoutine = 0
     if eyetrace.enthit and eyetrace.enthit:GetClassname() == "worldent" and class ~= "item_combine_tank_locker" and not vlua.find(class, "hlvr_piano") then
-        GravityGlovePull()
-        return
+        if GetMapName() == "03_metrodynamo" --Levitation combine console fix
+        then
+            useRoutine = 1
+            player:SetThink(function()
+                if IsValidEntity(thisEntity) then
+                    DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
+                end
+            end, "useextra", 0.02)
+        else
+            GravityGlovePull()
+            return
+        end
     end
 
     -- TODO: There's gotta be a better way than to exclude some things from here
