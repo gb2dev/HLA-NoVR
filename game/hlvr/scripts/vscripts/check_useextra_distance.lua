@@ -14,8 +14,18 @@ if eyetrace.hit then
     local useRoutine = 0
     if eyetrace.enthit then
         if eyetrace.enthit:GetClassname() == "worldent" and class ~= "item_combine_tank_locker" and not vlua.find(class, "hlvr_piano") then
-            DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "gravity_gloves", 0, nil, nil)
-            return
+            if GetMapName() == "03_metrodynamo" --Levitation combine console fix
+            then
+                useRoutine = 1
+                player:SetThink(function()
+                    if IsValidEntity(thisEntity) then
+                        DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "useextra", 0, nil, nil)
+                    end
+                end, "useextra", 0.02)
+            else
+                DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "gravity_gloves", 0, nil, nil)
+                return
+            end
         elseif class == "prop_hlvr_crafting_station_console" then
             local ent = Entities:FindByNameWithin(nil, "weapon_in_fabricator_idle", eyetrace.pos, 15)
             if ent then
