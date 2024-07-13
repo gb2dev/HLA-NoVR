@@ -1519,7 +1519,6 @@ elseif class == "item_hlvr_grenade_xen" then
         thisEntity:Kill()
     end
 elseif class == "item_hlvr_grenade_frag" then
-    thisEntity:Attribute_SetIntValue("picked_up", 0)
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("grenade_tutorial_shown", 1)
@@ -1547,7 +1546,6 @@ elseif class == "item_hlvr_grenade_frag" then
         end
     end
 elseif class == "item_healthvial" then
-    thisEntity:Attribute_SetIntValue("picked_up", 0)
     if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         if player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("syringe_tutorial_shown", 1)

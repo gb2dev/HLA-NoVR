@@ -113,22 +113,23 @@ if GlobalSys:CommandLineCheck("-novr") then
         local player = Entities:GetLocalPlayer()
         local ent = EntIndexToHScript(info.entindex)
         if ent then
-            if ent:GetClassname() == "item_hlvr_grenade_frag" then
+            if ent:GetClassname() == "item_hlvr_grenade_frag" or ent:GetClassname() == "item_hlvr_grenade_xen" or ent:GetClassname() == "item_hlvr_combine_console_tank" or ent:GetClassname() == "item_healthvial" then
                 ent:Attribute_SetIntValue("picked_up", 1)
                 ent:SetThink(function()
+                    SendToConsole("r_drawviewmodel 0")
                     if ent:GetMass() == 1 then
                         return 0
                     end
 
-                    -- Grenade dropped
-                    ent:Attribute_SetIntValue("picked_up", 0)
-                end, "CheckGrenadeDrop", 0)
+                    -- Item dropped
+                    DoEntFireByInstanceHandle(ent, "RunScriptFile", "drop_object", 0, nil, nil)
+                end, "CheckGrenadeDrop", 0.02)
             end
             local child = ent:GetChildren()[1]
             if child and child:GetClassname() == "prop_dynamic" then
                 child:SetEntityName("held_prop_dynamic_override")
             end
-            if ent:GetClassname() ~= "item_healthvial" and ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_grenade_xen" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" then
+            if ent:GetClassname() ~= "item_healthvial" and ent:GetClassname() ~= "item_hlvr_grenade_frag" and ent:GetClassname() ~= "item_hlvr_grenade_xen" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" and ent:GetClassname() ~= "item_healthvial" then
                 ent:Attribute_SetIntValue("picked_up", 1)
                 ent:SetThink(function()
                     local ent2 = Entities:FindByName(nil, "hat_construction_viewmodel")
@@ -653,6 +654,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("impulse 200")
             player:SetThink(function()
                 SendToConsole("impulse 200")
+                SendToConsole("r_drawviewmodel 1")
             end, "FinishGrenadeThrow", 0.1)
         end
         DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
