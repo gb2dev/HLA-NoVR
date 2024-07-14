@@ -1468,10 +1468,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 30)
-                    if shard then
-                        if not (GetMapName() == "a3_c17_processing_plant" and #Entities:FindAllByClassnameWithin("shatterglass_shard", player:GetCenter(), 100) == 1) then
-                            DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
-                        end
+                    if shard and #shard:GetMoveParent():GetChildren() > 1 then
+                        DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
                     end
 
                     if Entities:GetLocalPlayer():GetBoundingMaxs().z == 36 then
