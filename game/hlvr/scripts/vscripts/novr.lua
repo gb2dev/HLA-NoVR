@@ -1426,7 +1426,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
 
                     local barnacle_tounge = Entities:FindByClassnameNearest("npc_barnacle_tongue_tip", player:GetOrigin(), 28)
-                    if barnacle_tounge then
+                    if barnacle_tounge and barnacle_tounge:GetOrigin().z > player:GetOrigin().z - 15 then
                         SendToConsole("novr_unequip_wearable")
                     end
 
