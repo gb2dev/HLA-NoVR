@@ -1468,7 +1468,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
 
                     local shard = Entities:FindByClassnameNearest("shatterglass_shard", player:GetCenter(), 30)
-                    if shard and #shard:GetMoveParent():GetChildren() > 1 then
+                    if shard and shard:GetMoveParent() and #shard:GetMoveParent():GetChildren() > 1 then
                         DoEntFireByInstanceHandle(shard, "Break", "", 0, nil, nil)
                     end
 
