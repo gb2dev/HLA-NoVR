@@ -1386,10 +1386,6 @@ if (model == "models/props/hazmat/respirator_01b.vmdl" or model == "models/props
     return
 end
 
-if class == "item_item_crate" then
-    DoEntFireByInstanceHandle(thisEntity, "SetHealth", "0", 0, nil, nil)
-end
-
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
 if thisEntity:GetMoveParent() ~= nil then
     item_pickup_params.wasparentedto = thisEntity:GetMoveParent():GetClassname()
