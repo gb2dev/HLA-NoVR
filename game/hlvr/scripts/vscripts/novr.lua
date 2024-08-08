@@ -371,9 +371,11 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("ent_fire player_speedmod ModifySpeed 1")
     end, "", 0)
 
-    Convars:RegisterConvar("chosen_upgrade", "", "", 0)
+    Convars:RegisterConvar("novr_chosen_weapon_upgrade", "", "", 0)
 
-    Convars:RegisterConvar("weapon_in_crafting_station", "", "", 0)
+    Convars:RegisterConvar("novr_weapon_in_crafting_station", "", "", 0)
+
+    Convars:RegisterConvar("novr_viewmodel_offset_y_additional", "", "", 0)
 
     Convars:RegisterCommand("unstuck", function()
         local player = Entities:GetLocalPlayer()
@@ -436,19 +438,19 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("novr_energygun_grant_upgrade", function(name, value)
         -- Reflex Sight
         if value == "0" then
-            Convars:SetStr("chosen_upgrade", "pistol_upgrade_aimdownsights")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "pistol_upgrade_aimdownsights")
             print("[GameMenu] give_achievement TRAINING_FIRST_PISTOL_UPGRADE")
         -- Burst Fire
         elseif value == "1" then
-            Convars:SetStr("chosen_upgrade", "pistol_upgrade_burstfire")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "pistol_upgrade_burstfire")
             print("[GameMenu] give_achievement TRAINING_FIRST_PISTOL_UPGRADE")
         -- Bullet Reservoir
         elseif value == "2" then
-            Convars:SetStr("chosen_upgrade", "pistol_upgrade_hopper")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "pistol_upgrade_hopper")
             print("[GameMenu] give_achievement TRAINING_FIRST_PISTOL_UPGRADE")
         -- Laser Sight
         elseif value == "3" then
-            Convars:SetStr("chosen_upgrade", "pistol_upgrade_lasersight")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "pistol_upgrade_lasersight")
             print("[GameMenu] give_achievement TRAINING_FIRST_PISTOL_UPGRADE")
         else
             return
@@ -460,16 +462,16 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("novr_shotgun_grant_upgrade", function(name, value)
         -- Laser Sight
         if value == "0" then
-            Convars:SetStr("chosen_upgrade", "shotgun_upgrade_lasersight")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "shotgun_upgrade_lasersight")
         -- Double Shot
         elseif value == "1" then
-            Convars:SetStr("chosen_upgrade", "shotgun_upgrade_doubleshot")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "shotgun_upgrade_doubleshot")
         -- Autoloader
         elseif value == "2" then
-            Convars:SetStr("chosen_upgrade", "shotgun_upgrade_hopper")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "shotgun_upgrade_hopper")
         -- Grenade Launcher
         elseif value == "3" then
-            Convars:SetStr("chosen_upgrade", "shotgun_upgrade_grenadelauncher")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "shotgun_upgrade_grenadelauncher")
         else
             return
         end
@@ -480,13 +482,13 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("novr_rapidfire_grant_upgrade", function(name, value)
         -- Reflex Sight
         if value == "0" then
-            Convars:SetStr("chosen_upgrade", "smg_upgrade_aimdownsights")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "smg_upgrade_aimdownsights")
         -- Laser Sight
         elseif value == "1" then
-            Convars:SetStr("chosen_upgrade", "smg_upgrade_lasersight")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "smg_upgrade_lasersight")
         -- Extended Magazine
         elseif value == "2" then
-            Convars:SetStr("chosen_upgrade", "smg_upgrade_casing")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "smg_upgrade_casing")
         else
             return
         end
@@ -502,7 +504,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             v:SetEntityName("weapon_in_fabricator")
         end
 
-        if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
+        if Convars:GetStr("novr_weapon_in_crafting_station") == "pistol" then
             -- Reflex Sight
             if value == "1" and t.current_crafting_currency >= 10 then
                 SendToConsole("novr_energygun_grant_upgrade 0")
@@ -524,7 +526,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("hlvr_addresources 0 0 0 -35")
                 return
             end
-        elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
+        elseif Convars:GetStr("novr_weapon_in_crafting_station") == "shotgun" then
             -- Laser Sight
             if value == "1" and t.current_crafting_currency >= 10 then
                 SendToConsole("novr_shotgun_grant_upgrade 0")
@@ -546,7 +548,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("hlvr_addresources 0 0 0 -40")
                 return
             end
-        elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
+        elseif Convars:GetStr("novr_weapon_in_crafting_station") == "smg" then
             -- Reflex Sight
             if value == "1" and t.current_crafting_currency >= 15 then
                 SendToConsole("novr_rapidfire_grant_upgrade 0")
@@ -572,18 +574,18 @@ if GlobalSys:CommandLineCheck("-novr") then
     end, "", 0)
 
     Convars:RegisterCommand("novr_crafting_station_cancel_upgrade", function()
-        Convars:SetStr("chosen_upgrade", "cancel")
+        Convars:SetStr("novr_chosen_weapon_upgrade", "cancel")
         SendToConsole("ent_fire weapon_in_fabricator_idle Kill")
         SendToConsole("ent_fire upgrade_ui kill")
         -- TODO: Give weapon back, but don't fill magazine
-        if Convars:GetStr("weapon_in_crafting_station") == "pistol" then
+        if Convars:GetStr("novr_weapon_in_crafting_station") == "pistol" then
             SendToConsole("give weapon_pistol")
-        elseif Convars:GetStr("weapon_in_crafting_station") == "shotgun" then
+        elseif Convars:GetStr("novr_weapon_in_crafting_station") == "shotgun" then
             SendToConsole("give weapon_shotgun")
-        elseif Convars:GetStr("weapon_in_crafting_station") == "smg" then
+        elseif Convars:GetStr("novr_weapon_in_crafting_station") == "smg" then
             SendToConsole("give weapon_ar2")
         end
-        Convars:SetStr("weapon_in_crafting_station", "")
+        Convars:SetStr("novr_weapon_in_crafting_station", "")
         SendToConsole("viewmodel_update")
         SendToConsole("ent_fire prop_hlvr_crafting_station_console RunScriptFile useextra")
     end, "", 0)
@@ -1398,7 +1400,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                 local move_delta = Vector(0, 0, 0)
 
                 ent:SetThink(function()
-                    if Convars:GetStr("weapon_in_crafting_station") ~= "" and Convars:GetStr("chosen_upgrade") == "" and Entities:FindByClassnameNearest("prop_hlvr_crafting_station", Entities:GetLocalPlayer():GetAbsOrigin(), 200) == nil then
+                    if Convars:GetStr("novr_weapon_in_crafting_station") ~= "" and Convars:GetStr("novr_chosen_weapon_upgrade") == "" and Entities:FindByClassnameNearest("prop_hlvr_crafting_station", Entities:GetLocalPlayer():GetAbsOrigin(), 200) == nil then
                         SendToConsole("novr_crafting_station_cancel_upgrade")
                     end
                     return 1
@@ -1453,13 +1455,23 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                     look_delta = viewmodel:GetAngles()
 
-                    local viewmodel_offset_y_additional = -1.0
-                    if string.match(viewmodel:GetModelName(), "v_pistol") then
-                        viewmodel_offset_y_additional = -1.25
-                    elseif string.match(viewmodel:GetModelName(), "v_crowbar") then
-                        viewmodel_offset_y_additional = -7.0
+                    local mult = -0.06
+                    local fov = cvar_getf("fov_desired")
+                    if fov > 80 then
+                        mult = -0.055
                     end
-                    viewmodel_offset_y_additional = viewmodel_offset_y_additional
+                    if fov > 90 then
+                        mult = -0.045
+                    end
+                    if fov > 100 then
+                        mult = -0.042
+                    end
+                    if string.match(viewmodel:GetModelName(), "v_shotgun") then
+                        mult = mult * 0.8
+                    elseif string.match(viewmodel:GetModelName(), "v_smg1") then
+                        mult = mult * 0.5
+                    end
+                    local viewmodel_offset_y_additional = mult * (fov - 60)
 
                     -- Set weapon sway and view bob if zoom is not active
                     if cvar_getf("fov_ads_zoom") > FOV_ADS_ZOOM then

@@ -1078,8 +1078,8 @@ end
 if class == "prop_hlvr_crafting_station_console" then
     if thisEntity:GetGraphParameter("bBootup") == true and thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
         if thisEntity:GetGraphParameter("bCollectingResin") then
-            if Convars:GetStr("chosen_upgrade") ~= "" then
-                if Convars:GetStr("chosen_upgrade") == "cancel" then
+            if Convars:GetStr("novr_chosen_weapon_upgrade") ~= "" then
+                if Convars:GetStr("novr_chosen_weapon_upgrade") == "cancel" then
                     thisEntity:SetGraphParameterBool("bCrafting", false)
                     SendToConsole("ent_fire point_clientui_world_panel Enable")
                     thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 0)
@@ -1095,7 +1095,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 if string.match(viewmodel:GetModelName(), "v_pistol") then
                     SendToConsole("ent_fire weapon_pistol Kill")
                     SendToConsole("use weapon_physcannon")
-                    Convars:SetStr("weapon_in_crafting_station", "pistol")
+                    Convars:SetStr("novr_weapon_in_crafting_station", "pistol")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
@@ -1143,7 +1143,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
                     SendToConsole("ent_fire weapon_shotgun Kill")
                     SendToConsole("use weapon_physcannon")
-                    Convars:SetStr("weapon_in_crafting_station", "shotgun")
+                    Convars:SetStr("novr_weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
@@ -1189,7 +1189,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                     SendToConsole("ent_fire weapon_ar2 Kill")
                     SendToConsole("use weapon_physcannon")
-                    Convars:SetStr("weapon_in_crafting_station", "smg")
+                    Convars:SetStr("novr_weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
@@ -1244,7 +1244,7 @@ if class == "prop_hlvr_crafting_station_console" then
             end
         end
         if thisEntity:GetGraphParameter("bCrafting") == false then
-            Convars:SetStr("chosen_upgrade", "")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "")
         end
     end
 end
@@ -1368,7 +1368,7 @@ if (model == "models/props/hazmat/respirator_01b.vmdl" or model == "models/props
     local ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="respirator_viewmodel", ["model"]="models/props/hazmat/respirator_01a.vmdl", ["disableshadows"]=true, ["solid"]=0})
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     ent:SetParent(viewmodel, "")
-    ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(1, 0, -5.5)))
+    ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(1, 0, -5.7)))
     ent:SetLocalAngles(0, -10, 0)
 
     SendToConsole("ent_fire lefthand Disable;novr_uncover_mouth")
