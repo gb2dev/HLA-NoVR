@@ -959,7 +959,7 @@ if class == "item_healthcharger_reservoir" then
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
 end
 
-if class == "prop_dynamic" then
+if class == "prop_dynamic" or "func_physical_button" then
     if model == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
         local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
@@ -1017,7 +1017,9 @@ if class == "prop_dynamic" then
                 StartSoundEvent("HealthStation.Loop", player)
             end, "HealthChargeSoundLoop", 0.7)
         end
-    elseif model == "models/props/alyx_hideout/button_plate.vmdl" then
+    elseif model == "models/props/alyx_hideout/button_plate.vmdl" or vlua.find(name, "2_8127_elev_button_floor_") then
+        SendToConsole("snd_sos_start_soundevent Button_Basic.Press")
+
         SendToConsole("ent_fire 2_8127_elev_button_test_floor_" .. player:Attribute_GetIntValue("next_elevator_floor", 2) .. " Trigger")
 
         if player:Attribute_GetIntValue("next_elevator_floor", 2) == 2 then

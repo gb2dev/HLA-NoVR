@@ -990,6 +990,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         elseif GetMapName() == "a3_station_street" then
             if vlua.find(Entities:FindAllInSphere(Vector(934, 1883, -135), 20), player) then
                 SendToConsole("ent_fire_output 2_8127_elev_button_floor_1_call OnIn")
+                SendToConsole("snd_sos_start_soundevent Button_Basic.Press")
             end
         elseif GetMapName() == "a3_hotel_lobby_basement" then
             if vlua.find(Entities:FindAllInSphere(Vector(1059, -1475, 200), 20), player) then
