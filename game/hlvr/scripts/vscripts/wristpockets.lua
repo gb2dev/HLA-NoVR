@@ -418,52 +418,59 @@ Convars:RegisterCommand("wristpockets_dropitem", function()
             TraceLine(traceTable)
 
             if traceTable.hit then -- TODO: under certain angle you still can drop item into wall
-                SendToConsole("snd_sos_start_soundevent PlayerTeleport.Fail")
-                print("[WristPockets] Cannot drop item - too close to obstacle.")
-            else
-                if itemTypeId == 3 or itemTypeId == 4 or itemTypeId == 5 or itemTypeId == 6 then
-                    local entName = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
-                    local keepItemInstance = Storage:LoadBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance")
-                    -- if entName ~= "" and not Storage:LoadBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps") then
-                    if entName ~= "" and keepItemInstance then
-                        ent = Entities:FindByName(nil, entName)
-                        ent:EnableMotion() -- put item back from void, solution by FrostEpex
-                        ent:SetOrigin(traceTable.pos)
-                        ent:SetAngles(0,player_ang.y,0)
-                        ent:ApplyAbsVelocityImpulse(-GetPhysVelocity(ent))
-                    else
-                        ent = SpawnEntityFromTableSynchronous(itemsClasses[itemTypeId], { ["origin"]= traceTable.pos.x .. " " .. traceTable.pos.y .. " " .. traceTable.pos.z, ["angles"]= player_ang, ["targetname"]= Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname"), ["model"]= Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objmodel") })
-                        -- special treatment for the materials of keycards in chapter 4
-                        if entName == "control_door_2_key_prop" or entName == "control_door_1_key_prop" then
-                            local MaterialGroupHash = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_materialgrouphash")
-                            ent:SetMaterialGroupHash(tonumber(MaterialGroupHash))
-                        end
-                    end
-                    -- Debug
-                    -- local debug_objname = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
-                    -- local debug_objmodel = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objmodel")
-                    -- print("Drop item name: " .. debug_objname )
-                    -- print("Drop item model: " .. debug_objmodel )
-                    -- local debug_entname = ent:GetName()
-                    -- print("Drop ent name: " .. debug_entname )
-
-                    StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
-
-                    Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objname", "")
-                    Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objmodel", "")
-                    Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", false)
-                    Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance", false)
-                    Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_materialgrouphash", "")
-                    --Storage:SaveVector("pocketslots_slot" .. pocketSlotId .. "_objrendercolor", Vector(0,0,0))
-                    ent:Attribute_SetIntValue("no_pick_up", 1)
-                    DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player) -- pickup quest item
-                else -- generic object
-                    ent = SpawnEntityFromTableSynchronous(itemsClasses[itemTypeId], {["origin"]= traceTable.pos.x .. " " .. traceTable.pos.y .. " " .. traceTable.pos.z, ["angles"]= player_ang })
+                local model = traceTable.enthit:GetModelName()
+                if model == "models/props_combine/combine_battery/combine_battery_post.vmdl" or model == "models/props_combine/health_charger/combine_health_charger_guage.vmdl" then
+                    print("[WristPockets] Tried to insert item.")
+                    traceTable.pos = traceTable.pos - (traceTable.pos - player:EyePosition()):Normalized() * 5
+                else
+                    SendToConsole("snd_sos_start_soundevent PlayerTeleport.Fail")
+                    print("[WristPockets] Cannot drop item - too close to obstacle.")
+                    return
                 end
-
-                player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
-                print("[WristPockets] Player has dropped item (Type " .. itemTypeId .. ") from slot #" .. pocketSlotId .. ".")
             end
+
+            if itemTypeId == 3 or itemTypeId == 4 or itemTypeId == 5 or itemTypeId == 6 then
+                local entName = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
+                local keepItemInstance = Storage:LoadBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance")
+                -- if entName ~= "" and not Storage:LoadBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps") then
+                if entName ~= "" and keepItemInstance then
+                    ent = Entities:FindByName(nil, entName)
+                    ent:EnableMotion() -- put item back from void, solution by FrostEpex
+                    ent:SetOrigin(traceTable.pos)
+                    ent:SetAngles(0,player_ang.y,0)
+                    ent:ApplyAbsVelocityImpulse(-GetPhysVelocity(ent))
+                else
+                    ent = SpawnEntityFromTableSynchronous(itemsClasses[itemTypeId], { ["origin"]= traceTable.pos.x .. " " .. traceTable.pos.y .. " " .. traceTable.pos.z, ["angles"]= player_ang, ["targetname"]= Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname"), ["model"]= Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objmodel") })
+                    -- special treatment for the materials of keycards in chapter 4
+                    if entName == "control_door_2_key_prop" or entName == "control_door_1_key_prop" then
+                        local MaterialGroupHash = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_materialgrouphash")
+                        ent:SetMaterialGroupHash(tonumber(MaterialGroupHash))
+                    end
+                end
+                -- Debug
+                -- local debug_objname = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objname")
+                -- local debug_objmodel = Storage:LoadString("pocketslots_slot" .. pocketSlotId .. "_objmodel")
+                -- print("Drop item name: " .. debug_objname )
+                -- print("Drop item model: " .. debug_objmodel )
+                -- local debug_entname = ent:GetName()
+                -- print("Drop ent name: " .. debug_entname )
+
+                StartSoundEventFromPosition("Inventory.DepositItem", player:EyePosition())
+
+                Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objname", "")
+                Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_objmodel", "")
+                Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepacrossmaps", false)
+                Storage:SaveBoolean("pocketslots_slot" .. pocketSlotId .. "_keepiteminstance", false)
+                Storage:SaveString("pocketslots_slot" .. pocketSlotId .. "_materialgrouphash", "")
+                --Storage:SaveVector("pocketslots_slot" .. pocketSlotId .. "_objrendercolor", Vector(0,0,0))
+                ent:Attribute_SetIntValue("no_pick_up", 1)
+                DoEntFireByInstanceHandle(ent, "Use", "", 0, player, player) -- pickup quest item
+            else -- generic object
+                ent = SpawnEntityFromTableSynchronous(itemsClasses[itemTypeId], {["origin"]= traceTable.pos.x .. " " .. traceTable.pos.y .. " " .. traceTable.pos.z, ["angles"]= player_ang })
+            end
+
+            player:Attribute_SetIntValue("pocketslots_slot" .. pocketSlotId .. "" , 0)
+            print("[WristPockets] Player has dropped item (Type " .. itemTypeId .. ") from slot #" .. pocketSlotId .. ".")
         end
     end
 end, "Drop one item from pockets, if any exists", 0)
