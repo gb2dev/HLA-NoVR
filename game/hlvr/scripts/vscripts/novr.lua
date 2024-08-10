@@ -1243,6 +1243,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. UNEQUIP_WEARABLE .. " novr_unequip_wearable")
             -- NOTE: Put additional custom bindings under here. Example:
             -- SendToConsole("bind X quit")
+            SendToConsole("phys_pushscale 0")
             SendToConsole("sv_noclipaccelerate 1")
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")

@@ -919,7 +919,6 @@ end
 -- Elevator button
 if name == "18918_5316_button_pusher_prop" then
     SendToConsole("ent_fire_output 18918_5316_button_center_pusher OnIn")
-    SendToConsole("phys_pushscale 0")
 end
 
 if name == "bridge_crank" then
