@@ -1835,6 +1835,9 @@ if GlobalSys:CommandLineCheck("-novr") then
                         ent = Entities:FindByName(nil, "mission_fail_relay")
                         ent:RedirectOutput("OnTrigger", "FailMission", ent)
 
+                        ent = Entities:FindByName(nil, "trainwreck_endfade_relay")
+                        ent:RedirectOutput("OnTrigger", "TeleportAfterTrainCrash", ent)
+
                         ent = Entities:FindByName(nil, "eli_rescue_3")
                         ent:RedirectOutput("OnCompletion", "ReachForEli", ent)
 
@@ -2406,7 +2409,7 @@ if GlobalSys:CommandLineCheck("-novr") then
         Entities:GetLocalPlayer():Attribute_SetIntValue("released_train_lever_once", 1)
     end
 
-    function FailMission()
+    function FailMission(a, b)
         SendToConsole("ent_fire player_speedmod ModifySpeed 0")
         SendToConsole("mouse_disableinput 1")
         SendToConsole("impulse 200")
@@ -2414,6 +2417,12 @@ if GlobalSys:CommandLineCheck("-novr") then
         SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
         SendToConsole("disable_flashlight")
         SendToConsole("hidehud 4")
+    end
+
+    function TeleportAfterTrainCrash(a, b)
+        Entities:GetLocalPlayer():SetThink(function()
+            SendToConsole("setpos 124 4066 60")
+        end, "TeleportAfterTrainCrash", 1)
     end
 
     function RemoveEliPreventFall(a, b)
