@@ -152,9 +152,11 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
                     DoEntFireByInstanceHandle(thisEntity, "SetTimer", "3", 0, nil, nil)
                 end
             else
-                if not WristPockets_PickUpValuableItem(player, thisEntity) and (thisEntity:GetMass() ~= 1 or thisEntity:GetModelName() == "models/props/metal_box_1.vmdl") then
-                    DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
-                    return nil
+                if not WristPockets_PickUpValuableItem(player, thisEntity) then
+                    if class == "prop_physics" and thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 or thisEntity:GetMass() ~= 1 then
+                        DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
+                        return nil
+                    end
                 end
             end
         end
