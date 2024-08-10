@@ -1862,6 +1862,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                         end
                     elseif GetMapName() == "a3_station_street" then
                         if not loading_save_file then
+                            -- Default Junction Rotations
+                            Entities:FindByName(nil, "toner_junction_1"):Attribute_SetIntValue("junction_rotation", 2)
+                            Entities:FindByName(nil, "toner_junction_2"):Attribute_SetIntValue("junction_rotation", 3)
+                            Entities:FindByName(nil, "toner_junction_3"):Attribute_SetIntValue("junction_rotation", 3)
+
                             ent = SpawnEntityFromTableSynchronous("env_message", {["message"]="CHAPTER4_TITLE"})
                             DoEntFireByInstanceHandle(ent, "ShowMessage", "", 0, nil, nil)
 
