@@ -682,7 +682,8 @@ if name == "glove_dispenser_brush" and thisEntity:Attribute_GetIntValue("used", 
     thisEntity:Attribute_SetIntValue("used", 1)
     SendToConsole("ent_fire relay_give_gravity_gloves trigger")
     SendToConsole("hidehud 1")
-    SendToConsole("hudhearts_startupdateloop")
+    -- SD
+    --SendToConsole("hudhearts_startupdateloop")
     SendToConsole("wristpockets_startupdateloop")
     Entities:GetLocalPlayer():Attribute_SetIntValue("gravity_gloves", 1)
 end

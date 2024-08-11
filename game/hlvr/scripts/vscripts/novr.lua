@@ -1159,7 +1159,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("sv_cheats 1")
             SendToConsole("addon_enable novr")
             SendToConsole("hidehud 96")
-            SendToConsole("mouse_disableinput 1")
+            -- SD
+            --SendToConsole("mouse_disableinput 1")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " +use")
             SendToConsole("bind " .. CROUCH .. " \"\"")
             SendToConsole("bind PAUSE main_menu_exec")
@@ -1184,14 +1185,15 @@ if GlobalSys:CommandLineCheck("-novr") then
             ent = Entities:FindByName(nil, "startup_relay")
             ent:RedirectOutput("OnTrigger", "GoToMainMenu", ent)
 
-            if not GlobalSys:CommandLineCheck("-condebug") then
+            -- SD
+            --[[if not GlobalSys:CommandLineCheck("-condebug") then
                 local ent = SpawnEntityFromTableSynchronous("game_text", {["effect"]=2, ["spawnflags"]=1, ["color"]="230 230 230", ["color2"]="0 0 0", ["fadein"]=0, ["fadeout"]=0.15, ["fxtime"]=0.25, ["holdtime"]=20, ["x"]=-1, ["y"]=0.6})
                 DoEntFireByInstanceHandle(ent, "SetText", "The game needs to be started from the launcher!", 0, nil, nil)
                 DoEntFireByInstanceHandle(ent, "Display", "", 0, nil, nil)
                 ent:SetThink(function()
                     SendToConsole("host_timescale 0")
                 end, "", 0.02)
-            end
+            end--]]
         else
             SendToConsole("binddefaults")
             SendToConsole("unbind TAB")
@@ -1540,7 +1542,8 @@ if GlobalSys:CommandLineCheck("-novr") then
             if not loading_save_file then
                 ViewmodelAnimation_LevelChange()
             end
-            HUDHearts_StartupPreparations()
+            -- SD
+            --HUDHearts_StartupPreparations()
             ViewmodelAnimation_ADSZoom()
 
             local function PrecacheModels()
@@ -1555,7 +1558,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
             if is_on_map_or_later("a2_quarantine_entrance") then
                 ent = Entities:GetLocalPlayer()
-                HUDHearts_StartUpdateLoop()
+                -- SD
+                --HUDHearts_StartUpdateLoop()
                 WristPockets_StartUpdateLoop()
             end
 
@@ -1661,7 +1665,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
                 -- Show hud hearts if player picked up the gravity gloves
                 if ent:Attribute_GetIntValue("gravity_gloves", 0) ~= 0 then
-                    HUDHearts_StartUpdateLoop()
+                    -- SD
+                    --HUDHearts_StartUpdateLoop()
                     WristPockets_StartUpdateLoop()
                 end
 
@@ -2281,7 +2286,8 @@ if GlobalSys:CommandLineCheck("-novr") then
 
     function PlayerDied()
         SendToServerConsole("unpause")
-        HUDHearts_StopUpdateLoop()
+        -- SD
+        --HUDHearts_StopUpdateLoop()
         WristPockets_StopUpdateLoop()
         SendToConsole("disable_flashlight")
     end
@@ -2289,15 +2295,20 @@ if GlobalSys:CommandLineCheck("-novr") then
     function GoToMainMenu(a, b)
         if Convars:GetBool("vr_enable_fake_vr") then
             SendToConsole("vr_enable_fake_vr 0;vr_enable_fake_vr 0")
-            SendToConsole("setpos_exact 757 -80 6")
+            -- SD
+            --SendToConsole("setpos_exact 757 -80 6")
+            SendToConsole("setpos_exact 810 -80 6")
         else
-            SendToConsole("setpos_exact 757 -80 -26")
+            -- SD
+            --SendToConsole("setpos_exact 757 -80 -26")
+            SendToConsole("setpos_exact 810 -80 -26")
         end
         SendToConsole("setang_exact 0.4 0 0")
         SendToConsole("hidehud 96")
         print("[GameMenu] main_menu_mode")
         Entities:GetLocalPlayer():SetThink(function()
-            SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
+            -- SD
+            --SendToConsole("gameui_preventescape;gameui_allowescapetoshow;gameui_activate")
             SendToConsole("achievement_disable 0")
         end, "SetGameUIState", 0.1)
     end
@@ -2829,7 +2840,8 @@ if GlobalSys:CommandLineCheck("-novr") then
                 SendToConsole("hidehud 4")
             end
             -- Just to make sure the heart icons are gone, hidehud 4 seems fine
-            SendToConsole("hudhearts_stopupdateloop")
+            -- SD
+            --SendToConsole("hudhearts_stopupdateloop")
             SendToConsole("wristpockets_stopupdateloop")
         end, "GrabCandlers", 5)
     end
