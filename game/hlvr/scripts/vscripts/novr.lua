@@ -657,7 +657,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("impulse 200")
             player:SetThink(function()
                 SendToConsole("impulse 200")
-                SendToConsole("r_drawviewmodel 1")
+                if not is_on_map_or_later("a5_vault") then
+                    SendToConsole("r_drawviewmodel 1")
+                end
             end, "FinishGrenadeThrow", 0.1)
         end
         DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
@@ -2192,6 +2194,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 SendToConsole("hidehud 67")
                             end, "", 0)
                             SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+                            WristPockets_DisableKeepAcrossMaps()
 
                             if not loading_save_file then
                                 Entities:GetLocalPlayer():Attribute_SetIntValue("grenade", 0)
@@ -2862,6 +2865,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function GiveCrowbar(a, b)
         Entities:GetLocalPlayer():SetThink(function()
             SendToConsole("give weapon_crowbar")
+            SendToConsole("use weapon_crowbar")
             SendToConsole("r_drawviewmodel 1")
             SendToConsole("ent_fire_output prop_crowbar OnPlayerPickup")
             SendToConsole("ent_fire prop_crowbar Kill")
