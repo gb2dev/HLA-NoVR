@@ -1077,6 +1077,7 @@ end
 
 -- Combine fabricator
 if class == "prop_hlvr_crafting_station_console" then
+    DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "crafting_station", 0, nil, nil)
     if thisEntity:GetGraphParameter("bBootup") == true and thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
         if thisEntity:GetGraphParameter("bCollectingResin") then
             if Convars:GetStr("novr_chosen_weapon_upgrade") ~= "" then
