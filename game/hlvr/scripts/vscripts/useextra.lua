@@ -1407,6 +1407,7 @@ elseif class == "item_hlvr_weapon_shotgun" and not vlua.find(name, "weapon_in_fa
     FireGameEvent("item_pickup", item_pickup_params)
 
     SendToConsole("give weapon_shotgun")
+    SendToConsole("r_drawviewmodel 1")
     SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
     SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
     SendToConsole("ent_fire 12712_achievment_get_shotgun FireEvent")
