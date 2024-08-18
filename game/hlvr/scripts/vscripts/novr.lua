@@ -1226,7 +1226,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. NOCLIP .. " toggle_noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;snd_sos_start_soundevent Instructor.StartLesson;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"vr_enable_fake_vr 0;vr_enable_fake_vr 0;load quick\"")
-            SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
+            SendToConsole("bind " .. MAIN_MENU .. " \"addon_play startup\"")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
