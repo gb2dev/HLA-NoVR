@@ -1796,11 +1796,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hideout_gate_prop", ["CollisionGroupOverride"]=5, ["solid"]=6, ["DefaultAnim"]="vort_barrier_start_idle", ["renderamt"]=0, ["model"]=ent:GetModelName(), ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z - 20})
                         child:SetParent(ent, "")
 
-                        local player_clip = Entities:FindAllByClassname("func_brush")[1]
-                        local player_clip_name = player_clip:GetName()
-                        if vlua.find(player_clip_name, "clip_big_door_player")  then
-                            SendToConsole("ent_fire trigger_player_in_big_room AddOutput \"OnTrigger>" .. player_clip_name .. ">Enable>>0>-1\"")
-                            SendToConsole("ent_fire ss_kitchen_to_cardshow AddOutput \"OnScriptEvent01>" .. player_clip_name .. ">Disable>>1>-1\"")
+                        local player_clip = Entities:FindByClassnameNearest("func_brush", Vector(-692, -1369.25, -243.875), 10)
+                        if player_clip then
+                            SendToConsole("ent_fire trigger_player_in_big_room AddOutput \"OnTrigger>" .. player_clip:GetName() .. ">Enable>>0>-1\"")
+                            SendToConsole("ent_fire ss_kitchen_to_cardshow AddOutput \"OnScriptEvent01>" .. player_clip:GetName() .. ">Disable>>1>-1\"")
                         end
                     end
                 else
@@ -2225,11 +2224,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 ent = Entities:FindByName(nil, "longcorridor_energysource_01_activate_relay")
                                 ent:RedirectOutput("OnTrigger", "GiveVortEnergy", ent)
 
-                                local player_clip = Entities:FindAllByClassname("func_brush")[1]
-                                local player_clip_name = player_clip:GetName()
-                                if vlua.find(player_clip_name, "rooftop_concretedislodge_brush_player")  then
+                                local player_clip = Entities:FindByClassnameNearest("func_brush", Vector(-931, 264, -481), 10)
+                                if player_clip then
                                     ent = Entities:FindByName(nil, "rooftop_concretedislodge_relay")
-                                    DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip_name .. ">Disable>>0>-1", 0, nil, nil)
+                                    DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip:GetName() .. ">Disable>>0>-1", 0, nil, nil)
                                 end
                             else
                                 if Entities:GetLocalPlayer():Attribute_GetIntValue("vort_energy", 0) == 1 then
