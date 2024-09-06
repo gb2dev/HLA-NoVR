@@ -282,6 +282,11 @@ if GlobalSys:CommandLineCheck("-novr") then
                             ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
                             ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
                             -- end
+                        elseif vlua.find(name, "switch_box") and GetMapName() == "05_pleasantville" -- Levitation
+                        then
+                            DoEntFireByInstanceHandle(ent, "EndHack", "", 1.8, nil, nil)
+                            ent:FireOutput("OnHackSuccess", nil, nil, nil, 1.8)
+                            ent:FireOutput("OnPuzzleSuccess", nil, nil, nil, 1.8)
                         end
                         return
                     end

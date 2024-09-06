@@ -1,6 +1,6 @@
 ## HLA-NoVR branch mods
-With this branch of NoVR mod, you will be able to also play & complete next modifications (you can get them from Steam Workshop):
-- ``Levitation`` (campaign, 7 maps + intro)
+With this branch of NoVR mod, you will be able to play supported workshop modifications:
+- ``Levitation`` (campaign, 8 maps / start map: '01_intro') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2881604879))
 - ``Extra-Ordinary Value`` (campaign, 4 maps) 
 - ``Resident Alyx: biohazard`` (campaign, 6 maps + epilogue)
 - ``GoldenEye Alyx 007 - Dam`` (part 1)

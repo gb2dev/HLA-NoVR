@@ -474,7 +474,7 @@ function ModLevitation_Map7SpawnWorkaroundJumpStructure()
 end
 
 function ModLevitation_Map7EnterCombineTrap()
-    SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_smg1;ent_remove weapon_frag")
+    SendToConsole("ent_remove weapon_pistol;ent_remove weapon_shotgun;ent_remove weapon_smg1;ent_remove weapon_frag;ent_remove weapon_physcannon;ent_remove weapon_ar2")
     SendToConsole("r_drawviewmodel 0")
 end
 
@@ -1237,7 +1237,7 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
         end
     end
     if map == "05_pleasantville" then
-        if name == "15708_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        if name == "15708_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 and MultitoolEquiped() then
             thisEntity:Attribute_SetIntValue("used", 1)
             SendToConsole("ent_fire_output 15708_switch_box_hack_plug OnHackSuccess")
         end
@@ -1276,7 +1276,7 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
             StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
             SendToConsole("ent_fire_output 28212_button_center_pusher onin")
         end
-		if name == "toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+		if name == "toner_port" and thisEntity:Attribute_GetIntValue("used", 0) == 0 and MultitoolEquiped() then
             thisEntity:Attribute_SetIntValue("used", 1)
             SendToConsole("ent_fire_output toner_port_plug OnHackSuccess")
             SendToConsole("ent_fire_output toner_path_1 onpoweron")
@@ -1295,7 +1295,7 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
         if name == "novr_workaround_battery2" then -- PlayerTakeNoVRBattery2
             SendToConsole("ent_fire 10554_powerunit_relay_reviver_removed trigger")
         end
-        if name == "11919_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        if name == "11919_mesh_combine_switch_box" and thisEntity:Attribute_GetIntValue("used", 0) == 0 and MultitoolEquiped() then
 			thisEntity:Attribute_SetIntValue("used", 1)
             SendToConsole("ent_fire_output 11919_switch_box_hack_plug OnHackSuccess")
         end

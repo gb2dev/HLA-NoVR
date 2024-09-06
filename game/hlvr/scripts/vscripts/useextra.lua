@@ -1314,68 +1314,6 @@ if name == "traincar_01_hatch" and thisEntity:Attribute_GetIntValue("used", 0) =
     SendToConsole("ent_fire_output traincar_01_hackplug OnHackSuccess")
 end
 
--- TODO Hotfix Will allow to get your weapon after loading a savegame with a unlocked fabricator
--- Combine Fabricator
-if class == "prop_hlvr_crafting_station_console" then
-    local function AnimTagListener(sTagName, nStatus)
-        if sTagName == 'Bootup Done' and nStatus == 2 then
-            thisEntity:Attribute_SetIntValue("crafting_station_ready", 1)
-        elseif sTagName == 'Crafting Done' and nStatus == 2 then
-            if Convars:GetStr("chosen_upgrade") == "pistol_upgrade_aimdownsights" then
-                player:Attribute_SetIntValue("pistol_upgrade_aimdownsights", 1)
-                SendToConsole("give weapon_pistol")
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_pistol_upgrade_aimdownsights ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "pistol_upgrade_burstfire" then
-                player:Attribute_SetIntValue("pistol_upgrade_burstfire", 1)
-                SendToConsole("give weapon_pistol")
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_pistol_upgrade_burstfire ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_grenadelauncher" then
-                player:Attribute_SetIntValue("shotgun_upgrade_grenadelauncher", 1)
-                SendToConsole("give weapon_shotgun")
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_shotgun_upgrade_grenadelauncher ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "shotgun_upgrade_doubleshot" then
-                player:Attribute_SetIntValue("shotgun_upgrade_doubleshot", 1)
-                SendToConsole("give weapon_shotgun")
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_shotgun_upgrade_doubleshot ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_aimdownsights" then
-                player:Attribute_SetIntValue("smg_upgrade_aimdownsights", 1)
-                if player:Attribute_GetIntValue("smg_upgrade_fasterfirerate", 0) == 0 then
-                    SendToConsole("give weapon_ar2")
-                else
-                    SendToConsole("give weapon_smg1")
-                end
-                SendToConsole("viewmodel_update")
-                SendToConsole("ent_fire text_smg_upgrade_aimdownsights ShowMessage")
-                SendToConsole("play sounds/ui/beepclear.vsnd")
-            elseif Convars:GetStr("chosen_upgrade") == "smg_upgrade_fasterfirerate" then
-                player:Attribute_SetIntValue("smg_upgrade_fasterfirerate", 1)
-                SendToConsole("ent_remove weapon_ar2")
-                SendToConsole("give weapon_smg1")
-                SendToConsole("viewmodel_update")
-            end
-
-            SendToConsole("ent_fire point_clientui_world_panel Enable")
-            SendToConsole("ent_fire weapon_in_fabricator Kill")
-            thisEntity:SetGraphParameterBool("bCrafting", false)
-            Convars:SetStr("chosen_upgrade", "")
-            Convars:SetStr("weapon_in_crafting_station", "")
-        elseif sTagName == 'Trays Retracted' and nStatus == 2 then
-            thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 1)
-        end
-    end
-
-    thisEntity:RegisterAnimTagListener(AnimTagListener)
-end
--- TODO Hotfix End
-
 -- Combine fabricator
 if class == "prop_hlvr_crafting_station_console" then
     if thisEntity:GetGraphParameter("bBootup") == true and thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
@@ -1620,6 +1558,8 @@ if class == "item_hlvr_headcrab_gland" then
     SendToConsole("ent_fire achievement_squeeze_heart FireEvent")
 end
 
+ModSupport_CheckUseObjectInteraction(thisEntity)
+
 if class == "baseanimating" and vlua.find(name, "Console") and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if map == "a2_quarantine_entrance" and not isModActive then
         ent = Entities:FindByClassname(nil, "item_hlvr_combine_console_rack")
@@ -1724,8 +1664,6 @@ local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["it
 if thisEntity:GetMoveParent() ~= nil then
     item_pickup_params.wasparentedto = thisEntity:GetMoveParent():GetClassname()
 end
-
-ModSupport_CheckUseObjectInteraction(thisEntity)
 
 -- Weapons
 if name == "weapon_in_fabricator_idle" then
@@ -1915,6 +1853,13 @@ elseif class == "item_hlvr_prop_battery" or class == "item_hlvr_health_station_v
                 WristPockets_PickUpValuableItem(player, thisEntity)
             end
         elseif class == "item_hlvr_prop_battery" or class == "prop_reviver_heart" then
+            -- Mod Levitation Map 07_sectorx
+            if map == "07_sectorx" and (name == "novr_workaround_battery" or name == "novr_workaround_battery2")
+            then
+                print("No wristpockets battery pickup on Levitation chapter 7")
+                return
+            end
+
             -- do not pick up batteries if already mounted in combine machines
             local entcombineconsole = Entities:FindByClassnameNearest("prop_animinteractable", thisEntity:GetOrigin(), 70)
             if entcombineconsole ~= nil then
