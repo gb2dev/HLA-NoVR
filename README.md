@@ -1,9 +1,11 @@
-## HLA-NoVR branch mods
+# HLA-NoVR branch mods
+
+## Supported steam workshop content
 With this branch of NoVR mod, you will be able to play supported workshop modifications:
 - ``Levitation`` (campaign, 8 maps / start map: '01_intro') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2881604879))
 - ``Extra-Ordinary Value`` (campaign, 4 maps) 
 - ``Belomorskaya Station`` (1 map / start map: 'belomorskaya') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2110621864))
-- ``Overcharge`` (1 map)
+- ``Overcharge`` (1 map / start map: 'mc1_higgue') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2113083464))
 - ``Post-Human`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))
 - ``Buckshot Bugs`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3086502947))
 

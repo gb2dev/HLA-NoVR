@@ -694,6 +694,7 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
 			SendToConsole("r_drawviewmodel 0")
 			SendToConsole("hidehud 96")
 			SendToConsole("hlvr_addresources 10 0 0 10")
+            SendToConsole("hudhearts_stopupdateloop") -- no hearts intro scene
 		end
 		ent = Entities:FindByName(nil, "fightfinale_end_seqrelay")
 		ent:RedirectOutput("OnTrigger", "ModCommon_DisablePlayerActions", ent)
@@ -1112,14 +1113,16 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
 	-- Addon: Overcharge
 	--
     if map == "mc1_higgue" then
-        if name == "introSEQ_button1_p" then -- StartUseElevatorButton
+        if name == "introSEQ_button1_p" or name == "introSEQ_button1" or name == "introSEQ_button2" or name == "introSEQ_button3" then -- StartUseElevatorButton
             StartSoundEventFromPosition("Button_Basic.Press", player:EyePosition())
             SendToConsole("ent_fire_output introseq_button1 onin")
             SendToConsole("hidehud 64")
             SendToConsole("r_drawviewmodel 1")
+            SendToConsole("give weapon_physcannon") --Multitool on start
             SendToConsole("give weapon_pistol") -- Pistol on start
+            SendToConsole("hudhearts_startupdateloop") -- Show hud hearts
         end -- generic plugs workaround doesn't work here
-        if name == "CmbnDoorLock0" or name == "CmbnDoorLock1" or name == "CmbnDoorLock2" then
+        if (name == "CmbnDoorLock0" or name == "CmbnDoorLock1" or name == "CmbnDoorLock2") and MultitoolEquiped() then
             local ent = Entities:FindByClassnameNearest("info_hlvr_holo_hacking_plug", thisEntity:GetCenter(), 40)
             if ent then
                 ent:FireOutput("OnHackSuccess", nil, nil, nil, 0)
@@ -1127,19 +1130,19 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
                 DoEntFireByInstanceHandle(thisEntity, "use", "", 0, nil, nil)
             end
         end -- and lockers workaround doesn't work here too
-        if name == "CmbnLocker_SHOT" then
+        if name == "CmbnLocker_SHOT" and MultitoolEquiped() then
             SendToConsole("ent_fire CmbnLocker_SHOT alpha 100")
             SendToConsole("ent_fire CmbnLocker_SHOT disablecollision")
         end
-        if name == "CmbnLocker_LPUZZ" then
+        if name == "CmbnLocker_LPUZZ" and MultitoolEquiped() then
             SendToConsole("ent_fire CmbnLocker_LPUZZ alpha 100")
             SendToConsole("ent_fire CmbnLocker_LPUZZ disablecollision")
         end
-        if name == "CmbnLocker_EATFRESH" then
+        if name == "CmbnLocker_EATFRESH" and MultitoolEquiped() then
             SendToConsole("ent_fire CmbnLocker_EATFRESH alpha 100")
             SendToConsole("ent_fire CmbnLocker_EATFRESH disablecollision")
         end
-        if name == "CmbnLocker_SEWER" then
+        if name == "CmbnLocker_SEWER" and MultitoolEquiped() then
             SendToConsole("ent_fire CmbnLocker_SEWER alpha 100")
             SendToConsole("ent_fire CmbnLocker_SEWER disablecollision")
         end
@@ -1147,13 +1150,13 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
             local ent = Entities:FindByName(nil, "wep_shotgun_pickupmusic")
             DoEntFireByInstanceHandle(ent, "startsound", "", 0, nil, nil)
         end
-        if model == "models/props_combine/combine_power/power_stake_a.vmdl" and name == "puzzle_wireNEWPort" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        if model == "models/props_combine/combine_power/power_stake_a.vmdl" and name == "puzzle_wireNEWPort" and thisEntity:Attribute_GetIntValue("used", 0) == 0 and MultitoolEquiped() then
             thisEntity:Attribute_SetIntValue("used", 1)
             SendToConsole("ent_fire_output toner_port_plug onhacksuccess")
             SendToConsole("ent_fire_output pathlmao_n onpoweron") -- npc spawn trigger
             SendToConsole("ent_fire_output pathe_n onpoweron")
         end
-        if model == "models/props_combine/combine_power/power_stake_a.vmdl" and name == "puzzle_wirePort" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+        if model == "models/props_combine/combine_power/power_stake_a.vmdl" and name == "puzzle_wirePort" and thisEntity:Attribute_GetIntValue("used", 0) == 0 and MultitoolEquiped() then
             thisEntity:Attribute_SetIntValue("used", 1)
             SendToConsole("ent_fire_output toner_port_plug onhacksuccess")
             SendToConsole("ent_fire_output pathg onpoweron")

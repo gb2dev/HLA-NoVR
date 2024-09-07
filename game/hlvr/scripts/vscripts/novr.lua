@@ -202,6 +202,18 @@ if GlobalSys:CommandLineCheck("-novr") then
             TraceLine(traceTable)
 
             if traceTable.hit then
+                -- Overcharge multitool workaround
+                if GetMapName() == "mc1_higgue" then
+                    local ent = Entities:FindByClassnameNearest("prop_dynamic", traceTable.pos, 40)
+                    if ent then
+                        if vlua.find(ent:GetModelName(), "combine_lock01") or vlua.find(ent:GetModelName(), "combine_locker01") then
+                            DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
+                            print("Executed Overcharge combine lock/locker")
+                            return
+                        end
+                    end
+                end
+
                 local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
                 if ent then
                     DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)
