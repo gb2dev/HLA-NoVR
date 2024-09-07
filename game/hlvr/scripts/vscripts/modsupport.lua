@@ -420,7 +420,7 @@ function ModBelomorskaya_EquipFlare(a, b) -- TODO works bad
 
     ent = Entities:FindByName(nil, "flare_01")
     if ent then
-        ent:SetOrigin(Vector(viewmodel_pos.x + 35, viewmodel_pos.y + 35, viewmodel_pos.z + 35))
+        ent:SetOrigin(Vector(viewmodel_pos.x + 3, viewmodel_pos.y + 42, viewmodel_pos.z - 9))
         ent:SetAngles(viewmodel_ang.x, viewmodel_ang.y + 180, viewmodel_ang.z)
     end
     DoEntFireByInstanceHandle(ent, "SetParent", "!player", 0, nil, nil)
@@ -710,6 +710,16 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
 		ent:RedirectOutput("OnTrigger", "ModBelomorskaya_RemoveFlare", ent)
 		ent = Entities:FindByName(nil, "ending_start")
 		ent:RedirectOutput("OnTrigger", "ModCommon_DisablePlayerActions", ent)
+
+        --SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight") -- Test
+        if isSaveLoaded then
+            SendToConsole("ent_remove weapon_physcannon")
+            SendToConsole("use weapon_shotgun")
+        else
+            SendToConsole("hlvr_addresources 20 0 20 0")
+            --SendToConsole("give weapon_bugbait") -- needs patch for shotgun pickup
+        end
+        
 	--
 	-- Addon: Levitation
 	--

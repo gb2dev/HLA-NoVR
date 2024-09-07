@@ -2,13 +2,15 @@
 With this branch of NoVR mod, you will be able to play supported workshop modifications:
 - ``Levitation`` (campaign, 8 maps / start map: '01_intro') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2881604879))
 - ``Extra-Ordinary Value`` (campaign, 4 maps) 
-- ``Resident Alyx: biohazard`` (campaign, 6 maps + epilogue)
-- ``GoldenEye Alyx 007 - Dam`` (part 1)
-- ``Belomorskaya Station`` (1 map)
+- ``Belomorskaya Station`` (1 map / start map: 'belomorskaya') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2110621864))
 - ``Overcharge`` (1 map)
-- ``Red Dust`` (1 map)
 - ``Post-Human`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))
 - ``Buckshot Bugs`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3086502947))
+
+Currently not supported / in development:
+- ``Resident Alyx: biohazard`` (campaign, 6 maps + epilogue)
+- ``GoldenEye Alyx 007 - Dam`` (part 1)
+- ``Red Dust`` (1 map)
 
 # HLA-NoVR
 The easiest to use and most flexible NoVR mod for Half-Life: Alyx!
