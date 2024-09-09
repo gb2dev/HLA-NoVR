@@ -214,6 +214,17 @@ if GlobalSys:CommandLineCheck("-novr") then
                     end
                 end
 
+                -- Extra-Ordinary Value multitool workaround
+                if GetMapName() == "helloagain" then
+                    local ent = Entities:FindByNameNearest("621_door_hack_prop", traceTable.pos, 100)
+                    if ent then
+                        SendToConsole("ent_fire_output 621_door_hack_plug onhacksuccess")
+                        SendToConsole("ent_fire_output 621_door_hack_plug onpuzzlesuccess")
+                        print("Executed Extra-Ordinary Value strange combine door")
+                        return
+                    end
+                end
+
                 local ent = Entities:FindByClassnameNearest("info_hlvr_toner_junction", traceTable.pos, 10)
                 if ent then
                     DoEntFireByInstanceHandle(ent, "RunScriptFile", "multitool", 0, nil, nil)

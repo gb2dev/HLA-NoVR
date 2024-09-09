@@ -3,7 +3,7 @@
 ## Supported steam workshop content
 With this branch of NoVR mod, you will be able to play supported workshop modifications:
 - ``Levitation`` (campaign, 8 maps / start map: '01_intro') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2881604879))
-- ``Extra-Ordinary Value`` (campaign, 4 maps) 
+- ``Extra-Ordinary Value`` (campaign, 4 maps / start map: 'youreawake') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2938438773))
 - ``Belomorskaya Station`` (1 map / start map: 'belomorskaya') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2110621864))
 - ``Overcharge`` (1 map / start map: 'mc1_higgue') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2113083464))
 - ``Post-Human`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))

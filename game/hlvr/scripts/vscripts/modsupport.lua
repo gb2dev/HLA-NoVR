@@ -667,7 +667,12 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
 	-- Addon: Extra-Ordinary Value
 	--
 	-- skip map "helloagain"
-	if map == "seweroutskirts" then
+    if map == "youreawake" then
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+        if not isSaveLoaded then
+            SendToConsole("give weapon_physcannon")
+        end
+	elseif map == "seweroutskirts" then
 		SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight") -- too dark on some places
 		if not isSaveLoaded then -- Start point is bugged here
 			SendToConsole("setpos_exact -40 -496 105")
@@ -1077,7 +1082,7 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
         if name == "2461_inside_elevator_button" then -- UseElevator
             SendToConsole("ent_fire 2461_elev_button_elevator press")
         end
-        if name == "2826_vetport" then
+        if name == "2826_vetport" and MultitoolEquiped() then
             SendToConsole("ent_fire 2826_vetport onplugrotated")
             SendToConsole("ent_fire_output 2826_final onpoweron")
         end
