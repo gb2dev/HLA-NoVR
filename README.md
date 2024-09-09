@@ -7,7 +7,7 @@ With this branch of NoVR mod, you will be able to play supported workshop modifi
 - ``Belomorskaya Station`` (1 map / start map: 'belomorskaya') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2110621864))
 - ``Overcharge`` (1 map / start map: 'mc1_higgue') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2113083464))
 - ``Post-Human`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))
-- ``Buckshot Bugs`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3086502947))
+- ``Buckshot Bugs`` (1 map / start map: 'buckshot_bugs') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3086502947))
 
 Currently not supported / in development:
 - ``Resident Alyx: biohazard`` (campaign, 6 maps + epilogue)
