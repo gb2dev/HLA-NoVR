@@ -6,7 +6,7 @@ With this branch of NoVR mod, you will be able to play supported workshop modifi
 - ``Extra-Ordinary Value`` (campaign, 4 maps / start map: 'youreawake') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2938438773))
 - ``Belomorskaya Station`` (1 map / start map: 'belomorskaya') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2110621864))
 - ``Overcharge`` (1 map / start map: 'mc1_higgue') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2113083464))
-- ``Post-Human`` ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))
+- ``Post-Human`` (2 maps / start map: 'post-human_intro') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))
 - ``Buckshot Bugs`` (1 map / start map: 'buckshot_bugs') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3086502947))
 
 Currently not supported / in development:
