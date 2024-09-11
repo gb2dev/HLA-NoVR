@@ -45,6 +45,8 @@ local addonMaps = {
     "post-human",
     -- Buckshot Bugs
     "buckshot_bugs",
+    -- Re-Education
+    "re-education",
 	-- Single good maps
 	"mc1_higgue",
 	"belomorskaya",
@@ -385,6 +387,36 @@ function ModSupport_CheckForLadderOrTeleport()
             ClimbLadderSound()
             SendToConsole("fadein 0.2")
             SendToConsole("setpos_exact 1266.656372 -988.325012 214.821243")
+        end
+    end
+    --
+	-- Addon: Re-Education
+	--
+    if map == "re-education" then
+        if vlua.find(Entities:FindAllInSphere(Vector(338, -102, 0), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 322.544800 -265.820801 -7.938049")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(323, -221, 6), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 344.645447 -96.183655 0.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(316, -212, 13), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 344.645447 -96.183655 0.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(122, 587, 177), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 117.594246 504.583923 176.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(129, 543, 210), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 117.594246 504.583923 176.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(137, 537, 176), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 135.817505 604.078491 176.156525")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(138, 520, 176), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 135.817505 604.078491 176.156525")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(61, 797, 42), 8), player) then
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 120.583794 797.747803 -31.968750")
         end
     end
 end
@@ -1023,6 +1055,20 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
             SendToConsole("give weapon_shotgun")
             SendToConsole("hlvr_addresources 0 0 24 0")
             Entities:GetLocalPlayer():Attribute_SetIntValue("buckshot_bugs_started", 1)
+        end
+        -- Always bind flashlight
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+    --
+	-- Addon: Re-Education
+	--
+    elseif map == "re-education" then
+        if not isSaveLoaded then
+            SendToConsole("give weapon_physcannon")
+            -- Spawn reviver hearts
+            SpawnEntityFromTableSynchronous("prop_reviver_heart", {["targetname"]="novr_reviver_heart", ["solid"]=6, ["origin"]="-1006.534 752.052 240"})
+            SpawnEntityFromTableSynchronous("prop_reviver_heart", {["targetname"]="novr_reviver_heart2", ["solid"]=6, ["origin"]="-977.538 704.025 240"})
+            -- Disable battery station
+            SendToConsole("ent_fire 16962_1485_trigger_open_power_unit disable")
         end
         -- Always bind flashlight
         SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
@@ -1672,6 +1718,34 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
         if class == "prop_animinteractable" and model == "models/interaction/anim_interact/combine_switch_pulltwist/combine_switch_pulltwist.vmdl" and Entities:GetLocalPlayer():Attribute_GetIntValue("buckshot_bugs_pulltwist1", 0) == 0 then
             Entities:GetLocalPlayer():Attribute_SetIntValue("buckshot_bugs_pulltwist1", 1)
             SendToConsole(string.format("ent_fire_output %s oncompletiona", name))
+        end
+    end
+    --
+	-- Addon: Re-Education
+	--
+    if map == "re-education" then
+        -- enable battery station on keycard pickup
+        if name == "16962_prop_electronic_door_key_01" then
+            SendToConsole("ent_fire 16962_1485_trigger_open_power_unit enable")
+        end
+        -- combine console elevator
+        if name == "16962_204_prop_button" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+            thisEntity:Attribute_SetIntValue("used", 1)
+            SendToConsole("ent_fire 16962_204_output_relay_button_pressed trigger")
+        end
+        -- elevator up
+        if name == "16962_elevator_button_prop" and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
+            thisEntity:Attribute_SetIntValue("used", 1)
+            SendToConsole("ent_fire_output 16962_elevator_button onpressed")
+        end
+        -- combine console train end sequence
+        if name == "16962_598_prop_button" then
+            SendToConsole("ent_fire 16962_598_output_relay_button_pressed trigger")
+            Entities:GetLocalPlayer():Attribute_SetIntValue("reeducation_endsequence", 1)
+        end
+        -- elevator down
+        if name == "16962_elevator_button_prop" and Entities:GetLocalPlayer():Attribute_GetIntValue("reeducation_endsequence", 0) == 1 then
+            SendToConsole("ent_fire 16962_elevator_train startforward")
         end
     end
 end
