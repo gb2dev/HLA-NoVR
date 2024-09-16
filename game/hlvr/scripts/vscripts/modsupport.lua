@@ -47,6 +47,8 @@ local addonMaps = {
     "buckshot_bugs",
     -- Re-Education
     "re-education",
+    -- Loco-motive
+    "locomotive",
 	-- Single good maps
 	"mc1_higgue",
 	"belomorskaya",
@@ -417,6 +419,45 @@ function ModSupport_CheckForLadderOrTeleport()
         elseif vlua.find(Entities:FindAllInSphere(Vector(61, 797, 42), 8), player) then
             SendToConsole("fadein 0.2")
             SendToConsole("setpos_exact 120.583794 797.747803 -31.968750")
+        end
+    end
+    --
+	-- Addon: Loco-motive
+	--
+    if map == "locomotive" then
+        if vlua.find(Entities:FindAllInSphere(Vector(-1412, 19, 56), 8), player) then
+            -- Ladder 1
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact -1378.852661 35.624672 229.031219")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(-762, -636, 206), 8), player) then
+            -- Window
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact -708.650085 -700.064514 168.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(-764, -626, 189), 8), player) then
+            -- Window option 2
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact -708.650085 -700.064514 168.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(122, -1761, 105), 8), player) then
+            -- Ladder 2
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 134.212769 -1813.295288 198.852356")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(1102, -592, 16), 8), player) then
+            -- Ladder 3
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 1126.768555 -543.791016 113.031250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(1032, -603, 114), 8), player) then
+            -- Ladder 4
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 1006.880310 -651.767212 208.531250")
+        elseif vlua.find(Entities:FindAllInSphere(Vector(658, 1574, 16), 8), player) then
+            -- Ladder 5
+            ClimbLadderSound()
+            SendToConsole("fadein 0.2")
+            SendToConsole("setpos_exact 659.112183 1619.329102 113.615730")
         end
     end
 end
@@ -1069,6 +1110,17 @@ function ModSupport_MapBootupScripts(isSaveLoaded)
             SpawnEntityFromTableSynchronous("prop_reviver_heart", {["targetname"]="novr_reviver_heart2", ["solid"]=6, ["origin"]="-977.538 704.025 240"})
             -- Disable battery station
             SendToConsole("ent_fire 16962_1485_trigger_open_power_unit disable")
+        end
+        -- Always bind flashlight
+        SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
+    --
+	-- Addon: Loco-motive
+	--
+    elseif map == "locomotive" then
+        if not isSaveLoaded then
+            SendToConsole("give weapon_physcannon")
+            SendToConsole("give weapon_pistol")
+            SendToConsole("hlvr_addresources 70 0 30 0")
         end
         -- Always bind flashlight
         SendToConsole("bind " .. FLASHLIGHT .. " inv_flashlight")
@@ -1746,6 +1798,37 @@ function ModSupport_CheckUseObjectInteraction(thisEntity)
         -- elevator down
         if name == "16962_elevator_button_prop" and Entities:GetLocalPlayer():Attribute_GetIntValue("reeducation_endsequence", 0) == 1 then
             SendToConsole("ent_fire 16962_elevator_train startforward")
+        end
+    end
+    --
+	-- Addon: Loco-motive
+	--
+    if map == "locomotive" then
+        -- Switch
+        if name == "49682_toner_switch" then
+            SendToConsole("ent_fire_output 49682_toner_switch oncompletiona")
+            Entities:GetLocalPlayer():Attribute_SetIntValue("locomotive_tonerswitch", 1)
+        end
+        -- Toner
+        if name == "49682_toner_port1" and MultitoolEquiped() and Entities:GetLocalPlayer():Attribute_GetIntValue("locomotive_tonerswitch", 0) == 1 then
+            SendToConsole("ent_fire 49682_toner_port1 onplugrotated")
+            SendToConsole("ent_fire 49682_toner_port1_spark_timer disable")
+            SendToConsole("ent_fire_output 49682_toner_path14 onpoweron")
+            SendToConsole("ent_fire 49682_toner_port1 disable")
+        end
+        -- Combine Console
+        if name == "49682_785_prop_button" then
+            SendToConsole("ent_fire 49682_785_relay_button_pressed trigger")
+        end
+        -- Train brake
+        if name == "train_pusher_detail" then
+            SendToConsole("ent_fire_output train_pusher_brake oncompletiona_forward")
+            Entities:GetLocalPlayer():Attribute_SetIntValue("locomotive_turntable", 1)
+        end
+        -- Turntable
+        if name == "turntable_lever" and Entities:GetLocalPlayer():Attribute_GetIntValue("locomotive_turntable", 0) == 1 and Entities:GetLocalPlayer():Attribute_GetIntValue("locomotive_turntable_used", 0) == 0 then
+            SendToConsole("ent_fire_output turntable_lever oncompletiona_forward")
+            Entities:GetLocalPlayer():Attribute_SetIntValue("locomotive_turntable_used", 1)
         end
     end
 end

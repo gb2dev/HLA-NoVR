@@ -286,6 +286,14 @@ if map == "a3_distillery" then
     end
 end
 
+-- Loco-motive
+if map == "locomotive" then
+    if name == "turntable_lever" then
+        ModSupport_CheckUseObjectInteraction(thisEntity)
+        return
+    end
+end
+
 if not vlua.find(model, "doorhandle") and name ~= "russell_entry_window" and name ~= "larry_ladder" and name ~= "@pod_shell" and name ~= "589_panel_switch" and name ~= "tc_door_control" and (class == "item_health_station_charger" or (class == "prop_animinteractable" and (not vlua.find(name, "elev_anim_door") or (vlua.find(name, "elev_anim_door") and thisEntity:Attribute_GetIntValue("toggle", 0) == 1 and thisEntity:GetVelocity() == Vector(0, 0, 0))) and not vlua.find(name, "5628_2901_barricade_door")) or (class == "item_hlvr_combine_console_rack" and IsCombineConsoleLocked() == false)) and not (map == "a4_c17_parking_garage" and name == "door_reset" and player:Attribute_GetIntValue("circuit_" .. map .. "_toner_junction_5_completed", 0) == 0) and thisEntity:Attribute_GetIntValue("used", 0) == 0 then
     if vlua.find(name, "slide_train_door") and Entities:FindByClassnameNearest("phys_constraint", thisEntity:GetCenter(), 20) then
         return

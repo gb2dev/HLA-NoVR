@@ -9,6 +9,7 @@ With this branch of NoVR mod, you will be able to play supported workshop modifi
 - ``Post-Human`` (2 maps / start map: 'post-human_intro') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2951332188))
 - ``Buckshot Bugs`` (1 map / start map: 'buckshot_bugs') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3086502947))
 - ``Re-Education`` (1 map / start map: 're-education') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2944449326))
+- ``Loco-motive`` (1 map / start map: 'locomotive') ([steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2212946578))
 
 Currently not supported / in development:
 - ``Resident Alyx: biohazard`` (campaign, 6 maps + epilogue)
