@@ -148,6 +148,10 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
                 DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
             end
             if class == "item_hlvr_grenade_frag" or class == "item_hlvr_grenade_xen" then
+                if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 then
+                    WristPockets_PickUpValuableItem(player, thisEntity)
+                    return nil
+                end
                 SendToConsole("+use")
                 thisEntity:SetThink(function()
                     SendToConsole("-use")
@@ -157,8 +161,14 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
                     print("[GameMenu] give_achievement SKILL_GGENEMY_GRENADE_MID_FLIGHT")
                     DoEntFireByInstanceHandle(thisEntity, "SetTimer", "3", 0, nil, nil)
                 end
+            else
+                if not WristPockets_PickUpValuableItem(player, thisEntity) then
+                    if class == "prop_physics" and thisEntity:Attribute_GetIntValue("picked_up", 0) == 0 or thisEntity:GetMass() ~= 1 then
+                        DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
+                        return nil
+                    end
+                end
             end
-            return nil
         end
 
         if count < 5 then

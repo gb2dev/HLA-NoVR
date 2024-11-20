@@ -1207,7 +1207,7 @@ if class == "item_healthcharger_reservoir" then
     DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
 end
 
-if class == "prop_dynamic" then
+if class == "prop_dynamic" or "func_physical_button" then
     if model == "models/props_combine/health_charger/combine_health_charger_vr_pad.vmdl" then
         local ent = Entities:FindByClassnameNearest("item_health_station_charger", thisEntity:GetOrigin(), 20)
         DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
@@ -1265,7 +1265,9 @@ if class == "prop_dynamic" then
                 StartSoundEvent("HealthStation.Loop", player)
             end, "HealthChargeSoundLoop", 0.7)
         end
-    elseif model == "models/props/alyx_hideout/button_plate.vmdl" then
+    elseif model == "models/props/alyx_hideout/button_plate.vmdl" or vlua.find(name, "2_8127_elev_button_floor_") then
+        SendToConsole("snd_sos_start_soundevent Button_Basic.Press")
+
         SendToConsole("ent_fire 2_8127_elev_button_test_floor_" .. player:Attribute_GetIntValue("next_elevator_floor", 2) .. " Trigger")
 
         if player:Attribute_GetIntValue("next_elevator_floor", 2) == 2 then
@@ -1324,10 +1326,11 @@ end
 
 -- Combine fabricator
 if class == "prop_hlvr_crafting_station_console" then
+    DoEntFireByInstanceHandle(thisEntity, "RunScriptFile", "crafting_station", 0, nil, nil)
     if thisEntity:GetGraphParameter("bBootup") == true and thisEntity:Attribute_GetIntValue("crafting_station_ready", 0) == 1 then
         if thisEntity:GetGraphParameter("bCollectingResin") then
-            if Convars:GetStr("chosen_upgrade") ~= "" then
-                if Convars:GetStr("chosen_upgrade") == "cancel" then
+            if Convars:GetStr("novr_chosen_weapon_upgrade") ~= "" then
+                if Convars:GetStr("novr_chosen_weapon_upgrade") == "cancel" then
                     thisEntity:SetGraphParameterBool("bCrafting", false)
                     SendToConsole("ent_fire point_clientui_world_panel Enable")
                     thisEntity:Attribute_SetIntValue("cancel_cooldown_done", 0)
@@ -1343,7 +1346,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 if string.match(viewmodel:GetModelName(), "v_pistol") then
                     SendToConsole("ent_fire weapon_pistol Kill")
                     SendToConsole("use weapon_physcannon")
-                    Convars:SetStr("weapon_in_crafting_station", "pistol")
+                    Convars:SetStr("novr_weapon_in_crafting_station", "pistol")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
@@ -1391,7 +1394,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 elseif string.match(viewmodel:GetModelName(), "v_shotgun") then
                     SendToConsole("ent_fire weapon_shotgun Kill")
                     SendToConsole("use weapon_physcannon")
-                    Convars:SetStr("weapon_in_crafting_station", "shotgun")
+                    Convars:SetStr("novr_weapon_in_crafting_station", "shotgun")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
@@ -1437,7 +1440,7 @@ if class == "prop_hlvr_crafting_station_console" then
                 elseif string.match(viewmodel:GetModelName(), "v_smg1") then
                     SendToConsole("ent_fire weapon_ar2 Kill")
                     SendToConsole("use weapon_physcannon")
-                    Convars:SetStr("weapon_in_crafting_station", "smg")
+                    Convars:SetStr("novr_weapon_in_crafting_station", "smg")
                     local console = Entities:FindByClassnameNearest("prop_hlvr_crafting_station_console", player:GetOrigin(), 100)
                     local ent = Entities:FindByClassnameNearest("trigger_crafting_station_object_placement", console:GetOrigin(), 40)
                     local angles = ent:GetAngles()
@@ -1492,7 +1495,7 @@ if class == "prop_hlvr_crafting_station_console" then
             end
         end
         if thisEntity:GetGraphParameter("bCrafting") == false then
-            Convars:SetStr("chosen_upgrade", "")
+            Convars:SetStr("novr_chosen_weapon_upgrade", "")
         end
     end
 end
@@ -1646,7 +1649,7 @@ if (model == "models/props/hazmat/respirator_01b.vmdl" or model == "models/props
     local ent = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="respirator_viewmodel", ["model"]="models/props/hazmat/respirator_01a.vmdl", ["disableshadows"]=true, ["solid"]=0})
     local viewmodel = Entities:FindByClassname(nil, "viewmodel")
     ent:SetParent(viewmodel, "")
-    ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(1, 0, -5.5)))
+    ent:SetAbsOrigin(viewmodel:GetOrigin() + RotatePosition(Vector(0, 0, 0), player:GetAngles(), Vector(1, 0, -5.7)))
     ent:SetLocalAngles(0, -10, 0)
 
     SendToConsole("ent_fire lefthand Disable;novr_uncover_mouth")
@@ -1662,10 +1665,6 @@ if (model == "models/props/hazmat/respirator_01b.vmdl" or model == "models/props
 
     thisEntity:Kill()
     return
-end
-
-if class == "item_item_crate" then
-    DoEntFireByInstanceHandle(thisEntity, "SetHealth", "0", 0, nil, nil)
 end
 
 local item_pickup_params = { ["userid"]=player:GetUserID(), ["item"]=class, ["item_name"]=name }
@@ -1687,6 +1686,7 @@ elseif class == "item_hlvr_weapon_shotgun" and not vlua.find(name, "weapon_in_fa
     FireGameEvent("item_pickup", item_pickup_params)
 
     SendToConsole("give weapon_shotgun")
+    SendToConsole("r_drawviewmodel 1")
     SendToConsole("ent_fire 12712_relay_player_shotgun_is_ready Trigger")
     SendToConsole("ent_fire item_hlvr_weapon_shotgun Kill")
     SendToConsole("ent_fire 12712_achievment_get_shotgun FireEvent")
@@ -1797,7 +1797,6 @@ elseif class == "item_hlvr_grenade_xen" then
         thisEntity:Kill()
     end
 elseif class == "item_hlvr_grenade_frag" then
-    thisEntity:Attribute_SetIntValue("picked_up", 0)
     if thisEntity:GetSequence() == "vr_grenade_unarmed_idle" then
         if player:Attribute_GetIntValue("grenade_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("grenade_tutorial_shown", 1)
@@ -1825,7 +1824,6 @@ elseif class == "item_hlvr_grenade_frag" then
         end
     end
 elseif class == "item_healthvial" then
-    thisEntity:Attribute_SetIntValue("picked_up", 0)
     if player:GetHealth() < (player:GetMaxHealth() - 15) or (WristPockets_PlayerHasFreePocketSlot(player) == false and player:GetHealth() < player:GetMaxHealth()) then
         if player:Attribute_GetIntValue("syringe_tutorial_shown", 0) == 0 then
             player:Attribute_SetIntValue("syringe_tutorial_shown", 1)

@@ -47,7 +47,7 @@ if eyetrace.hit then
     end
 
     -- TODO: There's gotta be a better way than to exclude some things from here
-    if eyetrace.enthit == thisEntity or vlua.find(class, "hlvr_piano") or name == "russell_entry_window" or class == "item_combine_tank_locker" or vlua.find(name, "socket") or vlua.find(name, "traincar_01") then
+    if eyetrace.enthit == thisEntity or vlua.find(class, "hlvr_piano") or name == "russell_entry_window" or class == "item_combine_tank_locker" or eyetrace.enthit:GetClassname() == "func_physical_button" or vlua.find(name, "socket") or vlua.find(name, "traincar_01") then
         useRoutine = 1
         player:SetThink(function()
             if IsValidEntity(thisEntity) then
