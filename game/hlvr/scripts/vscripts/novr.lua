@@ -576,6 +576,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     Convars:RegisterCommand("novr_crafting_station_cancel_upgrade", function()
         Convars:SetStr("novr_chosen_weapon_upgrade", "cancel")
         SendToConsole("ent_fire weapon_in_fabricator_idle Kill")
+        SendToConsole("ent_fire weapon_in_fabricator Kill")
         SendToConsole("ent_fire upgrade_ui kill")
         -- TODO: Give weapon back, but don't fill magazine
         if Convars:GetStr("novr_weapon_in_crafting_station") == "pistol" then
@@ -656,7 +657,9 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("impulse 200")
             player:SetThink(function()
                 SendToConsole("impulse 200")
-                SendToConsole("r_drawviewmodel 1")
+                if not is_on_map_or_later("a5_vault") then
+                    SendToConsole("r_drawviewmodel 1")
+                end
             end, "FinishGrenadeThrow", 0.1)
         end
         DoEntFireByInstanceHandle(ent, "ArmGrenade", "", 0, nil, nil)
@@ -1225,7 +1228,7 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. NOCLIP .. " toggle_noclip")
             SendToConsole("bind " .. QUICK_SAVE .. " \"save quick;snd_sos_start_soundevent Instructor.StartLesson;ent_fire text_quicksave showmessage\"")
             SendToConsole("bind " .. QUICK_LOAD .. " \"vr_enable_fake_vr 0;vr_enable_fake_vr 0;load quick\"")
-            SendToConsole("bind " .. MAIN_MENU .. " \"map startup\"")
+            SendToConsole("bind " .. MAIN_MENU .. " \"addon_play startup\"")
             SendToConsole("bind " .. PRIMARY_ATTACK .. " \"+customattack;viewmodel_update\"")
             SendToConsole("bind " .. SECONDARY_ATTACK .. " +customattack2")
             SendToConsole("bind " .. TERTIARY_ATTACK .. " +customattack3")
@@ -1245,7 +1248,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. UNEQUIP_WEARABLE .. " novr_unequip_wearable")
             -- NOTE: Put additional custom bindings under here. Example:
             -- SendToConsole("bind X quit")
-            SendToConsole("phys_pushscale 0")
             SendToConsole("sv_noclipaccelerate 1")
             SendToConsole("hl2_sprintspeed 140")
             SendToConsole("hl2_normspeed 140")
@@ -1799,11 +1801,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                         local child = SpawnEntityFromTableSynchronous("prop_dynamic_override", {["targetname"]="hideout_gate_prop", ["CollisionGroupOverride"]=5, ["solid"]=6, ["DefaultAnim"]="vort_barrier_start_idle", ["renderamt"]=0, ["model"]=ent:GetModelName(), ["origin"]= pos.x .. " " .. pos.y .. " " .. pos.z, ["angles"]= angles.x .. " " .. angles.y .. " " .. angles.z - 20})
                         child:SetParent(ent, "")
 
-                        local player_clip = Entities:FindAllByClassname("func_brush")[1]
-                        local player_clip_name = player_clip:GetName()
-                        if vlua.find(player_clip_name, "clip_big_door_player")  then
-                            SendToConsole("ent_fire trigger_player_in_big_room AddOutput \"OnTrigger>" .. player_clip_name .. ">Enable>>0>-1\"")
-                            SendToConsole("ent_fire ss_kitchen_to_cardshow AddOutput \"OnScriptEvent01>" .. player_clip_name .. ">Disable>>1>-1\"")
+                        local player_clip = Entities:FindByClassnameNearest("func_brush", Vector(-692, -1369.25, -243.875), 10)
+                        if player_clip then
+                            SendToConsole("ent_fire trigger_player_in_big_room AddOutput \"OnTrigger>" .. player_clip:GetName() .. ">Enable>>0>-1\"")
+                            SendToConsole("ent_fire ss_kitchen_to_cardshow AddOutput \"OnScriptEvent01>" .. player_clip:GetName() .. ">Disable>>1>-1\"")
                         end
                     end
                 else
@@ -2196,6 +2197,7 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 SendToConsole("hidehud 67")
                             end, "", 0)
                             SendToConsole("bind " .. FLASHLIGHT .. " \"\"")
+                            WristPockets_DisableKeepAcrossMaps()
 
                             if not loading_save_file then
                                 Entities:GetLocalPlayer():Attribute_SetIntValue("grenade", 0)
@@ -2227,11 +2229,10 @@ if GlobalSys:CommandLineCheck("-novr") then
                                 ent = Entities:FindByName(nil, "longcorridor_energysource_01_activate_relay")
                                 ent:RedirectOutput("OnTrigger", "GiveVortEnergy", ent)
 
-                                local player_clip = Entities:FindAllByClassname("func_brush")[1]
-                                local player_clip_name = player_clip:GetName()
-                                if vlua.find(player_clip_name, "rooftop_concretedislodge_brush_player")  then
+                                local player_clip = Entities:FindByClassnameNearest("func_brush", Vector(-931, 264, -481), 10)
+                                if player_clip then
                                     ent = Entities:FindByName(nil, "rooftop_concretedislodge_relay")
-                                    DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip_name .. ">Disable>>0>-1", 0, nil, nil)
+                                    DoEntFireByInstanceHandle(ent, "AddOutput", "OnTrigger>" .. player_clip:GetName() .. ">Disable>>0>-1", 0, nil, nil)
                                 end
                             else
                                 if Entities:GetLocalPlayer():Attribute_GetIntValue("vort_energy", 0) == 1 then
@@ -2873,6 +2874,7 @@ if GlobalSys:CommandLineCheck("-novr") then
     function GiveCrowbar(a, b)
         Entities:GetLocalPlayer():SetThink(function()
             SendToConsole("give weapon_crowbar")
+            SendToConsole("use weapon_crowbar")
             SendToConsole("r_drawviewmodel 1")
             SendToConsole("ent_fire_output prop_crowbar OnPlayerPickup")
             SendToConsole("ent_fire prop_crowbar Kill")
