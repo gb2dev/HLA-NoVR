@@ -144,9 +144,6 @@ if name == "peeled_corridor_objects" or class == "prop_reviver_heart" or vlua.fi
                 return nil
             end
 
-            if not WristPockets_PickUpValuableItem(player, thisEntity) and (thisEntity:GetMass() ~= 1 or thisEntity:GetModelName() == "models/props/metal_box_1.vmdl") then
-                DoEntFireByInstanceHandle(thisEntity, "Use", "", 0, player, player)
-            end
             if class == "item_hlvr_grenade_frag" or class == "item_hlvr_grenade_xen" then
                 if thisEntity:Attribute_GetIntValue("picked_up", 0) == 1 then
                     WristPockets_PickUpValuableItem(player, thisEntity)
