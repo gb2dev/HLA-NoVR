@@ -157,15 +157,17 @@ if GlobalSys:CommandLineCheck("-novr") then
             player:SetThink(function()
                 player:Attribute_SetIntValue("picked_up", 0)
             end, "ResetPickedUp", 0.02)
-            if GetMapName() ~= "03_metrodynamo" or (GetMapName() == "03_metrodynamo" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" and not string.match(ent:GetModelName(), "vr_console_rack_1")) --Levitation
-            then
-                DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
-            end
+
             if ent:GetModelName() == "models/props/barrel_plastic_1.vmdl" then
                 SendToConsole("hlvr_physcannon_forward_offset 5")
             end
             DoEntFireByInstanceHandle(ent, "AddOutput", "OnPhysgunDrop>!self>RunScriptFile>drop_object>0.02>1", 0, nil, nil)
-            DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+            --DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+            --Levitation combine console tank workaround
+            if GetMapName() ~= "03_metrodynamo" or (GetMapName() == "03_metrodynamo" and ent:GetClassname() ~= "item_hlvr_combine_console_tank" and not string.match(ent:GetModelName(), "vr_console_rack_1"))
+            then
+                DoEntFireByInstanceHandle(ent, "RunScriptFile", "useextra", 0, nil, nil)
+            end
         end
     end, nil)
 
