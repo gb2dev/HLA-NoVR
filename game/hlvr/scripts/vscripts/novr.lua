@@ -1240,7 +1240,6 @@ if GlobalSys:CommandLineCheck("-novr") then
             SendToConsole("bind " .. MOVE_RIGHT .. " +rightfixed")
             SendToConsole("bind " .. CROUCH .. " +iv_duck")
             SendToConsole("bind " .. SPRINT .. " +iv_sprint")
-            SendToConsole("bind " .. PAUSE .. " pause")
             SendToConsole("bind " .. VIEWM_INSPECT .. " viewmodel_inspect_animation")
             SendToConsole("bind " .. ZOOM .. " +novr_zoom")
             SendToConsole("bind " .. UNEQUIP_WEARABLE .. " novr_unequip_wearable")
